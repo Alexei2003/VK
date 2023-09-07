@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "dpTlY+MO+2r4PMjVYqFWIrhjjrQ53ZCgDW0jkm8RuMgvatkyNX+/pAo9G4b2CBRV8XrecRlhT4wBNmrDnSgWAQ==",
+  "success": true,
+  "projectFilePath": "D:\\WPS\\MY\\VK\\Project\\VK\\AddPost\\AddPost.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Prinz Eugen\\.nuget\\packages\\htmlagilitypack\\1.11.49\\htmlagilitypack.1.11.49.nupkg.sha512",
+    "C:\\Users\\Prinz Eugen\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\7.0.0\\microsoft.extensions.dependencyinjection.7.0.0.nupkg.sha512",
+    "C:\\Users\\Prinz Eugen\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\7.0.0\\microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",
+    "C:\\Users\\Prinz Eugen\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\7.0.1\\microsoft.extensions.logging.abstractions.7.0.1.nupkg.sha512",
+    "C:\\Users\\Prinz Eugen\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\Prinz Eugen\\.nuget\\packages\\system.text.encoding.codepages\\7.0.0\\system.text.encoding.codepages.7.0.0.nupkg.sha512",
+    "C:\\Users\\Prinz Eugen\\.nuget\\packages\\vknet\\1.75.0\\vknet.1.75.0.nupkg.sha512"
+  ],
+  "logs": []
+}
