@@ -7,7 +7,7 @@ namespace MyCustomClasses
     public class VkApiCustom
     {
         private readonly TimeSpan TIME_SLEEP = TimeSpan.FromSeconds(2);
-        public VkApi ApiOriginal { get; } = new();
+        public VkApi ApiOriginal { get; }
 
         public Account Account { get; }
         public VkApiCustomClasses.Wall Wall { get; }
@@ -19,13 +19,14 @@ namespace MyCustomClasses
 
         public VkApiCustom()
         {
-            Account Account = new(ApiOriginal, TIME_SLEEP);
-            VkApiCustomClasses.Wall Wall = new(ApiOriginal, TIME_SLEEP);
-            VkApiCustomClasses.Likes Likes = new(ApiOriginal, TIME_SLEEP);
-            Friends Friends = new(ApiOriginal, TIME_SLEEP);
-            VkApiCustomClasses.Photo Photo = new(ApiOriginal, TIME_SLEEP);
-            Users Users = new(ApiOriginal, TIME_SLEEP);
-            Stats Stats = new(ApiOriginal, TIME_SLEEP);
+            ApiOriginal = new();
+            Account = new(ApiOriginal, TIME_SLEEP);
+            Wall = new(ApiOriginal, TIME_SLEEP);
+            Likes = new(ApiOriginal, TIME_SLEEP);
+            Friends = new(ApiOriginal, TIME_SLEEP);
+            Photo = new(ApiOriginal, TIME_SLEEP);
+            Users = new(ApiOriginal, TIME_SLEEP);
+            Stats = new(ApiOriginal, TIME_SLEEP);
         }
 
         public void Authorize(IApiAuthParams @params)
