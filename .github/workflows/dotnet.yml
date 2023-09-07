@@ -15,15 +15,15 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v3.2
       with:
         dotnet-version: 7.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Cache .NET packages
-      uses: actions/cache@v2
+      uses: actions/cache@v3.3.1
       with:
         path: ~/.nuget/packages  # Путь к папке с кэшем NuGet-пакетов
         key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}  # Ключ кэша
