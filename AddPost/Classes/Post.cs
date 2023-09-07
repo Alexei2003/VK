@@ -17,7 +17,7 @@ namespace AddPost
         public void CreatePost(System.Drawing.Image image, string tag, string copyright, DateTime? postDate, string groupId)
         {
             var postImage = photo.AddPhoto(image);
-            api.WallPost(new WallPostParams()
+            api.Wall.Post(new WallPostParams()
             {
                 OwnerId = -1 * Convert.ToInt32(groupId),
                 FromGroup = true,

@@ -14,7 +14,7 @@ namespace AddPost.Classes
 
         public IReadOnlyCollection<VkNet.Model.Photo> AddPhoto(System.Drawing.Image image)
         {
-            var uploadServer = api.PhotoGetWallUploadServer();
+            var uploadServer = api.Photo.GetWallUploadServer();
             using (var wc = new WebClient())
             {
                 byte[] imageBytes;
@@ -25,7 +25,7 @@ namespace AddPost.Classes
                 }
                 var responseFile = Encoding.ASCII.GetString(wc.UploadFile(uploadServer.UploadUrl, "1.jpg"));
 
-                return api.PhotoSaveWallPhoto(responseFile, Convert.ToUInt32(api.ApiOriginal.UserId));
+                return api.Photo.SaveWallPhoto(responseFile, Convert.ToUInt32(api.ApiOriginal.UserId));
             }
         }
     }

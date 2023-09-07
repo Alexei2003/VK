@@ -12,7 +12,7 @@ namespace AddPost.Classes
             {
                 AccessToken = accessToken
             });
-            Api.StatsTrackVisitor();
+            Api.Stats.TrackVisitor();
         }
     }
 }

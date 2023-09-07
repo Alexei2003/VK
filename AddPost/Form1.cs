@@ -111,17 +111,17 @@ namespace AddPost
             var str = tbTag.Text;
             int removeCount = -1;
             int indexStartDel = -1;
-            for(int i = str.Length - 1; i>-1 ; i--)
+            for (int i = str.Length - 1; i > -1; i--)
             {
                 if (str[i] == '#')
                 {
                     indexStartDel = i;
-                    removeCount = str.Length - i; 
+                    removeCount = str.Length - i;
                     break;
                 }
             }
 
-            if(removeCount>-1  && indexStartDel > -1)
+            if (removeCount > -1 && indexStartDel > -1)
             {
                 str = str.Remove(indexStartDel, removeCount);
             }

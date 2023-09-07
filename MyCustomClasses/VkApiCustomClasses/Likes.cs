@@ -1,0 +1,33 @@
+﻿using VkNet;
+using VkNet.Model;
+
+namespace MyCustomClasses.VkApiCustomClasses
+{
+    public class Likes
+    {
+        private readonly TimeSpan TIME_SLEEP;
+        public VkApi ApiOriginal { get; }
+
+        public Likes(VkApi ApiOriginal, TimeSpan TIME_SLEEP)
+        {
+            this.ApiOriginal = ApiOriginal;
+            this.TIME_SLEEP = TIME_SLEEP;
+        }
+
+        public long Add(LikesAddParams @params)
+        {
+            while (true)
+            {
+                try
+                {
+                    var res = ApiOriginal.Likes.Add(@params);
+                    return res;
+                }
+                catch (VkNet.Exception.TooManyRequestsException)
+                {
+                    Thread.Sleep(TIME_SLEEP);
+                }
+            }
+        }
+    }
+}

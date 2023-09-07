@@ -25,7 +25,7 @@ namespace AddPost.Classes
 
         private DateTime? GetTimeLastPost(string groupId)
         {
-            var post = api.WallGet(new WallGetParams()
+            var post = api.Wall.Get(new WallGetParams()
             {
                 OwnerId = -1 * Convert.ToInt32(groupId),
                 Count = 100,
@@ -34,7 +34,7 @@ namespace AddPost.Classes
 
             if (post.WallPosts.Count < 1)
             {
-                post = api.WallGet(new WallGetParams()
+                post = api.Wall.Get(new WallGetParams()
                 {
                     OwnerId = -1 * Convert.ToInt32(groupId),
                     Count = 1,
@@ -45,7 +45,7 @@ namespace AddPost.Classes
             {
                 if (post.TotalCount > 100)
                 {
-                    post = api.WallGet(new WallGetParams()
+                    post = api.Wall.Get(new WallGetParams()
                     {
                         OwnerId = -1 * Convert.ToInt32(groupId),
                         Offset = post.TotalCount - 1,
