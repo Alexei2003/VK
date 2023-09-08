@@ -59,7 +59,6 @@
             pbImage.SizeMode = PictureBoxSizeMode.Zoom;
             pbImage.TabIndex = 0;
             pbImage.TabStop = false;
-            pbImage.PreviewKeyDown += pbImage_PreviewKeyDown;
             // 
             // textBox1
             // 

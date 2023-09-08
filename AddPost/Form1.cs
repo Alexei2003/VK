@@ -29,19 +29,6 @@ namespace AddPost
             }
         }
 
-        private void pbImage_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            // Проверка, содержит ли буфер обмена изображение
-            if (Clipboard.ContainsImage())
-            {
-                // Получение изображения из буфера обмена
-                Image clipboardImage = Clipboard.GetImage();
-
-                // Установка изображения в PictureBox
-                pbImage.Image = clipboardImage;
-            }
-        }
-
         private void bBuff_Click(object sender, EventArgs e)
         {
             // Проверка, содержит ли буфер обмена изображение
@@ -69,7 +56,8 @@ namespace AddPost
                 tbTag.Text = "";
             }
             pbImage.Image = null;
-            postDate = postDate.Value.AddHours(5);
+            postDate = date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1);
+            postDate = postDate.Value.AddHours(3);
             tbDate.Text = postDate.ToString();
         }
 
