@@ -8,7 +8,7 @@ namespace LikesRepostsBots.Classes
     {
         private readonly VkApiCustom api = new();
         private readonly Random rand = new();
-        private readonly int randNumbCreateComment;
+        //private readonly int randNumbCreateComment;
         private const int CHANCE_COMMENT = 10;
         private const int CHANCE_LIKE = 5;
 
@@ -19,7 +19,7 @@ namespace LikesRepostsBots.Classes
                 AccessToken = accessToken
             });
             api.Account.SetOnline(false);
-            randNumbCreateComment = rand.Next(CHANCE_COMMENT);
+            //randNumbCreateComment = rand.Next(CHANCE_COMMENT);
         }
 
         private void WorkWithPosts(string groupId)
@@ -69,15 +69,16 @@ namespace LikesRepostsBots.Classes
                 {
                     Console.WriteLine($"Число лайкнутых комментариев {likes}");
                 }
-                /*
-                                if (CreatesComments(groupId, wall.WallPosts[Convert.ToInt32(numbPost)].Id))
-                                {
-                                    Console.WriteLine("Добавление комментария");
-                                }
-                */
+
+/*                if (CreatesComments(groupId, wall.WallPosts[Convert.ToInt32(numbPost)].Id))
+                {
+                    Console.WriteLine("Добавление комментария");
+                }*/
+
                 api.Likes.Add(new LikesAddParams
                 {
                     Type = LikeObjectType.Post,
+                    OwnerId = wall.WallPosts[Convert.ToInt32(numbPost)].OwnerId,
                     ItemId = Convert.ToInt64(wall.WallPosts[Convert.ToInt32(numbPost)].Id),
                 });
 
@@ -179,7 +180,7 @@ namespace LikesRepostsBots.Classes
             return false;
         }
 
-        private void AddToPeopleDictionaryFromRequests(PeopleDictionary people, bool addToFriends)
+/*        private void AddToPeopleDictionaryFromRequests(PeopleDictionary people, bool addToFriends)
         {
             Console.WriteLine("Рассмотр заявок");
             var requests = api.Friends.GetRequests(new FriendsGetRequestsParams
@@ -202,9 +203,9 @@ namespace LikesRepostsBots.Classes
                 people.AddNotContains(personId);
 
             }
-        }
+        }*/
 
-        private bool CreatesComments(string groupId, long? postId)
+/*        private bool CreatesComments(string groupId, long? postId)
         {
 
             int randNumb = rand.Next(CHANCE_COMMENT);
@@ -223,7 +224,7 @@ namespace LikesRepostsBots.Classes
                 return true;
             }
             return false;
-        }
+        }*/
 
         private int AddCommentsLike(string groupId, long? postId)
         {
