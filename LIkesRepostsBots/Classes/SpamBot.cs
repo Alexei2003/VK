@@ -8,9 +8,8 @@ namespace LikesRepostsBots.Classes
     {
         private readonly VkApiCustom api = new();
         private readonly Random rand = new();
-        //private readonly int randNumbCreateComment;
-        private const int CHANCE_COMMENT = 10;
         private const int CHANCE_LIKE = 5;
+        private const int MAX_COUNT_POST = 8;
 
         public SpamBot(string accessToken)
         {
@@ -19,7 +18,6 @@ namespace LikesRepostsBots.Classes
                 AccessToken = accessToken
             });
             api.Account.SetOnline(false);
-            //randNumbCreateComment = rand.Next(CHANCE_COMMENT);
         }
 
         private void WorkWithPosts(string groupId)
@@ -27,7 +25,7 @@ namespace LikesRepostsBots.Classes
             var wall = api.Wall.Get(new WallGetParams
             {
                 OwnerId = -1 * Convert.ToInt32(groupId),
-                Count = 7,
+                Count = MAX_COUNT_POST,
                 Filter = WallFilter.All
             });
 
@@ -42,7 +40,7 @@ namespace LikesRepostsBots.Classes
             if (botWall.WallPosts[0].CopyHistory != null)
             {
 
-                for (countPosts = 0; countPosts < 7; countPosts++)
+                for (countPosts = 0; countPosts < MAX_COUNT_POST; countPosts++)
                 {
                     if (wall.WallPosts[Convert.ToInt32(countPosts)].Id == botWall.WallPosts[0].CopyHistory[0].Id)
                     {
@@ -52,14 +50,14 @@ namespace LikesRepostsBots.Classes
             }
             else
             {
-                countPosts = 7;
+                countPosts = MAX_COUNT_POST;
             }
 
             RepostResult repostResult;
             var rand = new Random();
             for (long? numbPost = countPosts - 1; numbPost > -1;)
             {
-                if (rand.Next(1) == 0)
+                if (rand.Next(2) == 0)
                 {
                     repostResult = api.Wall.Repost("wall" + wall.WallPosts[Convert.ToInt32(numbPost)].OwnerId + "_" + wall.WallPosts[Convert.ToInt32(numbPost)].Id, "", api.ApiOriginal.UserId, false);
                 }
@@ -70,11 +68,6 @@ namespace LikesRepostsBots.Classes
                     Console.WriteLine($"Число лайкнутых комментариев {likes}");
                 }
 
-/*                if (CreatesComments(groupId, wall.WallPosts[Convert.ToInt32(numbPost)].Id))
-                {
-                    Console.WriteLine("Добавление комментария");
-                }*/
-
                 api.Likes.Add(new LikesAddParams
                 {
                     Type = LikeObjectType.Post,
@@ -82,7 +75,7 @@ namespace LikesRepostsBots.Classes
                     ItemId = Convert.ToInt64(wall.WallPosts[Convert.ToInt32(numbPost)].Id),
                 });
 
-                Console.WriteLine($"{countPosts - numbPost}/{countPosts - 4}");
+                Console.WriteLine($"{countPosts - numbPost}/{countPosts}");
                 numbPost--;
             }
         }
@@ -93,7 +86,6 @@ namespace LikesRepostsBots.Classes
             people.Read();
 
             AddToFriendsFromRecomendedList(people);
-            //AddToPeopleDictionaryFromRequests(people,false);
 
             people.Write();
         }
@@ -179,52 +171,6 @@ namespace LikesRepostsBots.Classes
 
             return false;
         }
-
-/*        private void AddToPeopleDictionaryFromRequests(PeopleDictionary people, bool addToFriends)
-        {
-            Console.WriteLine("Рассмотр заявок");
-            var requests = api.Friends.GetRequests(new FriendsGetRequestsParams
-            {
-                Count = 10,
-                Out = false
-            });
-
-            foreach (var personId in requests.Items)
-            {
-
-                if (addToFriends)
-                {
-                    var res = api.Friends.Add(personId);
-                    if (res == null)
-                    {
-                        api.Account.Ban(personId);
-                    }
-                }
-                people.AddNotContains(personId);
-
-            }
-        }*/
-
-/*        private bool CreatesComments(string groupId, long? postId)
-        {
-
-            int randNumb = rand.Next(CHANCE_COMMENT);
-
-            if (randNumb == randNumbCreateComment)
-            {
-                var comments = new CommentsDictionary();
-                randNumb = rand.Next(comments.Count);
-
-                api.Wall.CreateComment(new WallCreateCommentParams
-                {
-                    OwnerId = -1 * Convert.ToInt32(groupId),
-                    PostId = Convert.ToInt64(postId),
-                    Message = comments[randNumb],
-                });
-                return true;
-            }
-            return false;
-        }*/
 
         private int AddCommentsLike(string groupId, long? postId)
         {

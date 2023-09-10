@@ -13,11 +13,6 @@ namespace HelloWorld
 
             var accessTokens = File.ReadAllLines("AccessTokens.txt");
 
-            {
-                var comments = new CommentsDictionary();
-                Console.WriteLine($"Количество комментариев в списке {comments.Count}");
-            }
-
             var bots = new Bots(accessTokens);
             var rand = new Random();
 
