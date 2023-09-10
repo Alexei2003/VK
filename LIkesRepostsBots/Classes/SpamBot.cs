@@ -57,11 +57,12 @@ namespace LikesRepostsBots.Classes
 
             RepostResult repostResult;
             var rand = new Random();
-            for (long? numbPost = countPosts - 1; numbPost > 3;)
+            for (long? numbPost = countPosts - 1; numbPost > -1;)
             {
-                Thread.Sleep(TimeSpan.FromSeconds(rand.Next(1)));
-
-                repostResult = api.Wall.Repost("wall" + wall.WallPosts[0].OwnerId + "_" + wall.WallPosts[Convert.ToInt32(numbPost)].Id, "", api.ApiOriginal.UserId, false);
+                if (rand.Next(1) == 0)
+                {
+                    repostResult = api.Wall.Repost("wall" + wall.WallPosts[Convert.ToInt32(numbPost)].OwnerId + "_" + wall.WallPosts[Convert.ToInt32(numbPost)].Id, "", api.ApiOriginal.UserId, false);
+                }
 
                 int likes = AddCommentsLike(groupId, wall.WallPosts[Convert.ToInt32(numbPost)].Id);
                 if (likes > 0)
@@ -77,7 +78,7 @@ namespace LikesRepostsBots.Classes
                 api.Likes.Add(new LikesAddParams
                 {
                     Type = LikeObjectType.Post,
-                    ItemId = Convert.ToInt64(repostResult.PostId),
+                    ItemId = Convert.ToInt64(wall.WallPosts[Convert.ToInt32(numbPost)].Id),
                 });
 
                 Console.WriteLine($"{countPosts - numbPost}/{countPosts - 4}");
