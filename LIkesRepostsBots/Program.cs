@@ -21,11 +21,11 @@ namespace HelloWorld
             var bots = new Bots(accessTokens);
             var rand = new Random();
 
-            for (int j = 0; j < answer; j++)
+            for (int j = 0; j <= answer; j++)
             {
                 for (int i = 0; i < bots.Count; i++)
                 {
-                    bots[i].Start(groupId, answer);
+                    bots[i].Start(groupId, j);
                     Thread.Sleep(TimeSpan.FromSeconds(rand.Next(5) + 1));
                 }
                 Console.WriteLine($"\n\nИтерация № {j + 1}\n\n");

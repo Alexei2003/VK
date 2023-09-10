@@ -258,10 +258,13 @@ namespace LikesRepostsBots.Classes
 
         public void Start(string groupId, int answer)
         {
-            WorkWithPosts(groupId);
-            if (answer != 0)
+            if (answer > 0)
             {
                 WorkWithFriends();
+            }
+            else
+            {
+                WorkWithPosts(groupId);
             }
         }
     }
