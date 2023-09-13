@@ -36,13 +36,13 @@ namespace LikesRepostsBots.Classes
                 Filter = WallFilter.All
             });
 
-            long? countPosts;
+            int countPosts;
             if (botWall.WallPosts[0].CopyHistory != null)
             {
 
                 for (countPosts = 0; countPosts < MAX_COUNT_POST; countPosts++)
                 {
-                    if (wall.WallPosts[Convert.ToInt32(countPosts)].Id == botWall.WallPosts[0].CopyHistory[0].Id)
+                    if (wall.WallPosts[countPosts].Id == botWall.WallPosts[0].CopyHistory[0].Id)
                     {
                         break;
                     }
@@ -55,14 +55,14 @@ namespace LikesRepostsBots.Classes
 
             RepostResult repostResult;
             var rand = new Random();
-            for (long? numbPost = countPosts - 1; numbPost > -1;)
+            for (int numbPost = countPosts - 1; numbPost > -1;)
             {
-                if (rand.Next(2) == 0)
+                if (rand.Next(countPosts-numbPost+1) == 0)
                 {
-                    repostResult = api.Wall.Repost("wall" + wall.WallPosts[Convert.ToInt32(numbPost)].OwnerId + "_" + wall.WallPosts[Convert.ToInt32(numbPost)].Id, "", api.ApiOriginal.UserId, false);
+                    repostResult = api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", api.ApiOriginal.UserId, false);
                 }
 
-                int likes = AddCommentsLike(groupId, wall.WallPosts[Convert.ToInt32(numbPost)].Id);
+                int likes = AddCommentsLike(groupId, wall.WallPosts[numbPost].Id);
                 if (likes > 0)
                 {
                     Console.WriteLine($"Число лайкнутых комментариев {likes}");
@@ -71,8 +71,8 @@ namespace LikesRepostsBots.Classes
                 api.Likes.Add(new LikesAddParams
                 {
                     Type = LikeObjectType.Post,
-                    OwnerId = wall.WallPosts[Convert.ToInt32(numbPost)].OwnerId,
-                    ItemId = Convert.ToInt64(wall.WallPosts[Convert.ToInt32(numbPost)].Id),
+                    OwnerId = wall.WallPosts[numbPost].OwnerId,
+                    ItemId = Convert.ToInt64(wall.WallPosts[numbPost].Id),
                 });
 
                 Console.WriteLine($"{countPosts - numbPost}/{countPosts}");
