@@ -24,7 +24,7 @@ namespace LikesRepostsBots.Classes
         {
             var wall = api.Wall.Get(new WallGetParams
             {
-                OwnerId = -1 * Convert.ToInt32(groupId),
+                OwnerId = -1 * Convert.ToInt64(groupId),
                 Count = MAX_COUNT_POST,
                 Filter = WallFilter.All
             });
@@ -178,7 +178,7 @@ namespace LikesRepostsBots.Classes
 
             var comments = api.Wall.GetComments(new WallGetCommentsParams
             {
-                OwnerId = -1 * Convert.ToInt32(groupId),
+                OwnerId = -1 * Convert.ToInt64(groupId),
                 PostId = Convert.ToInt64(postId),
                 Count = 100,
 

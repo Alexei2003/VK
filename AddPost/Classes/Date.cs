@@ -27,7 +27,7 @@ namespace AddPost.Classes
         {
             var post = api.Wall.Get(new WallGetParams()
             {
-                OwnerId = -1 * Convert.ToInt32(groupId),
+                OwnerId = -1 * Convert.ToInt64(groupId),
                 Count = 100,
                 Filter = WallFilter.Postponed,
             });
@@ -36,7 +36,7 @@ namespace AddPost.Classes
             {
                 post = api.Wall.Get(new WallGetParams()
                 {
-                    OwnerId = -1 * Convert.ToInt32(groupId),
+                    OwnerId = -1 * Convert.ToInt64(groupId),
                     Count = 1,
                     Filter = WallFilter.All,
                 });
@@ -47,7 +47,7 @@ namespace AddPost.Classes
                 {
                     post = api.Wall.Get(new WallGetParams()
                     {
-                        OwnerId = -1 * Convert.ToInt32(groupId),
+                        OwnerId = -1 * Convert.ToInt64(groupId),
                         Offset = post.TotalCount - 1,
                         Count = 1,
                         Filter = WallFilter.Postponed,

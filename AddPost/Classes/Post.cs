@@ -19,7 +19,7 @@ namespace AddPost
             var postImage = photo.AddPhoto(image);
             api.Wall.Post(new WallPostParams()
             {
-                OwnerId = -1 * Convert.ToInt32(groupId),
+                OwnerId = -1 * Convert.ToInt64(groupId),
                 FromGroup = true,
                 Message = tag,
                 Attachments = postImage,
