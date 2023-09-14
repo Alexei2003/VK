@@ -57,9 +57,10 @@ namespace LikesRepostsBots.Classes
             var rand = new Random();
             for (int numbPost = countPosts - 1; numbPost > -1;)
             {
-                if (rand.Next(countPosts-numbPost+1) == 0)
+                if (rand.Next(countPosts-numbPost) == 0)
                 {
                     repostResult = api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", api.ApiOriginal.UserId, false);
+                    Console.WriteLine("репост");
                 }
 
                 int likes = AddCommentsLike(groupId, wall.WallPosts[numbPost].Id);
