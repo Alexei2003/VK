@@ -55,12 +55,20 @@ namespace LikesRepostsBots.Classes
 
             RepostResult repostResult;
             var rand = new Random();
+            bool likeOriginal = true; 
             for (int numbPost = countPosts - 1; numbPost > -1;)
             {
                 if (rand.Next((countPosts-numbPost)/2+1) == 0)
                 {
                     repostResult = api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", api.ApiOriginal.UserId, false);
                     Console.WriteLine("репост");
+
+                    api.Likes.Add(new LikesAddParams
+                    {
+                        Type = LikeObjectType.Post,
+                        ItemId = Convert.ToInt64(repostResult.PostId),
+                    });
+                    likeOriginal = false;
                 }
 
                 int likes = AddCommentsLike(groupId, wall.WallPosts[numbPost].Id);
@@ -69,12 +77,19 @@ namespace LikesRepostsBots.Classes
                     Console.WriteLine($"Число лайкнутых комментариев {likes}");
                 }
 
-                api.Likes.Add(new LikesAddParams
+                if (likeOriginal)
                 {
-                    Type = LikeObjectType.Post,
-                    OwnerId = wall.WallPosts[numbPost].OwnerId,
-                    ItemId = Convert.ToInt64(wall.WallPosts[numbPost].Id),
-                });
+                    api.Likes.Add(new LikesAddParams
+                    {
+                        Type = LikeObjectType.Post,
+                        OwnerId = wall.WallPosts[numbPost].OwnerId,
+                        ItemId = Convert.ToInt64(wall.WallPosts[numbPost].Id),
+                    });
+                }
+                else
+                {
+                    likeOriginal = true;
+                }
 
                 Console.WriteLine($"{countPosts - numbPost}/{countPosts}");
                 numbPost--;
