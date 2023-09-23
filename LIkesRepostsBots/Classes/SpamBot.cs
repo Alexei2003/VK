@@ -7,17 +7,20 @@ namespace LikesRepostsBots.Classes
     internal class SpamBot
     {
         private readonly VkApiCustom api = new();
-        private readonly static Random rand = new();
+        private readonly Random rand;
         private const int CHANCE_LIKE = 5;
         private const int MAX_COUNT_POST = 8;
+        private readonly PeopleDictionary people;
 
-        public SpamBot(string accessToken)
+        public SpamBot(string accessToken, PeopleDictionary people, Random rand)
         {
             api.Authorize(new ApiAuthParams
             {
                 AccessToken = accessToken
             });
             api.Account.SetOnline(false);
+            this.people = people;
+            this.rand = rand;
         }
 
         private void WorkWithPosts(string groupId)
@@ -54,11 +57,10 @@ namespace LikesRepostsBots.Classes
             }
 
             RepostResult repostResult;
-            var rand = new Random();
-            bool likeOriginal = true; 
+            bool likeOriginal = true;
             for (int numbPost = countPosts - 1; numbPost > -1;)
             {
-                if (rand.Next((countPosts-numbPost)/2+1) == 0)
+                if (rand.Next((countPosts - numbPost) / 2 + 1) == 0)
                 {
                     repostResult = api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", api.ApiOriginal.UserId, false);
                     Console.WriteLine("репост");
@@ -98,15 +100,12 @@ namespace LikesRepostsBots.Classes
 
         private void WorkWithFriends()
         {
-            PeopleDictionary people = new();
-            people.Read();
 
-            AddToFriendsFromRecomendedList(people);
+            AddToFriendsFromRecomendedList();
 
-            people.Write();
         }
 
-        private void AddToFriendsFromRecomendedList(PeopleDictionary people)
+        private void AddToFriendsFromRecomendedList()
         {
             Console.WriteLine("Добавление друзей");
             ulong countFriends = 1;
@@ -190,8 +189,6 @@ namespace LikesRepostsBots.Classes
 
         private int AddCommentsLike(string groupId, long? postId)
         {
-            var rand = new Random();
-
             var comments = api.Wall.GetComments(new WallGetCommentsParams
             {
                 OwnerId = -1 * Convert.ToInt64(groupId),

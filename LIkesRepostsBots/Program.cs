@@ -13,8 +13,12 @@ namespace HelloWorld
 
             var accessTokens = File.ReadAllLines("AccessTokens.txt");
 
-            var bots = new Bots(accessTokens);
+            PeopleDictionary people = new();
+
             var rand = new Random();
+            var bots = new Bots(accessTokens, people, rand);
+
+            people.Read();
 
             for (int j = 0; j <= answer; j++)
             {
@@ -25,6 +29,8 @@ namespace HelloWorld
                 }
                 Console.WriteLine($"\n\nИтерация № {j + 1}\n\n");
             }
+            people.Write();
+
             Console.ReadLine();
         }
     }

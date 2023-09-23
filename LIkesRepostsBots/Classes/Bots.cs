@@ -5,14 +5,14 @@
         private readonly SpamBot[] bots;
         public int Count { get; }
 
-        public Bots(string[] accessTokens)
+        public Bots(string[] accessTokens, PeopleDictionary people, Random rand)
         {
-            bots = new SpamBot[accessTokens.Length/2];
+            bots = new SpamBot[accessTokens.Length / 2];
             for (int i = 0; i < accessTokens.Length; i++)
             {
                 if (i % 2 == 1)
                 {
-                    bots[i/2] = new SpamBot(accessTokens[i]);
+                    bots[i / 2] = new SpamBot(accessTokens[i], people, rand);
                 }
             }
             Count = bots.Length;
