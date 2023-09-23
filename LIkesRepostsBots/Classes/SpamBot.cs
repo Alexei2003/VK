@@ -1,6 +1,10 @@
 ﻿using MyCustomClasses;
+using MyCustomClasses.VkApiCustomClasses;
+using System.Text.RegularExpressions;
+using System.Text.Unicode;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
+using VkNet.Utils;
 
 namespace LikesRepostsBots.Classes
 {
@@ -216,15 +220,52 @@ namespace LikesRepostsBots.Classes
             return likes;
         }
 
-        public void Start(string groupId, int answer)
+        private void BanDiedFriends()
         {
-            if (answer > 0)
+            Console.WriteLine("Бан мёртвых друзей");
+            VkCollection<User>  friends;
+            int offset = 0;
+            int countBans = 0;
+            const int COUNT_USER = 5000;
+            do
             {
-                WorkWithFriends();
+                friends = api.Friends.Get(new FriendsGetParams
+                {
+                    Count = COUNT_USER,
+                    Offset = offset,
+                });
+
+                offset += friends.Count;
+                var users = api.Users.Get(friends.Select(user => user.Id).ToArray());
+                foreach (var user in users)
+                {
+                    if (user.Deactivated != Deactivated.Activated)
+                    {
+                        api.Account.Ban(user.Id);
+                        countBans++;
+                    }
+                }
+            }
+            while (friends.Count == COUNT_USER);
+            Console.WriteLine($"Количество забаненых {countBans}");
+        } 
+
+        public void Start(string groupId, int numbPeople, string clearFriends)
+        {
+            if( clearFriends.ToUpper() == "Y")
+            {
+                BanDiedFriends();
             }
             else
             {
-                WorkWithPosts(groupId);
+                if (numbPeople > 0)
+                {
+                    WorkWithFriends();
+                }
+                else
+                {
+                    WorkWithPosts(groupId);
+                }
             }
         }
     }

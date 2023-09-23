@@ -7,7 +7,10 @@ namespace HelloWorld
         static void Main()
         {
             Console.WriteLine("Добавить друзей сколько раз ");
-            int answer = Convert.ToInt32(Console.ReadLine());
+            int numbPeople = Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine("Очистка");
+            string clearFriends = Console.ReadLine();
 
             string groupId = "220199532";
 
@@ -20,11 +23,11 @@ namespace HelloWorld
 
             people.Read();
 
-            for (int j = 0; j <= answer; j++)
+            for (int j = 0; j <= numbPeople; j++)
             {
                 for (int i = 0; i < bots.Count; i++)
                 {
-                    bots[i].Start(groupId, j);
+                    bots[i].Start(groupId, j, clearFriends);
                     Thread.Sleep(TimeSpan.FromSeconds(rand.Next(5) + 1));
                 }
                 Console.WriteLine($"\n\nИтерация № {j + 1}\n\n");
