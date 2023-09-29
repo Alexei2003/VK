@@ -228,7 +228,7 @@
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1354, 458);
+            ClientSize = new Size(1354, 461);
             Controls.Add(dgvDictionary);
             Controls.Add(tbGroupId);
             Controls.Add(textBox5);

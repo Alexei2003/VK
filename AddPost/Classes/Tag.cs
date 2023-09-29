@@ -11,13 +11,13 @@ namespace AddPost.Classes
             TagsList = new List<string>();
         }
 
-        public void SaveTagsDictionary()
+        public void SaveDictionary()
         {
             string json = JsonConvert.SerializeObject(TagsList);
             File.WriteAllText("TagsDictionary.txt", json);
         }
 
-        public void LoadTagsDictionary()
+        public void LoadDictionary()
         {
             try
             {
@@ -30,23 +30,13 @@ namespace AddPost.Classes
             catch { }
         }
 
-        private static string? SeparateLastTag(string str)
-        {
-            int lastIndex = str.LastIndexOf('#');
-            if (lastIndex != -1)
-            {
-                lastIndex++;
-                return str[lastIndex..];
-            }
-            return null;
-        }
-
-        public Stack<string> FindTag(string LastTag)
+        public Stack<string> Find(string LastTag)
         {
             Stack<string> stack = new();
-            LastTag = SeparateLastTag(LastTag);
-            if (LastTag != null)
+            var tags  = LastTag.Split("#");
+            if (tags.Length>0)
             {
+                LastTag = "#"+tags.Last();
                 LastTag = LastTag.ToUpper();
                 ParallelOptions options = new()
                 {
@@ -64,12 +54,14 @@ namespace AddPost.Classes
             return stack;
         }
 
-        public void AddTag(string tags)
+        public bool Add(string tags)
         {
             if (!TagsList.Contains(tags))
             {
                 TagsList.Add(tags);
+                return true;
             }
+            return false;
         }
     }
 }

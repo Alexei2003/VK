@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Classes\PhotoDataSet.cs~RF4073a2.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 

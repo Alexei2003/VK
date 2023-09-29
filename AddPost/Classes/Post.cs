@@ -14,9 +14,9 @@ namespace AddPost
             photo = new Classes.Photo(api);
         }
 
-        public void CreatePost(System.Drawing.Image image, string tag, string copyright, DateTime? postDate, string groupId)
+        public void Publish(Bitmap image, string tag, string copyright, DateTime? postDate, string groupId)
         {
-            var postImage = photo.AddPhoto(image);
+            var postImage = photo.Add(image);
             api.Wall.Post(new WallPostParams()
             {
                 OwnerId = -1 * Convert.ToInt64(groupId),

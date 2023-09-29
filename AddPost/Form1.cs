@@ -11,6 +11,7 @@ namespace AddPost
         private readonly Post post;
         private readonly Tag tag;
         private readonly Date date;
+        private readonly PhotoDataSet photoDataSet;
         public Form1()
         {
             InitializeComponent();
@@ -18,8 +19,9 @@ namespace AddPost
             authorize = new Authorize(accessToken);
             post = new Post(authorize.Api);
             tag = new Tag();
-            tag.LoadTagsDictionary();
+            tag.LoadDictionary();
             date = new Date(authorize.Api);
+            photoDataSet = new PhotoDataSet();   
             groupId = tbGroupId.Text;
             cbTimeBetweenPost.SelectedIndex = 1;
 
@@ -35,7 +37,7 @@ namespace AddPost
             if (Clipboard.ContainsImage())
             {
                 // Получение изображения из буфера обмена
-                Image clipboardImage = Clipboard.GetImage();
+                var clipboardImage = new Bitmap(Clipboard.GetImage());
 
                 // Установка изображения в PictureBox
                 pbImage.Image = clipboardImage;
@@ -45,8 +47,18 @@ namespace AddPost
         private void bSend_Click(object sender, EventArgs e)
         {
             var postDate = date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1);
-            post.CreatePost(pbImage.Image, tbTag.Text, tbUrl.Text, postDate, groupId);
-            tag.AddTag(tbTag.Text);
+            string tags = tbTag.Text.Replace(" ", "");
+            var image = new Bitmap(pbImage.Image);
+            
+            //Создание поста
+            post.Publish(image, tags, tbUrl.Text, postDate, groupId);
+
+            if (!tag.Add(tags) && tags.Split("#").Length < 3)
+            {
+                PhotoDataSet.Add(image, tags);
+            }
+
+            //Очитска полей после создания постаы
             if (cbClear1.Checked)
             {
                 tbUrl.Text = "";
@@ -55,6 +67,7 @@ namespace AddPost
             {
                 tbTag.Text = "";
             }
+
             pbImage.Image = null;
             postDate = date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1);
             postDate = postDate.Value.AddHours(3);
@@ -66,7 +79,7 @@ namespace AddPost
             dgvDictionary.Rows.Clear();
             if (tbTag.Text != "")
             {
-                var stack = tag.FindTag(tbTag.Text);
+                var stack = tag.Find(tbTag.Text);
                 foreach (var elem in stack)
                 {
                     dgvDictionary.Rows.Add(elem);
@@ -76,7 +89,7 @@ namespace AddPost
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            tag.SaveTagsDictionary();
+            tag.SaveDictionary();
         }
 
         private void cbTimeBetweenPost_SelectedIndexChanged(object sender, EventArgs e)
