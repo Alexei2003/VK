@@ -1,4 +1,6 @@
-﻿namespace AddPost.Classes
+﻿using System.Drawing.Imaging;
+
+namespace AddPost.Classes
 {
     internal class PhotoDataSet
     {
@@ -36,7 +38,12 @@
         {
             var data = DateTime.Now;
             data.AddHours(3);
-            image.Save("DATA_SET\\" + tags + "\\" + data.ToString("yyyy.MM.dd.HH.mm.ss") + ".jpg");
+
+            string path = "DATA_SET\\" + tags;
+
+            Directory.CreateDirectory(path);
+
+            image.Save(path+"\\" + data.ToString("yyyy.MM.dd.HH.mm.ss") + ".jpg", ImageFormat.Jpeg);
         }
     }
 }

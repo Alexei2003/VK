@@ -53,7 +53,7 @@ namespace AddPost
             //Создание поста
             post.Publish(image, tags, tbUrl.Text, postDate, groupId);
 
-            if (!tag.Add(tags) && tags.Split("#").Length < 3)
+            if (!tag.Add(tags) && tags.Split("#").Length - 1< 3 && !tags.Contains("#Original"))
             {
                 PhotoDataSet.Add(image, tags);
             }

@@ -36,7 +36,7 @@ namespace AddPost.Classes
             var tags  = LastTag.Split("#");
             if (tags.Length>0)
             {
-                LastTag = "#"+tags.Last();
+                LastTag = tags.Last();
                 LastTag = LastTag.ToUpper();
                 ParallelOptions options = new()
                 {
