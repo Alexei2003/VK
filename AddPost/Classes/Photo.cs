@@ -18,12 +18,9 @@ namespace AddPost.Classes
             var uploadServer = api.Photo.GetWallUploadServer();
             using (var wc = new WebClient())
             {
-                byte[] imageBytes;
-                using (var ms = new MemoryStream())
-                {
-                    image.Save("1.jpg", ImageFormat.Jpeg);
-                    imageBytes = ms.ToArray();
-                }
+
+                image.Save("1.jpg", ImageFormat.Jpeg);
+
                 var responseFile = Encoding.ASCII.GetString(wc.UploadFile(uploadServer.UploadUrl, "1.jpg"));
 
                 return api.Photo.SaveWallPhoto(responseFile, Convert.ToUInt32(api.ApiOriginal.UserId));

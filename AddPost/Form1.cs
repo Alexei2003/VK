@@ -1,4 +1,8 @@
 using AddPost.Classes;
+using NumSharp.Extensions;
+using System.Drawing.Imaging;
+using Tensorflow;
+using Tensorflow.Keras.Engine;
 
 namespace AddPost
 {
@@ -11,7 +15,9 @@ namespace AddPost
         private readonly Post post;
         private readonly Tag tag;
         private readonly Date date;
-        private readonly PhotoDataSet photoDataSet;
+        ComputerVision.ModelOutput resultArts;
+
+
         public Form1()
         {
             InitializeComponent();
@@ -21,7 +27,6 @@ namespace AddPost
             tag = new Tag();
             tag.LoadDictionary();
             date = new Date(authorize.Api);
-            photoDataSet = new PhotoDataSet();
             groupId = tbGroupId.Text;
             cbTimeBetweenPost.SelectedIndex = 1;
 
@@ -41,6 +46,27 @@ namespace AddPost
 
                 // Установка изображения в PictureBox
                 pbImage.Image = clipboardImage;
+
+                // Преобразуйте изображение в байты
+                byte[] imageBytes;
+                using (var stream = new MemoryStream())
+                {
+                    // Сохраните изображение в том же формате, в котором оно находится в буфере обмена
+                    clipboardImage.Save(stream, ImageFormat.Jpeg);
+                    imageBytes = stream.ToArray();
+                }
+
+                // Подача данных в модель
+                var sampleData = new ComputerVision.ModelInput()
+                {
+                    ImageSource = imageBytes,
+                };
+
+                //Load model and predict output
+                resultArts = ComputerVision.Predict(sampleData);
+
+                tbTag.Text = resultArts.PredictedLabel;
+
             }
         }
 
@@ -53,7 +79,7 @@ namespace AddPost
             //Создание поста
             post.Publish(image, tags, tbUrl.Text, postDate, groupId);
 
-            if (!tag.Add(tags) && tags.Split("#").Length - 1 < 3 && !tags.Contains("#Original"))
+            if (!tag.Add(tags) && tags.Split("#").Length - 1 < 3 && !tags.Contains("#Original") && tbTag.Text != resultArts.PredictedLabel)
             {
                 PhotoDataSet.Add(image, tags);
             }
