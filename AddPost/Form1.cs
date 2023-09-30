@@ -62,8 +62,16 @@ namespace AddPost
                 //Load model and predict output
                 resultArts = ComputerVision.Predict(sampleData);
 
-                tbTag.Text = resultArts.PredictedLabel;
+                var scores = resultArts.Score;
 
+                if (scores.Max() > 0.6)
+                {
+                    tbTag.Text = resultArts.PredictedLabel;
+                }
+                else
+                {
+                    tbTag.Text = "Original";
+                }
             }
         }
 
