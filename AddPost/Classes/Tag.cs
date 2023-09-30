@@ -33,8 +33,8 @@ namespace AddPost.Classes
         public Stack<string> Find(string LastTag)
         {
             Stack<string> stack = new();
-            var tags  = LastTag.Split("#");
-            if (tags.Length>0)
+            var tags = LastTag.Split("#");
+            if (tags.Length > 0)
             {
                 LastTag = tags.Last();
                 LastTag = LastTag.ToUpper();

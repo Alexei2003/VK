@@ -1,8 +1,5 @@
 using AddPost.Classes;
-using NumSharp.Extensions;
 using System.Drawing.Imaging;
-using Tensorflow;
-using Tensorflow.Keras.Engine;
 
 namespace AddPost
 {

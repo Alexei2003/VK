@@ -43,7 +43,7 @@ namespace AddPost.Classes
 
             Directory.CreateDirectory(path);
 
-            image.Save(path+"\\" + data.ToString("yyyy.MM.dd.HH.mm.ss") + ".jpg", ImageFormat.Jpeg);
+            image.Save(path + "\\" + data.ToString("yyyy.MM.dd.HH.mm.ss") + ".jpg", ImageFormat.Jpeg);
         }
     }
 }

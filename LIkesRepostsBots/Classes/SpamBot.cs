@@ -1,7 +1,4 @@
 ﻿using MyCustomClasses;
-using MyCustomClasses.VkApiCustomClasses;
-using System.Text.RegularExpressions;
-using System.Text.Unicode;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 using VkNet.Utils;
@@ -223,7 +220,7 @@ namespace LikesRepostsBots.Classes
         private void BanDiedFriends()
         {
             Console.WriteLine("Бан мёртвых друзей");
-            VkCollection<User>  friends;
+            VkCollection<User> friends;
             int offset = 0;
             int countBans = 0;
             const int COUNT_USER = 5000;
@@ -248,11 +245,11 @@ namespace LikesRepostsBots.Classes
             }
             while (friends.Count == COUNT_USER);
             Console.WriteLine($"Количество забаненых {countBans}");
-        } 
+        }
 
         public void Start(string groupId, int numbPeople, string clearFriends)
         {
-            if( clearFriends.ToUpper() == "Y")
+            if (clearFriends.ToUpper() == "Y")
             {
                 BanDiedFriends();
             }
