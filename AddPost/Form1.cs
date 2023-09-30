@@ -70,7 +70,7 @@ namespace AddPost
                 }
                 else
                 {
-                    tbTag.Text = "Original";
+                    tbTag.Text = "#Original";
                 }
             }
         }
