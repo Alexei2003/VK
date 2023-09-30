@@ -21,7 +21,7 @@ namespace AddPost
             tag = new Tag();
             tag.LoadDictionary();
             date = new Date(authorize.Api);
-            photoDataSet = new PhotoDataSet();   
+            photoDataSet = new PhotoDataSet();
             groupId = tbGroupId.Text;
             cbTimeBetweenPost.SelectedIndex = 1;
 
@@ -49,11 +49,11 @@ namespace AddPost
             var postDate = date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1);
             string tags = tbTag.Text.Replace(" ", "");
             var image = new Bitmap(pbImage.Image);
-            
+
             //Создание поста
             post.Publish(image, tags, tbUrl.Text, postDate, groupId);
 
-            if (!tag.Add(tags) && tags.Split("#").Length - 1< 3 && !tags.Contains("#Original"))
+            if (!tag.Add(tags) && tags.Split("#").Length - 1 < 3 && !tags.Contains("#Original"))
             {
                 PhotoDataSet.Add(image, tags);
             }
@@ -128,6 +128,16 @@ namespace AddPost
             }
 
             tbTag.Text = str + dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+        }
+
+        private void bDataSet_Click(object sender, EventArgs e)
+        {
+            string tags = tbTag.Text.Replace(" ", "");
+            var image = new Bitmap(pbImage.Image);
+            if (!tag.Add(tags) && tags.Split("#").Length - 1 < 3 && !tags.Contains("#Original"))
+            {
+                PhotoDataSet.Add(image, tags);
+            }
         }
     }
 }

@@ -46,6 +46,7 @@
             tbGroupId = new TextBox();
             dgvDictionary = new DataGridView();
             tags = new DataGridViewTextBoxColumn();
+            bDataSet = new Button();
             ((System.ComponentModel.ISupportInitialize)pbImage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             SuspendLayout();
@@ -223,12 +224,23 @@
             tags.ReadOnly = true;
             tags.Width = 61;
             // 
+            // bDataSet
+            // 
+            bDataSet.Location = new Point(498, 328);
+            bDataSet.Name = "bDataSet";
+            bDataSet.Size = new Size(110, 43);
+            bDataSet.TabIndex = 19;
+            bDataSet.Text = "Отправить в дата сет";
+            bDataSet.UseVisualStyleBackColor = true;
+            bDataSet.Click += bDataSet_Click;
+            // 
             // Form1
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1354, 461);
+            Controls.Add(bDataSet);
             Controls.Add(dgvDictionary);
             Controls.Add(tbGroupId);
             Controls.Add(textBox5);
@@ -276,5 +288,6 @@
         private TextBox tbGroupId;
         private DataGridView dgvDictionary;
         private DataGridViewTextBoxColumn tags;
+        private Button bDataSet;
     }
 }
