@@ -138,6 +138,11 @@ namespace AddPost
             {
                 PhotoDataSet.Add(image, tags);
             }
+            if (cbClear2.Checked)
+            {
+                tbTag.Text = "";
+            }
+            pbImage.Image = null;
         }
     }
 }
