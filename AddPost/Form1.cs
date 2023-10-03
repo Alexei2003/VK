@@ -64,7 +64,7 @@ namespace AddPost
 
                 var scores = resultArts.Score;
 
-                if (scores.Max() > 0.6)
+                if (scores.Max() > 0.5)
                 {
                     tbTag.Text = resultArts.PredictedLabel;
                 }
