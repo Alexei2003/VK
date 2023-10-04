@@ -7,7 +7,7 @@
     "FolderPath": "E:\\VK\\Project\\VK\\AddPost\\ARTS\\ARTS\\ARTS"
   },
   "Environment": {
-    "Type": "LocalCPU",
+    "Type": "LocalGPU",
     "Version": 1
   },
   "RunHistory": {
@@ -18,8 +18,8 @@
         "Version": 0,
         "Type": "Trial",
         "TrainerName": "DNN + ResNet50",
-        "Score": 0.30769230769230771,
-        "RuntimeInSeconds": 70.152999877929688
+        "Score": 0.3,
+        "RuntimeInSeconds": 117.45400238037109
       }
     ],
     "Pipeline": {

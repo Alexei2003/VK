@@ -8,12 +8,23 @@ namespace AddPost.Classes
 
         public static void Add(Bitmap image, string tags)
         {
+            ChangeResolution(image);
+
+            Save(image, tags);
+        }
+
+        public static Bitmap ChangeResolution(Bitmap image)
+        {
             if (image.Width - image.Height > 0)
             {
                 if (image.Width > MAX_SIZE)
                 {
                     var delta = image.Width / MAX_SIZE;
-                    image = ChangeResolution(image, delta);
+                    return new Bitmap(image, Convert.ToInt32(image.Width / delta), Convert.ToInt32(image.Height / delta));
+                }
+                else
+                {
+                    return image;
                 }
             }
             else
@@ -21,17 +32,13 @@ namespace AddPost.Classes
                 if (image.Height > MAX_SIZE)
                 {
                     var delta = image.Height / MAX_SIZE;
-                    image = ChangeResolution(image, delta);
+                    return new Bitmap(image, Convert.ToInt32(image.Width / delta), Convert.ToInt32(image.Height / delta));
+                }
+                else
+                {
+                    return image;
                 }
             }
-
-            Save(image, tags);
-        }
-
-        private static Bitmap ChangeResolution(Bitmap originalImage, double delta)
-        {
-            var image = new Bitmap(originalImage, Convert.ToInt32(originalImage.Width / delta), Convert.ToInt32(originalImage.Height / delta));
-            return image;
         }
 
         private static void Save(Bitmap image, string tags)

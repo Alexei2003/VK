@@ -44,6 +44,8 @@ namespace AddPost
                 // Установка изображения в PictureBox
                 pbImage.Image = clipboardImage;
 
+                clipboardImage = PhotoDataSet.ChangeResolution(clipboardImage);
+
                 // Преобразуйте изображение в байты
                 byte[] imageBytes;
                 using (var stream = new MemoryStream())
