@@ -4,7 +4,7 @@ namespace AddPost.Classes
 {
     internal class PhotoDataSet
     {
-        private const double MAX_SIZE = 1024;
+        private const double MAX_SIZE = 224;
 
         public static void Add(Bitmap image, string tags)
         {

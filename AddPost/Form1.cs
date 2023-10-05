@@ -66,13 +66,16 @@ namespace AddPost
 
                 var scores = resultArts.Score;
 
-                if (scores.Max() > 0.5)
+                if (!cbClear2.Checked)
                 {
-                    tbTag.Text = resultArts.PredictedLabel;
-                }
-                else
-                {
-                    tbTag.Text = "#Original";
+                    if (scores.Max() > 0.5)
+                    {
+                        tbTag.Text = resultArts.PredictedLabel;
+                    }
+                    else
+                    {
+                        tbTag.Text = "#Original";
+                    }
                 }
             }
         }
@@ -91,20 +94,11 @@ namespace AddPost
                 PhotoDataSet.Add(image, tags);
             }
 
-            //Очитска полей после создания постаы
-            if (cbClear1.Checked)
-            {
-                tbUrl.Text = "";
-            }
-            if (cbClear2.Checked)
-            {
-                tbTag.Text = "";
-            }
-
-            pbImage.Image = null;
             postDate = date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1);
             postDate = postDate.Value.AddHours(3);
             tbDate.Text = postDate.ToString();
+
+            ClearInfAboutPost();
         }
 
         private void tbTag_KeyUp(object sender, KeyEventArgs e)
@@ -171,10 +165,22 @@ namespace AddPost
             {
                 PhotoDataSet.Add(image, tags);
             }
+            
+            ClearInfAboutPost();
+        }
+
+        public void ClearInfAboutPost()
+        {
+            //Очитска полей после создания постаы
+            if (cbClear1.Checked)
+            {
+                tbUrl.Text = "";
+            }
             if (cbClear2.Checked)
             {
                 tbTag.Text = "";
             }
+
             pbImage.Image = null;
         }
     }
