@@ -66,7 +66,7 @@ namespace AddPost
 
                 var scores = resultArts.Score;
 
-                if (!cbClear2.Checked)
+                if (cbClear2.Checked)
                 {
                     if (scores.Max() > 0.5)
                     {
