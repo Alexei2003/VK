@@ -135,7 +135,7 @@ namespace AddPost
 
         private void tbTag_KeyUp(object sender, KeyEventArgs e)
         {
-            if (tbTag.Text.Length>2)
+            if (tbTag.Text.Length>1)
             {
                 WriteFindTag();
             }

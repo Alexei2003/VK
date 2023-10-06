@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Concurrent;
 
 namespace AddPost.Classes
 {
@@ -30,9 +31,9 @@ namespace AddPost.Classes
             catch { }
         }
 
-        public Stack<string> Find(string LastTag)
+        public ConcurrentStack<string> Find(string LastTag)
         {
-            Stack<string> stack = new();
+            ConcurrentStack<string> stack = new();
             var tags = LastTag.Split("#");
             if (tags.Length > 0)
             {
