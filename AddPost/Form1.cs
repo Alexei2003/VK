@@ -1,4 +1,5 @@
 using AddPost.Classes;
+using System.ComponentModel;
 using System.Drawing.Imaging;
 
 namespace AddPost
@@ -10,7 +11,7 @@ namespace AddPost
         private readonly string accessToken;
         private readonly Authorize authorize;
         private readonly Post post;
-        private readonly Tag tag;
+        private readonly Tags tagList = new Tags();
         private readonly Date date;
         ComputerVision.ModelOutput resultArts;
 
@@ -21,16 +22,53 @@ namespace AddPost
             accessToken = File.ReadAllText("AccessToken.txt");
             authorize = new Authorize(accessToken);
             post = new Post(authorize.Api);
-            tag = new Tag();
-            tag.LoadDictionary();
+            tagList.LoadDictionary();
             date = new Date(authorize.Api);
             groupId = tbGroupId.Text;
             cbTimeBetweenPost.SelectedIndex = 1;
 
-            foreach (var elem in tag.TagsList)
+            WriteFindTag();
+        }
+
+        public void ClearInfAboutPost()
+        {
+            //Очитска полей после создания постаы
+            if (cbClear1.Checked)
+            {
+                tbUrl.Text = "";
+            }
+            if (cbClear2.Checked)
+            {
+                tbTag.Text = "";
+            }
+
+            pbImage.Image = null;
+        }
+
+        public void WriteFindTag()
+        {
+            dgvDictionary.Rows.Clear();
+            var stack = tagList.Find(tbTag.Text);
+            foreach (var elem in stack)
             {
                 dgvDictionary.Rows.Add(elem);
             }
+            dgvDictionary.Sort(dgvDictionary.Columns["tags"], ListSortDirection.Ascending);
+        }
+
+        public void AddInDataSet(Bitmap image, string tags)
+        {
+            if (!tagList.Add(tags) && tags.Split("#").Length - 1 < 3 && !tags.Contains("#Original") && tbTag.Text != resultArts.PredictedLabel)
+            {
+                PhotoDataSet.Add(image, tags);
+            }
+        }
+
+        public void  WritePostTime()
+        {
+            var postDate = date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1);
+            postDate = postDate.Value.AddHours(3);
+            tbDate.Text = postDate.ToString();
         }
 
         private void bBuff_Click(object sender, EventArgs e)
@@ -82,56 +120,41 @@ namespace AddPost
 
         private void bSend_Click(object sender, EventArgs e)
         {
-            var postDate = date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1);
             string tags = tbTag.Text.Replace(" ", "");
             var image = new Bitmap(pbImage.Image);
 
             //Создание поста
-            post.Publish(image, tags, tbUrl.Text, postDate, groupId);
+            post.Publish(image, tags, tbUrl.Text, date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1), groupId);
 
-            if (!tag.Add(tags) && tags.Split("#").Length - 1 < 3 && !tags.Contains("#Original") && tbTag.Text != resultArts.PredictedLabel)
-            {
-                PhotoDataSet.Add(image, tags);
-            }
+            AddInDataSet(image, tags);
 
-            postDate = date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1);
-            postDate = postDate.Value.AddHours(3);
-            tbDate.Text = postDate.ToString();
+            WritePostTime();
 
             ClearInfAboutPost();
         }
 
         private void tbTag_KeyUp(object sender, KeyEventArgs e)
         {
-            dgvDictionary.Rows.Clear();
-            if (tbTag.Text != "")
+            if (tbTag.Text.Length>2)
             {
-                var stack = tag.Find(tbTag.Text);
-                foreach (var elem in stack)
-                {
-                    dgvDictionary.Rows.Add(elem);
-                }
+                WriteFindTag();
             }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            tag.SaveDictionary();
+            tagList.SaveDictionary();  
         }
 
         private void cbTimeBetweenPost_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var postDate = date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1);
-            postDate = postDate.Value.AddHours(3);
-            tbDate.Text = postDate.ToString();
+            WritePostTime();
         }
 
         private void tbGroupId_Leave(object sender, EventArgs e)
         {
             groupId = tbGroupId.Text;
-            var postDate = date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1);
-            postDate = postDate.Value.AddHours(3);
-            tbDate.Text = postDate.ToString();
+            WritePostTime();
         }
 
         private void dgvDictionary_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -161,27 +184,19 @@ namespace AddPost
         {
             string tags = tbTag.Text.Replace(" ", "");
             var image = new Bitmap(pbImage.Image);
-            if (!tag.Add(tags) && tags.Split("#").Length - 1 < 3 && !tags.Contains("#Original"))
-            {
-                PhotoDataSet.Add(image, tags);
-            }
-            
+            AddInDataSet(image, tags);
+
             ClearInfAboutPost();
         }
 
-        public void ClearInfAboutPost()
+        private void dgvDictionary_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            //Очитска полей после создания постаы
-            if (cbClear1.Checked)
+            if (e.Button == MouseButtons.Right)
             {
-                tbUrl.Text = "";
-            }
-            if (cbClear2.Checked)
-            {
-                tbTag.Text = "";
-            }
+                tagList.Remove(dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
 
-            pbImage.Image = null;
+                WriteFindTag();
+            }
         }
     }
 }

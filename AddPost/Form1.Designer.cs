@@ -45,8 +45,8 @@
             textBox5 = new TextBox();
             tbGroupId = new TextBox();
             dgvDictionary = new DataGridView();
-            tags = new DataGridViewTextBoxColumn();
             bDataSet = new Button();
+            tags = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)pbImage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             SuspendLayout();
@@ -214,15 +214,7 @@
             dgvDictionary.Size = new Size(719, 252);
             dgvDictionary.TabIndex = 18;
             dgvDictionary.CellContentClick += dgvDictionary_CellContentClick;
-            // 
-            // tags
-            // 
-            tags.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            tags.HeaderText = "Теги";
-            tags.MinimumWidth = 6;
-            tags.Name = "tags";
-            tags.ReadOnly = true;
-            tags.Width = 61;
+            dgvDictionary.CellMouseClick += dgvDictionary_CellMouseClick;
             // 
             // bDataSet
             // 
@@ -233,6 +225,14 @@
             bDataSet.Text = "Отправить в дата сет";
             bDataSet.UseVisualStyleBackColor = true;
             bDataSet.Click += bDataSet_Click;
+            // 
+            // tags
+            // 
+            tags.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            tags.HeaderText = "Теги";
+            tags.MinimumWidth = 6;
+            tags.Name = "tags";
+            tags.ReadOnly = true;
             // 
             // Form1
             // 
@@ -287,7 +287,7 @@
         private TextBox textBox5;
         private TextBox tbGroupId;
         private DataGridView dgvDictionary;
-        private DataGridViewTextBoxColumn tags;
         private Button bDataSet;
+        private DataGridViewTextBoxColumn tags;
     }
 }
