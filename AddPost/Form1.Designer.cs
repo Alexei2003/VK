@@ -45,8 +45,8 @@
             textBox5 = new TextBox();
             tbGroupId = new TextBox();
             dgvDictionary = new DataGridView();
-            bDataSet = new Button();
             tags = new DataGridViewTextBoxColumn();
+            bDataSet = new Button();
             ((System.ComponentModel.ISupportInitialize)pbImage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             SuspendLayout();
@@ -56,14 +56,14 @@
             pbImage.BorderStyle = BorderStyle.FixedSingle;
             pbImage.Location = new Point(12, 12);
             pbImage.Name = "pbImage";
-            pbImage.Size = new Size(480, 439);
+            pbImage.Size = new Size(600, 600);
             pbImage.SizeMode = PictureBoxSizeMode.Zoom;
             pbImage.TabIndex = 0;
             pbImage.TabStop = false;
             // 
             // textBox1
             // 
-            textBox1.Location = new Point(498, 44);
+            textBox1.Location = new Point(623, 44);
             textBox1.Name = "textBox1";
             textBox1.ReadOnly = true;
             textBox1.Size = new Size(110, 25);
@@ -72,7 +72,7 @@
             // 
             // textBox2
             // 
-            textBox2.Location = new Point(498, 13);
+            textBox2.Location = new Point(623, 13);
             textBox2.Name = "textBox2";
             textBox2.ReadOnly = true;
             textBox2.Size = new Size(110, 25);
@@ -81,7 +81,7 @@
             // 
             // textBox3
             // 
-            textBox3.Location = new Point(498, 106);
+            textBox3.Location = new Point(623, 106);
             textBox3.Name = "textBox3";
             textBox3.ReadOnly = true;
             textBox3.Size = new Size(110, 25);
@@ -90,7 +90,7 @@
             // 
             // tbUrl
             // 
-            tbUrl.Location = new Point(623, 44);
+            tbUrl.Location = new Point(748, 44);
             tbUrl.Multiline = true;
             tbUrl.Name = "tbUrl";
             tbUrl.Size = new Size(719, 56);
@@ -98,7 +98,7 @@
             // 
             // tbDate
             // 
-            tbDate.Location = new Point(623, 13);
+            tbDate.Location = new Point(748, 13);
             tbDate.Name = "tbDate";
             tbDate.ReadOnly = true;
             tbDate.Size = new Size(132, 25);
@@ -106,7 +106,7 @@
             // 
             // tbTag
             // 
-            tbTag.Location = new Point(623, 106);
+            tbTag.Location = new Point(748, 106);
             tbTag.Multiline = true;
             tbTag.Name = "tbTag";
             tbTag.Size = new Size(719, 87);
@@ -115,9 +115,9 @@
             // 
             // bSend
             // 
-            bSend.Location = new Point(498, 426);
+            bSend.Location = new Point(623, 569);
             bSend.Name = "bSend";
-            bSend.Size = new Size(110, 25);
+            bSend.Size = new Size(110, 43);
             bSend.TabIndex = 7;
             bSend.Text = "Отправка";
             bSend.UseVisualStyleBackColor = true;
@@ -125,7 +125,7 @@
             // 
             // textBox8
             // 
-            textBox8.Location = new Point(498, 199);
+            textBox8.Location = new Point(623, 199);
             textBox8.Name = "textBox8";
             textBox8.ReadOnly = true;
             textBox8.Size = new Size(110, 25);
@@ -134,7 +134,7 @@
             // 
             // bBuff
             // 
-            bBuff.Location = new Point(498, 377);
+            bBuff.Location = new Point(623, 520);
             bBuff.Name = "bBuff";
             bBuff.Size = new Size(110, 43);
             bBuff.TabIndex = 10;
@@ -147,7 +147,7 @@
             cbClear1.AutoSize = true;
             cbClear1.Checked = true;
             cbClear1.CheckState = CheckState.Checked;
-            cbClear1.Location = new Point(498, 79);
+            cbClear1.Location = new Point(623, 79);
             cbClear1.Name = "cbClear1";
             cbClear1.Size = new Size(75, 21);
             cbClear1.TabIndex = 11;
@@ -159,7 +159,7 @@
             cbClear2.AutoSize = true;
             cbClear2.Checked = true;
             cbClear2.CheckState = CheckState.Checked;
-            cbClear2.Location = new Point(498, 137);
+            cbClear2.Location = new Point(623, 137);
             cbClear2.Name = "cbClear2";
             cbClear2.Size = new Size(75, 21);
             cbClear2.TabIndex = 13;
@@ -168,7 +168,7 @@
             // 
             // textBox4
             // 
-            textBox4.Location = new Point(761, 13);
+            textBox4.Location = new Point(886, 13);
             textBox4.Name = "textBox4";
             textBox4.ReadOnly = true;
             textBox4.Size = new Size(142, 25);
@@ -179,7 +179,7 @@
             // 
             cbTimeBetweenPost.FormattingEnabled = true;
             cbTimeBetweenPost.Items.AddRange(new object[] { "1ч", "2ч", "3ч", "4ч", "5ч", "6ч", "7ч", "8ч", "9ч", "10ч", "11ч", "12ч", "13ч", "14ч", "15ч", "16ч", "17ч", "18ч", "19ч", "20ч", "21ч", "22ч", "23ч", "24ч" });
-            cbTimeBetweenPost.Location = new Point(909, 13);
+            cbTimeBetweenPost.Location = new Point(1034, 13);
             cbTimeBetweenPost.Name = "cbTimeBetweenPost";
             cbTimeBetweenPost.Size = new Size(134, 25);
             cbTimeBetweenPost.TabIndex = 15;
@@ -187,7 +187,7 @@
             // 
             // textBox5
             // 
-            textBox5.Location = new Point(1049, 12);
+            textBox5.Location = new Point(1174, 12);
             textBox5.Name = "textBox5";
             textBox5.ReadOnly = true;
             textBox5.Size = new Size(69, 25);
@@ -196,7 +196,7 @@
             // 
             // tbGroupId
             // 
-            tbGroupId.Location = new Point(1118, 13);
+            tbGroupId.Location = new Point(1243, 13);
             tbGroupId.Name = "tbGroupId";
             tbGroupId.Size = new Size(86, 25);
             tbGroupId.TabIndex = 17;
@@ -207,24 +207,14 @@
             // 
             dgvDictionary.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDictionary.Columns.AddRange(new DataGridViewColumn[] { tags });
-            dgvDictionary.Location = new Point(623, 199);
+            dgvDictionary.Location = new Point(748, 199);
             dgvDictionary.Name = "dgvDictionary";
             dgvDictionary.RowHeadersWidth = 45;
             dgvDictionary.RowTemplate.Height = 27;
-            dgvDictionary.Size = new Size(719, 252);
+            dgvDictionary.Size = new Size(719, 413);
             dgvDictionary.TabIndex = 18;
             dgvDictionary.CellContentClick += dgvDictionary_CellContentClick;
             dgvDictionary.CellMouseClick += dgvDictionary_CellMouseClick;
-            // 
-            // bDataSet
-            // 
-            bDataSet.Location = new Point(498, 328);
-            bDataSet.Name = "bDataSet";
-            bDataSet.Size = new Size(110, 43);
-            bDataSet.TabIndex = 19;
-            bDataSet.Text = "Отправить в дата сет";
-            bDataSet.UseVisualStyleBackColor = true;
-            bDataSet.Click += bDataSet_Click;
             // 
             // tags
             // 
@@ -234,12 +224,22 @@
             tags.Name = "tags";
             tags.ReadOnly = true;
             // 
+            // bDataSet
+            // 
+            bDataSet.Location = new Point(623, 471);
+            bDataSet.Name = "bDataSet";
+            bDataSet.Size = new Size(110, 43);
+            bDataSet.TabIndex = 19;
+            bDataSet.Text = "Отправить в дата сет";
+            bDataSet.UseVisualStyleBackColor = true;
+            bDataSet.Click += bDataSet_Click;
+            // 
             // Form1
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1354, 461);
+            ClientSize = new Size(1479, 629);
             Controls.Add(bDataSet);
             Controls.Add(dgvDictionary);
             Controls.Add(tbGroupId);

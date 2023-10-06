@@ -64,7 +64,7 @@ namespace AddPost
             }
         }
 
-        public void  WritePostTime()
+        public void WritePostTime()
         {
             var postDate = date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1);
             postDate = postDate.Value.AddHours(3);
@@ -135,7 +135,7 @@ namespace AddPost
 
         private void tbTag_KeyUp(object sender, KeyEventArgs e)
         {
-            if (tbTag.Text.Length>1)
+            if (tbTag.Text.Length > 1)
             {
                 WriteFindTag();
             }
@@ -143,7 +143,7 @@ namespace AddPost
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            tagList.SaveDictionary();  
+            tagList.SaveDictionary();
         }
 
         private void cbTimeBetweenPost_SelectedIndexChanged(object sender, EventArgs e)
