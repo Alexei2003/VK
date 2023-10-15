@@ -10,7 +10,8 @@ namespace LikesRepostsBots.Classes
         private readonly VkApiCustom api = new();
         private readonly Random rand;
         private const int CHANCE_LIKE = 5;
-        private const int MAX_COUNT_POST = 8;
+        private const int CHANCE_REPOST = 5;
+        private const int MAX_COUNT_POST = 16;
         private readonly PeopleDictionary people;
 
         public SpamBot(string accessToken, PeopleDictionary people, Random rand)
@@ -61,7 +62,7 @@ namespace LikesRepostsBots.Classes
             bool likeOriginal = true;
             for (int numbPost = countPosts - 1; numbPost > -1;)
             {
-                if (rand.Next((countPosts - numbPost) / 2 + 1) == 0)
+                if (rand.Next(CHANCE_REPOST) == 0)
                 {
                     repostResult = api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", api.ApiOriginal.UserId, false);
                     Console.WriteLine("репост");
