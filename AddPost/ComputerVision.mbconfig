@@ -4,7 +4,7 @@
   "DataSource": {
     "Type": "Folder",
     "Version": 1,
-    "FolderPath": "E:\\VK\\Project\\VK\\AddPost\\ARTS\\ARTS\\ARTS"
+    "FolderPath": "E:\\WPS\\VK\\Project\\VK\\AddPost\\ARTS\\ARTS\\ARTS"
   },
   "Environment": {
     "Type": "LocalCPU",
@@ -18,8 +18,8 @@
         "Version": 0,
         "Type": "Trial",
         "TrainerName": "DNN + ResNet50",
-        "Score": 0.2,
-        "RuntimeInSeconds": 134.61099243164063
+        "Score": 0.20388349514563106,
+        "RuntimeInSeconds": 145.70199584960938
       }
     ],
     "Pipeline": {

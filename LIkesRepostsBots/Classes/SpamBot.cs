@@ -155,8 +155,8 @@ namespace LikesRepostsBots.Classes
 
         private bool IsMassAccount(long personId)
         {
-            const int COUNT_FRIENDS = 500;
-            const int COUNT_FOLLOWING = 500;
+            const int COUNT_FRIENDS = 300;
+            const int COUNT_FOLLOWING = 400;
             const int COUNT_FOLOWERS = 500;
 
             var user = api.Users.Get(new long[] { personId });
@@ -218,7 +218,7 @@ namespace LikesRepostsBots.Classes
             return likes;
         }
 
-        private void BanDiedFriends()
+        private void BanDiedAndMassFriends()
         {
             Console.WriteLine("Бан мёртвых друзей");
             VkCollection<User> friends;
@@ -237,11 +237,12 @@ namespace LikesRepostsBots.Classes
                 var users = api.Users.Get(friends.Select(user => user.Id).ToArray());
                 foreach (var user in users)
                 {
-                    if (user.Deactivated != Deactivated.Activated)
+                    if (user.Deactivated != Deactivated.Activated || IsMassAccount(user.Id))
                     {
                         api.Account.Ban(user.Id);
                         countBans++;
                     }
+
                 }
             }
             while (friends.Count == COUNT_USER);
@@ -252,7 +253,7 @@ namespace LikesRepostsBots.Classes
         {
             if (clearFriends.ToUpper() == "Y")
             {
-                BanDiedFriends();
+                BanDiedAndMassFriends();
             }
             else
             {
