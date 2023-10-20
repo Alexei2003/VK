@@ -239,8 +239,10 @@ namespace LikesRepostsBots.Classes
                 {
                     if (user.Deactivated != Deactivated.Activated || IsMassAccount(user.Id))
                     {
-                        api.Account.Ban(user.Id);
-                        countBans++;
+                        if (user.Id != 713712954 && user.Id != 338992901) {
+                            api.Account.Ban(user.Id);
+                            countBans++;
+                        }
                     }
 
                 }
