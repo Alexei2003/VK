@@ -2,7 +2,7 @@
 {
     internal class Bots
     {
-        private readonly List<SpamBot> bots;
+        private readonly List<SpamBot> bots = new();
         public int Count { get; }
 
         public Bots(string[] accessTokens, PeopleDictionary people, Random rand)
