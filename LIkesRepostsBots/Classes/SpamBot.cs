@@ -218,7 +218,7 @@ namespace LikesRepostsBots.Classes
             return likes;
         }
 
-        private void BanDiedAndMassFriends()
+        private void BanDiedAndMassFriends(int clearFriends)
         {
             Console.WriteLine("Бан мёртвых друзей");
             VkCollection<User> friends;
@@ -237,7 +237,7 @@ namespace LikesRepostsBots.Classes
                 var users = api.Users.Get(friends.Select(user => user.Id).ToArray());
                 foreach (var user in users)
                 {
-                    if (user.Deactivated != Deactivated.Activated || IsMassAccount(user.Id))
+                    if (user.Deactivated != Deactivated.Activated || (clearFriends==2 && IsMassAccount(user.Id)))
                     {
                         if (user.Id != 713712954 && user.Id != 338992901) {
                             api.Account.Ban(user.Id);
@@ -251,22 +251,22 @@ namespace LikesRepostsBots.Classes
             Console.WriteLine($"Количество забаненых {countBans}");
         }
 
-        public void Start(string groupId, int numbPeople, string clearFriends)
+        public void Start(string groupId, int makeRepost, int addFriends, int clearFriends)
         {
-            if (clearFriends.ToUpper() == "Y")
+
+            if(makeRepost == 1)
             {
-                BanDiedAndMassFriends();
+                WorkWithPosts(groupId);
             }
-            else
+
+            for(int i = 0;i<addFriends;i++)
             {
-                if (numbPeople > 0)
-                {
-                    WorkWithFriends();
-                }
-                else
-                {
-                    WorkWithPosts(groupId);
-                }
+                WorkWithFriends();
+            }
+
+            if (clearFriends > 0)
+            {
+                BanDiedAndMassFriends(clearFriends);
             }
         }
     }
