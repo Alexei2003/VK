@@ -121,12 +121,9 @@ namespace LikesRepostsBots.Classes
             {
                 if (!people.Contains(suggestions[index].Id))
                 {
-                    if (!IsMassAccount(suggestions[index].Id))
+                    if (!IsMassAccount(suggestions[index].Id) && api.Friends.Add(suggestions[index].Id) != null)
                     {
-                        if (api.Friends.Add(suggestions[index].Id) != null)
-                        {
-                            i++;
-                        }
+                        i++;
                     }
                     else
                     {
@@ -141,6 +138,7 @@ namespace LikesRepostsBots.Classes
                     api.Account.Ban(suggestions[index].Id);
                     banCount++;
                 }
+
                 if (index % 2 == 0)
                 {
                     Console.Write("/");
