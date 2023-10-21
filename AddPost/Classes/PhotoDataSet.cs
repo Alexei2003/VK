@@ -8,7 +8,7 @@ namespace AddPost.Classes
 
         public static void Add(Bitmap image, string tags)
         {
-            image  = ChangeResolution(image);
+            image = ChangeResolution(image);
 
             Save(image, tags);
         }

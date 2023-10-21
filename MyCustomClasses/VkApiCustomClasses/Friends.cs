@@ -36,12 +36,10 @@ namespace MyCustomClasses.VkApiCustomClasses
 
         public AddFriendStatus? Add(long userId, string text = "", bool? follow = null)
         {
-            int i = 10;
-            while (i > 0)
+            while (true)
             {
                 try
                 {
-                    i--;
                     var res = ApiOriginal.Friends.Add(userId, text, follow);
                     return res;
                 }
@@ -49,8 +47,11 @@ namespace MyCustomClasses.VkApiCustomClasses
                 {
                     Thread.Sleep(TIME_SLEEP);
                 }
+                catch (VkNet.Exception.CannotAddUserBlacklistedException)
+                {
+                    return null;
+                }
             }
-            return null;
         }
 
         public GetRequestsResult GetRequests(FriendsGetRequestsParams @params)

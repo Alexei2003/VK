@@ -123,8 +123,10 @@ namespace LikesRepostsBots.Classes
                 {
                     if (!IsMassAccount(suggestions[index].Id))
                     {
-                        api.Friends.Add(suggestions[index].Id);
-                        i++;
+                        if (api.Friends.Add(suggestions[index].Id) != null)
+                        {
+                            i++;
+                        }
                     }
                     else
                     {
@@ -237,9 +239,10 @@ namespace LikesRepostsBots.Classes
                 var users = api.Users.Get(friends.Select(user => user.Id).ToArray());
                 foreach (var user in users)
                 {
-                    if (user.Deactivated != Deactivated.Activated || (clearFriends==2 && IsMassAccount(user.Id)))
+                    if (user.Deactivated != Deactivated.Activated || (clearFriends == 2 && IsMassAccount(user.Id)))
                     {
-                        if (user.Id != 713712954 && user.Id != 338992901) {
+                        if (user.Id != 713712954 && user.Id != 338992901)
+                        {
                             api.Account.Ban(user.Id);
                             countBans++;
                         }
@@ -254,12 +257,12 @@ namespace LikesRepostsBots.Classes
         public void Start(string groupId, int makeRepost, int addFriends, int clearFriends)
         {
 
-            if(makeRepost == 1)
+            if (makeRepost == 1)
             {
                 WorkWithPosts(groupId);
             }
 
-            for(int i = 0;i<addFriends;i++)
+            for (int i = 0; i < addFriends; i++)
             {
                 WorkWithFriends();
             }

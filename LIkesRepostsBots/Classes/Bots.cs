@@ -15,9 +15,9 @@
                     {
                         bots.Add(new SpamBot(accessTokens[i], people, rand));
                     }
-                    catch
+                    catch (Exception e) when (e is VkNet.Exception.UserAuthorizationFailException || e is VkNet.Exception.VkApiException)
                     {
-                        Console.WriteLine($"Бот {i/2+1} умер");
+                        Console.WriteLine($"Бот {i / 2 + 1} умер");
                     }
                 }
             }
