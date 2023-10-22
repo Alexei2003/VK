@@ -83,7 +83,7 @@ namespace MyCustomClasses.VkApiCustomClasses
                 {
                     Thread.Sleep(TIME_SLEEP);
                 }
-                catch (Exception e) when (e is VkNet.Exception.CannotAddUserBlacklistedException || e is VkNet.Exception.CannotAddYouBlacklistedException)
+                catch (Exception e) when (e is VkNet.Exception.AccessDeniedException)
                 {
                     return null;
                 }

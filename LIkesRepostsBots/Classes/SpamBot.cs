@@ -186,6 +186,11 @@ namespace LikesRepostsBots.Classes
                 return true;
             }
 
+            if(friends == null && following == null && followers == null)
+            {
+                return true;
+            }
+
             return false;
         }
 
