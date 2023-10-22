@@ -31,6 +31,10 @@ namespace MyCustomClasses.VkApiCustomClasses
                 {
                     Thread.Sleep(TIME_SLEEP);
                 }
+                catch (Exception e) when (e is VkNet.Exception.CannotAddUserBlacklistedException || e is VkNet.Exception.CannotAddYouBlacklistedException)
+                {
+                    return null;
+                }
             }
         }
 
@@ -46,6 +50,10 @@ namespace MyCustomClasses.VkApiCustomClasses
                 catch (VkNet.Exception.TooManyRequestsException)
                 {
                     Thread.Sleep(TIME_SLEEP);
+                }
+                catch (Exception e) when (e is VkNet.Exception.CannotAddUserBlacklistedException || e is VkNet.Exception.CannotAddYouBlacklistedException)
+                {
+                    return null;
                 }
                 catch (Exception ex)
                 {
