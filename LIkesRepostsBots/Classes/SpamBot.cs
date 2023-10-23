@@ -14,7 +14,9 @@ namespace LikesRepostsBots.Classes
         private const int MAX_COUNT_POST = 16;
         private readonly PeopleDictionary people;
 
-        public SpamBot(string accessToken, PeopleDictionary people, Random rand)
+        public string BotName { get; set; }
+
+        public SpamBot(string botName, string accessToken, PeopleDictionary people, Random rand)
         {
             api.Authorize(new ApiAuthParams
             {
@@ -23,6 +25,7 @@ namespace LikesRepostsBots.Classes
             api.Account.SetOnline(false);
             this.people = people;
             this.rand = rand;
+            BotName = botName;
         }
 
         private void WorkWithPosts(string groupId)

@@ -5,19 +5,20 @@
         private readonly List<SpamBot> bots = new();
         public int Count { get; }
 
-        public Bots(string[] accessTokens, PeopleDictionary people, Random rand)
+        public Bots(string[] accessTokensAndNames, PeopleDictionary people, Random rand)
         {
-            for (int i = 0; i < accessTokens.Length; i++)
+            for (int i = 1; i < accessTokensAndNames.Length; i += 2)
             {
                 if (i % 2 == 1)
                 {
                     try
                     {
-                        bots.Add(new SpamBot(accessTokens[i], people, rand));
+                        bots.Add(new SpamBot(accessTokensAndNames[i - 1], accessTokensAndNames[i], people, rand));
+
                     }
                     catch (Exception e) when (e is VkNet.Exception.UserAuthorizationFailException || e is VkNet.Exception.VkApiException)
                     {
-                        Console.WriteLine($"Бот {i / 2 + 1} умер");
+                        Console.WriteLine($"Бот {i / 2 + 1} умер. Вечная память {accessTokensAndNames[i - 1]}");
                     }
                 }
             }
@@ -28,7 +29,7 @@
         {
             get
             {
-                Console.WriteLine($"Бот номер {i + 1}");
+                Console.WriteLine($"Бот номер {i + 1} {bots[i].BotName}");
                 return bots[i];
             }
         }

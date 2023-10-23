@@ -9,12 +9,14 @@ namespace HelloWorld
             int makeRepost = 0;
             int addFriends = 0;
             int clearFriends = 0;
+            int memorial = 0;
 
             Console.WriteLine(
                 "Выбор целевого действия (если несколько писать через пробел числа):\n" +
                 "1.Сделать репосты\n" +
                 "2.Добавить в друзья\n" +
-                "3.Очистка друзей");
+                "3.Очистка друзей\n" +
+                "4.Мемориал");
 
             string strMain = Console.ReadLine();
 
@@ -46,25 +48,31 @@ namespace HelloWorld
                     clearFriends = 2;
                 }
             }
+            if (strMain.Contains("4"))
+            {
+                memorial = 1;
+            }
 
-            string groupId = "220199532";
-
-            var accessTokens = File.ReadAllLines("AccessTokens.txt");
+            var accessTokensAndNames = File.ReadAllLines("AccessTokens.txt");
 
             PeopleDictionary people = new();
 
             var rand = new Random();
-            var bots = new Bots(accessTokens, people, rand);
+            var bots = new Bots(accessTokensAndNames, people, rand);
 
-            people.Read();
-
-            for (int i = 0; i < bots.Count; i++)
+            if (memorial < 0)
             {
-                bots[i].Start(groupId, makeRepost, addFriends, clearFriends);
-                Thread.Sleep(TimeSpan.FromSeconds(rand.Next(5) + 1));
-            }
+                people.Read();
 
-            people.Write();
+                string groupId = "220199532";
+                for (int i = 0; i < bots.Count; i++)
+                {
+                    bots[i].Start(groupId, makeRepost, addFriends, clearFriends);
+                    Thread.Sleep(TimeSpan.FromSeconds(rand.Next(5) + 1));
+                }
+
+                people.Write();
+            }
 
             Console.ReadLine();
         }
