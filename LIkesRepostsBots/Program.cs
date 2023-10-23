@@ -60,7 +60,7 @@ namespace HelloWorld
             var rand = new Random();
             var bots = new Bots(accessTokensAndNames, people, rand);
 
-            if (memorial < 0)
+            if (memorial != 1)
             {
                 people.Read();
 
