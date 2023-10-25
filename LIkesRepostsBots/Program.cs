@@ -74,6 +74,8 @@ namespace HelloWorld
                 people.Write();
             }
 
+            Console.WriteLine("\n------------------------------------------Финал------------------------------------------\n");
+
             Console.ReadLine();
         }
     }
