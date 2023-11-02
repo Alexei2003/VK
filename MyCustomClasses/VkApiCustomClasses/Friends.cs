@@ -18,7 +18,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             this.TIME_SLEEP = TIME_SLEEP;
         }
 
-        public VkCollection<User> GetSuggestions(FriendsFilter? filter = null, long? count = null, long? offset = null, UsersFields fields = null, NameCase? nameCase = null)
+        public VkCollection<User> GetSuggestions(FriendsFilter? filter = null, long? count = null, long? offset = null, UsersFields? fields = null, NameCase? nameCase = null)
         {
             while (true)
             {
@@ -70,7 +70,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             }
         }
 
-        public VkCollection<User> Get(FriendsGetParams @params, bool skipAuthorization = false)
+        public VkCollection<User>? Get(FriendsGetParams @params, bool skipAuthorization = false)
         {
             while (true)
             {

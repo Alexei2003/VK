@@ -16,15 +16,13 @@ namespace AddPost.Classes
         public IReadOnlyCollection<VkNet.Model.Photo> Add(Bitmap image)
         {
             var uploadServer = api.Photo.GetWallUploadServer();
-            using (var wc = new WebClient())
-            {
+            using var wc = new WebClient();
 
-                image.Save("1.jpg", ImageFormat.Jpeg);
+            image.Save("1.jpg", ImageFormat.Jpeg);
 
-                var responseFile = Encoding.ASCII.GetString(wc.UploadFile(uploadServer.UploadUrl, "1.jpg"));
+            var responseFile = Encoding.ASCII.GetString(wc.UploadFile(uploadServer.UploadUrl, "1.jpg"));
 
-                return api.Photo.SaveWallPhoto(responseFile, Convert.ToUInt32(api.ApiOriginal.UserId));
-            }
+            return api.Photo.SaveWallPhoto(responseFile, Convert.ToUInt32(api.ApiOriginal.UserId));
         }
     }
 }

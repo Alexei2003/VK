@@ -11,9 +11,9 @@ namespace AddPost
         private readonly string accessToken;
         private readonly Authorize authorize;
         private readonly Post post;
-        private readonly Tags tagList = new Tags();
+        private readonly Tags tagList = new();
         private readonly Date date;
-        ComputerVision.ModelOutput resultArts;
+        ComputerVision.ModelOutput? resultArts = null;
 
 
         public Form1()
@@ -58,7 +58,7 @@ namespace AddPost
 
         public void AddInDataSet(Bitmap image, string tags)
         {
-            if (!tagList.Add(tags) && tags.Split("#").Length - 1 < 3 && !tags.Contains("#Original") && tbTag.Text != resultArts.PredictedLabel)
+            if (!tagList.Add(tags) && tags.Split("#").Length - 1 < 3 && !tags.Contains("#Original") && resultArts != null && tbTag.Text != resultArts.PredictedLabel)
             {
                 PhotoDataSet.Add(image, tags);
             }
