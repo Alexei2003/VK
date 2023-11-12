@@ -5,7 +5,7 @@
         private readonly List<SpamBot> bots = new();
         public int Count { get; }
 
-        public Bots(string[] accessTokensAndNames, PeopleDictionary people, Random rand)
+        public Bots(string[] accessTokensAndNames, PeopleDictionary people, Random rand, bool memorial)
         {
             for (int i = 1; i < accessTokensAndNames.Length; i += 2)
             {
@@ -18,7 +18,10 @@
                     }
                     catch (Exception e) when (e is VkNet.Exception.UserAuthorizationFailException || e is VkNet.Exception.VkApiException)
                     {
-                        Console.WriteLine($"Бот {i / 2 + 1} умер. Вечная память {accessTokensAndNames[i - 1]}");
+                        if (memorial)
+                        {
+                            Console.WriteLine($"Бот {i / 2 + 1} умер. Вечная память {accessTokensAndNames[i - 1]}");
+                        }
                     }
                 }
             }

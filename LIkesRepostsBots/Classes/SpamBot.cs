@@ -263,7 +263,6 @@ namespace LikesRepostsBots.Classes
 
         public void Start(string groupId, BotsWorksParams botParams)
         {
-
             if (botParams.MakeRepost == true)
             {
                 WorkWithPosts(groupId);
@@ -278,6 +277,7 @@ namespace LikesRepostsBots.Classes
             {
                 BanDiedAndMassFriends(botParams.ClearFriends);
             }
+
         }
     }
 }

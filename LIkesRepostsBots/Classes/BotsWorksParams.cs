@@ -9,7 +9,7 @@
         {
             BanAccount,BanAndMathAccount
         }
-        public bool Memorial { get; set; } = false;
+        public bool AddPeopleFromGroupInBlacklist { get; set; } = false;
 
     }
 }

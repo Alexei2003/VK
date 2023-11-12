@@ -8,14 +8,14 @@ namespace HelloWorld
         static void Main()
         {
             BotsWorksParams botParams = new BotsWorksParams();
-
-
+            bool memorial = false;
             Console.WriteLine(
-                "Выбор целевого действия (если несколько писать через пробел числа):\n" +
+                "Выбор целевого действия:\n" +
                 "1.Сделать репосты\n" +
                 "2.Добавить в друзья\n" +
                 "3.Очистка друзей\n" +
-                "4.Мемориал");
+                "4.Мемориал\n" +
+                "5.Добавить людей из группы в чс");
 
             string strMain = Console.ReadLine();
 
@@ -30,7 +30,6 @@ namespace HelloWorld
             }
             if (strMain.Contains("3"))
             {
-
                 Console.WriteLine(
                     "Выбор способа очистки:\n" +
                     "1.Поверхностная (бан собачек)\n" +
@@ -49,7 +48,13 @@ namespace HelloWorld
             }
             if (strMain.Contains("4"))
             {
-                botParams.Memorial = true;
+                memorial = true;
+            }
+            if (strMain.Contains("5"))
+            {
+                botParams.AddPeopleFromGroupInBlacklist = true;
+
+                Console.WriteLine();
             }
 
             var accessTokensAndNames = File.ReadAllLines("AccessTokens.txt");
@@ -57,21 +62,18 @@ namespace HelloWorld
             PeopleDictionary people = new();
 
             var rand = new Random();
-            var bots = new Bots(accessTokensAndNames, people, rand);
+            var bots = new Bots(accessTokensAndNames, people, rand, memorial);
 
-            if (botParams.Memorial != true)
+            people.Read();
+
+            string groupId = "220199532";
+            for (int i = 0; i < bots.Count; i++)
             {
-                people.Read();
-
-                string groupId = "220199532";
-                for (int i = 0; i < bots.Count; i++)
-                {
-                    bots[i].Start(groupId, botParams);
-                    Thread.Sleep(TimeSpan.FromSeconds(rand.Next(5) + 1));
-                }
-
-                people.Write();
+                bots[i].Start(groupId, botParams);
+                Thread.Sleep(TimeSpan.FromSeconds(rand.Next(5) + 1));
             }
+
+            people.Write();
 
             Console.WriteLine("\n------------------------------------------Финал------------------------------------------\n");
 
