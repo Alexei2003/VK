@@ -261,11 +261,11 @@ namespace LikesRepostsBots.Classes
             Console.WriteLine($"Количество забаненых {countBans}");
         }
 
-        public void Start(long groupId, BotsWorksParams botParams)
+        public void Start(BotsWorksParams botParams)
         {
-            if (botParams.MakeRepost == true)
+            if (botParams.MakeRepost == true && botParams.GroupIdForGood != null)
             {
-                WorkWithPosts(groupId);
+                WorkWithPosts(botParams.GroupIdForGood.Value);
             }
 
             for (int i = 0; i < botParams.AddFriendsCount; i++)
@@ -278,6 +278,10 @@ namespace LikesRepostsBots.Classes
                 BanDiedAndMassFriends(botParams.ClearFriends);
             }
 
+            if(botParams.AddPeopleFromGroupInBlacklist && botParams.GroupIdForBad != null)
+            {
+
+            }
         }
     }
 }

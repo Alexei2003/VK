@@ -52,13 +52,12 @@ namespace HelloWorld
             {
                 memorial = true;
             }
-            long groupId = 220199532;
             if (strMain.Contains("5"))
             {
                 botParams.AddPeopleFromGroupInBlacklist = true;
 
                 Console.WriteLine("Id группы");
-                groupId = Convert.ToInt64(Console.ReadLine());
+                botParams.GroupIdForBad = Convert.ToInt64(Console.ReadLine());
             }
 
             var accessTokensAndNames = File.ReadAllLines("AccessTokens.txt");
@@ -68,14 +67,12 @@ namespace HelloWorld
             var rand = new Random();
             var bots = new Bots(accessTokensAndNames, people, rand, memorial);
 
-            
-
             people.Read();
 
-
+            botParams.GroupIdForGood = 220199532;
             for (int i = 0; i < bots.Count; i++)
             {
-                bots[i].Start(groupId, botParams);
+                bots[i].Start(botParams);
                 Thread.Sleep(TimeSpan.FromSeconds(rand.Next(5) + 1));
             }
 
