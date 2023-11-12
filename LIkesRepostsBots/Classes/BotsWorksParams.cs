@@ -9,7 +9,7 @@
         {
             BanAccount,BanAndMathAccount
         }
-        public bool AddPeopleFromGroupInBlacklist { get; set; } = false;
+        public bool BanPeopleFromGroup { get; set; } = false;
         public long? GroupIdForGood { get; set; } = null;
         public long? GroupIdForBad { get; set; } = null;
     }

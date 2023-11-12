@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Classes\SpamBot.cs~RF1ec7853.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MyCustomClasses\MyCustomClasses.csproj" />
   </ItemGroup>
 

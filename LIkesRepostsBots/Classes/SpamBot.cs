@@ -1,4 +1,5 @@
 ﻿using MyCustomClasses;
+using MyCustomClasses.VkApiCustomClasses;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 using VkNet.Utils;
@@ -205,7 +206,6 @@ namespace LikesRepostsBots.Classes
                 OwnerId = -1 * groupId,
                 PostId = Convert.ToInt64(postId),
                 Count = 100,
-
             });
 
             int likes = 0;
@@ -261,6 +261,38 @@ namespace LikesRepostsBots.Classes
             Console.WriteLine($"Количество забаненых {countBans}");
         }
 
+        private void BanPeopleFromGroup(long groupId)
+        {
+            Console.WriteLine("Бан людей из мусор группы");
+            VkCollection<User> members;
+            int offset = 0;
+            int countBans = 0;
+            const int COUNT_USER = 1000;
+            do
+            {
+                members = api.Groups.GetMembers(new GroupsGetMembersParams
+                {
+                    GroupId = groupId.ToString(),
+                    Offset = offset,
+                    Count = COUNT_USER
+                });
+
+                offset += members.Count;
+
+                foreach (var member in members)
+                {
+                    if (!people.Contains(groupId))
+                    {
+                        api.Account.Ban(member.Id);
+                        people.Add(member.Id);
+                        countBans++;
+                    }
+                }
+            }
+            while (members.Count == COUNT_USER);
+            Console.WriteLine($"Количество забаненых {countBans}");
+        }
+
         public void Start(BotsWorksParams botParams)
         {
             if (botParams.MakeRepost == true && botParams.GroupIdForGood != null)
@@ -278,9 +310,9 @@ namespace LikesRepostsBots.Classes
                 BanDiedAndMassFriends(botParams.ClearFriends);
             }
 
-            if(botParams.AddPeopleFromGroupInBlacklist && botParams.GroupIdForBad != null)
+            if(botParams.BanPeopleFromGroup && botParams.GroupIdForBad != null)
             {
-
+                BanPeopleFromGroup(botParams.GroupIdForBad.Value);
             }
         }
     }

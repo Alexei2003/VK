@@ -54,7 +54,7 @@ namespace HelloWorld
             }
             if (strMain.Contains("5"))
             {
-                botParams.AddPeopleFromGroupInBlacklist = true;
+                botParams.BanPeopleFromGroup = true;
 
                 Console.WriteLine("Id группы");
                 botParams.GroupIdForBad = Convert.ToInt64(Console.ReadLine());
