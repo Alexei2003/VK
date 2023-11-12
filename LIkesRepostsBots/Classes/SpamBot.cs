@@ -264,12 +264,12 @@ namespace LikesRepostsBots.Classes
         public void Start(string groupId, BotsWorksParams botParams)
         {
 
-            if (botParams.MakeRepost == 1)
+            if (botParams.MakeRepost == true)
             {
                 WorkWithPosts(groupId);
             }
 
-            for (int i = 0; i < botParams.AddFriends; i++)
+            for (int i = 0; i < botParams.AddFriendsCount; i++)
             {
                 WorkWithFriends();
             }

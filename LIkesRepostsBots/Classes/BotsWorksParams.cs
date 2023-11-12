@@ -2,14 +2,14 @@
 {
     internal class BotsWorksParams
     {
-        public int MakeRepost { get; set; } = 0;
-        public int AddFriends { get; set; } = 0;
+        public bool MakeRepost { get; set; } = false;
+        public int AddFriendsCount { get; set; } = 0;
         public ClearFriendsType ClearFriends { get; set; } = 0;
         public enum ClearFriendsType
         {
             BanAccount,BanAndMathAccount
         }
-        public int Memorial { get; set; } = 0;
+        public bool Memorial { get; set; } = false;
 
     }
 }

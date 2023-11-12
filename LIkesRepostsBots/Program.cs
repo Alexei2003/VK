@@ -21,12 +21,12 @@ namespace HelloWorld
 
             if (strMain.Contains("1"))
             {
-                botParams.MakeRepost = 1;
+                botParams.MakeRepost = true;
             }
             if (strMain.Contains("2"))
             {
                 Console.WriteLine("Сколько друзей добавить");
-                botParams.AddFriends = Convert.ToInt32(Console.ReadLine());
+                botParams.AddFriendsCount = Convert.ToInt32(Console.ReadLine());
             }
             if (strMain.Contains("3"))
             {
@@ -49,7 +49,7 @@ namespace HelloWorld
             }
             if (strMain.Contains("4"))
             {
-                botParams.Memorial = 1;
+                botParams.Memorial = true;
             }
 
             var accessTokensAndNames = File.ReadAllLines("AccessTokens.txt");
@@ -59,7 +59,7 @@ namespace HelloWorld
             var rand = new Random();
             var bots = new Bots(accessTokensAndNames, people, rand);
 
-            if (botParams.Memorial != 1)
+            if (botParams.Memorial != true)
             {
                 people.Read();
 
