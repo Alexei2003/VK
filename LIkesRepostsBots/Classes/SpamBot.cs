@@ -2,6 +2,7 @@
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 using VkNet.Utils;
+using static LikesRepostsBots.Classes.BotsWorksParams;
 
 namespace LikesRepostsBots.Classes
 {
@@ -226,7 +227,7 @@ namespace LikesRepostsBots.Classes
             return likes;
         }
 
-        private void BanDiedAndMassFriends(int clearFriends)
+        private void BanDiedAndMassFriends(ClearFriendsType clearFriends)
         {
             Console.WriteLine("Бан мёртвых друзей");
             VkCollection<User> friends;
@@ -245,7 +246,7 @@ namespace LikesRepostsBots.Classes
                 var users = api.Users.Get(friends.Select(user => user.Id).ToArray());
                 foreach (var user in users)
                 {
-                    if (user.Deactivated != Deactivated.Activated || (clearFriends == 2 && IsMassAccount(user.Id)))
+                    if (user.Deactivated != Deactivated.Activated || (clearFriends == ClearFriendsType.BanAndMathAccount && IsMassAccount(user.Id)))
                     {
                         if (user.Id != 713712954 && user.Id != 338992901)
                         {
@@ -260,22 +261,22 @@ namespace LikesRepostsBots.Classes
             Console.WriteLine($"Количество забаненых {countBans}");
         }
 
-        public void Start(string groupId, int makeRepost, int addFriends, int clearFriends)
+        public void Start(string groupId, BotsWorksParams botParams)
         {
 
-            if (makeRepost == 1)
+            if (botParams.MakeRepost == 1)
             {
                 WorkWithPosts(groupId);
             }
 
-            for (int i = 0; i < addFriends; i++)
+            for (int i = 0; i < botParams.AddFriends; i++)
             {
                 WorkWithFriends();
             }
 
-            if (clearFriends > 0)
+            if (botParams.ClearFriends > 0)
             {
-                BanDiedAndMassFriends(clearFriends);
+                BanDiedAndMassFriends(botParams.ClearFriends);
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using LikesRepostsBots.Classes;
+using static LikesRepostsBots.Classes.BotsWorksParams;
 
 namespace HelloWorld
 {
@@ -6,10 +7,8 @@ namespace HelloWorld
     {
         static void Main()
         {
-            int makeRepost = 0;
-            int addFriends = 0;
-            int clearFriends = 0;
-            int memorial = 0;
+            BotsWorksParams botParams = new BotsWorksParams();
+
 
             Console.WriteLine(
                 "Выбор целевого действия (если несколько писать через пробел числа):\n" +
@@ -22,12 +21,12 @@ namespace HelloWorld
 
             if (strMain.Contains("1"))
             {
-                makeRepost = 1;
+                botParams.MakeRepost = 1;
             }
             if (strMain.Contains("2"))
             {
                 Console.WriteLine("Сколько друзей добавить");
-                addFriends = Convert.ToInt32(Console.ReadLine());
+                botParams.AddFriends = Convert.ToInt32(Console.ReadLine());
             }
             if (strMain.Contains("3"))
             {
@@ -41,16 +40,16 @@ namespace HelloWorld
 
                 if (strClear.Contains("1"))
                 {
-                    clearFriends = 1;
+                    botParams.ClearFriends = ClearFriendsType.BanAccount;
                 }
                 if (strClear.Contains("2"))
                 {
-                    clearFriends = 2;
+                    botParams.ClearFriends = ClearFriendsType.BanAndMathAccount;
                 }
             }
             if (strMain.Contains("4"))
             {
-                memorial = 1;
+                botParams.Memorial = 1;
             }
 
             var accessTokensAndNames = File.ReadAllLines("AccessTokens.txt");
@@ -60,14 +59,14 @@ namespace HelloWorld
             var rand = new Random();
             var bots = new Bots(accessTokensAndNames, people, rand);
 
-            if (memorial != 1)
+            if (botParams.Memorial != 1)
             {
                 people.Read();
 
                 string groupId = "220199532";
                 for (int i = 0; i < bots.Count; i++)
                 {
-                    bots[i].Start(groupId, makeRepost, addFriends, clearFriends);
+                    bots[i].Start(groupId, botParams);
                     Thread.Sleep(TimeSpan.FromSeconds(rand.Next(5) + 1));
                 }
 
