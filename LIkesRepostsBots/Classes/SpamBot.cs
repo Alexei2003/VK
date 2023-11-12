@@ -29,11 +29,11 @@ namespace LikesRepostsBots.Classes
             BotName = botName;
         }
 
-        private void WorkWithPosts(string groupId)
+        private void WorkWithPosts(long groupId)
         {
             var wall = api.Wall.Get(new WallGetParams
             {
-                OwnerId = -1 * Convert.ToInt64(groupId),
+                OwnerId = -1 * groupId,
                 Count = MAX_COUNT_POST,
                 Filter = WallFilter.All
             });
@@ -198,11 +198,11 @@ namespace LikesRepostsBots.Classes
             return false;
         }
 
-        private int AddCommentsLike(string groupId, long? postId)
+        private int AddCommentsLike(long groupId, long? postId)
         {
             var comments = api.Wall.GetComments(new WallGetCommentsParams
             {
-                OwnerId = -1 * Convert.ToInt64(groupId),
+                OwnerId = -1 * groupId,
                 PostId = Convert.ToInt64(postId),
                 Count = 100,
 
@@ -261,7 +261,7 @@ namespace LikesRepostsBots.Classes
             Console.WriteLine($"Количество забаненых {countBans}");
         }
 
-        public void Start(string groupId, BotsWorksParams botParams)
+        public void Start(long groupId, BotsWorksParams botParams)
         {
             if (botParams.MakeRepost == true)
             {

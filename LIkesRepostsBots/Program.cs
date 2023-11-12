@@ -8,7 +8,9 @@ namespace HelloWorld
         static void Main()
         {
             BotsWorksParams botParams = new BotsWorksParams();
+
             bool memorial = false;
+
             Console.WriteLine(
                 "Выбор целевого действия:\n" +
                 "1.Сделать репосты\n" +
@@ -50,11 +52,13 @@ namespace HelloWorld
             {
                 memorial = true;
             }
+            long groupId = 220199532;
             if (strMain.Contains("5"))
             {
                 botParams.AddPeopleFromGroupInBlacklist = true;
 
-                Console.WriteLine();
+                Console.WriteLine("Id группы");
+                groupId = Convert.ToInt64(Console.ReadLine());
             }
 
             var accessTokensAndNames = File.ReadAllLines("AccessTokens.txt");
@@ -64,9 +68,11 @@ namespace HelloWorld
             var rand = new Random();
             var bots = new Bots(accessTokensAndNames, people, rand, memorial);
 
+            
+
             people.Read();
 
-            string groupId = "220199532";
+
             for (int i = 0; i < bots.Count; i++)
             {
                 bots[i].Start(groupId, botParams);
