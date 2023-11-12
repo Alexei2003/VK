@@ -279,7 +279,7 @@ namespace LikesRepostsBots.Classes
 
                 foreach (var member in members)
                 {
-                    if (!people.Contains(groupId))
+                    if (!people.Contains(member.Id))
                     {
                         people.Add(member.Id);
                         countBans++;

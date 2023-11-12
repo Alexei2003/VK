@@ -10,6 +10,7 @@ namespace HelloWorld
             BotsWorksParams botParams = new BotsWorksParams();
 
             bool memorial = false;
+            bool BanPeopleFromGroup = false;
 
             Console.WriteLine(
                 "Выбор целевого действия:\n" +
@@ -54,7 +55,7 @@ namespace HelloWorld
             }
             if (strMain.Contains("5"))
             {
-                botParams.BanPeopleFromGroup = true;
+                BanPeopleFromGroup = true;
 
                 Console.WriteLine("Id группы");
                 botParams.GroupIdForBad = Convert.ToInt64(Console.ReadLine());
@@ -72,7 +73,17 @@ namespace HelloWorld
             botParams.GroupIdForGood = 220199532;
             for (int i = 0; i < bots.Count; i++)
             {
+                if (BanPeopleFromGroup && rand.Next(3)==0)
+                {
+                    botParams.BanPeopleFromGroup = true;
+                }
                 bots[i].Start(botParams);
+                if (botParams.BanPeopleFromGroup)
+                {
+                    BanPeopleFromGroup= false;
+                    botParams.BanPeopleFromGroup = false;
+                }
+
                 Thread.Sleep(TimeSpan.FromSeconds(rand.Next(5) + 1));
             }
 
