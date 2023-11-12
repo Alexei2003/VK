@@ -21,6 +21,7 @@ namespace LikesRepostsBots.Classes
 
         public SpamBot(string botName, string accessToken, PeopleDictionary people, Random rand)
         {
+            api = new(rand);
             api.Authorize(new ApiAuthParams
             {
                 AccessToken = accessToken
@@ -29,7 +30,6 @@ namespace LikesRepostsBots.Classes
             this.people = people;
             this.rand = rand;
             BotName = botName;
-            api = new(rand);
         }
 
         private void WorkWithPosts(long groupId)
@@ -290,7 +290,7 @@ namespace LikesRepostsBots.Classes
             Console.WriteLine($"Количество забаненых {countBans}");
         }
 
-        private void AnimatedLoad()
+        private static void AnimatedLoad()
         {
             /*            if (index % 2 == 0)
                         {
