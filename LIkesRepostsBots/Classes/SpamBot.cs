@@ -1,5 +1,6 @@
 ﻿using MyCustomClasses;
 using MyCustomClasses.VkApiCustomClasses;
+using System;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 using VkNet.Utils;
@@ -9,7 +10,7 @@ namespace LikesRepostsBots.Classes
 {
     internal class SpamBot
     {
-        private readonly VkApiCustom api = new();
+        private readonly VkApiCustom api;
         private readonly Random rand;
         private const int CHANCE_LIKE = 5;
         private const int CHANCE_REPOST = 5;
@@ -28,6 +29,7 @@ namespace LikesRepostsBots.Classes
             this.people = people;
             this.rand = rand;
             BotName = botName;
+            api = new(rand);
         }
 
         private void WorkWithPosts(long groupId)
@@ -144,14 +146,7 @@ namespace LikesRepostsBots.Classes
                     banCount++;
                 }
 
-                if (index % 2 == 0)
-                {
-                    Console.Write("/");
-                }
-                else
-                {
-                    Console.Write("\\");
-                }
+                AnimatedLoad();
             }
             Console.WriteLine();
             Console.WriteLine($"Количество забанненых аккаунтов {banCount}");
@@ -241,8 +236,10 @@ namespace LikesRepostsBots.Classes
                     Count = COUNT_USER,
                     Offset = offset,
                 });
-
                 offset += friends.Count;
+
+                AnimatedLoad();
+
                 var users = api.Users.Get(friends.Select(user => user.Id).ToArray());
                 foreach (var user in users)
                 {
@@ -276,14 +273,14 @@ namespace LikesRepostsBots.Classes
                     Offset = offset,
                     Count = COUNT_USER
                 });
-
                 offset += members.Count;
+
+                AnimatedLoad();
 
                 foreach (var member in members)
                 {
                     if (!people.Contains(groupId))
                     {
-                        api.Account.Ban(member.Id);
                         people.Add(member.Id);
                         countBans++;
                     }
@@ -291,6 +288,19 @@ namespace LikesRepostsBots.Classes
             }
             while (members.Count == COUNT_USER);
             Console.WriteLine($"Количество забаненых {countBans}");
+        }
+
+        private void AnimatedLoad()
+        {
+            /*            if (index % 2 == 0)
+                        {
+                            Console.Write("/");
+                        }
+                        else
+                        {
+                            Console.Write("\\");
+                        }*/
+            Console.Write("/");
         }
 
         public void Start(BotsWorksParams botParams)

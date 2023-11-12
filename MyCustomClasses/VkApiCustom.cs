@@ -6,7 +6,8 @@ namespace MyCustomClasses
 {
     public class VkApiCustom
     {
-        private readonly TimeSpan TIME_SLEEP = TimeSpan.FromSeconds(2);
+        private readonly Random rand;
+        private readonly TimeSpan TIME_SLEEP;
         public VkApi ApiOriginal { get; }
 
         public Account Account { get; }
@@ -18,7 +19,7 @@ namespace MyCustomClasses
         public Users Users { get; }
         public VkApiCustomClasses.Wall Wall { get; }
 
-        public VkApiCustom()
+        public VkApiCustom(Random rand)
         {
             ApiOriginal = new();
             Account = new(ApiOriginal, TIME_SLEEP);
@@ -29,6 +30,9 @@ namespace MyCustomClasses
             Stats = new(ApiOriginal, TIME_SLEEP);
             Users = new(ApiOriginal, TIME_SLEEP);
             Wall = new(ApiOriginal, TIME_SLEEP);
+            this.rand = rand;
+
+            TIME_SLEEP = TimeSpan.FromSeconds(rand.Next(3)+1);
         }
 
         public void Authorize(IApiAuthParams @params)
