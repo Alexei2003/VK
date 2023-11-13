@@ -5,7 +5,7 @@ namespace AddPost.Classes
 {
     internal class Authorize
     {
-        public VkApiCustom Api { get; } = new();
+        public VkApiCustom Api { get; } = new(new Random());
         public Authorize(string accessToken)
         {
             Api.Authorize(new ApiAuthParams

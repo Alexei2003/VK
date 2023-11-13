@@ -14,8 +14,6 @@ namespace AddPost
         private readonly Tags tagList = new();
         private readonly Date date;
         ComputerVision.ModelOutput? resultArts = null;
-
-
         public Form1()
         {
             InitializeComponent();
@@ -28,6 +26,16 @@ namespace AddPost
             cbTimeBetweenPost.SelectedIndex = 1;
 
             WriteFindTag();
+
+            var sampleData = new ComputerVision.ModelInput()
+            {
+                ImageSource = new byte[] {0,1},
+            };
+
+            //Load model and predict output
+            ComputerVision.Predict(sampleData);
+
+
         }
 
         public void ClearInfAboutPost()
@@ -71,6 +79,57 @@ namespace AddPost
             tbDate.Text = postDate.ToString();
         }
 
+        private void BackgroundImageCopy()
+        {
+            if (Clipboard.ContainsImage())
+            {
+                var clipboardImage = new Bitmap(Clipboard.GetImage());
+
+                NeuralNetworkResult(clipboardImage);
+
+                AddInDataSet(clipboardImage, tbTag.Text.Replace(" ", ""));
+
+                Clipboard.Clear();
+            }
+        }
+
+        private void NeuralNetworkResult(Bitmap image)
+        {
+            image = PhotoDataSet.ChangeResolution(image);
+
+            // Преобразуйте изображение в байты
+            byte[] imageBytes;
+            using (var stream = new MemoryStream())
+            {
+                // Сохраните изображение в том же формате, в котором оно находится в буфере обмена
+                image.Save(stream, ImageFormat.Jpeg);
+                imageBytes = stream.ToArray();
+            }
+
+            // Подача данных в модель
+            var sampleData = new ComputerVision.ModelInput()
+            {
+                ImageSource = imageBytes,
+            };
+
+            //Load model and predict output
+            resultArts = ComputerVision.Predict(sampleData);
+
+            var scores = resultArts.Score;
+
+            if (cbClear2.Checked)
+            {
+                if (scores.Max() > 0.5)
+                {
+                    tbTag.Text = resultArts.PredictedLabel;
+                }
+                else
+                {
+                    tbTag.Text = "#Original";
+                }
+            }
+        }
+
         private void bBuff_Click(object sender, EventArgs e)
         {
             // Проверка, содержит ли буфер обмена изображение
@@ -82,39 +141,7 @@ namespace AddPost
                 // Установка изображения в PictureBox
                 pbImage.Image = clipboardImage;
 
-                clipboardImage = PhotoDataSet.ChangeResolution(clipboardImage);
-
-                // Преобразуйте изображение в байты
-                byte[] imageBytes;
-                using (var stream = new MemoryStream())
-                {
-                    // Сохраните изображение в том же формате, в котором оно находится в буфере обмена
-                    clipboardImage.Save(stream, ImageFormat.Jpeg);
-                    imageBytes = stream.ToArray();
-                }
-
-                // Подача данных в модель
-                var sampleData = new ComputerVision.ModelInput()
-                {
-                    ImageSource = imageBytes,
-                };
-
-                //Load model and predict output
-                resultArts = ComputerVision.Predict(sampleData);
-
-                var scores = resultArts.Score;
-
-                if (cbClear2.Checked)
-                {
-                    if (scores.Max() > 0.5)
-                    {
-                        tbTag.Text = resultArts.PredictedLabel;
-                    }
-                    else
-                    {
-                        tbTag.Text = "#Original";
-                    }
-                }
+                NeuralNetworkResult(clipboardImage);
             }
         }
 
@@ -197,6 +224,27 @@ namespace AddPost
 
                 WriteFindTag();
             }
+        }
+
+        private void bBackgroundImageCopyOn_Click(object sender, EventArgs e)
+        {
+            bBackgroundImageCopyOn.Enabled = false;
+            bBackgroundImageCopyOff.Enabled = true;
+
+            tBackgroundImageCopy.Start();
+        }
+
+        private void bBackgroundImageCopyOff_Click(object sender, EventArgs e)
+        {
+            bBackgroundImageCopyOff.Enabled = false;
+            bBackgroundImageCopyOn.Enabled = true;
+
+            tBackgroundImageCopy.Stop();
+        }
+
+        private void tBackgroundImageCopy_Tick(object sender, EventArgs e)
+        {
+            BackgroundImageCopy();
         }
     }
 }

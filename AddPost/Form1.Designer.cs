@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             pbImage = new PictureBox();
             textBox1 = new TextBox();
             textBox2 = new TextBox();
@@ -47,6 +48,9 @@
             dgvDictionary = new DataGridView();
             tags = new DataGridViewTextBoxColumn();
             bDataSet = new Button();
+            bBackgroundImageCopyOn = new Button();
+            bBackgroundImageCopyOff = new Button();
+            tBackgroundImageCopy = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)pbImage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             SuspendLayout();
@@ -234,12 +238,40 @@
             bDataSet.UseVisualStyleBackColor = true;
             bDataSet.Click += bDataSet_Click;
             // 
+            // bBackgroundImageCopyOn
+            // 
+            bBackgroundImageCopyOn.Location = new Point(623, 230);
+            bBackgroundImageCopyOn.Name = "bBackgroundImageCopyOn";
+            bBackgroundImageCopyOn.Size = new Size(110, 43);
+            bBackgroundImageCopyOn.TabIndex = 20;
+            bBackgroundImageCopyOn.Text = "Включить фоновое копирование";
+            bBackgroundImageCopyOn.UseVisualStyleBackColor = true;
+            bBackgroundImageCopyOn.Click += bBackgroundImageCopyOn_Click;
+            // 
+            // bBackgroundImageCopyOff
+            // 
+            bBackgroundImageCopyOff.Enabled = false;
+            bBackgroundImageCopyOff.Location = new Point(623, 279);
+            bBackgroundImageCopyOff.Name = "bBackgroundImageCopyOff";
+            bBackgroundImageCopyOff.Size = new Size(110, 43);
+            bBackgroundImageCopyOff.TabIndex = 21;
+            bBackgroundImageCopyOff.Text = "Выключить фоновое копирование";
+            bBackgroundImageCopyOff.UseVisualStyleBackColor = true;
+            bBackgroundImageCopyOff.Click += bBackgroundImageCopyOff_Click;
+            // 
+            // tBackgroundImageCopy
+            // 
+            tBackgroundImageCopy.Interval = 1000;
+            tBackgroundImageCopy.Tick += tBackgroundImageCopy_Tick;
+            // 
             // Form1
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1479, 629);
+            Controls.Add(bBackgroundImageCopyOff);
+            Controls.Add(bBackgroundImageCopyOn);
             Controls.Add(bDataSet);
             Controls.Add(dgvDictionary);
             Controls.Add(tbGroupId);
@@ -289,5 +321,8 @@
         private DataGridView dgvDictionary;
         private Button bDataSet;
         private DataGridViewTextBoxColumn tags;
+        private Button bBackgroundImageCopyOn;
+        private Button bBackgroundImageCopyOff;
+        private System.Windows.Forms.Timer tBackgroundImageCopy;
     }
 }

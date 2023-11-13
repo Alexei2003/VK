@@ -35,10 +35,6 @@ namespace MyCustomClasses
             TIME_SLEEP = TimeSpan.FromSeconds(rand.Next(3)+1);
         }
 
-        public VkApiCustom()
-        {
-        }
-
         public void Authorize(IApiAuthParams @params)
         {
             while (true)
