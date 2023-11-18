@@ -1,6 +1,4 @@
 ﻿using MyCustomClasses;
-using MyCustomClasses.VkApiCustomClasses;
-using System;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 using VkNet.Utils;
@@ -243,7 +241,7 @@ namespace LikesRepostsBots.Classes
                 var users = api.Users.Get(friends.Select(user => user.Id).ToArray());
                 foreach (var user in users)
                 {
-                    if (user.Deactivated != Deactivated.Activated || (clearFriends == ClearFriendsType.BanAndMathAccount && IsMassAccount(user.Id)))
+                    if (user.Deactivated != Deactivated.Activated)
                     {
                         if (user.Id != 713712954 && user.Id != 338992901)
                         {
@@ -251,7 +249,17 @@ namespace LikesRepostsBots.Classes
                             countBans++;
                         }
                     }
-
+                    else
+                    {
+                        if (clearFriends == ClearFriendsType.BanAndMathAccount && IsMassAccount(user.Id))
+                        {
+                            if (user.Id != 713712954 && user.Id != 338992901)
+                            {
+                                api.Account.Ban(user.Id);
+                                countBans++;
+                            }
+                        }
+                    }
                 }
             }
             while (friends.Count == COUNT_USER);
@@ -292,14 +300,6 @@ namespace LikesRepostsBots.Classes
 
         private static void AnimatedLoad()
         {
-            /*            if (index % 2 == 0)
-                        {
-                            Console.Write("/");
-                        }
-                        else
-                        {
-                            Console.Write("\\");
-                        }*/
             Console.Write("/");
         }
 
@@ -320,7 +320,7 @@ namespace LikesRepostsBots.Classes
                 BanDiedAndMassFriends(botParams.ClearFriends);
             }
 
-            if(botParams.BanPeopleFromGroup && botParams.GroupIdForBad != null)
+            if (botParams.BanPeopleFromGroup && botParams.GroupIdForBad != null)
             {
                 BanPeopleFromGroup(botParams.GroupIdForBad.Value);
             }

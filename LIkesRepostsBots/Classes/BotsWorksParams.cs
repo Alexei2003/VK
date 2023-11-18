@@ -1,13 +1,15 @@
-﻿namespace LikesRepostsBots.Classes
+﻿using VkNet.Model;
+
+namespace LikesRepostsBots.Classes
 {
     internal class BotsWorksParams
     {
         public bool MakeRepost { get; set; } = false;
         public int AddFriendsCount { get; set; } = 0;
-        public ClearFriendsType ClearFriends { get; set; } = 0;
+        public ClearFriendsType ClearFriends { get; set; } = ClearFriendsType.None;
         public enum ClearFriendsType
         {
-            BanAccount,BanAndMathAccount
+            None,BanAccount, BanAndMathAccount
         }
         public bool BanPeopleFromGroup { get; set; } = false;
         public long? GroupIdForGood { get; set; } = null;

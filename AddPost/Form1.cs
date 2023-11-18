@@ -29,7 +29,7 @@ namespace AddPost
 
             var sampleData = new ComputerVision.ModelInput()
             {
-                ImageSource = new byte[] {0,1},
+                ImageSource = new byte[] { 0, 1 },
             };
 
             //Load model and predict output

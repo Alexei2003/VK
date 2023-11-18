@@ -32,7 +32,7 @@ namespace MyCustomClasses
             Wall = new(ApiOriginal, TIME_SLEEP);
             this.rand = rand;
 
-            TIME_SLEEP = TimeSpan.FromSeconds(rand.Next(3)+1);
+            TIME_SLEEP = TimeSpan.FromSeconds(rand.Next(3) + 1);
         }
 
         public void Authorize(IApiAuthParams @params)
