@@ -1,4 +1,5 @@
 ﻿using LikesRepostsBots.Classes;
+using System.Runtime.CompilerServices;
 using static LikesRepostsBots.Classes.BotsWorksParams;
 
 namespace LikesRepostsBots
@@ -19,47 +20,40 @@ namespace LikesRepostsBots
 
             PeopleDictionary people = new();
 
+            const int TIME_WORK = 6 * 60 * 60 * 1000;
             int count = 0;
             while (true)
             {
                 var bots = new Bots(accessTokensAndNames, people, rand, false);
 
+                bots.Mix();
+
+                int stepBetweenBots = TIME_WORK / bots.Count;
+
                 people.Read();
 
-                for (int i = 0; i < bots.Count; i++)
+                if (count % 10 == 0)
                 {
-                    bots[i].Start(botParams);
-                }
-
-                people.Write();
-
-                count++;
-
-                if (count >= 10)
-                {
-                    var BotsWorksParamsClear = new BotsWorksParams()
-                    {
-                        ClearFriends = ClearFriendsType.BanAccount
-                    };
-                    for (int i = 0; i < bots.Count; i++)
-                    {
-                        bots[i].Start(BotsWorksParamsClear);
-                    }
+                    botParams.ClearFriends = ClearFriendsType.BanAccount;
                 }
 
                 if (count >= 50)
                 {
                     count = 0;
-                    var BotsWorksParamsClear = new BotsWorksParams()
-                    {
-                        ClearFriends = ClearFriendsType.BanAndMathAccount
-                    };
-                    for (int i = 0; i < bots.Count; i++)
-                    {
-                        bots[i].Start(BotsWorksParamsClear);
-                    }
+                    botParams.ClearFriends = ClearFriendsType.BanAndMathAccount;
                 }
-            }
+
+                for (int i = 0; i < bots.Count; i++)
+                {
+                    bots[i].Start(botParams);
+                    botParams.ClearFriends = ClearFriendsType.None;
+                    Thread.Sleep(stepBetweenBots);
+                }
+
+                people.Write();
+
+                count++;
+            }         
         }
     }
 }
