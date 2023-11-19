@@ -1,5 +1,4 @@
 ﻿using LikesRepostsBots.Classes;
-using System.Runtime.CompilerServices;
 using static LikesRepostsBots.Classes.BotsWorksParams;
 
 namespace LikesRepostsBots
@@ -15,15 +14,17 @@ namespace LikesRepostsBots
                 GroupIdForGood = 220199532
             };
 
-            var accessTokensAndNames = File.ReadAllLines("AccessTokens.txt");
+            var accessTokensAndNames = File.ReadAllLines(Path.Combine("AccessTokens.txt"));
             var rand = new Random();
 
             PeopleDictionary people = new();
 
-            const int TIME_WORK = 6 * 60 * 60 * 1000;
+            const int TIME_WORK = 10 * 60 * 60 * 1000;
             int count = 0;
             while (true)
             {
+                Console.WriteLine($"Итерация {count}");
+
                 var bots = new Bots(accessTokensAndNames, people, rand, false);
 
                 bots.Mix();
@@ -47,13 +48,13 @@ namespace LikesRepostsBots
                 {
                     bots[i].Start(botParams);
                     botParams.ClearFriends = ClearFriendsType.None;
-                    Thread.Sleep(stepBetweenBots);
+                    Thread.Sleep(rand.Next(stepBetweenBots));
                 }
 
                 people.Write();
 
                 count++;
-            }         
+            }
         }
     }
 }

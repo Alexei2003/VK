@@ -8,7 +8,7 @@ namespace LikesRepostsBots.Classes
 
         public void Read()
         {
-            string json = File.ReadAllText("PeopleDictionary.txt");
+            string json = File.ReadAllText(Path.Combine("PeopleDictionary.txt"));
             if (json != "")
             {
                 people = JsonConvert.DeserializeObject<HashSet<long>>(json);
@@ -18,7 +18,7 @@ namespace LikesRepostsBots.Classes
         public void Write()
         {
             string json = JsonConvert.SerializeObject(people);
-            File.WriteAllText("PeopleDictionary.txt", json);
+            File.WriteAllText(Path.Combine("PeopleDictionary.txt"), json);
         }
 
         public bool Contains(long id)

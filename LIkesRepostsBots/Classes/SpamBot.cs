@@ -24,6 +24,7 @@ namespace LikesRepostsBots.Classes
             {
                 AccessToken = accessToken
             });
+
             api.Account.SetOnline(false);
             this.people = people;
             this.rand = rand;

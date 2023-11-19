@@ -41,7 +41,7 @@
         }
 
         public void Mix()
-        { 
+        {
             int n = bots.Count;
             while (n > 1)
             {

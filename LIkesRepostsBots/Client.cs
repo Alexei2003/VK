@@ -61,7 +61,7 @@ namespace LikesRepostsBots
                 botParams.GroupIdForBad = Convert.ToInt64(Console.ReadLine());
             }
 
-            var accessTokensAndNames = File.ReadAllLines("AccessTokens.txt");
+            var accessTokensAndNames = File.ReadAllLines(Path.Combine("AccessTokens.txt"));
 
             PeopleDictionary people = new();
 
