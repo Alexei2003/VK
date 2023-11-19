@@ -48,6 +48,7 @@ namespace LikesRepostsBots
                 {
                     bots[i].Start(botParams);
                     botParams.ClearFriends = ClearFriendsType.None;
+                    Console.WriteLine($"Бот номер {i + 1} {bots[i].BotName}");
                     Thread.Sleep(rand.Next(stepBetweenBots));
                 }
 
