@@ -46,11 +46,13 @@ namespace LikesRepostsBots
 
                 for (int i = 0; i < bots.Count; i++)
                 {
+                    Console.WriteLine($"Бот номер {i + 1} {bots[i].BotName}");
                     bots[i].Start(botParams);
-                    botParams.ClearFriends = ClearFriendsType.None;
                     Console.WriteLine($"Бот номер {i + 1} {bots[i].BotName}");
                     Thread.Sleep(rand.Next(stepBetweenBots));
                 }
+
+                botParams.ClearFriends = ClearFriendsType.None;
 
                 people.Write();
 

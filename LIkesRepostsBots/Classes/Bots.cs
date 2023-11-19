@@ -35,7 +35,6 @@
         {
             get
             {
-                Console.WriteLine($"Бот номер {i + 1} {bots[i].BotName}");
                 return bots[i];
             }
         }
