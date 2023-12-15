@@ -2,3 +2,4 @@ bin/
 obj/
 ARTS/
 *.mlnet
+/AddPost/ComputerVision.mlnet

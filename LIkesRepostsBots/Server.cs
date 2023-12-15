@@ -46,9 +46,11 @@ namespace LikesRepostsBots
 
                 for (int i = 0; i < bots.Count; i++)
                 {
-                    Console.WriteLine($"Бот номер {i + 1} {bots[i].BotName}");
+                    Console.WriteLine($"Бот номер {i + 1} {bots[i].BotName}\n" +
+                                      $"Номер итерации {count}");
                     bots[i].Start(botParams);
-                    Console.WriteLine($"Бот номер {i + 1} {bots[i].BotName}");
+                    Console.WriteLine($"Бот номер {i + 1} {bots[i].BotName}\n" +
+                                      $"Номер итерации {count}");
                     Thread.Sleep(rand.Next(stepBetweenBots));
                 }
 

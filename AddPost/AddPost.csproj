@@ -16,8 +16,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.ML" Version="3.0.0-preview.23266.6" />
     <PackageReference Include="Microsoft.ML.AutoML" Version="0.20.1" />
+    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="3.0.0-preview.23266.6" />
+    <PackageReference Include="Microsoft.ML.TorchSharp" Version="0.21.0-preview.23266.6" />
     <PackageReference Include="Microsoft.ML.Vision" Version="3.0.0-preview.23266.6" />
     <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.3.1" />
+    <PackageReference Include="TorchSharp-cpu" Version="0.99.5" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MyCustomClasses\MyCustomClasses.csproj" />

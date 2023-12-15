@@ -34,8 +34,6 @@ namespace AddPost
 
             //Load model and predict output
             ComputerVision.Predict(sampleData);
-
-
         }
 
         public void ClearInfAboutPost()

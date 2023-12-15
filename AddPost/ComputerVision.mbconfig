@@ -3,7 +3,7 @@
   "DataSource": {
     "Type": "Folder",
     "Version": 1,
-    "FolderPath": "E:\\WPS\\VK\\Project\\VK\\AddPost\\ARTS\\ARTS\\ARTS"
+    "FolderPath": "E:\\WPS\\VK\\Project\\VK\\AddPost\\ARTS\\ARTS\\Ready"
   },
   "Environment": {
     "Type": "LocalCPU",
@@ -17,8 +17,8 @@
         "Version": 1,
         "Type": "Trial",
         "TrainerName": "ImageClassificationMulti",
-        "Score": 0.329935125115848,
-        "RuntimeInSeconds": 1035.117,
+        "Score": 0.5973613223840083,
+        "RuntimeInSeconds": 377.008,
         "Parameter": {
           "_SCHEMA_": "e0 * e1 * e2",
           "e0": {
@@ -47,7 +47,7 @@
       "e2": "MapKeyToValue"
     },
     "Schema": "e0 * e1 * e2",
-    "MetricName": "MicroAccuracy",
+    "MetricName": "MacroAccuracy",
     "ModelFilePath": "E:\\WPS\\VK\\Project\\VK\\AddPost\\ComputerVision.mlnet"
   },
   "Type": "TrainingConfig",
@@ -57,6 +57,7 @@
     "Subsampling": false,
     "Type": "ClassificationTrainingOption",
     "TrainingTime": 2147483647,
+    "OptimizeMetric": "MacroAccuracy",
     "ValidationOption": {
       "Version": 0,
       "Type": "TrainValidateSplitValidationOption",
