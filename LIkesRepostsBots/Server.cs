@@ -1,4 +1,5 @@
 ﻿using LikesRepostsBots.Classes;
+using Newtonsoft.Json.Linq;
 using static LikesRepostsBots.Classes.BotsWorksParams;
 
 namespace LikesRepostsBots
@@ -19,13 +20,13 @@ namespace LikesRepostsBots
 
             PeopleDictionary people = new();
 
+            var bots = new Bots(accessTokensAndNames, people, rand, false);
+
             const int TIME_WORK = 10 * 60 * 60 * 1000;
             int count = 0;
             while (true)
             {
                 Console.WriteLine($"Итерация {count}");
-
-                var bots = new Bots(accessTokensAndNames, people, rand, false);
 
                 bots.Mix();
 

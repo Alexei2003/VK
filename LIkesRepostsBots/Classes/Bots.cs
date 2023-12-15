@@ -5,7 +5,7 @@
         private readonly List<SpamBot> bots = new();
         public int Count { get; }
 
-        private Random rand;
+        private readonly Random rand;
 
         public Bots(string[] accessTokensAndNames, PeopleDictionary people, Random rand, bool memorial)
         {
@@ -14,18 +14,7 @@
             {
                 if (i % 2 == 1)
                 {
-                    try
-                    {
-                        bots.Add(new SpamBot(accessTokensAndNames[i - 1], accessTokensAndNames[i], people, rand));
-
-                    }
-                    catch (Exception e) when (e is VkNet.Exception.UserAuthorizationFailException || e is VkNet.Exception.VkApiException)
-                    {
-                        if (memorial)
-                        {
-                            Console.WriteLine($"Бот {i / 2 + 1} умер. Вечная память {accessTokensAndNames[i - 1]}");
-                        }
-                    }
+                    bots.Add(new SpamBot(accessTokensAndNames[i - 1], accessTokensAndNames[i], people, rand));
                 }
             }
             Count = bots.Count;

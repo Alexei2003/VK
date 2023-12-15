@@ -14,21 +14,26 @@ namespace LikesRepostsBots.Classes
         private const int CHANCE_REPOST = 5;
         private const int MAX_COUNT_POST = 16;
         private readonly PeopleDictionary people;
+        private string accessToken;
 
         public string BotName { get; set; }
 
         public SpamBot(string botName, string accessToken, PeopleDictionary people, Random rand)
         {
             api = new(rand);
+            this.people = people;
+            this.rand = rand;
+            BotName = botName;
+            this.accessToken = accessToken;
+        }
+
+        private void Authorize()
+        {
             api.Authorize(new ApiAuthParams
             {
                 AccessToken = accessToken
             });
-
             api.Account.SetOnline(false);
-            this.people = people;
-            this.rand = rand;
-            BotName = botName;
         }
 
         private void WorkWithPosts(long groupId)
@@ -306,24 +311,33 @@ namespace LikesRepostsBots.Classes
 
         public void Start(BotsWorksParams botParams)
         {
-            if (botParams.MakeRepost == true && botParams.GroupIdForGood != null)
+            try
             {
-                WorkWithPosts(botParams.GroupIdForGood.Value);
-            }
+                Authorize();
+                if (botParams.MakeRepost == true && botParams.GroupIdForGood != null)
+                {
+                    WorkWithPosts(botParams.GroupIdForGood.Value);
+                }
 
-            for (int i = 0; i < botParams.AddFriendsCount; i++)
-            {
-                WorkWithFriends();
-            }
+                for (int i = 0; i < botParams.AddFriendsCount; i++)
+                {
+                    WorkWithFriends();
+                }
 
-            if (botParams.ClearFriends > 0)
-            {
-                BanDiedAndMassFriends(botParams.ClearFriends);
-            }
+                if (botParams.ClearFriends > 0)
+                {
+                    BanDiedAndMassFriends(botParams.ClearFriends);
+                }
 
-            if (botParams.BanPeopleFromGroup && botParams.GroupIdForBad != null)
+                if (botParams.BanPeopleFromGroup && botParams.GroupIdForBad != null)
+                {
+                    BanPeopleFromGroup(botParams.GroupIdForBad.Value);
+                }
+
+            }
+            catch (Exception e) when (e is VkNet.Exception.UserAuthorizationFailException || e is VkNet.Exception.VkApiException)
             {
-                BanPeopleFromGroup(botParams.GroupIdForBad.Value);
+                return;
             }
         }
     }
