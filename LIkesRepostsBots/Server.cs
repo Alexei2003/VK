@@ -19,6 +19,7 @@ namespace LikesRepostsBots
             var rand = new Random();
 
             PeopleDictionary people = new();
+            people.Read();
 
             var bots = new Bots(accessTokensAndNames, people, rand, false);
 
@@ -26,13 +27,9 @@ namespace LikesRepostsBots
             int count = 0;
             while (true)
             {
-                Console.WriteLine($"Итерация {count}");
-
                 bots.Mix();
 
                 int stepBetweenBots = TIME_WORK / bots.Count;
-
-                people.Read();
 
                 if (count % 10 == 0)
                 {
