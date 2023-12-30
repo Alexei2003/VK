@@ -1,5 +1,4 @@
 ﻿using LikesRepostsBots.Classes;
-using Newtonsoft.Json.Linq;
 using static LikesRepostsBots.Classes.BotsWorksParams;
 
 namespace LikesRepostsBots

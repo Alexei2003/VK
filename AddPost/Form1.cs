@@ -13,7 +13,7 @@ namespace AddPost
         private readonly Post post;
         private readonly Tags tagList = new();
         private readonly Date date;
-        ComputerVision.ModelOutput? resultArts = null;
+        private string? resulTag = null;
         public Form1()
         {
             InitializeComponent();
@@ -26,14 +26,6 @@ namespace AddPost
             cbTimeBetweenPost.SelectedIndex = 1;
 
             WriteFindTag();
-
-            var sampleData = new ComputerVision.ModelInput()
-            {
-                ImageSource = new byte[] { 0, 1 },
-            };
-
-            //Load model and predict output
-            ComputerVision.Predict(sampleData);
         }
 
         public void ClearInfAboutPost()
@@ -64,9 +56,12 @@ namespace AddPost
 
         public void AddInDataSet(Bitmap image, string tags)
         {
-            if (!tagList.Add(tags) && tags.Split("#").Length - 1 < 3 && !tags.Contains("#Original") && resultArts != null && tbTag.Text != resultArts.PredictedLabel)
+            if (!tagList.Add(tags) && tags.Split("#").Length - 1 < 3)
             {
-                PhotoDataSet.Add(image, tags);
+                if ( resulTag != null && resulTag != tbTag.Text  && !resulTag.Contains(".#Original"))
+                {
+                    PhotoDataSet.Add(image, tags);
+                }
             }
         }
 
@@ -111,20 +106,22 @@ namespace AddPost
             };
 
             //Load model and predict output
-            resultArts = ComputerVision.Predict(sampleData);
+            var resultArts = ComputerVision.Predict(sampleData);
 
             var scores = resultArts.Score;
 
             if (cbClear2.Checked)
             {
-                if (scores.Max() > 0.5)
+                if (scores.Max() > 0.6)
                 {
-                    tbTag.Text = resultArts.PredictedLabel;
+                    resulTag = resultArts.PredictedLabel;
                 }
                 else
                 {
-                    tbTag.Text = "#Original";
+                    resulTag = "#Original";
                 }
+
+                tbTag.Text = resulTag;
             }
         }
 
@@ -145,17 +142,20 @@ namespace AddPost
 
         private void bSend_Click(object sender, EventArgs e)
         {
-            string tags = tbTag.Text.Replace(" ", "");
-            var image = new Bitmap(pbImage.Image);
+            if (pbImage.Image != null)
+            {
+                string tags = tbTag.Text.Replace(" ", "");
+                var image = new Bitmap(pbImage.Image);
 
-            //Создание поста
-            post.Publish(image, tags, tbUrl.Text, date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1), groupId);
+                //Создание поста
+                post.Publish(image, tags, tbUrl.Text, date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1), groupId);
 
-            AddInDataSet(image, tags);
+                AddInDataSet(image, tags);
 
-            WritePostTime();
+                WritePostTime();
 
-            ClearInfAboutPost();
+                ClearInfAboutPost();
+            }
         }
 
         private void tbTag_KeyUp(object sender, KeyEventArgs e)
@@ -207,11 +207,14 @@ namespace AddPost
 
         private void bDataSet_Click(object sender, EventArgs e)
         {
-            string tags = tbTag.Text.Replace(" ", "");
-            var image = new Bitmap(pbImage.Image);
-            AddInDataSet(image, tags);
+            if (pbImage.Image != null)
+            {
+                string tags = tbTag.Text.Replace(" ", "");
+                var image = new Bitmap(pbImage.Image);
+                AddInDataSet(image, tags);
 
-            ClearInfAboutPost();
+                ClearInfAboutPost();
+            }
         }
 
         private void dgvDictionary_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
