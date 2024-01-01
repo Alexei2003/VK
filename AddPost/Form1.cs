@@ -110,14 +110,14 @@ namespace AddPost
 
             var scores = resultArts.Score;
 
+            resulTag = resultArts.PredictedLabel;
+            if (scores.Max() < 0.6 || resulTag.Contains(".#Original"))
+            {
+                resulTag = "#Original";
+            }
+
             if (cbClear2.Checked)
             {
-                resulTag = resultArts.PredictedLabel;
-                if (scores.Max() < 0.6 || resulTag.Contains(".#Original"))
-                {
-                    resulTag = "#Original";
-                }
-
                 tbTag.Text = resulTag;
             }
         }
