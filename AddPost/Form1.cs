@@ -58,7 +58,7 @@ namespace AddPost
         {
             if (!tagList.Add(tags) && tags.Split("#").Length - 1 < 3)
             {
-                if ( resulTag != null && resulTag != tbTag.Text  && !resulTag.Contains(".#Original"))
+                if (resulTag != null && resulTag != tbTag.Text)
                 {
                     PhotoDataSet.Add(image, tags);
                 }
@@ -112,11 +112,8 @@ namespace AddPost
 
             if (cbClear2.Checked)
             {
-                if (scores.Max() > 0.6)
-                {
-                    resulTag = resultArts.PredictedLabel;
-                }
-                else
+                resulTag = resultArts.PredictedLabel;
+                if (scores.Max() < 0.6 || resulTag.Contains(".#Original"))
                 {
                     resulTag = "#Original";
                 }
