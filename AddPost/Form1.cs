@@ -111,7 +111,7 @@ namespace AddPost
             var scores = resultArts.Score;
 
             resulTag = resultArts.PredictedLabel;
-            if (scores.Max() < 0.6 || resulTag.Contains(".#Original"))
+            if (scores.Max() < 0.6f || resulTag.Contains(".#Original"))
             {
                 resulTag = "#Original";
             }
