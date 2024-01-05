@@ -14,6 +14,8 @@ namespace AddPost
         private readonly Tags tagList = new();
         private readonly Date date;
         private string? resulTag = null;
+        private float percentOriginalTag = 0.6f;
+
         public Form1()
         {
             InitializeComponent();
@@ -24,6 +26,7 @@ namespace AddPost
             date = new Date(authorize.Api);
             groupId = tbGroupId.Text;
             cbTimeBetweenPost.SelectedIndex = 1;
+            cbPercentOriginalTag.SelectedIndex = 5;
 
             WriteFindTag();
         }
@@ -111,7 +114,7 @@ namespace AddPost
             var scores = resultArts.Score;
 
             resulTag = resultArts.PredictedLabel;
-            if (scores.Max() < 0.6f || resulTag.Contains(".#Original"))
+            if (scores.Max() < percentOriginalTag || resulTag.Contains(".#Original"))
             {
                 resulTag = "#Original";
             }
@@ -243,6 +246,11 @@ namespace AddPost
         private void tBackgroundImageCopy_Tick(object sender, EventArgs e)
         {
             BackgroundImageCopy();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            percentOriginalTag = (cbPercentOriginalTag.SelectedIndex+1) * 0.1f;
         }
     }
 }

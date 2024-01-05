@@ -51,6 +51,8 @@
             bBackgroundImageCopyOn = new Button();
             bBackgroundImageCopyOff = new Button();
             tBackgroundImageCopy = new System.Windows.Forms.Timer(components);
+            tbPercentOriginalTag = new TextBox();
+            cbPercentOriginalTag = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)pbImage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             SuspendLayout();
@@ -214,7 +216,6 @@
             dgvDictionary.Location = new Point(748, 199);
             dgvDictionary.Name = "dgvDictionary";
             dgvDictionary.RowHeadersWidth = 45;
-            dgvDictionary.RowTemplate.Height = 27;
             dgvDictionary.Size = new Size(719, 413);
             dgvDictionary.TabIndex = 18;
             dgvDictionary.CellContentClick += dgvDictionary_CellContentClick;
@@ -264,12 +265,35 @@
             tBackgroundImageCopy.Interval = 1000;
             tBackgroundImageCopy.Tick += tBackgroundImageCopy_Tick;
             // 
+            // tbPercentOriginalTag
+            // 
+            tbPercentOriginalTag.Location = new Point(623, 328);
+            tbPercentOriginalTag.Multiline = true;
+            tbPercentOriginalTag.Name = "tbPercentOriginalTag";
+            tbPercentOriginalTag.Size = new Size(110, 39);
+            tbPercentOriginalTag.TabIndex = 22;
+            tbPercentOriginalTag.Text = "Сходство ниже #Original";
+            tbPercentOriginalTag.TextAlign = HorizontalAlignment.Center;
+            tbPercentOriginalTag.UseSystemPasswordChar = true;
+            // 
+            // cbPercentOriginalTag
+            // 
+            cbPercentOriginalTag.FormattingEnabled = true;
+            cbPercentOriginalTag.Items.AddRange(new object[] { "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%" });
+            cbPercentOriginalTag.Location = new Point(623, 373);
+            cbPercentOriginalTag.Name = "cbPercentOriginalTag";
+            cbPercentOriginalTag.Size = new Size(110, 25);
+            cbPercentOriginalTag.TabIndex = 23;
+            cbPercentOriginalTag.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
+            // 
             // Form1
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1479, 629);
+            Controls.Add(cbPercentOriginalTag);
+            Controls.Add(tbPercentOriginalTag);
             Controls.Add(bBackgroundImageCopyOff);
             Controls.Add(bBackgroundImageCopyOn);
             Controls.Add(bDataSet);
@@ -324,5 +348,7 @@
         private Button bBackgroundImageCopyOn;
         private Button bBackgroundImageCopyOff;
         private System.Windows.Forms.Timer tBackgroundImageCopy;
+        private TextBox tbPercentOriginalTag;
+        private ComboBox cbPercentOriginalTag;
     }
 }
