@@ -119,13 +119,28 @@ namespace AddPost
                 resulTag = "#Original";
             }
 
-            if (cbClear2.Checked)
+            // Проверяем, требуется ли выполнить Invoke
+            if (tbTag.InvokeRequired)
             {
-                tbTag.Text = resulTag;
+                // Если да, то выполняем Invoke с анонимным методом
+                tbTag.Invoke((MethodInvoker)delegate
+                {
+                    if (cbClear2.Checked)
+                    {
+                        tbTag.Text = resulTag;
+                    }
+                });
+            }
+            else
+            {
+                if (cbClear2.Checked)
+                {
+                    tbTag.Text = resulTag;
+                }
             }
         }
 
-        private void bBuff_Click(object sender, EventArgs e)
+        private async void bBuff_Click(object sender, EventArgs e)
         {
             // Проверка, содержит ли буфер обмена изображение
             if (Clipboard.ContainsImage())
@@ -133,22 +148,45 @@ namespace AddPost
                 // Получение изображения из буфера обмена
                 var clipboardImage = new Bitmap(Clipboard.GetImage());
 
-                // Установка изображения в PictureBox
-                pbImage.Image = clipboardImage;
+                await Task.Run(() =>
+                {
+                    NeuralNetworkResult(clipboardImage);
 
-                NeuralNetworkResult(clipboardImage);
+                    // Проверяем, требуется ли выполнить Invoke
+                    if (pbImage.InvokeRequired)
+                    {
+                        // Если да, то выполняем Invoke с анонимным методом
+                        pbImage.Invoke((MethodInvoker)delegate
+                        {
+                            // Установка изображения в PictureBox
+                            pbImage.Image = clipboardImage;
+                        });
+                    }
+                    else
+                    {
+                        // Установка изображения в PictureBox
+                        pbImage.Image = clipboardImage;
+                    }
+
+                });
+
             }
         }
 
-        private void bSend_Click(object sender, EventArgs e)
+        private async void bSend_Click(object sender, EventArgs e)
         {
             if (pbImage.Image != null)
             {
                 string tags = tbTag.Text.Replace(" ", "");
                 var image = new Bitmap(pbImage.Image);
 
-                //Создание поста
-                post.Publish(image, tags, tbUrl.Text, date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1), groupId);
+                var index = cbTimeBetweenPost.SelectedIndex + 1;
+
+                await Task.Run(() =>
+                {
+                    //Создание поста
+                    post.Publish(image, tags, tbUrl.Text, date.ChangeTime(groupId, index), groupId);
+                });
 
                 AddInDataSet(image, tags);
 
@@ -250,7 +288,7 @@ namespace AddPost
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            percentOriginalTag = (cbPercentOriginalTag.SelectedIndex+1) * 0.1f;
+            percentOriginalTag = (cbPercentOriginalTag.SelectedIndex + 1) * 0.1f;
         }
     }
 }
