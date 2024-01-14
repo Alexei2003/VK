@@ -1,17 +1,17 @@
 using AddPost.Classes;
+using AddPost.Classes.DataSet;
+using AddPost.Classes.DownloaderDataSetPhoto;
+using AddPost.Classes.VK;
 using System.ComponentModel;
-using System.Drawing.Imaging;
 
 namespace AddPost
 {
     public partial class Form1 : Form
     {
 
-        private string groupId;
-        private readonly string accessToken;
+        private Int64 groupId;
         private readonly Authorize authorize;
-        private readonly Post post;
-        private readonly Tags tagList = new();
+        private readonly TagsLIst tagList = new();
         private readonly Date date;
         private string? resulTag = null;
         private float percentOriginalTag = 0.6f;
@@ -19,12 +19,11 @@ namespace AddPost
         public Form1()
         {
             InitializeComponent();
-            accessToken = File.ReadAllText("AccessToken.txt");
+            var accessToken = File.ReadAllText("AccessToken.txt");
             authorize = new Authorize(accessToken);
-            post = new Post(authorize.Api);
             tagList.LoadDictionary();
             date = new Date(authorize.Api);
-            groupId = tbGroupId.Text;
+            groupId = Convert.ToInt64(tbGroupId.Text);
             cbTimeBetweenPost.SelectedIndex = 1;
             cbPercentOriginalTag.SelectedIndex = 5;
 
@@ -63,7 +62,7 @@ namespace AddPost
             {
                 if (resulTag != null && resulTag != tbTag.Text)
                 {
-                    PhotoDataSet.Add(image, tags);
+                    DataSetPhoto.Add(image, tags);
                 }
             }
         }
@@ -91,33 +90,7 @@ namespace AddPost
 
         private void NeuralNetworkResult(Bitmap image)
         {
-            image = PhotoDataSet.ChangeResolution(image);
-
-            // Преобразуйте изображение в байты
-            byte[] imageBytes;
-            using (var stream = new MemoryStream())
-            {
-                // Сохраните изображение в том же формате, в котором оно находится в буфере обмена
-                image.Save(stream, ImageFormat.Jpeg);
-                imageBytes = stream.ToArray();
-            }
-
-            // Подача данных в модель
-            var sampleData = new ComputerVision.ModelInput()
-            {
-                ImageSource = imageBytes,
-            };
-
-            //Load model and predict output
-            var resultArts = ComputerVision.Predict(sampleData);
-
-            var scores = resultArts.Score;
-
-            resulTag = resultArts.PredictedLabel;
-            if (scores.Max() < percentOriginalTag || resulTag.Contains(".#Original"))
-            {
-                resulTag = "#Original";
-            }
+            resulTag = NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag);
 
             // Проверяем, требуется ли выполнить Invoke
             if (tbTag.InvokeRequired)
@@ -184,6 +157,7 @@ namespace AddPost
 
                 await Task.Run(() =>
                 {
+                    var post = new Post(authorize.Api);
                     //Создание поста
                     post.Publish(image, tags, tbUrl.Text, date.ChangeTime(groupId, index), groupId);
                 });
@@ -216,7 +190,7 @@ namespace AddPost
 
         private void tbGroupId_Leave(object sender, EventArgs e)
         {
-            groupId = tbGroupId.Text;
+            groupId = Convert.ToInt64(tbGroupId.Text);
             WritePostTime();
         }
 
@@ -286,9 +260,43 @@ namespace AddPost
             BackgroundImageCopy();
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void cbPercentOriginalTag_SelectedIndexChanged(object sender, EventArgs e)
         {
             percentOriginalTag = (cbPercentOriginalTag.SelectedIndex + 1) * 0.1f;
+        }
+
+        private void bDownloadPhotos_Click(object sender, EventArgs e)
+        {
+
+            if (tbTag.Text.Length > 0)
+            {
+                int shift = 0;
+                int count = 0;
+                Task.Run(() =>
+                {
+                    // Проверяем, требуется ли выполнить Invoke
+                    if (tbShiftDownload.InvokeRequired)
+                    {
+                        // Если да, то выполняем Invoke с анонимным методом
+                        tbShiftDownload.Invoke((MethodInvoker)delegate
+                        {
+                            shift = Convert.ToInt32(tbShiftDownload.Text);
+                            count = Convert.ToInt32(tbCountDownload.Text);
+                        });
+                    }
+                    else
+                    {
+                        shift = Convert.ToInt32(tbShiftDownload.Text);
+                        count = Convert.ToInt32(tbCountDownload.Text);
+                    }
+                    var downloaderVK = new DownloaderDataSetPhotoFromVK(authorize.Api);
+                    downloaderVK.SavePhotosIdFromNewsfeed(tbTag.Text, tagList, shift, count, groupId, percentOriginalTag);
+                });
+            }
+            else
+            {
+
+            }
         }
     }
 }

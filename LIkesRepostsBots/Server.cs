@@ -17,10 +17,10 @@ namespace LikesRepostsBots
             var accessTokensAndNames = File.ReadAllLines(Path.Combine("AccessTokens.txt"));
             var rand = new Random();
 
-            PeopleDictionary people = new();
+            PeoplesLIst people = new();
             people.Read();
 
-            var bots = new Bots(accessTokensAndNames, people, rand, false);
+            var bots = new BotsLIst(accessTokensAndNames, people, rand, false);
 
             const int TIME_WORK = 10 * 60 * 60 * 1000;
             int count = 0;

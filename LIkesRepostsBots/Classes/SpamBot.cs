@@ -13,12 +13,12 @@ namespace LikesRepostsBots.Classes
         private const int CHANCE_LIKE = 5;
         private const int CHANCE_REPOST = 5;
         private const int MAX_COUNT_POST = 16;
-        private readonly PeopleDictionary people;
+        private readonly PeoplesLIst people;
         private string accessToken;
 
         public string BotName { get; set; }
 
-        public SpamBot(string botName, string accessToken, PeopleDictionary people, Random rand)
+        public SpamBot(string botName, string accessToken, PeoplesLIst people, Random rand)
         {
             api = new(rand);
             this.people = people;

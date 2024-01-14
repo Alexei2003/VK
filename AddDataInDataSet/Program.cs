@@ -80,7 +80,7 @@
     {
         var littleDirectories = Directory.GetDirectories(LITTLE_PATH);
 
-        foreach(var littleDirectory in littleDirectories)
+        foreach (var littleDirectory in littleDirectories)
         {
             var sourceInfo = new DirectoryInfo(littleDirectory);
             int a = sourceInfo.GetFiles().Length;

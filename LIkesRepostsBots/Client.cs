@@ -63,10 +63,10 @@ namespace LikesRepostsBots
 
             var accessTokensAndNames = File.ReadAllLines(Path.Combine("AccessTokens.txt"));
 
-            PeopleDictionary people = new();
+            PeoplesLIst people = new();
 
             var rand = new Random();
-            var bots = new Bots(accessTokensAndNames, people, rand, memorial);
+            var bots = new BotsLIst(accessTokensAndNames, people, rand, memorial);
 
             people.Read();
 

@@ -53,6 +53,12 @@
             tBackgroundImageCopy = new System.Windows.Forms.Timer(components);
             tbPercentOriginalTag = new TextBox();
             cbPercentOriginalTag = new ComboBox();
+            textBox6 = new TextBox();
+            tbShiftDownload = new TextBox();
+            tbCountDownload = new TextBox();
+            textBox10 = new TextBox();
+            textBox11 = new TextBox();
+            bDownloadPhotos = new Button();
             ((System.ComponentModel.ISupportInitialize)pbImage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             SuspendLayout();
@@ -284,14 +290,73 @@
             cbPercentOriginalTag.Name = "cbPercentOriginalTag";
             cbPercentOriginalTag.Size = new Size(110, 25);
             cbPercentOriginalTag.TabIndex = 23;
-            cbPercentOriginalTag.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
+            cbPercentOriginalTag.SelectedIndexChanged += cbPercentOriginalTag_SelectedIndexChanged;
+            // 
+            // textBox6
+            // 
+            textBox6.Location = new Point(1473, 13);
+            textBox6.Name = "textBox6";
+            textBox6.ReadOnly = true;
+            textBox6.Size = new Size(150, 25);
+            textBox6.TabIndex = 24;
+            textBox6.Text = "VK";
+            // 
+            // tbShiftDownload
+            // 
+            tbShiftDownload.Location = new Point(1473, 75);
+            tbShiftDownload.Name = "tbShiftDownload";
+            tbShiftDownload.Size = new Size(150, 25);
+            tbShiftDownload.TabIndex = 25;
+            tbShiftDownload.Text = "0";
+            // 
+            // tbCountDownload
+            // 
+            tbCountDownload.Location = new Point(1473, 137);
+            tbCountDownload.Name = "tbCountDownload";
+            tbCountDownload.Size = new Size(150, 25);
+            tbCountDownload.TabIndex = 26;
+            tbCountDownload.Text = "0";
+            // 
+            // textBox10
+            // 
+            textBox10.Location = new Point(1473, 44);
+            textBox10.Name = "textBox10";
+            textBox10.ReadOnly = true;
+            textBox10.Size = new Size(150, 25);
+            textBox10.TabIndex = 27;
+            textBox10.Text = "Отступ до скачки";
+            // 
+            // textBox11
+            // 
+            textBox11.Location = new Point(1473, 106);
+            textBox11.Name = "textBox11";
+            textBox11.ReadOnly = true;
+            textBox11.Size = new Size(150, 25);
+            textBox11.TabIndex = 28;
+            textBox11.Text = "Количество скачиваний";
+            // 
+            // bDownloadPhotos
+            // 
+            bDownloadPhotos.Location = new Point(1473, 168);
+            bDownloadPhotos.Name = "bDownloadPhotos";
+            bDownloadPhotos.Size = new Size(150, 25);
+            bDownloadPhotos.TabIndex = 29;
+            bDownloadPhotos.Text = "Скачать";
+            bDownloadPhotos.UseVisualStyleBackColor = true;
+            bDownloadPhotos.Click += bDownloadPhotos_Click;
             // 
             // Form1
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1479, 629);
+            ClientSize = new Size(1632, 629);
+            Controls.Add(bDownloadPhotos);
+            Controls.Add(textBox11);
+            Controls.Add(textBox10);
+            Controls.Add(tbCountDownload);
+            Controls.Add(tbShiftDownload);
+            Controls.Add(textBox6);
             Controls.Add(cbPercentOriginalTag);
             Controls.Add(tbPercentOriginalTag);
             Controls.Add(bBackgroundImageCopyOff);
@@ -350,5 +415,11 @@
         private System.Windows.Forms.Timer tBackgroundImageCopy;
         private TextBox tbPercentOriginalTag;
         private ComboBox cbPercentOriginalTag;
+        private TextBox textBox6;
+        private TextBox tbShiftDownload;
+        private TextBox tbCountDownload;
+        private TextBox textBox10;
+        private TextBox textBox11;
+        private Button bDownloadPhotos;
     }
 }

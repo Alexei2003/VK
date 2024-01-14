@@ -46,5 +46,20 @@ namespace MyCustomClasses.VkApiCustomClasses
                 }
             }
         }
+        public ReadOnlyCollection<VkNet.Model.Photo> GetById(IEnumerable<string> photos, bool? extended = null, bool? photoSizes = null)
+        {
+            while (true)
+            {
+                try
+                {
+                    var res = ApiOriginal.Photo.GetById(photos, extended, photoSizes);
+                    return res;
+                }
+                catch (VkNet.Exception.TooManyRequestsException)
+                {
+                    Thread.Sleep(TIME_SLEEP);
+                }
+            }
+        }
     }
 }
