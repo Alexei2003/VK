@@ -50,7 +50,16 @@ namespace AddPost.Classes.DataSet
 
             Directory.CreateDirectory(path);
 
-            image.Save(path + "\\" + data.ToString("yyyy.MM.dd.HH.mm.ss") + ".jpg", ImageFormat.Jpeg);
+            path = path + "\\" + data.ToString("yyyy.MM.dd.HH.mm.ss.fff") + ".jpg";
+
+            if(File.Exists(path))
+            {
+                Thread.Sleep(10);
+                data = DateTime.Now;
+                data.AddHours(3);
+                path = path + "\\" + data.ToString("yyyy.MM.dd.HH.mm.ss.fff") + ".jpg";
+            }
+            image.Save(path, ImageFormat.Jpeg);
         }
     }
 }

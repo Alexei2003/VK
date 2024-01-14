@@ -83,7 +83,7 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
                 wc.DownloadFile(photo.Sizes[2].Url, "DATA_SET\\DataSet.jpg");
                 using var image = new Bitmap("DATA_SET\\DataSet.jpg");
 
-                if(NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag) != tag)
+                //if(NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag) != tag)
                 {
                     DataSetPhoto.Add(image, tag);
                 }

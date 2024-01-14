@@ -274,7 +274,19 @@ namespace AddPost
                 int count = 0;
                 await Task.Run(() =>
                 {
-                    bDownloadPhotos.Enabled = false;
+                    if (bDownloadPhotos.InvokeRequired)
+                    {
+                        // ≈сли да, то выполн€ем Invoke с анонимным методом
+                        bDownloadPhotos.Invoke((MethodInvoker)delegate
+                        {
+                            bDownloadPhotos.Enabled = false;
+                        });
+                    }
+                    else
+                    {
+                        bDownloadPhotos.Enabled = false;
+                    }
+
                     // ѕровер€ем, требуетс€ ли выполнить Invoke
                     if (tbShiftDownload.InvokeRequired)
                     {
@@ -292,7 +304,19 @@ namespace AddPost
                     }
                     var downloaderVK = new DownloaderDataSetPhotoFromVK(authorize.Api);
                     downloaderVK.SavePhotosIdFromNewsfeed(tbTag.Text, tagList, shift, count, groupId, percentOriginalTag);
-                    bDownloadPhotos.Enabled = true;
+
+                    if (bDownloadPhotos.InvokeRequired)
+                    {
+                        // ≈сли да, то выполн€ем Invoke с анонимным методом
+                        bDownloadPhotos.Invoke((MethodInvoker)delegate
+                        {
+                            bDownloadPhotos.Enabled = true;
+                        });
+                    }
+                    else
+                    {
+                        bDownloadPhotos.Enabled = true;
+                    }
                 });
             }
             else
