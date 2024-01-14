@@ -27,17 +27,16 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
             {
                 foreach (var post in newsfeedPosts.Items)
                 {
-                    if (countPhoto < 1)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        countPhoto--;
-                    }
-
                     if (shiftPost < 1)
                     {
+                        if (countPhoto < 1)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            countPhoto--;
+                        }
                         SavePhotos(tag, post, ignorGroupId, percentOriginalTag);
                     }
                     else
