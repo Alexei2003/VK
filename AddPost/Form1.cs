@@ -265,15 +265,16 @@ namespace AddPost
             percentOriginalTag = (cbPercentOriginalTag.SelectedIndex + 1) * 0.1f;
         }
 
-        private void bDownloadPhotos_Click(object sender, EventArgs e)
+        private async void bDownloadPhotos_Click(object sender, EventArgs e)
         {
 
             if (tbTag.Text.Length > 0)
             {
                 int shift = 0;
                 int count = 0;
-                Task.Run(() =>
+                await Task.Run(() =>
                 {
+                    bDownloadPhotos.Enabled = false;
                     // Проверяем, требуется ли выполнить Invoke
                     if (tbShiftDownload.InvokeRequired)
                     {
@@ -291,6 +292,7 @@ namespace AddPost
                     }
                     var downloaderVK = new DownloaderDataSetPhotoFromVK(authorize.Api);
                     downloaderVK.SavePhotosIdFromNewsfeed(tbTag.Text, tagList, shift, count, groupId, percentOriginalTag);
+                    bDownloadPhotos.Enabled = true;
                 });
             }
             else

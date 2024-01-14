@@ -20,7 +20,7 @@ namespace AddPost.Classes.VK
 
             image.Save("Post.jpg", ImageFormat.Jpeg);
 
-            var responseFile = Encoding.ASCII.GetString(wc.UploadFile(uploadServer.UploadUrl, "1.jpg"));
+            var responseFile = Encoding.ASCII.GetString(wc.UploadFile(uploadServer.UploadUrl, "Post.jpg"));
 
             return api.Photo.SaveWallPhoto(responseFile, Convert.ToUInt32(api.ApiOriginal.UserId));
         }
