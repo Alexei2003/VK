@@ -60,7 +60,7 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
         {
             var stringList = new List<string>();
 
-            if (post.OwnerId != (-1 * groupId))
+            if (post.OwnerId == (-1 * groupId))
             {
                 return;
             }
