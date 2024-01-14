@@ -2,16 +2,17 @@
 
 namespace LikesRepostsBots.Classes
 {
-    internal class PeoplesLIst
+    internal sealed class PeoplesLIst
     {
-        private HashSet<long> people = new();
+        private HashSet<long> people = [];
 
         public void Read()
         {
             string json = File.ReadAllText(Path.Combine("PeopleDictionary.txt"));
-            if (json != "")
+            if (json?.Length != 0)
             {
-                people = JsonConvert.DeserializeObject<HashSet<long>>(json);
+                people = JsonConvert.DeserializeObject<HashSet<long>>(
+                    json);
             }
         }
 

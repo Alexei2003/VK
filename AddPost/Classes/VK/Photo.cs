@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AddPost.Classes.VK
 {
-    internal class Photo
+    internal sealed class Photo
     {
         private readonly VkApiCustom api;
         public Photo(VkApiCustom api)
@@ -13,7 +13,7 @@ namespace AddPost.Classes.VK
             this.api = api;
         }
 
-        public IReadOnlyCollection<VkNet.Model.Photo> AddOnVKServer(Bitmap image)
+        public System.Collections.ObjectModel.ReadOnlyCollection<VkNet.Model.Photo> AddOnVKServer(Bitmap image)
         {
             var uploadServer = api.Photo.GetWallUploadServer();
             using var wc = new WebClient();

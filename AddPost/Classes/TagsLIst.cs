@@ -3,13 +3,13 @@ using System.Collections.Concurrent;
 
 namespace AddPost.Classes
 {
-    internal class TagsLIst
+    internal sealed class TagsLIst
     {
         private List<string> tagsList;
 
         public TagsLIst()
         {
-            tagsList = new List<string>();
+            tagsList = [];
         }
 
         public void SaveDictionary()
@@ -67,12 +67,7 @@ namespace AddPost.Classes
 
         public bool Remove(string tags)
         {
-            if (tagsList.Contains(tags))
-            {
-                tagsList.Remove(tags);
-                return true;
-            }
-            return false;
+            return tagsList.Remove(tags);
         }
     }
 }

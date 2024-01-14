@@ -4,7 +4,7 @@ using VkNet.Model;
 
 namespace AddPost.Classes.VK
 {
-    internal class Date
+    internal sealed class Date
     {
         private readonly VkApiCustom api;
 
@@ -13,7 +13,7 @@ namespace AddPost.Classes.VK
             this.api = api;
         }
 
-        public DateTime? ChangeTime(Int64 groupId, double hoursBetweenPost)
+        public DateTime? ChangeTime(Int64 groupId, int hoursBetweenPost)
         {
             var data = GetTimeLastPost(groupId);
 
@@ -27,7 +27,7 @@ namespace AddPost.Classes.VK
         {
             var post = api.Wall.Get(new WallGetParams()
             {
-                OwnerId = -1 * Convert.ToInt64(groupId),
+                OwnerId = -1 * groupId,
                 Count = 100,
                 Filter = WallFilter.Postponed,
             });
@@ -36,7 +36,7 @@ namespace AddPost.Classes.VK
             {
                 post = api.Wall.Get(new WallGetParams()
                 {
-                    OwnerId = -1 * Convert.ToInt64(groupId),
+                    OwnerId = -1 * groupId,
                     Count = 1,
                     Filter = WallFilter.All,
                 });
@@ -47,7 +47,7 @@ namespace AddPost.Classes.VK
                 {
                     post = api.Wall.Get(new WallGetParams()
                     {
-                        OwnerId = -1 * Convert.ToInt64(groupId),
+                        OwnerId = -1 * groupId,
                         Offset = post.TotalCount - 1,
                         Count = 1,
                         Filter = WallFilter.Postponed,

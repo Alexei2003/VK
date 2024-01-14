@@ -3,7 +3,7 @@ using VkNet.Model;
 
 namespace AddPost.Classes.VK
 {
-    internal class Authorize
+    internal sealed class Authorize
     {
         public VkApiCustom Api { get; } = new(new Random());
         public Authorize(string accessToken)

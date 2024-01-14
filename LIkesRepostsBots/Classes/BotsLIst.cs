@@ -1,13 +1,13 @@
 ﻿namespace LikesRepostsBots.Classes
 {
-    internal class BotsLIst
+    internal sealed class BotsLIst
     {
-        private readonly List<SpamBot> bots = new();
+        private readonly List<SpamBot> bots = [];
         public int Count { get; }
 
         private readonly Random rand;
 
-        public BotsLIst(string[] accessTokensAndNames, PeoplesLIst people, Random rand, bool memorial)
+        public BotsLIst(string[] accessTokensAndNames, PeoplesLIst people, Random rand)
         {
             this.rand = rand;
             for (int i = 1; i < accessTokensAndNames.Length; i += 2)
@@ -34,9 +34,7 @@
             while (n > 1)
             {
                 int k = rand.Next(n--);
-                var value = bots[k];
-                bots[k] = bots[n];
-                bots[n] = value;
+                (bots[n], bots[k]) = (bots[k], bots[n]);
             }
         }
     }

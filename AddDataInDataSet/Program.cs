@@ -1,4 +1,4 @@
-﻿internal class Program
+﻿internal static class Program
 {
     private const string LITTLE_PATH = "ARTS\\Little";
     private const string NEW_PATH = "ARTS\\New";
@@ -6,7 +6,7 @@
 
     private const int MIN_COUNT_FILES = 100;
 
-    private static void Main(string[] args)
+    private static void Main()
     {
         while (true)
         {
@@ -83,7 +83,6 @@
         foreach (var littleDirectory in littleDirectories)
         {
             var sourceInfo = new DirectoryInfo(littleDirectory);
-            int a = sourceInfo.GetFiles().Length;
             if (sourceInfo.GetFiles().Length >= MIN_COUNT_FILES)
             {
                 var directoryNameParts = littleDirectory.Split("\\");

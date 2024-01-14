@@ -6,7 +6,7 @@ using static LikesRepostsBots.Classes.BotsWorksParams;
 
 namespace LikesRepostsBots.Classes
 {
-    internal class SpamBot
+    internal sealed class SpamBot
     {
         private readonly VkApiCustom api;
         private readonly Random rand;
@@ -14,7 +14,7 @@ namespace LikesRepostsBots.Classes
         private const int CHANCE_REPOST = 5;
         private const int MAX_COUNT_POST = 16;
         private readonly PeoplesLIst people;
-        private string accessToken;
+        private readonly string accessToken;
 
         public string BotName { get; set; }
 
@@ -121,7 +121,7 @@ namespace LikesRepostsBots.Classes
         private void AddToFriendsFromRecomendedList()
         {
             Console.WriteLine("Добавление друзей");
-            ulong countFriends = 1;
+            const ulong countFriends = 1;
 
             var suggestions = api.Friends.GetSuggestions();
 
@@ -216,8 +216,8 @@ namespace LikesRepostsBots.Classes
                     api.Likes.Add(new LikesAddParams
                     {
                         Type = LikeObjectType.Comment,
-                        ItemId = Convert.ToInt64(comment.Id),
-                        OwnerId = Convert.ToInt64(comment.OwnerId),
+                        ItemId = comment.Id,
+                        OwnerId = comment.OwnerId,
                     });
                     likes++;
                 }

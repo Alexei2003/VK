@@ -78,7 +78,8 @@ namespace AddPost
         {
             if (Clipboard.ContainsImage())
             {
-                var clipboardImage = new Bitmap(Clipboard.GetImage());
+                var clipboardImage = new Bitmap(
+                    Clipboard.GetImage());
 
                 NeuralNetworkResult(clipboardImage);
 
@@ -303,7 +304,7 @@ namespace AddPost
                         count = Convert.ToInt32(tbCountDownload.Text);
                     }
                     var downloaderVK = new DownloaderDataSetPhotoFromVK(authorize.Api);
-                    downloaderVK.SavePhotosIdFromNewsfeed(tbTag.Text, tagList, shift, count, groupId, percentOriginalTag);
+                    downloaderVK.SavePhotosIdFromNewsfeed(tbTag.Text, shift, count, groupId, percentOriginalTag);
 
                     if (bDownloadPhotos.InvokeRequired)
                     {

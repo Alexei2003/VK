@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AddPost.Classes
 {
-    internal class NeuralNetwork
+    internal static class NeuralNetwork
     {
         public static string NeuralNetworkResult(Bitmap image, float percentOriginalTag)
         {

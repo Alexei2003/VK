@@ -3,7 +3,7 @@ using static LikesRepostsBots.Classes.BotsWorksParams;
 
 namespace LikesRepostsBots
 {
-    internal class Server
+    internal static class Server
     {
         public static void Start()
         {
@@ -20,7 +20,7 @@ namespace LikesRepostsBots
             PeoplesLIst people = new();
             people.Read();
 
-            var bots = new BotsLIst(accessTokensAndNames, people, rand, false);
+            var bots = new BotsLIst(accessTokensAndNames, people, rand);
 
             const int TIME_WORK = 10 * 60 * 60 * 1000;
             int count = 0;

@@ -3,13 +3,12 @@ using static LikesRepostsBots.Classes.BotsWorksParams;
 
 namespace LikesRepostsBots
 {
-    internal class Client
+    internal static class Client
     {
         public static void Start()
         {
-            BotsWorksParams botParams = new BotsWorksParams();
+            BotsWorksParams botParams = new();
 
-            bool memorial = false;
             bool BanPeopleFromGroup = false;
 
             Console.WriteLine(
@@ -17,21 +16,20 @@ namespace LikesRepostsBots
                 "1.Сделать репосты\n" +
                 "2.Добавить в друзья\n" +
                 "3.Очистка друзей\n" +
-                "4.Мемориал\n" +
-                "5.Добавить людей из группы в чс");
+                "4.Добавить людей из группы в чс");
 
             string strMain = Console.ReadLine();
 
-            if (strMain.Contains("1"))
+            if (strMain.Contains('1'))
             {
                 botParams.MakeRepost = true;
             }
-            if (strMain.Contains("2"))
+            if (strMain.Contains('2'))
             {
                 Console.WriteLine("Сколько друзей добавить");
                 botParams.AddFriendsCount = Convert.ToInt32(Console.ReadLine());
             }
-            if (strMain.Contains("3"))
+            if (strMain.Contains('3'))
             {
                 Console.WriteLine(
                     "Выбор способа очистки:\n" +
@@ -40,20 +38,16 @@ namespace LikesRepostsBots
 
                 string strClear = Console.ReadLine();
 
-                if (strClear.Contains("1"))
+                if (strClear.Contains('1'))
                 {
                     botParams.ClearFriends = ClearFriendsType.BanAccount;
                 }
-                if (strClear.Contains("2"))
+                if (strClear.Contains('2'))
                 {
                     botParams.ClearFriends = ClearFriendsType.BanAndMathAccount;
                 }
             }
-            if (strMain.Contains("4"))
-            {
-                memorial = true;
-            }
-            if (strMain.Contains("5"))
+            if (strMain.Contains('4'))
             {
                 BanPeopleFromGroup = true;
 
@@ -66,7 +60,7 @@ namespace LikesRepostsBots
             PeoplesLIst people = new();
 
             var rand = new Random();
-            var bots = new BotsLIst(accessTokensAndNames, people, rand, memorial);
+            var bots = new BotsLIst(accessTokensAndNames, people, rand);
 
             people.Read();
 

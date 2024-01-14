@@ -5,7 +5,7 @@ using VkNet.Model;
 
 namespace AddPost.Classes.DownloaderDataSetPhoto
 {
-    internal class DownloaderDataSetPhotoFromVK
+    internal sealed class DownloaderDataSetPhotoFromVK
     {
         private readonly VkApiCustom api;
         public DownloaderDataSetPhotoFromVK(VkApiCustom api)
@@ -13,7 +13,7 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
             this.api = api;
         }
 
-        public void SavePhotosIdFromNewsfeed(string tag, TagsLIst tagsList, int shiftPost, int countPhoto, Int64 ignorGroupId, float percentOriginalTag)
+        public void SavePhotosIdFromNewsfeed(string tag, int shiftPost, int countPhoto, Int64 ignorGroupId, float percentOriginalTag)
         {
             NewsSearchResult newsfeedPosts;
             int indexPage = 0;
@@ -57,32 +57,51 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
 
         private void SavePhotos(string tag, NewsSearchItem post, Int64 groupId, float percentOriginalTag)
         {
-            var stringList = new List<string>();
+            var stringList = new List<string>(10);
 
             if (post.OwnerId == (-1 * groupId))
             {
                 return;
             }
 
-            string str;
-            foreach (var attachment in post.Attachments)
+            if (post.Attachments.Count > 1)
             {
-                var mediaObject = attachment.Instance.ToString();
-                if (mediaObject.Contains("photo"))
-                {
-                    stringList.Add(mediaObject.Replace("photo", ""));
-                }
+                return;
             }
+
+            var mediaObject = post.Attachments[0].Instance.ToString();
+            if (mediaObject.Contains("photo"))
+            {
+                stringList.Add(mediaObject.Replace("photo", ""));
+            }
+            else
+            {
+                return;
+            }
+
 
             var photos = api.Photo.GetById(stringList, photoSizes: true);
 
-            using WebClient wc = new WebClient();
+            using var wc = new WebClient();
             foreach (var photo in photos)
             {
                 wc.DownloadFile(photo.Sizes[2].Url, "DATA_SET\\DataSet.jpg");
                 using var image = new Bitmap("DATA_SET\\DataSet.jpg");
 
-                //if(NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag) != tag)
+                Directory.CreateDirectory("DATA_SET\\" + tag);
+
+                var filesList = Directory.GetFiles("DATA_SET\\" + tag);
+
+                foreach (var file in filesList) 
+                {
+                    using var tmpImage = new Bitmap(file);
+                    if (DataSetPhoto.IsSimilarPhoto(DataSetPhoto.ChangeResolution(image), DataSetPhoto.ChangeResolution(tmpImage)))
+                    {
+                        return;
+                    }
+                }
+
+                if (NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag) != tag)
                 {
                     DataSetPhoto.Add(image, tag);
                 }

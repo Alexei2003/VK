@@ -3,7 +3,7 @@ using VkNet.Model;
 
 namespace AddPost.Classes.VK
 {
-    internal class Post
+    internal sealed class Post
     {
         private readonly VkApiCustom api;
         private readonly Photo photo;
