@@ -304,7 +304,15 @@ namespace AddPost
                         count = Convert.ToInt32(tbCountDownload.Text);
                     }
                     var downloaderVK = new DownloaderDataSetPhotoFromVK(authorize.Api);
-                    downloaderVK.SavePhotosIdFromNewsfeed(tbTag.Text, shift, count, groupId, percentOriginalTag);
+                    try
+                    {
+                        downloaderVK.SavePhotosIdFromNewsfeed(tbTag.Text, shift, count, groupId, percentOriginalTag);
+                    }
+                    catch
+                    {
+
+                    }
+
 
                     if (bDownloadPhotos.InvokeRequired)
                     {
