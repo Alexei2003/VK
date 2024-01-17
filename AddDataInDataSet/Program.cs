@@ -53,6 +53,8 @@
 
     private static void MoveDataFromNew()
     {
+        int countReady = 0;
+        int countLittle = 0;
         var readDirectories = Directory.GetDirectories(READY_PATH);
         var newDirectories = Directory.GetDirectories(NEW_PATH);
 
@@ -65,6 +67,7 @@
                 if (readyDirectory.Contains(directoryNameParts.Last()))
                 {
                     DirectoryMove(newDirectory, readyDirectory);
+                    countReady++;
                     DirectoryAdded = true;
                     break;
                 }
@@ -72,12 +75,17 @@
             if (!DirectoryAdded)
             {
                 DirectoryMove(newDirectory, LITTLE_PATH + "\\" + directoryNameParts.Last());
+                countLittle++;
             }
         }
+
+        Console.WriteLine($"Количество перенесеных в Little = {countLittle}");
+        Console.WriteLine($"Количество перенесеных в Ready = {countReady}");
     }
 
     private static void MoveDataFromLittle()
     {
+        int countReady = 0;
         var littleDirectories = Directory.GetDirectories(LITTLE_PATH);
 
         foreach (var littleDirectory in littleDirectories)
@@ -87,7 +95,10 @@
             {
                 var directoryNameParts = littleDirectory.Split("\\");
                 DirectoryMove(littleDirectory, READY_PATH + "\\" + directoryNameParts.Last());
+                countReady++;
             }
         }
+
+        Console.WriteLine($"Количество перенесеных в Ready = {countReady}");
     }
 }

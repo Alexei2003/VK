@@ -19,9 +19,9 @@ namespace MyCustomClasses
         public VkApiCustomClasses.Wall Wall { get; }
         public Newsfeed Newsfeed { get; }
 
-        public VkApiCustom(Random rand)
+        public VkApiCustom()
         {
-            TIME_SLEEP = TimeSpan.FromSeconds(rand.Next(3) + 1);
+            TIME_SLEEP = TimeSpan.FromSeconds(2);
 
             ApiOriginal = new();
             Account = new(ApiOriginal, TIME_SLEEP);
@@ -33,7 +33,6 @@ namespace MyCustomClasses
             Users = new(ApiOriginal, TIME_SLEEP);
             Wall = new(ApiOriginal, TIME_SLEEP);
             Newsfeed = new(ApiOriginal, TIME_SLEEP);
-
         }
 
         public void Authorize(IApiAuthParams @params)

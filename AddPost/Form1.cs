@@ -308,11 +308,10 @@ namespace AddPost
                     {
                         downloaderVK.SavePhotosIdFromNewsfeed(tbTag.Text, shift, count, groupId, percentOriginalTag);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-
 
                     if (bDownloadPhotos.InvokeRequired)
                     {
@@ -330,7 +329,7 @@ namespace AddPost
             }
             else
             {
-
+                MessageBox.Show("Тег не указан","Ошибка",MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }

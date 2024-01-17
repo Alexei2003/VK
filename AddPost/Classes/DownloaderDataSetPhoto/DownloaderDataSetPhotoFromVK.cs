@@ -45,12 +45,20 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
                     }
                 }
 
-                newsfeedPosts = api.Newsfeed.Search(new NewsFeedSearchParams()
+                if (countPhoto < 1)
                 {
-                    Query = tag,
-                    Count = 200,
-                    StartFrom = newsfeedPosts.NextFrom
-                });
+                    return;
+                }
+                else
+                {
+                    newsfeedPosts = api.Newsfeed.Search(new NewsFeedSearchParams()
+                    {
+                        Query = tag,
+                        Count = 200,
+                        StartFrom = newsfeedPosts.NextFrom
+                    });
+                }
+
                 indexPage++;
             } while (indexPage < 5);
         }
@@ -92,7 +100,7 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
 
                 var filesList = Directory.GetFiles("DATA_SET\\" + tag);
 
-                foreach (var file in filesList) 
+                foreach (var file in filesList)
                 {
                     using var tmpImage = new Bitmap(file);
                     if (DataSetPhoto.IsSimilarPhoto(DataSetPhoto.ChangeResolution(image), DataSetPhoto.ChangeResolution(tmpImage)))

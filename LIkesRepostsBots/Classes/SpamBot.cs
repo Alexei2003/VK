@@ -20,7 +20,7 @@ namespace LikesRepostsBots.Classes
 
         public SpamBot(string botName, string accessToken, PeoplesLIst people, Random rand)
         {
-            api = new(rand);
+            api = new();
             this.people = people;
             this.rand = rand;
             BotName = botName;
