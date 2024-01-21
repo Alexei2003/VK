@@ -13,8 +13,15 @@ namespace AddPost
         private readonly Authorize authorize;
         private readonly TagsLIst tagList = new();
         private readonly Date date;
-        private string? resulTag = null;
         private float percentOriginalTag = 0.6f;
+        private List<ImagesWithTag> imageList = [];
+        private int imageIndex = 0;
+
+        private struct ImagesWithTag
+        {
+            public Bitmap? image;
+            public string? NeuralNetworkResultTag;
+        }
 
         public Form1()
         {
@@ -30,7 +37,7 @@ namespace AddPost
             WriteFindTag();
         }
 
-        public void ClearInfAboutPost()
+        private void ClearInfAboutPost()
         {
             //Очитска полей после создания постаы
             if (cbClear1.Checked)
@@ -43,9 +50,11 @@ namespace AddPost
             }
 
             pbImage.Image = null;
+            imageList = [];
+            tbNeuralNetworkResult.Text = "";
         }
 
-        public void WriteFindTag()
+        private void WriteFindTag()
         {
             dgvDictionary.Rows.Clear();
             var stack = tagList.Find(tbTag.Text);
@@ -56,18 +65,22 @@ namespace AddPost
             dgvDictionary.Sort(dgvDictionary.Columns["tags"], ListSortDirection.Ascending);
         }
 
-        public void AddInDataSet(Bitmap image, string tags)
+        private void AddInDataSet(List<ImagesWithTag> imageList, string tags)
         {
             if (!tagList.Add(tags) && tags.Split("#").Length - 1 < 3)
             {
-                if (resulTag != null && resulTag != tbTag.Text)
+                foreach (var image in imageList)
                 {
-                    DataSetPhoto.Add(image, tags);
+
+                    if (image.NeuralNetworkResultTag != tbTag.Text)
+                    {
+                        DataSetPhoto.Add(image.image, tags);
+                    }
                 }
             }
         }
 
-        public void WritePostTime()
+        private void WritePostTime()
         {
             var postDate = date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1);
             postDate = postDate.Value.AddHours(3);
@@ -78,38 +91,54 @@ namespace AddPost
         {
             if (Clipboard.ContainsImage())
             {
-                var clipboardImage = new Bitmap(
-                    Clipboard.GetImage());
+                var clipboardImage = new Bitmap(Clipboard.GetImage());
 
-                NeuralNetworkResult(clipboardImage);
+                var resulTag = NeuralNetwork.NeuralNetworkResult(clipboardImage, percentOriginalTag);
 
-                AddInDataSet(clipboardImage, tbTag.Text.Replace(" ", ""));
+                AddInDataSet([new ImagesWithTag { image = clipboardImage, NeuralNetworkResultTag = resulTag }], tbTag.Text.Replace(" ", ""));
 
                 Clipboard.Clear();
             }
         }
 
-        private void NeuralNetworkResult(Bitmap image)
+        private void AddImage(Bitmap image, string tag)
         {
-            resulTag = NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag);
-
-            // Проверяем, требуется ли выполнить Invoke
-            if (tbTag.InvokeRequired)
+            if (imageList.Count < 10)
             {
-                // Если да, то выполняем Invoke с анонимным методом
-                tbTag.Invoke((MethodInvoker)delegate
+                imageList.Add(new ImagesWithTag()
                 {
-                    if (cbClear2.Checked)
-                    {
-                        tbTag.Text = resulTag;
-                    }
+                    image = image,
+                    NeuralNetworkResultTag = tag
                 });
             }
-            else
+        }
+
+        private void ShowImage(int index)
+        {
+            if (-1 < index && index < imageList.Count)
             {
-                if (cbClear2.Checked)
+                if (index < imageList.Count)
                 {
-                    tbTag.Text = resulTag;
+                    // Проверяем, требуется ли выполнить Invoke
+                    if (pbImage.InvokeRequired)
+                    {
+                        // Если да, то выполняем Invoke с анонимным методом
+                        pbImage.Invoke((MethodInvoker)delegate
+                        {
+                            // Установка изображения в PictureBox
+                            pbImage.Image = imageList[index].image;
+                            tbNeuralNetworkResult.Text = imageList[index].NeuralNetworkResultTag;
+                            tbImageIndex.Text = (index + 1).ToString();
+                        });
+                    }
+                    else
+                    {
+                        // Установка изображения в PictureBox
+                        pbImage.Image = imageList[index].image;
+                        tbNeuralNetworkResult.Text = imageList[index].NeuralNetworkResultTag;
+                        tbImageIndex.Text = (index + 1).ToString();
+                    }
+                    imageIndex = index;
                 }
             }
         }
@@ -119,29 +148,14 @@ namespace AddPost
             // Проверка, содержит ли буфер обмена изображение
             if (Clipboard.ContainsImage())
             {
-                // Получение изображения из буфера обмена
-                var clipboardImage = new Bitmap(Clipboard.GetImage());
-
+                var image = new Bitmap(Clipboard.GetImage());
                 await Task.Run(() =>
                 {
-                    NeuralNetworkResult(clipboardImage);
+                    var tag = NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag);
 
-                    // Проверяем, требуется ли выполнить Invoke
-                    if (pbImage.InvokeRequired)
-                    {
-                        // Если да, то выполняем Invoke с анонимным методом
-                        pbImage.Invoke((MethodInvoker)delegate
-                        {
-                            // Установка изображения в PictureBox
-                            pbImage.Image = clipboardImage;
-                        });
-                    }
-                    else
-                    {
-                        // Установка изображения в PictureBox
-                        pbImage.Image = clipboardImage;
-                    }
+                    AddImage(image, tag);
 
+                    ShowImage(imageList.Count - 1);
                 });
 
             }
@@ -149,10 +163,9 @@ namespace AddPost
 
         private async void bSend_Click(object sender, EventArgs e)
         {
-            if (pbImage.Image != null)
+            if (imageList.Count>0)
             {
                 string tags = tbTag.Text.Replace(" ", "");
-                var image = new Bitmap(pbImage.Image);
 
                 var index = cbTimeBetweenPost.SelectedIndex + 1;
 
@@ -160,10 +173,10 @@ namespace AddPost
                 {
                     var post = new Post(authorize.Api);
                     //Создание поста
-                    post.Publish(image, tags, tbUrl.Text, date.ChangeTime(groupId, index), groupId);
+                    post.Publish(imageList.Select(x => x.image).ToArray(), tags, tbUrl.Text, date.ChangeTime(groupId, index), groupId);
                 });
 
-                AddInDataSet(image, tags);
+                AddInDataSet(imageList, tags);
 
                 WritePostTime();
 
@@ -220,11 +233,10 @@ namespace AddPost
 
         private void bDataSet_Click(object sender, EventArgs e)
         {
-            if (pbImage.Image != null)
+            if (imageList.Count > 0)
             {
                 string tags = tbTag.Text.Replace(" ", "");
-                var image = new Bitmap(pbImage.Image);
-                AddInDataSet(image, tags);
+                AddInDataSet(imageList, tags);
 
                 ClearInfAboutPost();
             }
@@ -329,8 +341,18 @@ namespace AddPost
             }
             else
             {
-                MessageBox.Show("Тег не указан","Ошибка",MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Тег не указан", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private void bImageLeft_Click(object sender, EventArgs e)
+        {
+            ShowImage(imageIndex - 1);
+        }
+
+        private void bImageRight_Click(object sender, EventArgs e)
+        {
+            ShowImage(imageIndex + 1);
         }
     }
 }

@@ -59,6 +59,11 @@
             textBox10 = new TextBox();
             textBox11 = new TextBox();
             bDownloadPhotos = new Button();
+            textBox7 = new TextBox();
+            tbNeuralNetworkResult = new TextBox();
+            bImageLeft = new Button();
+            bImageRight = new Button();
+            tbImageIndex = new TextBox();
             ((System.ComponentModel.ISupportInitialize)pbImage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             SuspendLayout();
@@ -66,7 +71,7 @@
             // pbImage
             // 
             pbImage.BorderStyle = BorderStyle.FixedSingle;
-            pbImage.Location = new Point(12, 12);
+            pbImage.Location = new Point(12, 44);
             pbImage.Name = "pbImage";
             pbImage.Size = new Size(600, 600);
             pbImage.SizeMode = PictureBoxSizeMode.Zoom;
@@ -113,7 +118,7 @@
             tbDate.Location = new Point(748, 13);
             tbDate.Name = "tbDate";
             tbDate.ReadOnly = true;
-            tbDate.Size = new Size(132, 25);
+            tbDate.Size = new Size(142, 25);
             tbDate.TabIndex = 5;
             // 
             // tbTag
@@ -121,13 +126,13 @@
             tbTag.Location = new Point(748, 106);
             tbTag.Multiline = true;
             tbTag.Name = "tbTag";
-            tbTag.Size = new Size(719, 87);
+            tbTag.Size = new Size(719, 52);
             tbTag.TabIndex = 4;
             tbTag.KeyUp += tbTag_KeyUp;
             // 
             // bSend
             // 
-            bSend.Location = new Point(623, 569);
+            bSend.Location = new Point(623, 650);
             bSend.Name = "bSend";
             bSend.Size = new Size(110, 43);
             bSend.TabIndex = 7;
@@ -137,7 +142,7 @@
             // 
             // textBox8
             // 
-            textBox8.Location = new Point(623, 199);
+            textBox8.Location = new Point(623, 164);
             textBox8.Name = "textBox8";
             textBox8.ReadOnly = true;
             textBox8.Size = new Size(110, 25);
@@ -146,7 +151,7 @@
             // 
             // bBuff
             // 
-            bBuff.Location = new Point(623, 520);
+            bBuff.Location = new Point(623, 601);
             bBuff.Name = "bBuff";
             bBuff.Size = new Size(110, 43);
             bBuff.TabIndex = 10;
@@ -180,7 +185,7 @@
             // 
             // textBox4
             // 
-            textBox4.Location = new Point(886, 13);
+            textBox4.Location = new Point(896, 13);
             textBox4.Name = "textBox4";
             textBox4.ReadOnly = true;
             textBox4.Size = new Size(142, 25);
@@ -191,26 +196,26 @@
             // 
             cbTimeBetweenPost.FormattingEnabled = true;
             cbTimeBetweenPost.Items.AddRange(new object[] { "1ч", "2ч", "3ч", "4ч", "5ч", "6ч", "7ч", "8ч", "9ч", "10ч", "11ч", "12ч", "13ч", "14ч", "15ч", "16ч", "17ч", "18ч", "19ч", "20ч", "21ч", "22ч", "23ч", "24ч" });
-            cbTimeBetweenPost.Location = new Point(1034, 13);
+            cbTimeBetweenPost.Location = new Point(1044, 13);
             cbTimeBetweenPost.Name = "cbTimeBetweenPost";
-            cbTimeBetweenPost.Size = new Size(134, 25);
+            cbTimeBetweenPost.Size = new Size(142, 25);
             cbTimeBetweenPost.TabIndex = 15;
             cbTimeBetweenPost.SelectedIndexChanged += cbTimeBetweenPost_SelectedIndexChanged;
             // 
             // textBox5
             // 
-            textBox5.Location = new Point(1174, 12);
+            textBox5.Location = new Point(1192, 12);
             textBox5.Name = "textBox5";
             textBox5.ReadOnly = true;
-            textBox5.Size = new Size(69, 25);
+            textBox5.Size = new Size(91, 25);
             textBox5.TabIndex = 16;
             textBox5.Text = "Id группы";
             // 
             // tbGroupId
             // 
-            tbGroupId.Location = new Point(1243, 13);
+            tbGroupId.Location = new Point(1289, 13);
             tbGroupId.Name = "tbGroupId";
-            tbGroupId.Size = new Size(86, 25);
+            tbGroupId.Size = new Size(91, 25);
             tbGroupId.TabIndex = 17;
             tbGroupId.Text = "220199532";
             tbGroupId.Leave += tbGroupId_Leave;
@@ -219,10 +224,10 @@
             // 
             dgvDictionary.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDictionary.Columns.AddRange(new DataGridViewColumn[] { tags });
-            dgvDictionary.Location = new Point(748, 199);
+            dgvDictionary.Location = new Point(748, 164);
             dgvDictionary.Name = "dgvDictionary";
             dgvDictionary.RowHeadersWidth = 45;
-            dgvDictionary.Size = new Size(719, 413);
+            dgvDictionary.Size = new Size(719, 529);
             dgvDictionary.TabIndex = 18;
             dgvDictionary.CellContentClick += dgvDictionary_CellContentClick;
             dgvDictionary.CellMouseClick += dgvDictionary_CellMouseClick;
@@ -237,7 +242,7 @@
             // 
             // bDataSet
             // 
-            bDataSet.Location = new Point(623, 471);
+            bDataSet.Location = new Point(623, 552);
             bDataSet.Name = "bDataSet";
             bDataSet.Size = new Size(110, 43);
             bDataSet.TabIndex = 19;
@@ -247,7 +252,7 @@
             // 
             // bBackgroundImageCopyOn
             // 
-            bBackgroundImageCopyOn.Location = new Point(623, 230);
+            bBackgroundImageCopyOn.Location = new Point(623, 195);
             bBackgroundImageCopyOn.Name = "bBackgroundImageCopyOn";
             bBackgroundImageCopyOn.Size = new Size(110, 43);
             bBackgroundImageCopyOn.TabIndex = 20;
@@ -258,7 +263,7 @@
             // bBackgroundImageCopyOff
             // 
             bBackgroundImageCopyOff.Enabled = false;
-            bBackgroundImageCopyOff.Location = new Point(623, 279);
+            bBackgroundImageCopyOff.Location = new Point(623, 244);
             bBackgroundImageCopyOff.Name = "bBackgroundImageCopyOff";
             bBackgroundImageCopyOff.Size = new Size(110, 43);
             bBackgroundImageCopyOff.TabIndex = 21;
@@ -273,7 +278,7 @@
             // 
             // tbPercentOriginalTag
             // 
-            tbPercentOriginalTag.Location = new Point(623, 328);
+            tbPercentOriginalTag.Location = new Point(623, 293);
             tbPercentOriginalTag.Multiline = true;
             tbPercentOriginalTag.Name = "tbPercentOriginalTag";
             tbPercentOriginalTag.Size = new Size(110, 39);
@@ -286,7 +291,7 @@
             // 
             cbPercentOriginalTag.FormattingEnabled = true;
             cbPercentOriginalTag.Items.AddRange(new object[] { "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%" });
-            cbPercentOriginalTag.Location = new Point(623, 373);
+            cbPercentOriginalTag.Location = new Point(623, 338);
             cbPercentOriginalTag.Name = "cbPercentOriginalTag";
             cbPercentOriginalTag.Size = new Size(110, 25);
             cbPercentOriginalTag.TabIndex = 23;
@@ -345,12 +350,65 @@
             bDownloadPhotos.UseVisualStyleBackColor = true;
             bDownloadPhotos.Click += bDownloadPhotos_Click;
             // 
+            // textBox7
+            // 
+            textBox7.Location = new Point(12, 13);
+            textBox7.Name = "textBox7";
+            textBox7.ReadOnly = true;
+            textBox7.Size = new Size(130, 25);
+            textBox7.TabIndex = 30;
+            textBox7.Text = "Результат нейронки";
+            // 
+            // tbNeuralNetworkResult
+            // 
+            tbNeuralNetworkResult.Location = new Point(148, 13);
+            tbNeuralNetworkResult.Name = "tbNeuralNetworkResult";
+            tbNeuralNetworkResult.ReadOnly = true;
+            tbNeuralNetworkResult.Size = new Size(464, 25);
+            tbNeuralNetworkResult.TabIndex = 31;
+            // 
+            // bImageLeft
+            // 
+            bImageLeft.Font = new Font("Segoe UI", 20F);
+            bImageLeft.Location = new Point(128, 650);
+            bImageLeft.Name = "bImageLeft";
+            bImageLeft.Size = new Size(110, 43);
+            bImageLeft.TabIndex = 32;
+            bImageLeft.Text = "<-----";
+            bImageLeft.UseVisualStyleBackColor = true;
+            bImageLeft.Click += bImageLeft_Click;
+            // 
+            // bImageRight
+            // 
+            bImageRight.Font = new Font("Segoe UI", 20F);
+            bImageRight.Location = new Point(386, 650);
+            bImageRight.Name = "bImageRight";
+            bImageRight.Size = new Size(110, 43);
+            bImageRight.TabIndex = 33;
+            bImageRight.Text = "----->\r\n";
+            bImageRight.UseVisualStyleBackColor = true;
+            bImageRight.Click += bImageRight_Click;
+            // 
+            // tbImageIndex
+            // 
+            tbImageIndex.Location = new Point(293, 660);
+            tbImageIndex.Name = "tbImageIndex";
+            tbImageIndex.ReadOnly = true;
+            tbImageIndex.Size = new Size(50, 25);
+            tbImageIndex.TabIndex = 34;
+            tbImageIndex.TextAlign = HorizontalAlignment.Center;
+            // 
             // Form1
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1632, 629);
+            ClientSize = new Size(1632, 703);
+            Controls.Add(tbImageIndex);
+            Controls.Add(bImageRight);
+            Controls.Add(bImageLeft);
+            Controls.Add(tbNeuralNetworkResult);
+            Controls.Add(textBox7);
             Controls.Add(bDownloadPhotos);
             Controls.Add(textBox11);
             Controls.Add(textBox10);
@@ -421,5 +479,10 @@
         private TextBox textBox10;
         private TextBox textBox11;
         private Button bDownloadPhotos;
+        private TextBox textBox7;
+        private TextBox tbNeuralNetworkResult;
+        private Button bImageLeft;
+        private Button bImageRight;
+        private TextBox tbImageIndex;
     }
 }

@@ -72,7 +72,7 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
                 return;
             }
 
-            if (post.Attachments.Count > 1)
+            if (post.Attachments.Count != 1)
             {
                 return;
             }
@@ -86,7 +86,6 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
             {
                 return;
             }
-
 
             var photos = api.Photo.GetById(stringList, photoSizes: true);
 
