@@ -130,7 +130,7 @@ namespace LikesRepostsBots.Classes
             int newUserCount = 0;
             for (ulong i = 0; i < countFriends && index < suggestions.Count; index++)
             {
-                if (!people.Contains(suggestions[index].Id))
+                if (people.Add(suggestions[index].Id))
                 {
                     if (!IsMassAccount(suggestions[index].Id) && api.Friends.Add(suggestions[index].Id) != null)
                     {
@@ -141,7 +141,6 @@ namespace LikesRepostsBots.Classes
                         api.Account.Ban(suggestions[index].Id);
                         banCount++;
                     }
-                    people.Add(suggestions[index].Id);
                     newUserCount++;
                 }
                 else
@@ -293,9 +292,8 @@ namespace LikesRepostsBots.Classes
 
                 foreach (var member in members)
                 {
-                    if (!people.Contains(member.Id))
+                    if (people.Add(member.Id))
                     {
-                        people.Add(member.Id);
                         countBans++;
                     }
                 }

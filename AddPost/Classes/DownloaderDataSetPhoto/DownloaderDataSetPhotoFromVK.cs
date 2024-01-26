@@ -110,7 +110,7 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
 
                 if (NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag) != tag)
                 {
-                    DataSetPhoto.Add(image, tag);
+                    DataSetPhoto.Save(image, tag);
                 }
             }
         }

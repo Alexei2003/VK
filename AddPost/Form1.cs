@@ -58,11 +58,66 @@ namespace AddPost
         {
             dgvDictionary.Rows.Clear();
             var stack = tagList.Find(tbTag.Text);
-            foreach (var elem in stack)
-            {
-                dgvDictionary.Rows.Add(elem);
-            }
+
+            dgvDictionary.Rows.AddRange(stack.Select(elem => new DataGridViewRow { Cells = { new DataGridViewTextBoxCell { Value = elem } } }).ToArray());
+
             dgvDictionary.Sort(dgvDictionary.Columns["tags"], ListSortDirection.Ascending);
+
+            int red = ChangeRGB(0);
+            int green = ChangeRGB(0);
+            int blue = ChangeRGB(0);
+
+            int countGroup = 0;
+            string groupName = "";
+            string tmpGroupName = "";
+
+            for (int i = 0; i < dgvDictionary.Rows.Count; i++)
+            {
+                if(dgvDictionary.Rows[i].Cells[0].Value == null)
+                {
+                    break;
+                }
+
+                tmpGroupName = dgvDictionary.Rows[i].Cells[0].Value.ToString();
+                tmpGroupName = tmpGroupName.Split('#')[1];
+
+                if (tmpGroupName != groupName) {
+                    groupName = tmpGroupName;
+                    switch (countGroup % 3)
+                    {
+                        case 0:
+                            red = ChangeRGB(red);
+                            break;
+                        case 1:
+                            green = ChangeRGB(green);
+                            break;
+                        case 2:
+                            blue = ChangeRGB(blue);
+                            break;
+                    }
+                    countGroup++;
+                }
+
+                dgvDictionary.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(red, green, blue);
+            }     
+        }
+
+        private static int ChangeRGB(int value)
+        {
+            const int MAX_RGB = 250;
+            const int MIN_RGB = 150;
+            const int CHAGE_RGB = 30;
+
+            if (value > MIN_RGB)
+            {
+                value -= CHAGE_RGB;
+            }
+            else
+            {
+                value = MAX_RGB;
+            }
+
+            return value;
         }
 
         private void AddInDataSet(List<ImagesWithTag> imageList, string tags)
@@ -74,7 +129,7 @@ namespace AddPost
 
                     if (image.NeuralNetworkResultTag != tbTag.Text)
                     {
-                        DataSetPhoto.Add(image.image, tags);
+                        DataSetPhoto.Save(image.image, tags);
                     }
                 }
             }

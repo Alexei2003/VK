@@ -12,10 +12,7 @@
             this.rand = rand;
             for (int i = 1; i < accessTokensAndNames.Length; i += 2)
             {
-                if (i % 2 == 1)
-                {
-                    bots.Add(new SpamBot(accessTokensAndNames[i - 1], accessTokensAndNames[i], people, rand));
-                }
+                bots.Add(new SpamBot(accessTokensAndNames[i - 1], accessTokensAndNames[i], people, rand));
             }
             Count = bots.Count;
         }

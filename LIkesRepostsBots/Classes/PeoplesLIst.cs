@@ -11,8 +11,7 @@ namespace LikesRepostsBots.Classes
             string json = File.ReadAllText(Path.Combine("PeopleDictionary.txt"));
             if (json?.Length != 0)
             {
-                people = JsonConvert.DeserializeObject<HashSet<long>>(
-                    json);
+                people = JsonConvert.DeserializeObject<HashSet<long>>(json);
             }
         }
 
@@ -34,17 +33,17 @@ namespace LikesRepostsBots.Classes
             }
         }
 
-        public void Add(long id)
+        public bool Add(long id)
         {
-            people.Add(id);
-        }
-
-        public void AddNotContains(long id)
-        {
-            if (!Contains(id))
+            if (people.Add(id))
             {
-                Add(id);
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
+
     }
 }
