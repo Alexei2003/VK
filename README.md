@@ -1,1 +1,12 @@
 # VK-stat
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Alexei2003_VK&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Alexei2003_VK)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Alexei2003_VK&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=Alexei2003_VK)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Alexei2003_VK&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Alexei2003_VK)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Alexei2003_VK&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Alexei2003_VK)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Alexei2003_VK&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Alexei2003_VK)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=Alexei2003_VK&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=Alexei2003_VK)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Alexei2003_VK&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Alexei2003_VK)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Alexei2003_VK&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Alexei2003_VK)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Alexei2003_VK&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Alexei2003_VK)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Alexei2003_VK&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Alexei2003_VK)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Alexei2003_VK&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Alexei2003_VK)
