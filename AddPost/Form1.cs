@@ -69,20 +69,21 @@ namespace AddPost
 
             int countGroup = 0;
             string groupName = "";
-            
+            string tmpGroupName = "";
+
             for (int i = 0; i < dgvDictionary.Rows.Count; i++)
             {
                 if(dgvDictionary.Rows[i].Cells[0].Value == null)
                 {
                     break;
                 }
-            
-                string tmpGroupName = dgvDictionary.Rows[i].Cells[0].Value.ToString().Split('#')[1];
-            
-                if (tmpGroupName != groupName) 
-                {
+
+                tmpGroupName = dgvDictionary.Rows[i].Cells[0].Value.ToString();
+                tmpGroupName = tmpGroupName.Split('#')[1];
+
+                if (tmpGroupName != groupName) {
                     groupName = tmpGroupName;
-                    switch (countGroup++ % 3)
+                    switch (countGroup % 3)
                     {
                         case 0:
                             red = ChangeRGB(red);
@@ -94,8 +95,9 @@ namespace AddPost
                             blue = ChangeRGB(blue);
                             break;
                     }
+                    countGroup++;
                 }
-            }
+
                 dgvDictionary.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(red, green, blue);
             }     
         }
