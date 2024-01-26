@@ -39,7 +39,7 @@ namespace AddPost
 
         private void ClearInfAboutPost()
         {
-            //Очитска полей после создания постаы
+            //ГЋГ·ГЁГІГ±ГЄГ  ГЇГ®Г«ГҐГ© ГЇГ®Г±Г«ГҐ Г±Г®Г§Г¤Г Г­ГЁГї ГЇГ®Г±ГІГ Г»
             if (cbClear1.Checked)
             {
                 tbUrl.Text = "";
@@ -69,21 +69,20 @@ namespace AddPost
 
             int countGroup = 0;
             string groupName = "";
-            string tmpGroupName = "";
-
+            
             for (int i = 0; i < dgvDictionary.Rows.Count; i++)
             {
                 if(dgvDictionary.Rows[i].Cells[0].Value == null)
                 {
                     break;
                 }
-
-                tmpGroupName = dgvDictionary.Rows[i].Cells[0].Value.ToString();
-                tmpGroupName = tmpGroupName.Split('#')[1];
-
-                if (tmpGroupName != groupName) {
+            
+                string tmpGroupName = dgvDictionary.Rows[i].Cells[0].Value.ToString().Split('#')[1];
+            
+                if (tmpGroupName != groupName) 
+                {
                     groupName = tmpGroupName;
-                    switch (countGroup % 3)
+                    switch (countGroup++ % 3)
                     {
                         case 0:
                             red = ChangeRGB(red);
@@ -95,9 +94,8 @@ namespace AddPost
                             blue = ChangeRGB(blue);
                             break;
                     }
-                    countGroup++;
                 }
-
+            }
                 dgvDictionary.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(red, green, blue);
             }     
         }
@@ -174,13 +172,13 @@ namespace AddPost
             {
                 if (index < imageList.Count)
                 {
-                    // Проверяем, требуется ли выполнить Invoke
+                    // ГЏГ°Г®ГўГҐГ°ГїГҐГ¬, ГІГ°ГҐГЎГіГҐГІГ±Гї Г«ГЁ ГўГ»ГЇГ®Г«Г­ГЁГІГј Invoke
                     if (pbImage.InvokeRequired)
                     {
-                        // Если да, то выполняем Invoke с анонимным методом
+                        // Г…Г±Г«ГЁ Г¤Г , ГІГ® ГўГ»ГЇГ®Г«Г­ГїГҐГ¬ Invoke Г± Г Г­Г®Г­ГЁГ¬Г­Г»Г¬ Г¬ГҐГІГ®Г¤Г®Г¬
                         pbImage.Invoke((MethodInvoker)delegate
                         {
-                            // Установка изображения в PictureBox
+                            // Г“Г±ГІГ Г­Г®ГўГЄГ  ГЁГ§Г®ГЎГ°Г Г¦ГҐГ­ГЁГї Гў PictureBox
                             pbImage.Image = imageList[index].image;
                             tbNeuralNetworkResult.Text = imageList[index].NeuralNetworkResultTag;
                             tbImageIndex.Text = (index + 1).ToString();
@@ -188,7 +186,7 @@ namespace AddPost
                     }
                     else
                     {
-                        // Установка изображения в PictureBox
+                        // Г“Г±ГІГ Г­Г®ГўГЄГ  ГЁГ§Г®ГЎГ°Г Г¦ГҐГ­ГЁГї Гў PictureBox
                         pbImage.Image = imageList[index].image;
                         tbNeuralNetworkResult.Text = imageList[index].NeuralNetworkResultTag;
                         tbImageIndex.Text = (index + 1).ToString();
@@ -200,7 +198,7 @@ namespace AddPost
 
         private async void bBuff_Click(object sender, EventArgs e)
         {
-            // Проверка, содержит ли буфер обмена изображение
+            // ГЏГ°Г®ГўГҐГ°ГЄГ , Г±Г®Г¤ГҐГ°Г¦ГЁГІ Г«ГЁ ГЎГіГґГҐГ° Г®ГЎГ¬ГҐГ­Г  ГЁГ§Г®ГЎГ°Г Г¦ГҐГ­ГЁГҐ
             if (Clipboard.ContainsImage())
             {
                 var image = new Bitmap(Clipboard.GetImage());
@@ -227,7 +225,7 @@ namespace AddPost
                 await Task.Run(() =>
                 {
                     var post = new Post(authorize.Api);
-                    //Создание поста
+                    //Г‘Г®Г§Г¤Г Г­ГЁГҐ ГЇГ®Г±ГІГ 
                     post.Publish(imageList.Select(x => x.image).ToArray(), tags, tbUrl.Text, date.ChangeTime(groupId, index), groupId);
                 });
 
@@ -344,7 +342,7 @@ namespace AddPost
                 {
                     if (bDownloadPhotos.InvokeRequired)
                     {
-                        // Если да, то выполняем Invoke с анонимным методом
+                        // Г…Г±Г«ГЁ Г¤Г , ГІГ® ГўГ»ГЇГ®Г«Г­ГїГҐГ¬ Invoke Г± Г Г­Г®Г­ГЁГ¬Г­Г»Г¬ Г¬ГҐГІГ®Г¤Г®Г¬
                         bDownloadPhotos.Invoke((MethodInvoker)delegate
                         {
                             bDownloadPhotos.Enabled = false;
@@ -355,10 +353,10 @@ namespace AddPost
                         bDownloadPhotos.Enabled = false;
                     }
 
-                    // Проверяем, требуется ли выполнить Invoke
+                    // ГЏГ°Г®ГўГҐГ°ГїГҐГ¬, ГІГ°ГҐГЎГіГҐГІГ±Гї Г«ГЁ ГўГ»ГЇГ®Г«Г­ГЁГІГј Invoke
                     if (tbShiftDownload.InvokeRequired)
                     {
-                        // Если да, то выполняем Invoke с анонимным методом
+                        // Г…Г±Г«ГЁ Г¤Г , ГІГ® ГўГ»ГЇГ®Г«Г­ГїГҐГ¬ Invoke Г± Г Г­Г®Г­ГЁГ¬Г­Г»Г¬ Г¬ГҐГІГ®Г¤Г®Г¬
                         tbShiftDownload.Invoke((MethodInvoker)delegate
                         {
                             shift = Convert.ToInt32(tbShiftDownload.Text);
@@ -377,12 +375,12 @@ namespace AddPost
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(ex.Message, "ГЋГёГЁГЎГЄГ ", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
 
                     if (bDownloadPhotos.InvokeRequired)
                     {
-                        // Если да, то выполняем Invoke с анонимным методом
+                        // Г…Г±Г«ГЁ Г¤Г , ГІГ® ГўГ»ГЇГ®Г«Г­ГїГҐГ¬ Invoke Г± Г Г­Г®Г­ГЁГ¬Г­Г»Г¬ Г¬ГҐГІГ®Г¤Г®Г¬
                         bDownloadPhotos.Invoke((MethodInvoker)delegate
                         {
                             bDownloadPhotos.Enabled = true;
@@ -396,7 +394,7 @@ namespace AddPost
             }
             else
             {
-                MessageBox.Show("Тег не указан", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Г’ГҐГЈ Г­ГҐ ГіГЄГ Г§Г Г­", "ГЋГёГЁГЎГЄГ ", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
