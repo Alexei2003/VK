@@ -3,6 +3,8 @@ using AddPost.Classes.DataSet;
 using AddPost.Classes.DownloaderDataSetPhoto;
 using AddPost.Classes.VK;
 using System.ComponentModel;
+using System.Drawing;
+using WorkWithPost;
 
 namespace AddPost
 {
@@ -19,7 +21,7 @@ namespace AddPost
 
         private struct ImagesWithTag
         {
-            public Bitmap? image;
+            public Bitmap image;
             public string? NeuralNetworkResultTag;
         }
 
@@ -39,7 +41,6 @@ namespace AddPost
 
         private void ClearInfAboutPost()
         {
-            //Î÷èòñêà ïîëåé ïîñëå ñîçäàíèÿ ïîñòàû
             if (cbClear1.Checked)
             {
                 tbUrl.Text = "";
@@ -67,7 +68,7 @@ namespace AddPost
             int green = ChangeRGB(0);
             int blue = ChangeRGB(0);
 
-            int countGroup = 0;
+            int groupIndex = 0;
             string groupName = "";
             string tmpGroupName = "";
 
@@ -83,7 +84,7 @@ namespace AddPost
 
                 if (tmpGroupName != groupName) {
                     groupName = tmpGroupName;
-                    switch (countGroup % 3)
+                    switch (groupIndex % 3)
                     {
                         case 0:
                             red = ChangeRGB(red);
@@ -95,7 +96,7 @@ namespace AddPost
                             blue = ChangeRGB(blue);
                             break;
                     }
-                    countGroup++;
+                    groupIndex++;
                 }
 
                 dgvDictionary.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(red, green, blue);
@@ -174,13 +175,10 @@ namespace AddPost
             {
                 if (index < imageList.Count)
                 {
-                    // Ïðîâåðÿåì, òðåáóåòñÿ ëè âûïîëíèòü Invoke
                     if (pbImage.InvokeRequired)
                     {
-                        // Åñëè äà, òî âûïîëíÿåì Invoke ñ àíîíèìíûì ìåòîäîì
                         pbImage.Invoke((MethodInvoker)delegate
                         {
-                            // Óñòàíîâêà èçîáðàæåíèÿ â PictureBox
                             pbImage.Image = imageList[index].image;
                             tbNeuralNetworkResult.Text = imageList[index].NeuralNetworkResultTag;
                             tbImageIndex.Text = (index + 1).ToString();
@@ -188,7 +186,6 @@ namespace AddPost
                     }
                     else
                     {
-                        // Óñòàíîâêà èçîáðàæåíèÿ â PictureBox
                         pbImage.Image = imageList[index].image;
                         tbNeuralNetworkResult.Text = imageList[index].NeuralNetworkResultTag;
                         tbImageIndex.Text = (index + 1).ToString();
@@ -200,7 +197,6 @@ namespace AddPost
 
         private async void bBuff_Click(object sender, EventArgs e)
         {
-            // Ïðîâåðêà, ñîäåðæèò ëè áóôåð îáìåíà èçîáðàæåíèå
             if (Clipboard.ContainsImage())
             {
                 var image = new Bitmap(Clipboard.GetImage());
@@ -227,7 +223,6 @@ namespace AddPost
                 await Task.Run(() =>
                 {
                     var post = new Post(authorize.Api);
-                    //Ñîçäàíèå ïîñòà
                     post.Publish(imageList.Select(x => x.image).ToArray(), tags, tbUrl.Text, date.ChangeTime(groupId, index), groupId);
                 });
 
@@ -344,7 +339,6 @@ namespace AddPost
                 {
                     if (bDownloadPhotos.InvokeRequired)
                     {
-                        // Åñëè äà, òî âûïîëíÿåì Invoke ñ àíîíèìíûì ìåòîäîì
                         bDownloadPhotos.Invoke((MethodInvoker)delegate
                         {
                             bDownloadPhotos.Enabled = false;
@@ -355,10 +349,8 @@ namespace AddPost
                         bDownloadPhotos.Enabled = false;
                     }
 
-                    // Ïðîâåðÿåì, òðåáóåòñÿ ëè âûïîëíèòü Invoke
                     if (tbShiftDownload.InvokeRequired)
                     {
-                        // Åñëè äà, òî âûïîëíÿåì Invoke ñ àíîíèìíûì ìåòîäîì
                         tbShiftDownload.Invoke((MethodInvoker)delegate
                         {
                             shift = Convert.ToInt32(tbShiftDownload.Text);
@@ -377,12 +369,11 @@ namespace AddPost
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message, "Îøèáêà", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
 
                     if (bDownloadPhotos.InvokeRequired)
                     {
-                        // Åñëè äà, òî âûïîëíÿåì Invoke ñ àíîíèìíûì ìåòîäîì
                         bDownloadPhotos.Invoke((MethodInvoker)delegate
                         {
                             bDownloadPhotos.Enabled = true;
@@ -396,7 +387,7 @@ namespace AddPost
             }
             else
             {
-                MessageBox.Show("Òåã íå óêàçàí", "Îøèáêà", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Tag is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
