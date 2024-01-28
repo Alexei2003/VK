@@ -123,7 +123,7 @@ namespace AddPost
 
         private void AddInDataSet(List<ImagesWithTag> imageList, string tags)
         {
-            if (!tagList.Add(tags) && tags.Split("#").Length - 1 < 3)
+            if (!tagList.Add(tags) && tags.Split("#").Length < 4)
             {
                 foreach (var image in imageList)
                 {
@@ -138,7 +138,7 @@ namespace AddPost
 
         private void WritePostTime()
         {
-            var postDate = date.ChangeTime(groupId, cbTimeBetweenPost.SelectedIndex + 1);
+            var postDate = date.ChangeTimeNewPostUseLastPost(groupId, cbTimeBetweenPost.SelectedIndex + 1);
             postDate = postDate.Value.AddHours(3);
             tbDate.Text = postDate.ToString();
         }
@@ -223,7 +223,7 @@ namespace AddPost
                 await Task.Run(() =>
                 {
                     var post = new Post(authorize.Api);
-                    post.Publish(imageList.Select(x => x.image).ToArray(), tags, tbUrl.Text, date.ChangeTime(groupId, index), groupId);
+                    post.Publish(imageList.Select(x => x.image).ToArray(), tags, tbUrl.Text, date.ChangeTimeNewPostUseLastPost(groupId, index), groupId);
                 });
 
                 AddInDataSet(imageList, tags);

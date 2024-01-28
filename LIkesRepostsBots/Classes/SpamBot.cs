@@ -113,9 +113,7 @@ namespace LikesRepostsBots.Classes
 
         private void WorkWithFriends()
         {
-
             AddToFriendsFromRecomendedList();
-
         }
 
         private void AddToFriendsFromRecomendedList()

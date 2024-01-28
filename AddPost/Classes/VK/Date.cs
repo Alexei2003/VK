@@ -13,14 +13,13 @@ namespace AddPost.Classes.VK
             this.api = api;
         }
 
-        public DateTime? ChangeTime(Int64 groupId, int hoursBetweenPost)
+        public DateTime? ChangeTimeNewPostUseLastPost(Int64 groupId, int hoursBetweenPost)
         {
             var data = GetTimeLastPost(groupId);
 
             data = data.Value.AddHours(hoursBetweenPost);
 
             return data;
-
         }
 
         private DateTime? GetTimeLastPost(Int64 groupId)
