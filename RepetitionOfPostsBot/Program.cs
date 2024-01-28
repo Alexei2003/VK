@@ -15,7 +15,6 @@ internal static class Program
 
         while (true)
         {
-            Console.WriteLine($"Index post = {indexResendedPost}");
             try
             {
                 var wall = api.Wall.Get(new WallGetParams
