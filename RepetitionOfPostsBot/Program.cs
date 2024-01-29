@@ -11,7 +11,7 @@ internal static class Program
         var authorize = new Authorize(accessToken);
         var api = authorize.Api;
 
-        ulong indexResendedPost = 10;
+        ulong indexResendedPost = 20;
 
         while (true)
         {
@@ -68,6 +68,7 @@ internal static class Program
                         Attachments = new MediaAttachment[] { new PhotoMy { OwnerId = post.Attachment.Instance.OwnerId, Id = post.Attachment.Instance.Id, AccessKey = post.Attachment.Instance.AccessKey } },
                         PublishDate = postData.Value.AddHours(1),
                     });
+                    indexResendedPost++;
                 }
                 else
                 {
