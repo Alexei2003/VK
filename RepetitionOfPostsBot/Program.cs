@@ -24,7 +24,7 @@ internal static class Program
                     Filter = WallFilter.Postponed
                 });
 
-                if (wall.WallPosts.Count > 0 && ((wall.WallPosts.First().Date.Value.AddHours(3).Hour) != (DateTime.Now.AddHours(1).Hour)))
+                if (wall.WallPosts.Count < 1 || ((wall.WallPosts.First().Date.Value.AddHours(3).Hour) != (DateTime.Now.AddHours(1).Hour)))
                 {
                     wall = api.Wall.Get(new WallGetParams
                     {
