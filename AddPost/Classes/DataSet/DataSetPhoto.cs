@@ -65,7 +65,7 @@ namespace AddPost.Classes.DataSet
         public static bool IsSimilarPhoto(Bitmap bmp1, Bitmap bmp2)
         {
             if (bmp1.Width == bmp2.Width && bmp1.Height == bmp2.Height)
-            {     
+            {
                 return true;
             }
             return false;
