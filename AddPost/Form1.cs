@@ -3,7 +3,6 @@ using AddPost.Classes.DataSet;
 using AddPost.Classes.DownloaderDataSetPhoto;
 using AddPost.Classes.VK;
 using System.ComponentModel;
-using System.Drawing;
 using WorkWithPost;
 
 namespace AddPost
@@ -18,6 +17,7 @@ namespace AddPost
         private float percentOriginalTag = 0.6f;
         private List<ImagesWithTag> imageList = [];
         private int imageIndex = 0;
+        private readonly Random rand = new();
 
         private struct ImagesWithTag
         {
@@ -74,15 +74,15 @@ namespace AddPost
 
             for (int i = 0; i < dgvDictionary.Rows.Count; i++)
             {
-                if(dgvDictionary.Rows[i].Cells[0].Value == null)
+                if (dgvDictionary.Rows[i].Cells[0].Value == null)
                 {
                     break;
                 }
 
-                tmpGroupName = dgvDictionary.Rows[i].Cells[0].Value.ToString();
-                tmpGroupName = tmpGroupName.Split('#')[1];
+                tmpGroupName = dgvDictionary.Rows[i].Cells[0].Value.ToString().Split('#')[1];
 
-                if (tmpGroupName != groupName) {
+                if (tmpGroupName != groupName)
+                {
                     groupName = tmpGroupName;
                     switch (groupIndex % 3)
                     {
@@ -100,25 +100,21 @@ namespace AddPost
                 }
 
                 dgvDictionary.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(red, green, blue);
-            }     
+            }
         }
 
-        private static int ChangeRGB(int value)
+        private int ChangeRGB(int value)
         {
-            const int MAX_RGB = 250;
             const int MIN_RGB = 150;
-            const int CHAGE_RGB = 30;
 
             if (value > MIN_RGB)
             {
-                value -= CHAGE_RGB;
+                return value - (rand.Next(30) + 20);
             }
             else
             {
-                value = MAX_RGB;
+                return MIN_RGB + rand.Next(50);
             }
-
-            return value;
         }
 
         private void AddInDataSet(List<ImagesWithTag> imageList, string tags)
@@ -127,7 +123,6 @@ namespace AddPost
             {
                 foreach (var image in imageList)
                 {
-
                     if (image.NeuralNetworkResultTag != tbTag.Text)
                     {
                         DataSetPhoto.Save(image.image, tags);
@@ -208,13 +203,12 @@ namespace AddPost
 
                     ShowImage(imageList.Count - 1);
                 });
-
             }
         }
 
         private async void bSend_Click(object sender, EventArgs e)
         {
-            if (imageList.Count>0)
+            if (imageList.Count > 0)
             {
                 string tags = tbTag.Text.Replace(" ", "");
 

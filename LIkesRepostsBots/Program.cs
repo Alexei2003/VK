@@ -1,6 +1,4 @@
-﻿using LikesRepostsBots;
-
-namespace HelloWorld
+﻿namespace LikesRepostsBots
 {
     static class Program
     {

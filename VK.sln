@@ -18,13 +18,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddDataInDataSet", "AddData
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bots", "Bots", "{17DC926F-DA9F-4B44-96E8-344C2FD0B9C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepetitionOfPostsBot", "RepetitionOfPostsBot\RepetitionOfPostsBot.csproj", "{781FA545-A6B8-43E3-BE43-C2F096E8EE17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepetitionOfPostsBot", "RepetitionOfPostsBot\RepetitionOfPostsBot.csproj", "{781FA545-A6B8-43E3-BE43-C2F096E8EE17}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataSet", "DataSet", "{0D23B9FE-8F47-45FA-8741-51A50AAD9074}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GlobalVkClasses", "GlobalVkClasses", "{C6A2E9CB-D0BB-451B-BD43-18193D8BED5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkWithPost", "WorkWithPost\WorkWithPost.csproj", "{0EAACC60-5500-4CB3-9105-9B6D6DA6B230}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkWithPost", "WorkWithPost\WorkWithPost.csproj", "{0EAACC60-5500-4CB3-9105-9B6D6DA6B230}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -18,7 +18,7 @@ namespace WorkWithPost
         public void Publish(Bitmap[] images, string tag, string copyright, DateTime? postDate, Int64 groupId)
         {
             var imageList = new List<VkNet.Model.Photo>();
-            foreach(var image in images)
+            foreach (var image in images)
             {
                 imageList.Add(photo.AddOnVKServer(image).First());
             }
