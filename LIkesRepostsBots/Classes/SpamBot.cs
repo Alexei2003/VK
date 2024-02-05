@@ -53,7 +53,7 @@ namespace LikesRepostsBots.Classes
             });
 
             int countPosts;
-            if (botWall.WallPosts.Count > MAX_COUNT_POST)
+            if (botWall.WallPosts.Count > 0 && botWall.WallPosts[0].CopyHistory != null)
             {
 
                 for (countPosts = 0; countPosts < MAX_COUNT_POST; countPosts++)
