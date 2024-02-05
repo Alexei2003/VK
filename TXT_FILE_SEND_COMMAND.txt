@@ -1,5 +1,0 @@
-scp E:\WPS\VK\Project\VK\LIkesRepostsBots\bin\Release\net8.0\publish\linux-x64\LikesRepostsBots root@77.222.37.9:/root/DirLikesRepostsBots
-
-scp E:\WPS\VK\Project\VK\RepetitionOfPostsBot\bin\Release\net8.0\publish\linux-x64\RepetitionOfPostsBot root@77.222.37.9:/root/DirRepetitionOfPostsBot
-
-scp E:\WPS\VK\Project\VK\RepetitionOfPostsBot\bin\Release\net8.0\publish\linux-x64\AccessToken.txt root@77.222.37.9:/root/DirRepetitionOfPostsBot

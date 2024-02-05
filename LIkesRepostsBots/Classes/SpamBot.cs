@@ -53,7 +53,7 @@ namespace LikesRepostsBots.Classes
             });
 
             int countPosts;
-            if (botWall.WallPosts[0].CopyHistory != null)
+            if (botWall.WallPosts.Count > MAX_COUNT_POST)
             {
 
                 for (countPosts = 0; countPosts < MAX_COUNT_POST; countPosts++)
@@ -244,23 +244,22 @@ namespace LikesRepostsBots.Classes
                 var users = api.Users.Get(friends.Select(user => user.Id).ToArray());
                 foreach (var user in users)
                 {
+                    if (user.Id != 713712954 && user.Id != 338992901)
+                    {
+                        continue;
+                    }
+
                     if (user.Deactivated != Deactivated.Activated)
                     {
-                        if (user.Id != 713712954 && user.Id != 338992901)
-                        {
-                            api.Account.Ban(user.Id);
-                            countBans++;
-                        }
+                        api.Account.Ban(user.Id);
+                        countBans++;
                     }
                     else
                     {
                         if (clearFriends == ClearFriendsType.BanAndMathAccount && IsMassAccount(user.Id))
                         {
-                            if (user.Id != 713712954 && user.Id != 338992901)
-                            {
-                                api.Account.Ban(user.Id);
-                                countBans++;
-                            }
+                            api.Account.Ban(user.Id);
+                            countBans++;
                         }
                     }
                 }
