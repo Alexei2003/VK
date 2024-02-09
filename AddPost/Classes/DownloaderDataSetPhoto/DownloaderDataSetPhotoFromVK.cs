@@ -8,9 +8,11 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
     internal sealed class DownloaderDataSetPhotoFromVK
     {
         private readonly VkApiCustom api;
-        public DownloaderDataSetPhotoFromVK(VkApiCustom api)
+        private readonly TagsLIst tagList;
+        public DownloaderDataSetPhotoFromVK(VkApiCustom api, TagsLIst tagList)
         {
             this.api = api;
+            this.tagList = tagList;
         }
 
         public void SavePhotosIdFromNewsfeed(string tag, int shiftPost, int countPhoto, Int64 ignorGroupId, float percentOriginalTag)
@@ -63,7 +65,7 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
             } while (indexPage < 5);
         }
 
-        private void SavePhotos(string tag, NewsSearchItem post, Int64 groupId, float percentOriginalTag)
+        private void SavePhotos(string currentTag, NewsSearchItem post, Int64 groupId, float percentOriginalTag)
         {
             var stringList = new List<string>(10);
 
@@ -87,6 +89,21 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
                 return;
             }
 
+            var tags = post.Text.Split('#');
+            int countFindTag = 0;
+            foreach (var tag in tags)
+            {
+                if (!tagList.Find(tag.Split(' ').First()).IsEmpty)
+                {
+                    countFindTag++;
+                }
+            }
+
+            if (countFindTag > 2)
+            {
+                return;
+            }
+
             var photos = api.Photo.GetById(stringList, photoSizes: true);
 
             using var wc = new WebClient();
@@ -95,9 +112,9 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
                 wc.DownloadFile(photo.Sizes[2].Url, "DATA_SET\\DataSet.jpg");
                 using var image = new Bitmap("DATA_SET\\DataSet.jpg");
 
-                Directory.CreateDirectory("DATA_SET\\" + tag);
+                Directory.CreateDirectory("DATA_SET\\" + currentTag);
 
-                var filesList = Directory.GetFiles("DATA_SET\\" + tag);
+                var filesList = Directory.GetFiles("DATA_SET\\" + currentTag);
 
                 foreach (var file in filesList)
                 {
@@ -108,9 +125,9 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
                     }
                 }
 
-                if (NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag) != tag)
+                if (NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag) != currentTag)
                 {
-                    DataSetPhoto.Save(image, tag);
+                    DataSetPhoto.Save(image, currentTag);
                 }
             }
         }

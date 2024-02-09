@@ -13,10 +13,9 @@ namespace AddPost
         private Int64 groupId;
         private readonly Authorize authorize;
         private readonly TagsLIst tagList = new();
-        private readonly Date date;
         private float percentOriginalTag = 0.6f;
         private List<ImagesWithTag> imageList = [];
-        private int imageIndex = 0;
+        private int imageIndex = -1;
         private readonly Random rand = new();
 
         private struct ImagesWithTag
@@ -31,7 +30,6 @@ namespace AddPost
             var accessToken = File.ReadAllText("AccessToken.txt");
             authorize = new Authorize(accessToken);
             tagList.LoadDictionary();
-            date = new Date(authorize.Api);
             groupId = Convert.ToInt64(tbGroupId.Text);
             cbTimeBetweenPost.SelectedIndex = 1;
             cbPercentOriginalTag.SelectedIndex = 5;
@@ -58,7 +56,7 @@ namespace AddPost
         private void WriteFindTag()
         {
             dgvDictionary.Rows.Clear();
-            var stack = tagList.Find(tbTag.Text);
+            var stack = tagList.FindLast(tbTag.Text);
 
             dgvDictionary.Rows.AddRange(stack.Select(elem => new DataGridViewRow { Cells = { new DataGridViewTextBoxCell { Value = elem } } }).ToArray());
 
@@ -133,6 +131,7 @@ namespace AddPost
 
         private void WritePostTime()
         {
+            var date = new Date(authorize.Api);
             var postDate = date.ChangeTimeNewPostUseLastPost(groupId, cbTimeBetweenPost.SelectedIndex + 1);
             postDate = postDate.Value.AddHours(3);
             tbDate.Text = postDate.ToString();
@@ -161,12 +160,24 @@ namespace AddPost
                     image = image,
                     NeuralNetworkResultTag = tag
                 });
+
+                ShowImage(imageList.Count - 1);
+            }
+        }
+
+        private void RemoveImage(int index)
+        {
+            if (imageList.Count > 0)
+            {
+                imageList.RemoveAt(index);
+
+                ShowImage(imageIndex - 1);
             }
         }
 
         private void ShowImage(int index)
         {
-            if (-1 < index && index < imageList.Count)
+            if (-1 < index)
             {
                 if (index < imageList.Count)
                 {
@@ -188,6 +199,28 @@ namespace AddPost
                     imageIndex = index;
                 }
             }
+            else
+            {
+                if (imageList.Count == 0)
+                {
+                    if (pbImage.InvokeRequired)
+                    {
+                        pbImage.Invoke((MethodInvoker)delegate
+                        {
+                            pbImage.Image = null;
+                            tbNeuralNetworkResult.Text = "";
+                            tbImageIndex.Text = "0";
+                        });
+                    }
+                    else
+                    {
+                        pbImage.Image = null;
+                        tbNeuralNetworkResult.Text = "";
+                        tbImageIndex.Text = "0";
+                    }
+                    imageIndex = -1;
+                }
+            }
         }
 
         private async void bBuff_Click(object sender, EventArgs e)
@@ -200,8 +233,6 @@ namespace AddPost
                     var tag = NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag);
 
                     AddImage(image, tag);
-
-                    ShowImage(imageList.Count - 1);
                 });
             }
         }
@@ -216,6 +247,7 @@ namespace AddPost
 
                 await Task.Run(() =>
                 {
+                    var date = new Date(authorize.Api);
                     var post = new Post(authorize.Api);
                     post.Publish(imageList.Select(x => x.image).ToArray(), tags, tbUrl.Text, date.ChangeTimeNewPostUseLastPost(groupId, index), groupId);
                 });
@@ -356,7 +388,7 @@ namespace AddPost
                         shift = Convert.ToInt32(tbShiftDownload.Text);
                         count = Convert.ToInt32(tbCountDownload.Text);
                     }
-                    var downloaderVK = new DownloaderDataSetPhotoFromVK(authorize.Api);
+                    var downloaderVK = new DownloaderDataSetPhotoFromVK(authorize.Api, tagList);
                     try
                     {
                         downloaderVK.SavePhotosIdFromNewsfeed(tbTag.Text, shift, count, groupId, percentOriginalTag);
@@ -393,6 +425,11 @@ namespace AddPost
         private void bImageRight_Click(object sender, EventArgs e)
         {
             ShowImage(imageIndex + 1);
+        }
+
+        private void bImageDelete_Click(object sender, EventArgs e)
+        {
+            RemoveImage(imageIndex);
         }
     }
 }

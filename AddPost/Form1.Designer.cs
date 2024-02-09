@@ -64,6 +64,7 @@
             bImageLeft = new Button();
             bImageRight = new Button();
             tbImageIndex = new TextBox();
+            bImageDelete = new Button();
             ((System.ComponentModel.ISupportInitialize)pbImage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             SuspendLayout();
@@ -370,7 +371,7 @@
             // bImageLeft
             // 
             bImageLeft.Font = new Font("Segoe UI", 20F);
-            bImageLeft.Location = new Point(128, 650);
+            bImageLeft.Location = new Point(177, 650);
             bImageLeft.Name = "bImageLeft";
             bImageLeft.Size = new Size(110, 43);
             bImageLeft.TabIndex = 32;
@@ -381,7 +382,7 @@
             // bImageRight
             // 
             bImageRight.Font = new Font("Segoe UI", 20F);
-            bImageRight.Location = new Point(386, 650);
+            bImageRight.Location = new Point(349, 650);
             bImageRight.Name = "bImageRight";
             bImageRight.Size = new Size(110, 43);
             bImageRight.TabIndex = 33;
@@ -398,12 +399,24 @@
             tbImageIndex.TabIndex = 34;
             tbImageIndex.TextAlign = HorizontalAlignment.Center;
             // 
+            // bImageDelete
+            // 
+            bImageDelete.Font = new Font("Segoe UI", 8.830189F);
+            bImageDelete.Location = new Point(12, 650);
+            bImageDelete.Name = "bImageDelete";
+            bImageDelete.Size = new Size(110, 43);
+            bImageDelete.TabIndex = 35;
+            bImageDelete.Text = "Удалить ";
+            bImageDelete.UseVisualStyleBackColor = true;
+            bImageDelete.Click += bImageDelete_Click;
+            // 
             // Form1
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1632, 703);
+            Controls.Add(bImageDelete);
             Controls.Add(tbImageIndex);
             Controls.Add(bImageRight);
             Controls.Add(bImageLeft);
@@ -484,5 +497,6 @@
         private Button bImageLeft;
         private Button bImageRight;
         private TextBox tbImageIndex;
+        private Button bImageDelete;
     }
 }

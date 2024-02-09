@@ -23,7 +23,7 @@ namespace AddPost.Classes
             try
             {
                 string json = File.ReadAllText("TagsDictionary.txt");
-                if (json != "")
+                if (json?.Length != 0)
                 {
                     tagsList = JsonConvert.DeserializeObject<List<string>>(json);
                 }
@@ -31,27 +31,37 @@ namespace AddPost.Classes
             catch { }
         }
 
+        public ConcurrentStack<string> FindLast(string tagsGet)
+        {
+            ConcurrentStack<string> stack;
+            var tags = tagsGet.Split("#");
+            if (tags.Length > 0)
+            {
+                stack = Find(tags.Last());
+            }
+            else
+            {
+                stack = new();
+            }
+            return stack;
+        }
+
         public ConcurrentStack<string> Find(string LastTag)
         {
             ConcurrentStack<string> stack = new();
-            var tags = LastTag.Split("#");
-            if (tags.Length > 0)
+            LastTag = LastTag.ToUpper();
+            ParallelOptions options = new()
             {
-                LastTag = tags.Last();
-                LastTag = LastTag.ToUpper();
-                ParallelOptions options = new()
+                MaxDegreeOfParallelism = Environment.ProcessorCount
+            };
+            Parallel.ForEach(tagsList, options, tag =>
+            {
+                var upperTag = tag.ToUpper();
+                if (upperTag.Contains(LastTag))
                 {
-                    MaxDegreeOfParallelism = Environment.ProcessorCount
-                };
-                Parallel.ForEach(tagsList, options, tag =>
-                {
-                    var upperTag = tag.ToUpper();
-                    if (upperTag.Contains(LastTag))
-                    {
-                        stack.Push(tag);
-                    }
-                });
-            }
+                    stack.Push(tag);
+                }
+            });
             return stack;
         }
 
