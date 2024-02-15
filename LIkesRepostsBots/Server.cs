@@ -24,11 +24,11 @@ namespace LikesRepostsBots
 
             const int TIME_WORK = 10 * 60 * 60 * 1000;
             int count = 0;
+            int stepBetweenBots = TIME_WORK / bots.Count;
+            var indexRip = new List<int>(bots.Count);
             while (true)
             {
                 bots.Mix();
-
-                int stepBetweenBots = TIME_WORK / bots.Count;
 
                 if (count % 10 == 0)
                 {
@@ -45,10 +45,22 @@ namespace LikesRepostsBots
                 {
                     Console.WriteLine($"Бот номер {i + 1} {bots[i].BotName}\n" +
                                       $"Номер итерации {count}");
-                    bots[i].Start(botParams);
+                    if (!bots[i].Start(botParams))
+                    {
+                        indexRip.Add(i);
+                    }
                     Console.WriteLine($"Бот номер {i + 1} {bots[i].BotName}\n" +
                                       $"Номер итерации {count}");
                     Thread.Sleep(rand.Next(stepBetweenBots));
+                }
+
+                if(indexRip.Count > 0)
+                {
+                    foreach(var index in indexRip)
+                    {
+                        bots.Remove(index);
+                    }
+                    stepBetweenBots = TIME_WORK / bots.Count;
                 }
 
                 botParams.ClearFriends = ClearFriendsType.None;

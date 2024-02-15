@@ -6,3 +6,5 @@ ARTS/
 AddPost/ComputerVision.mlnet
 /AddPost/ComputerVision.mlnet
 .vs/
+*.mlnet
+AddPost/ComputerVision.mlnet

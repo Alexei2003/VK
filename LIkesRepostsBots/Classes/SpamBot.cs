@@ -304,7 +304,7 @@ namespace LikesRepostsBots.Classes
             Console.Write("/");
         }
 
-        public void Start(BotsWorksParams botParams)
+        public bool Start(BotsWorksParams botParams)
         {
             try
             {
@@ -329,10 +329,12 @@ namespace LikesRepostsBots.Classes
                     BanPeopleFromGroup(botParams.GroupIdForBad.Value);
                 }
 
+                return true;
+
             }
             catch (Exception e) when (e is VkNet.Exception.UserAuthorizationFailException || e is VkNet.Exception.VkApiException)
             {
-                return;
+                return false;
             }
         }
     }

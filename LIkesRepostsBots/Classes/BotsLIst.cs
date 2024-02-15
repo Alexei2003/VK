@@ -3,7 +3,7 @@
     internal sealed class BotsLIst
     {
         private readonly List<SpamBot> bots = [];
-        public int Count { get; }
+        public int Count { get; private set; }
 
         private readonly Random rand;
 
@@ -23,6 +23,12 @@
             {
                 return bots[i];
             }
+        }
+
+        public void Remove(int i)
+        {
+            bots.RemoveAt(i);
+            Count = bots.Count;
         }
 
         public void Mix()
