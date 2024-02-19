@@ -309,33 +309,57 @@ namespace LikesRepostsBots.Classes
             try
             {
                 Authorize();
-                if (botParams.MakeRepost == true && botParams.GroupIdForGood != null)
-                {
-                    WorkWithPosts(botParams.GroupIdForGood.Value);
-                }
 
-                for (int i = 0; i < botParams.AddFriendsCount; i++)
-                {
-                    WorkWithFriends();
-                }
+                var action = MixAction();
 
-                if (botParams.ClearFriends > 0)
+                foreach (var index in action)
                 {
-                    BanDiedAndMassFriends(botParams.ClearFriends);
+                    switch (index)
+                    {
+                        case 0:
+                            if (botParams.MakeRepost == true && botParams.GroupIdForGood != null)
+                            {
+                                WorkWithPosts(botParams.GroupIdForGood.Value);
+                            }
+                            break;
+                        case 1:
+                            for (int i = 0; i < botParams.AddFriendsCount; i++)
+                            {
+                                WorkWithFriends();
+                            }
+                            break;
+                        case 2:
+                            if (botParams.ClearFriends > 0)
+                            {
+                                BanDiedAndMassFriends(botParams.ClearFriends);
+                            }
+                            break;
+                        case 3:
+                            if (botParams.BanPeopleFromGroup && botParams.GroupIdForBad != null)
+                            {
+                                BanPeopleFromGroup(botParams.GroupIdForBad.Value);
+                            }
+                            break;
+                    }
                 }
-
-                if (botParams.BanPeopleFromGroup && botParams.GroupIdForBad != null)
-                {
-                    BanPeopleFromGroup(botParams.GroupIdForBad.Value);
-                }
-
                 return true;
-
             }
             catch (Exception e) when (e is VkNet.Exception.UserAuthorizationFailException || e is VkNet.Exception.VkApiException)
             {
                 return false;
             }
+        }
+
+        private int[] MixAction()
+        {
+            var action = new int[] { 0, 1, 2, 3 };
+            int n = action.Length;
+            while (n > 1)
+            {
+                int k = rand.Next(n--);
+                (action[n], action[k]) = (action[k], action[n]);
+            }
+            return action;
         }
     }
 }

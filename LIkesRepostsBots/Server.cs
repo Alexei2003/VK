@@ -28,6 +28,11 @@ namespace LikesRepostsBots
             var indexRip = new List<int>(bots.Count);
             while (true)
             {
+                if (bots.Count == 0)
+                {
+                    bots = new BotsLIst(accessTokensAndNames, people, rand);
+                }
+
                 bots.Mix();
 
                 if (count % 10 == 0)
@@ -54,13 +59,14 @@ namespace LikesRepostsBots
                     Thread.Sleep(rand.Next(stepBetweenBots));
                 }
 
-                if(indexRip.Count > 0)
+                if (indexRip.Count > 0)
                 {
-                    foreach(var index in indexRip)
+                    foreach (var index in indexRip)
                     {
                         bots.Remove(index);
                     }
                     stepBetweenBots = TIME_WORK / bots.Count;
+                    indexRip.Clear();
                 }
 
                 botParams.ClearFriends = ClearFriendsType.None;
