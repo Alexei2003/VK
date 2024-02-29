@@ -61,7 +61,7 @@ namespace LikesRepostsBots
 
                 if (indexRip.Count > 0)
                 {
-                    for(var i = 0; i <indexRip.Count; i++)
+                    for (var i = 0; i < indexRip.Count; i++)
                     {
                         bots.Remove(indexRip.Pop());
                     }

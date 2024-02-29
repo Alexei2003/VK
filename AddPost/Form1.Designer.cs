@@ -65,6 +65,7 @@
             bImageRight = new Button();
             tbImageIndex = new TextBox();
             bImageDelete = new Button();
+            bTbTagFix = new Button();
             ((System.ComponentModel.ISupportInitialize)pbImage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             SuspendLayout();
@@ -111,7 +112,7 @@
             tbUrl.Location = new Point(748, 44);
             tbUrl.Multiline = true;
             tbUrl.Name = "tbUrl";
-            tbUrl.Size = new Size(719, 56);
+            tbUrl.Size = new Size(719, 52);
             tbUrl.TabIndex = 6;
             // 
             // tbDate
@@ -127,7 +128,7 @@
             tbTag.Location = new Point(748, 106);
             tbTag.Multiline = true;
             tbTag.Name = "tbTag";
-            tbTag.Size = new Size(719, 52);
+            tbTag.Size = new Size(603, 52);
             tbTag.TabIndex = 4;
             tbTag.KeyUp += tbTag_KeyUp;
             // 
@@ -410,12 +411,23 @@
             bImageDelete.UseVisualStyleBackColor = true;
             bImageDelete.Click += bImageDelete_Click;
             // 
+            // bTbTagFix
+            // 
+            bTbTagFix.Location = new Point(1357, 106);
+            bTbTagFix.Name = "bTbTagFix";
+            bTbTagFix.Size = new Size(110, 52);
+            bTbTagFix.TabIndex = 36;
+            bTbTagFix.Text = "Исправление";
+            bTbTagFix.UseVisualStyleBackColor = true;
+            bTbTagFix.Click += bTbTagFix_Click;
+            // 
             // Form1
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1632, 703);
+            Controls.Add(bTbTagFix);
             Controls.Add(bImageDelete);
             Controls.Add(tbImageIndex);
             Controls.Add(bImageRight);
@@ -498,5 +510,6 @@
         private Button bImageRight;
         private TextBox tbImageIndex;
         private Button bImageDelete;
+        private Button bTbTagFix;
     }
 }

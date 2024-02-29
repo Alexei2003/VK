@@ -223,6 +223,36 @@ namespace AddPost
             }
         }
 
+        private static string FixTagString(string tagsStr)
+        {
+            // Удаление пробелов по краям
+            tagsStr = tagsStr.Trim(' ');
+
+            // Замена пробелов на _
+            var tagsArr = tagsStr.Split(' ');
+            tagsStr = tagsArr[0];
+            for(int i = 1;i< tagsArr.Length;i++)
+            {
+                if (!string.IsNullOrEmpty(tagsArr[i]))
+                {
+                    tagsStr += '_' + tagsArr[i];
+                }
+            }
+
+            // Удаление без # тегов
+            tagsArr = tagsStr.Split('#');
+            tagsStr = "";
+            for (int i = 1; i < tagsArr.Length; i++)
+            {
+                if (!string.IsNullOrEmpty(tagsArr[i]))
+                {
+                    tagsStr += '#' + tagsArr[i];
+                }
+            }
+
+            return tagsStr;
+        }
+
         private async void bBuff_Click(object sender, EventArgs e)
         {
             if (Clipboard.ContainsImage())
@@ -241,7 +271,7 @@ namespace AddPost
         {
             if (imageList.Count > 0)
             {
-                string tags = tbTag.Text.Replace(" ", "");
+                var tags = FixTagString(tbTag.Text);
 
                 var index = cbTimeBetweenPost.SelectedIndex + 1;
 
@@ -286,25 +316,32 @@ namespace AddPost
 
         private void dgvDictionary_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            var str = tbTag.Text;
+            //Удаление тега для замены
+            var tagStr = tbTag.Text;
             int removeCount = -1;
             int indexStartDel = -1;
-            for (int i = str.Length - 1; i > -1; i--)
+            for (int i = tagStr.Length - 1; i > -1; i--)
             {
-                if (str[i] == '#')
+                if (tagStr[i] == '#')
                 {
                     indexStartDel = i;
-                    removeCount = str.Length - i;
+                    removeCount = tagStr.Length - i;
                     break;
                 }
             }
-
             if (removeCount > -1 && indexStartDel > -1)
             {
-                str = str.Remove(indexStartDel, removeCount);
+                tagStr = tagStr.Remove(indexStartDel, removeCount);
             }
 
-            tbTag.Text = str + dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+            var findTagStr = dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+
+            var tagArr1 = tagStr.Split('#');
+            var tagArr2 = findTagStr.Split('#');
+
+
+
+            tbTag.Text = tagStr + findTagStr;
         }
 
         private void bDataSet_Click(object sender, EventArgs e)
@@ -430,6 +467,11 @@ namespace AddPost
         private void bImageDelete_Click(object sender, EventArgs e)
         {
             RemoveImage(imageIndex);
+        }
+
+        private void bTbTagFix_Click(object sender, EventArgs e)
+        {
+            tbTag.Text = FixTagString(tbTag.Text);
         }
     }
 }

@@ -5,6 +5,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="VkNet" Version="1.77.0" />
+    <PackageReference Include="VkNet" Version="1.78.0" />
   </ItemGroup>
 </Project>
