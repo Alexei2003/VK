@@ -359,7 +359,11 @@ namespace AddPost
         {
             if (e.Button == MouseButtons.Right)
             {
-                tagList.Remove(dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+                DialogResult result = MessageBox.Show($"Удаление тега {dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value}", "Подтвердите действие для ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    tagList.Remove(dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+                }
 
                 WriteFindTag();
             }
