@@ -50,11 +50,7 @@ namespace AddPost.Classes
         {
             ConcurrentStack<string> stack = new();
             LastTag = LastTag.ToUpper();
-            ParallelOptions options = new()
-            {
-                MaxDegreeOfParallelism = Environment.ProcessorCount
-            };
-            Parallel.ForEach(tagsList, options, tag =>
+            Parallel.ForEach(tagsList, tag =>
             {
                 var upperTag = tag.ToUpper();
                 if (upperTag.Contains(LastTag))

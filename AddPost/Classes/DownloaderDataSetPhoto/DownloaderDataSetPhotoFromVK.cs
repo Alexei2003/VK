@@ -98,9 +98,16 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
 
             var tags = post.Text.Split('#');
             int countFindTag = 0;
+            var separs = new char[] { ' ', '@',',','\n' };
+            string tmpTag;
             foreach (var tag in tags)
             {
-                if (!tagList.Find(tag.Split(' ').First()).IsEmpty)
+                tmpTag = tag.Split(separs).First();
+                if (tmpTag.Length < 1)
+                {
+                    continue;
+                }
+                if (!tagList.Find(tag.Split(separs).First()).IsEmpty)
                 {
                     countFindTag++;
                 }
