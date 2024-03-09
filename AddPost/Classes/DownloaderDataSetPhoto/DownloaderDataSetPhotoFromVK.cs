@@ -124,20 +124,19 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
 
                 Directory.CreateDirectory("DATA_SET\\" + currentTag);
 
-                var filesList = Directory.GetFiles("DATA_SET\\" + currentTag);
-
-                foreach (var file in filesList)
+                lock (lockNeuralNetworkResult)
                 {
-                    using var tmpImage = new Bitmap(file);
-                    if (DataSetPhoto.IsSimilarPhoto(DataSetPhoto.ChangeResolution224224(image), DataSetPhoto.ChangeResolution224224(tmpImage)))
+                    if (NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag) == currentTag)
                     {
                         return;
                     }
                 }
 
-                lock (lockNeuralNetworkResult)
+                var filesList = Directory.GetFiles("DATA_SET\\" + currentTag);
+                foreach (var file in filesList)
                 {
-                    if (NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag) != currentTag)
+                    var tmpImage = new Bitmap(file);
+                    if (!DataSetPhoto.IsSimilarPhoto(DataSetPhoto.ChangeResolution224224(image), DataSetPhoto.ChangeResolution224224(tmpImage)))
                     {
                         DataSetPhoto.Save(image, currentTag);
                     }
