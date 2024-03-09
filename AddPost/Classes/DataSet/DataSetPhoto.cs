@@ -1,4 +1,5 @@
-﻿using System.Drawing.Imaging;
+﻿using AForge.Imaging;
+using System.Drawing.Imaging;
 
 namespace AddPost.Classes.DataSet
 {
@@ -8,19 +9,19 @@ namespace AddPost.Classes.DataSet
 
         public static void Save(Bitmap image, string tags)
         {
-            image = ChangeResolution(image);
+            image = ChangeResolution224224(image);
 
             SaveFile(image, tags);
         }
 
-        public static Bitmap ChangeResolution(Bitmap image)
+        public static Bitmap ChangeResolution224224(Bitmap image)
         {
             if (image.Width - image.Height > 0)
             {
                 if (image.Width > MAX_SIZE)
                 {
                     var delta = image.Width / MAX_SIZE;
-                    return new Bitmap(image, Convert.ToInt32(image.Width / delta), Convert.ToInt32(image.Height / delta));
+                    return ImageTo24bpp(new Bitmap(image, Convert.ToInt32(image.Width / delta), Convert.ToInt32(image.Height / delta)));
                 }
                 else
                 {
@@ -32,13 +33,20 @@ namespace AddPost.Classes.DataSet
                 if (image.Height > MAX_SIZE)
                 {
                     var delta = image.Height / MAX_SIZE;
-                    return new Bitmap(image, Convert.ToInt32(image.Width / delta), Convert.ToInt32(image.Height / delta));
+                    return ImageTo24bpp(new Bitmap(image, Convert.ToInt32(image.Width / delta), Convert.ToInt32(image.Height / delta)));
                 }
                 else
                 {
                     return image;
                 }
             }
+        }
+        public static Bitmap ImageTo24bpp(Bitmap img)
+        {
+            var bmp = new Bitmap(img.Width, img.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            using (var gr = Graphics.FromImage(bmp))
+                gr.DrawImage(img, new Rectangle(0, 0, img.Width, img.Height));
+            return bmp;
         }
 
         private static void SaveFile(Bitmap image, string tags)
@@ -64,11 +72,20 @@ namespace AddPost.Classes.DataSet
 
         public static bool IsSimilarPhoto(Bitmap bmp1, Bitmap bmp2)
         {
-            if (bmp1.Width == bmp2.Width && bmp1.Height == bmp2.Height)
+            // Создаем экземпляр алгоритма сравнения шаблонов
+            var tm = new ExhaustiveTemplateMatching(0.8f);
+
+            // Находим все совпадения с заданным порогом сходства
+            var matches = tm.ProcessImage(ImageTo24bpp(new Bitmap(bmp1, bmp2.Width, bmp2.Height)), bmp2);
+
+            if (matches.Length > 0)
             {
                 return true;
             }
-            return false;
+            else
+            {
+                return false;
+            }
         }
     }
 }

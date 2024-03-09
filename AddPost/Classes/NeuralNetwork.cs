@@ -8,7 +8,7 @@ namespace AddPost.Classes
         public static string NeuralNetworkResult(Bitmap image, float percentOriginalTag)
         {
             string resulTag;
-            image = DataSetPhoto.ChangeResolution(image);
+            image = DataSetPhoto.ChangeResolution224224(image);
 
             // Преобразуйте изображение в байты
             byte[] imageBytes;

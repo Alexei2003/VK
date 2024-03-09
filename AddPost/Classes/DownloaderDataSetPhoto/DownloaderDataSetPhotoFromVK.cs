@@ -39,7 +39,14 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
                         {
                             countPhoto--;
                         }
-                        SavePhotos(tag, post, ignorGroupId, percentOriginalTag);
+                        try
+                        {
+                            SavePhotos(tag, post, ignorGroupId, percentOriginalTag);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
                     }
                     else
                     {
@@ -119,7 +126,7 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
                 foreach (var file in filesList)
                 {
                     using var tmpImage = new Bitmap(file);
-                    if (DataSetPhoto.IsSimilarPhoto(DataSetPhoto.ChangeResolution(image), DataSetPhoto.ChangeResolution(tmpImage)))
+                    if (DataSetPhoto.IsSimilarPhoto(DataSetPhoto.ChangeResolution224224(image), DataSetPhoto.ChangeResolution224224(tmpImage)))
                     {
                         return;
                     }

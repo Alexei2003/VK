@@ -231,7 +231,7 @@ namespace AddPost
             // Замена пробелов на _
             var tagsArr = tagsStr.Split(' ');
             tagsStr = tagsArr[0];
-            for(int i = 1;i< tagsArr.Length;i++)
+            for (int i = 1; i < tagsArr.Length; i++)
             {
                 if (!string.IsNullOrEmpty(tagsArr[i]))
                 {
@@ -430,6 +430,7 @@ namespace AddPost
                         count = Convert.ToInt32(tbCountDownload.Text);
                     }
                     var downloaderVK = new DownloaderDataSetPhotoFromVK(authorize.Api, tagList);
+
                     try
                     {
                         downloaderVK.SavePhotosIdFromNewsfeed(tbTag.Text, shift, count, groupId, percentOriginalTag);
