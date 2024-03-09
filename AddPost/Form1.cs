@@ -77,7 +77,7 @@ namespace AddPost
                     break;
                 }
 
-                tmpGroupName = dgvDictionary.Rows[i].Cells[0].Value.ToString().Split('#', StringSplitOptions.RemoveEmptyEntries)[1];
+                tmpGroupName = dgvDictionary.Rows[i].Cells[0].Value.ToString().Split('#', StringSplitOptions.RemoveEmptyEntries).First();
 
                 if (tmpGroupName != groupName)
                 {
@@ -339,6 +339,7 @@ namespace AddPost
             var tagArr1 = tagStr.Split('#', StringSplitOptions.RemoveEmptyEntries);
             var tagArr2 = findTagStr.Split('#', StringSplitOptions.RemoveEmptyEntries);
 
+            ///////////////////
 
 
             tbTag.Text = tagStr + findTagStr;
@@ -395,6 +396,8 @@ namespace AddPost
             percentOriginalTag = (cbPercentOriginalTag.SelectedIndex + 1) * 0.1f;
         }
 
+        private static readonly char[] separator = ['\r', '\n'];
+
         private async void bDownloadPhotos_Click(object sender, EventArgs e)
         {
 
@@ -433,10 +436,11 @@ namespace AddPost
 
                     try
                     {
-                        var tags = tbTag.Text.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                        Parallel.ForEach(tags, tag => 
+                        var lockNeuralNetworkResult = new object();
+                        var tags = tbTag.Text.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+                        Parallel.For(0, tags.Length, i =>
                         {
-                            downloaderVK.SavePhotosIdFromNewsfeed(tbTag.Text, shift, count, groupId, percentOriginalTag);
+                            downloaderVK.SavePhotosIdFromNewsfeed(tags[i], shift, count, groupId, percentOriginalTag, $"DataSet_{i}", lockNeuralNetworkResult);
                         });
                     }
                     catch (Exception ex)

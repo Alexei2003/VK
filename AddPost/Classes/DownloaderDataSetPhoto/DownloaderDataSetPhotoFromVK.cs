@@ -15,7 +15,7 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
             this.tagList = tagList;
         }
 
-        public void SavePhotosIdFromNewsfeed(string tag, int shiftPost, int countPhoto, Int64 ignorGroupId, float percentOriginalTag)
+        public void SavePhotosIdFromNewsfeed(string tag, int shiftPost, int countPhoto, Int64 ignorGroupId, float percentOriginalTag, string fileName, object lockNeuralNetworkResult)
         {
             NewsSearchResult newsfeedPosts;
             int indexPage = 0;
@@ -41,7 +41,7 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
                         }
                         try
                         {
-                            SavePhotos(tag, post, ignorGroupId, percentOriginalTag);
+                            SavePhotos(tag, post, ignorGroupId, percentOriginalTag, fileName, lockNeuralNetworkResult);
                         }
                         catch (Exception ex)
                         {
@@ -72,7 +72,8 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
             } while (indexPage < 5);
         }
 
-        private void SavePhotos(string currentTag, NewsSearchItem post, Int64 groupId, float percentOriginalTag)
+        private static readonly char[] separator = [' ', '@', ',', '\r', '\n'];
+        private void SavePhotos(string currentTag, NewsSearchItem post, Int64 groupId, float percentOriginalTag, string fileName, object lockNeuralNetworkResult)
         {
             var stringList = new List<string>(10);
 
@@ -98,11 +99,10 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
 
             var tags = post.Text.Split('#', StringSplitOptions.RemoveEmptyEntries);
             int countFindTag = 0;
-            char[] separs = [' ', '@',',','\r','\n' ];
             string tmpTag;
             foreach (var tag in tags)
             {
-                tmpTag = tag.Split(separs, StringSplitOptions.RemoveEmptyEntries).First();
+                tmpTag = tag.Split(separator, StringSplitOptions.RemoveEmptyEntries).First();
                 if (!tagList.Find(tmpTag).IsEmpty)
                 {
                     countFindTag++;
@@ -119,8 +119,8 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
             using var wc = new WebClient();
             foreach (var photo in photos)
             {
-                wc.DownloadFile(photo.Sizes[2].Url, "DATA_SET\\DataSet.jpg");
-                using var image = new Bitmap("DATA_SET\\DataSet.jpg");
+                wc.DownloadFile(photo.Sizes[2].Url, $"DATA_SET\\{fileName}.jpg");
+                using var image = new Bitmap($"DATA_SET\\{fileName}.jpg");
 
                 Directory.CreateDirectory("DATA_SET\\" + currentTag);
 
@@ -135,9 +135,12 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
                     }
                 }
 
-                if (NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag) != currentTag)
+                lock (lockNeuralNetworkResult)
                 {
-                    DataSetPhoto.Save(image, currentTag);
+                    if (NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag) != currentTag)
+                    {
+                        DataSetPhoto.Save(image, currentTag);
+                    }
                 }
             }
         }
