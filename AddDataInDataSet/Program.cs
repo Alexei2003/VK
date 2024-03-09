@@ -61,7 +61,7 @@
 
             foreach (var newDirectory in newDirectories)
             {
-                var directoryNameParts = newDirectory.Split("\\");
+                var directoryNameParts = newDirectory.Split("\\", StringSplitOptions.RemoveEmptyEntries);
                 bool DirectoryAdded = false;
                 foreach (var readyDirectory in readDirectories)
                 {
@@ -94,7 +94,7 @@
                 var sourceInfo = new DirectoryInfo(littleDirectory);
                 if (sourceInfo.GetFiles().Length >= MIN_COUNT_FILES)
                 {
-                    var directoryNameParts = littleDirectory.Split("\\");
+                    var directoryNameParts = littleDirectory.Split("\\", StringSplitOptions.RemoveEmptyEntries);
                     DirectoryMove(littleDirectory, READY_PATH + "\\" + directoryNameParts.Last());
                     countReady++;
                 }

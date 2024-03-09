@@ -45,7 +45,7 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            continue;
                         }
                     }
                     else
@@ -96,18 +96,14 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
                 return;
             }
 
-            var tags = post.Text.Split('#');
+            var tags = post.Text.Split('#', StringSplitOptions.RemoveEmptyEntries);
             int countFindTag = 0;
-            var separs = new char[] { ' ', '@',',','\n' };
+            char[] separs = [' ', '@',',','\r','\n' ];
             string tmpTag;
             foreach (var tag in tags)
             {
-                tmpTag = tag.Split(separs).First();
-                if (tmpTag.Length < 1)
-                {
-                    continue;
-                }
-                if (!tagList.Find(tag.Split(separs).First()).IsEmpty)
+                tmpTag = tag.Split(separs, StringSplitOptions.RemoveEmptyEntries).First();
+                if (!tagList.Find(tmpTag).IsEmpty)
                 {
                     countFindTag++;
                 }

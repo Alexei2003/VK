@@ -77,7 +77,7 @@ namespace AddPost
                     break;
                 }
 
-                tmpGroupName = dgvDictionary.Rows[i].Cells[0].Value.ToString().Split('#')[1];
+                tmpGroupName = dgvDictionary.Rows[i].Cells[0].Value.ToString().Split('#', StringSplitOptions.RemoveEmptyEntries)[1];
 
                 if (tmpGroupName != groupName)
                 {
@@ -117,7 +117,7 @@ namespace AddPost
 
         private void AddInDataSet(List<ImagesWithTag> imageList, string tags)
         {
-            if (!tagList.Add(tags) && tags.Split("#").Length < 4)
+            if (!tagList.Add(tags) && tags.Split('#', StringSplitOptions.RemoveEmptyEntries).Length < 4)
             {
                 foreach (var image in imageList)
                 {
@@ -229,7 +229,7 @@ namespace AddPost
             tagsStr = tagsStr.Trim(' ');
 
             // Замена пробелов на _
-            var tagsArr = tagsStr.Split(' ');
+            var tagsArr = tagsStr.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             tagsStr = tagsArr[0];
             for (int i = 1; i < tagsArr.Length; i++)
             {
@@ -240,7 +240,7 @@ namespace AddPost
             }
 
             // Удаление без # тегов
-            tagsArr = tagsStr.Split('#');
+            tagsArr = tagsStr.Split('#', StringSplitOptions.RemoveEmptyEntries);
             tagsStr = "";
             for (int i = 1; i < tagsArr.Length; i++)
             {
@@ -336,8 +336,8 @@ namespace AddPost
 
             var findTagStr = dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
 
-            var tagArr1 = tagStr.Split('#');
-            var tagArr2 = findTagStr.Split('#');
+            var tagArr1 = tagStr.Split('#', StringSplitOptions.RemoveEmptyEntries);
+            var tagArr2 = findTagStr.Split('#', StringSplitOptions.RemoveEmptyEntries);
 
 
 
@@ -433,7 +433,11 @@ namespace AddPost
 
                     try
                     {
-                        downloaderVK.SavePhotosIdFromNewsfeed(tbTag.Text, shift, count, groupId, percentOriginalTag);
+                        var tags = tbTag.Text.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                        Parallel.ForEach(tags, tag => 
+                        {
+                            downloaderVK.SavePhotosIdFromNewsfeed(tbTag.Text, shift, count, groupId, percentOriginalTag);
+                        });
                     }
                     catch (Exception ex)
                     {

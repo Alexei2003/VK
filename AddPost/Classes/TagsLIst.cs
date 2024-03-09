@@ -34,7 +34,7 @@ namespace AddPost.Classes
         public ConcurrentStack<string> FindLast(string tagsGet)
         {
             ConcurrentStack<string> stack;
-            var tags = tagsGet.Split("#");
+            var tags = tagsGet.Split('#');
             if (tags.Length > 0)
             {
                 stack = Find(tags.Last());

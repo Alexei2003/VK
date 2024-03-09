@@ -69,7 +69,7 @@ namespace RepetitionOfPostsBot
                         var post = wall.WallPosts.First();
                         var tags = post.Text;
 
-                        if (tags.Split('#').Length < 2 || tags.Contains('.') || tags.Contains(' ') || tags.Contains('\n'))
+                        if (tags.Split('#', StringSplitOptions.RemoveEmptyEntries).Length < 2 || tags.Contains('.') || tags.Contains(' ') || tags.Contains('\n'))
                         {
                             indexResendedPost++;
                             continue;
