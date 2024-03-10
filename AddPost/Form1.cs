@@ -117,7 +117,7 @@ namespace AddPost
 
         private void AddInDataSet(List<ImagesWithTag> imageList, string tags)
         {
-            if (!tagList.Add(tags) && tags.Split('#', StringSplitOptions.RemoveEmptyEntries).Length < 4)
+            if (!tagList.Add(tags) && tags.Split('#', StringSplitOptions.RemoveEmptyEntries).Length < 3)
             {
                 foreach (var image in imageList)
                 {
@@ -231,7 +231,7 @@ namespace AddPost
             // Замена пробелов на _
             var tagsArr = tagsStr.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             tagsStr = tagsArr[0];
-            for (int i = 1; i < tagsArr.Length; i++)
+            for (var i = 1; i < tagsArr.Length; i++)
             {
                 if (!string.IsNullOrEmpty(tagsArr[i]))
                 {
@@ -242,7 +242,7 @@ namespace AddPost
             // Удаление без # тегов
             tagsArr = tagsStr.Split('#', StringSplitOptions.RemoveEmptyEntries);
             tagsStr = "";
-            for (int i = 1; i < tagsArr.Length; i++)
+            for (var i = 0; i < tagsArr.Length; i++)
             {
                 if (!string.IsNullOrEmpty(tagsArr[i]))
                 {
