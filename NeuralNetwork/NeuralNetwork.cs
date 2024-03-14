@@ -1,9 +1,10 @@
-﻿using AddPost.Classes.DataSet;
+﻿using DataSet;
+using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace AddPost.Classes
+namespace NeuralNetwork
 {
-    internal static class NeuralNetwork
+    public static class NeuralNetwork
     {
         public static string NeuralNetworkResult(Bitmap image, float percentOriginalTag)
         {

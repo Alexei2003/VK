@@ -14,17 +14,9 @@
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AForge.Imaging" Version="2.2.5" />
-    <PackageReference Include="Microsoft.ML" Version="3.0.1" />
-    <PackageReference Include="Microsoft.ML.AutoML" Version="0.21.1" />
-    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="3.0.1" />
-    <PackageReference Include="Microsoft.ML.TorchSharp" Version="0.21.1" />
-    <PackageReference Include="Microsoft.ML.Vision" Version="3.0.1" />
-    <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.3.1" />
-    <PackageReference Include="TorchSharp-cpu" Version="0.101.5" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\DataSet\DataSet.csproj" />
     <ProjectReference Include="..\MyCustomClasses\MyCustomClasses.csproj" />
+    <ProjectReference Include="..\NeuralNetwork\NeuralNetwork.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -38,10 +30,5 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup Label="ComputerVision">
-    <None Include="ComputerVision.mlnet">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>

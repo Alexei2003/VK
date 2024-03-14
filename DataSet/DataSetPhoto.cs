@@ -1,9 +1,10 @@
 ﻿using AForge.Imaging;
+using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace AddPost.Classes.DataSet
+namespace DataSet
 {
-    internal static class DataSetPhoto
+    public static class DataSetPhoto
     {
         private const double MAX_SIZE = 224;
 

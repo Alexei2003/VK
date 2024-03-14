@@ -1,8 +1,9 @@
 using AddPost.Classes;
-using AddPost.Classes.DataSet;
 using AddPost.Classes.DownloaderDataSetPhoto;
 using AddPost.Classes.VK;
 using System.ComponentModel;
+using DataSet;
+using NeuralNetwork;
 
 namespace AddPost
 {
@@ -142,7 +143,7 @@ namespace AddPost
             {
                 var clipboardImage = new Bitmap(Clipboard.GetImage());
 
-                var resulTag = NeuralNetwork.NeuralNetworkResult(clipboardImage, percentOriginalTag);
+                var resulTag = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(clipboardImage, percentOriginalTag);
 
                 AddInDataSet([new ImagesWithTag { image = clipboardImage, NeuralNetworkResultTag = resulTag }], tbTag.Text.Replace(" ", ""));
 
@@ -259,7 +260,7 @@ namespace AddPost
                 var image = new Bitmap(Clipboard.GetImage());
                 await Task.Run(() =>
                 {
-                    var tag = NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag);
+                    var tag = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag);
 
                     AddImage(image, tag);
                 });

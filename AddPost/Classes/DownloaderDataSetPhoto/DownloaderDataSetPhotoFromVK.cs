@@ -1,4 +1,4 @@
-﻿using AddPost.Classes.DataSet;
+﻿using DataSet;
 using System.Net;
 using VkNet.Model;
 
@@ -125,7 +125,7 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
 
                 lock (lockNeuralNetworkResult)
                 {
-                    if (NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag) == currentTag)
+                    if (NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag) == currentTag)
                     {
                         return;
                     }
