@@ -5,9 +5,9 @@ namespace AddPost.Classes
 {
     internal sealed class Date
     {
-        private readonly VkApiCustom.VkApiCustom api;
+        private readonly MyCustomClasses.VkApiCustom api;
 
-        public Date(VkApiCustom.VkApiCustom api)
+        public Date(MyCustomClasses.VkApiCustom api)
         {
             this.api = api;
         }

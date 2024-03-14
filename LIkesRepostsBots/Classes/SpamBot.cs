@@ -7,7 +7,7 @@ namespace LikesRepostsBots.Classes
 {
     internal sealed class SpamBot
     {
-        private readonly VkApiCustom.VkApiCustom api;
+        private readonly MyCustomClasses.VkApiCustom api;
         private readonly Random rand;
         private const int CHANCE_LIKE = 5;
         private const int CHANCE_REPOST = 5;

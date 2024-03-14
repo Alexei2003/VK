@@ -4,10 +4,10 @@ namespace AddPost.Classes
 {
     public sealed class Post
     {
-        private readonly VkApiCustom.VkApiCustom api;
+        private readonly MyCustomClasses.VkApiCustom api;
         private readonly Photo photo;
 
-        public Post(VkApiCustom.VkApiCustom api)
+        public Post(MyCustomClasses.VkApiCustom api)
         {
             this.api = api;
             photo = new Photo(api);

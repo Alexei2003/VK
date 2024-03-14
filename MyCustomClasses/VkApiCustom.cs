@@ -1,8 +1,8 @@
-﻿using VkApiCustom.VkApiCustomClasses;
+﻿using MyCustomClasses.VkApiCustomClasses;
 using VkNet;
 using VkNet.Model;
 
-namespace VkApiCustom
+namespace MyCustomClasses
 {
     public class VkApiCustom
     {

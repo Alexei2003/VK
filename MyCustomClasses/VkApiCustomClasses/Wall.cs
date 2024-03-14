@@ -1,7 +1,7 @@
 ﻿using VkNet;
 using VkNet.Model;
 
-namespace VkApiCustom.VkApiCustomClasses
+namespace MyCustomClasses.VkApiCustomClasses
 {
     public class Wall
     {

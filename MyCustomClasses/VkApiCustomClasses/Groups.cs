@@ -2,7 +2,7 @@
 using VkNet.Model;
 using VkNet.Utils;
 
-namespace VkApiCustom.VkApiCustomClasses
+namespace MyCustomClasses.VkApiCustomClasses
 {
     public class Groups
     {

@@ -9,7 +9,7 @@ namespace DownloaderDataSetPhoto
         private Int64 groupId;
         private readonly TagsLIst tagList = new();
         private float percentOriginalTag = 0.6f;
-        private readonly VkApiCustom.VkApiCustom api;
+        private readonly MyCustomClasses.VkApiCustom api;
 
         public DownloaderDataSetPhoto()
         {

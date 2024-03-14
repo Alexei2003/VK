@@ -3,19 +3,19 @@ using DataSet.DataStruct;
 using System.Net;
 using VkNet.Model;
 
-namespace DownloaderDataSetPhoto.Downloader
+namespace DownloaderDataSetPhoto.Downloaders
 {
     internal sealed class DownloaderDataSetPhotoFromVK
     {
-        private readonly VkApiCustom.VkApiCustom api;
+        private readonly MyCustomClasses.VkApiCustom api;
         private readonly TagsLIst tagList;
-        public DownloaderDataSetPhotoFromVK(VkApiCustom.VkApiCustom api, TagsLIst tagList)
+        public DownloaderDataSetPhotoFromVK(MyCustomClasses.VkApiCustom api, TagsLIst tagList)
         {
             this.api = api;
             this.tagList = tagList;
         }
 
-        public void SavePhotosIdFromNewsfeed(string tag, int shiftPost, int countPhoto, Int64 ignorGroupId, float percentOriginalTag, string fileName, object lockNeuralNetworkResult)
+        public void SavePhotosIdFromNewsfeed(string tag, int shiftPost, int countPhoto, long ignorGroupId, float percentOriginalTag, string fileName, object lockNeuralNetworkResult)
         {
             NewsSearchResult newsfeedPosts;
             int indexPage = 0;
@@ -73,11 +73,11 @@ namespace DownloaderDataSetPhoto.Downloader
         }
 
         private static readonly char[] separator = [' ', '@', ',', '\r', '\n'];
-        private void SavePhotos(string currentTag, NewsSearchItem post, Int64 groupId, float percentOriginalTag, string fileName, object lockNeuralNetworkResult)
+        private void SavePhotos(string currentTag, NewsSearchItem post, long groupId, float percentOriginalTag, string fileName, object lockNeuralNetworkResult)
         {
             var stringList = new List<string>(10);
 
-            if (post.OwnerId == (-1 * groupId))
+            if (post.OwnerId == -1 * groupId)
             {
                 return;
             }

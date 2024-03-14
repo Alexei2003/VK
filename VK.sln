@@ -28,7 +28,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork", "NeuralNetw
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataSet", "DataSet\DataSet.csproj", "{E22A7503-48C6-4FEA-A818-97859EF68C02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DownloaderDataSetPhoto", "DownloaderDataSetPhoto\DownloaderDataSetPhoto.csproj", "{42802816-62B6-4328-B12A-32A3E740D460}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DownloaderDataSetPhoto", "DownloaderDataSetPhoto\DownloaderDataSetPhoto.csproj", "{42802816-62B6-4328-B12A-32A3E740D460}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

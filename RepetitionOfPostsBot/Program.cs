@@ -22,7 +22,7 @@ namespace RepetitionOfPostsBot
 
         public static void RepetitionOfPosts(object data)
         {
-            var api = data as VkApiCustom.VkApiCustom;
+            var api = data as MyCustomClasses.VkApiCustom;
 
             ulong indexResendedPost = 20;
             while (true)

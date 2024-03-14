@@ -6,8 +6,8 @@ namespace AddPost.Classes
 {
     public sealed class Photo
     {
-        private readonly VkApiCustom.VkApiCustom api;
-        public Photo(VkApiCustom.VkApiCustom api)
+        private readonly MyCustomClasses.VkApiCustom api;
+        public Photo(MyCustomClasses.VkApiCustom api)
         {
             this.api = api;
         }

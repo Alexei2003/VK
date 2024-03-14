@@ -14,7 +14,7 @@ namespace AddPost
         private List<ImagesWithTag> imageList = [];
         private int imageIndex = -1;
         private readonly Random rand = new();
-        private readonly VkApiCustom.VkApiCustom api;
+        private readonly MyCustomClasses.VkApiCustom api;
 
         private struct ImagesWithTag
         {
