@@ -1,7 +1,7 @@
 ﻿using VkNet.Enums.StringEnums;
 using VkNet.Model;
 
-namespace AddPost.Classes.VK
+namespace AddPost.Classes
 {
     internal sealed class Date
     {
@@ -12,7 +12,7 @@ namespace AddPost.Classes.VK
             this.api = api;
         }
 
-        public DateTime? ChangeTimeNewPostUseLastPost(Int64 groupId, int hoursBetweenPost)
+        public DateTime? ChangeTimeNewPostUseLastPost(long groupId, int hoursBetweenPost)
         {
             var data = GetTimeLastPost(groupId);
 
@@ -21,7 +21,7 @@ namespace AddPost.Classes.VK
             return data;
         }
 
-        private DateTime? GetTimeLastPost(Int64 groupId)
+        private DateTime? GetTimeLastPost(long groupId)
         {
             var post = api.Wall.Get(new WallGetParams()
             {

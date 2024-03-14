@@ -1,13 +1,11 @@
 using AddPost.Classes;
-using AddPost.Classes.DownloaderDataSetPhoto;
-using AddPost.Classes.VK;
-using System.ComponentModel;
 using DataSet;
-using NeuralNetwork;
+using DataSet.DataStruct;
+using System.ComponentModel;
 
 namespace AddPost
 {
-    public partial class Form1 : Form
+    public partial class AddPost : Form
     {
 
         private Int64 groupId;
@@ -24,7 +22,7 @@ namespace AddPost
             public string? NeuralNetworkResultTag;
         }
 
-        public Form1()
+        public AddPost()
         {
             InitializeComponent();
             var accessToken = File.ReadAllText("AccessToken.txt");
@@ -400,8 +398,7 @@ namespace AddPost
 
         private async void bDownloadPhotos_Click(object sender, EventArgs e)
         {
-
-            if (tbTag.Text.Length > 0)
+/*            if (tbTag.Text.Length > 0)
             {
                 int shift = 0;
                 int count = 0;
@@ -464,7 +461,7 @@ namespace AddPost
             else
             {
                 MessageBox.Show("Tag is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            }*/
         }
 
         private void bImageLeft_Click(object sender, EventArgs e)

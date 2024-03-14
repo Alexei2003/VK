@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Concurrent;
 
-namespace AddPost.Classes
+namespace DataSet.DataStruct
 {
-    internal sealed class TagsLIst
+    public sealed class TagsLIst
     {
         private List<string> tagsList;
 

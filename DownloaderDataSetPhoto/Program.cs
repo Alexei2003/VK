@@ -1,4 +1,4 @@
-namespace AddPost
+namespace DownloaderDataSetPhoto
 {
     internal static class Program
     {
@@ -11,7 +11,7 @@ namespace AddPost
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new AddPost());
+            Application.Run(new DownloaderDataSetPhoto());
         }
     }
 }

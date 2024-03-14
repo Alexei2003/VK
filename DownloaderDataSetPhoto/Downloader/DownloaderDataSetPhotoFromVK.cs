@@ -1,8 +1,9 @@
 ﻿using DataSet;
+using DataSet.DataStruct;
 using System.Net;
 using VkNet.Model;
 
-namespace AddPost.Classes.DownloaderDataSetPhoto
+namespace DownloaderDataSetPhoto.Downloader
 {
     internal sealed class DownloaderDataSetPhotoFromVK
     {

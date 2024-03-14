@@ -2,7 +2,7 @@
 using System.Net;
 using System.Text;
 
-namespace AddPost.Classes.VK
+namespace AddPost.Classes
 {
     public sealed class Photo
     {

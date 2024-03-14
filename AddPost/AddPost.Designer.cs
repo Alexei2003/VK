@@ -1,6 +1,6 @@
 ﻿namespace AddPost
 {
-    partial class Form1
+    partial class AddPost
     {
         /// <summary>
         ///  Required designer variable.

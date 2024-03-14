@@ -1,6 +1,6 @@
 ﻿using VkNet.Model;
 
-namespace AddPost.Classes.VK
+namespace AddPost.Classes
 {
     public sealed class Post
     {
@@ -13,7 +13,7 @@ namespace AddPost.Classes.VK
             photo = new Photo(api);
         }
 
-        public void Publish(Bitmap[] images, string tag, string copyright, DateTime? postDate, Int64 groupId)
+        public void Publish(Bitmap[] images, string tag, string copyright, DateTime? postDate, long groupId)
         {
             var imageList = new List<VkNet.Model.Photo>(10);
             foreach (var image in images)
