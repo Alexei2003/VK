@@ -1,8 +1,8 @@
-﻿using MyCustomClasses.VkApiCustomClasses;
+﻿using VkApiCustom.VkApiCustomClasses;
 using VkNet;
 using VkNet.Model;
 
-namespace MyCustomClasses
+namespace VkApiCustom
 {
     public class VkApiCustom
     {
@@ -35,6 +35,11 @@ namespace MyCustomClasses
             Newsfeed = new(ApiOriginal, TIME_SLEEP);
         }
 
+        public VkApiCustom(string accessToken) : this()
+        {
+            AuthorizeAndTrackAndOnline(accessToken);
+        }
+
         public void Authorize(IApiAuthParams @params)
         {
             while (true)
@@ -49,6 +54,16 @@ namespace MyCustomClasses
                     Thread.Sleep(TIME_SLEEP);
                 }
             }
+        }
+
+        public void AuthorizeAndTrackAndOnline(string accessToken)
+        {
+            Authorize(new ApiAuthParams
+            {
+                AccessToken = accessToken
+            });
+            Stats.TrackVisitor();
+            Account.SetOnline(false);
         }
     }
 }

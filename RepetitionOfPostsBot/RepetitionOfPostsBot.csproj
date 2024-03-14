@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyCustomClasses\MyCustomClasses.csproj" />
-    <ProjectReference Include="..\WorkWithPost\WorkWithPost.csproj" />
   </ItemGroup>
 
 </Project>

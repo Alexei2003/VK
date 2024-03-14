@@ -1,7 +1,7 @@
 ﻿using VkNet;
 using VkNet.Model;
 
-namespace MyCustomClasses.VkApiCustomClasses
+namespace VkApiCustom.VkApiCustomClasses
 {
     public class Likes
     {

@@ -3,7 +3,6 @@ using AddPost.Classes.DataSet;
 using AddPost.Classes.DownloaderDataSetPhoto;
 using AddPost.Classes.VK;
 using System.ComponentModel;
-using WorkWithPost;
 
 namespace AddPost
 {
@@ -11,12 +10,12 @@ namespace AddPost
     {
 
         private Int64 groupId;
-        private readonly Authorize authorize;
         private readonly TagsLIst tagList = new();
         private float percentOriginalTag = 0.6f;
         private List<ImagesWithTag> imageList = [];
         private int imageIndex = -1;
         private readonly Random rand = new();
+        private readonly VkApiCustom.VkApiCustom api;
 
         private struct ImagesWithTag
         {
@@ -28,7 +27,7 @@ namespace AddPost
         {
             InitializeComponent();
             var accessToken = File.ReadAllText("AccessToken.txt");
-            authorize = new Authorize(accessToken);
+            api = new VkApiCustom.VkApiCustom(accessToken);
             tagList.LoadDictionary();
             groupId = Convert.ToInt64(tbGroupId.Text);
             cbTimeBetweenPost.SelectedIndex = 1;
@@ -131,7 +130,7 @@ namespace AddPost
 
         private void WritePostTime()
         {
-            var date = new Date(authorize.Api);
+            var date = new Date(api);
             var postDate = date.ChangeTimeNewPostUseLastPost(groupId, cbTimeBetweenPost.SelectedIndex + 1);
             postDate = postDate.Value.AddHours(3);
             tbDate.Text = postDate.ToString();
@@ -277,8 +276,8 @@ namespace AddPost
 
                 await Task.Run(() =>
                 {
-                    var date = new Date(authorize.Api);
-                    var post = new Post(authorize.Api);
+                    var date = new Date(api);
+                    var post = new Post(api);
                     post.Publish(imageList.Select(x => x.image).ToArray(), tags, tbUrl.Text, date.ChangeTimeNewPostUseLastPost(groupId, index), groupId);
                 });
 
@@ -432,7 +431,7 @@ namespace AddPost
                         shift = Convert.ToInt32(tbShiftDownload.Text);
                         count = Convert.ToInt32(tbCountDownload.Text);
                     }
-                    var downloaderVK = new DownloaderDataSetPhotoFromVK(authorize.Api, tagList);
+                    var downloaderVK = new DownloaderDataSetPhotoFromVK(api, tagList);
 
                     try
                     {

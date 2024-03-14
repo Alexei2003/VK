@@ -1,5 +1,4 @@
-﻿using MyCustomClasses;
-using VkNet.Enums.StringEnums;
+﻿using VkNet.Enums.StringEnums;
 using VkNet.Model;
 using VkNet.Utils;
 using static LikesRepostsBots.Classes.BotsWorksParams;
@@ -8,7 +7,7 @@ namespace LikesRepostsBots.Classes
 {
     internal sealed class SpamBot
     {
-        private readonly VkApiCustom api;
+        private readonly VkApiCustom.VkApiCustom api;
         private readonly Random rand;
         private const int CHANCE_LIKE = 5;
         private const int CHANCE_REPOST = 5;
@@ -29,11 +28,7 @@ namespace LikesRepostsBots.Classes
 
         private void Authorize()
         {
-            api.Authorize(new ApiAuthParams
-            {
-                AccessToken = accessToken
-            });
-            api.Account.SetOnline(false);
+            api.AuthorizeAndTrackAndOnline(accessToken);
         }
 
         private void WorkWithPosts(long groupId)

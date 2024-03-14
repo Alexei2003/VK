@@ -1,6 +1,6 @@
 ﻿using VkNet;
 
-namespace MyCustomClasses.VkApiCustomClasses
+namespace VkApiCustom.VkApiCustomClasses
 {
     public class Stats
     {

@@ -1,5 +1,4 @@
 ﻿using AddPost.Classes.DataSet;
-using MyCustomClasses;
 using System.Net;
 using VkNet.Model;
 
@@ -7,9 +6,9 @@ namespace AddPost.Classes.DownloaderDataSetPhoto
 {
     internal sealed class DownloaderDataSetPhotoFromVK
     {
-        private readonly VkApiCustom api;
+        private readonly VkApiCustom.VkApiCustom api;
         private readonly TagsLIst tagList;
-        public DownloaderDataSetPhotoFromVK(VkApiCustom api, TagsLIst tagList)
+        public DownloaderDataSetPhotoFromVK(VkApiCustom.VkApiCustom api, TagsLIst tagList)
         {
             this.api = api;
             this.tagList = tagList;

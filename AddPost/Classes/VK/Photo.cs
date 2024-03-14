@@ -1,15 +1,13 @@
-﻿using MyCustomClasses;
-using System.Drawing;
-using System.Drawing.Imaging;
+﻿using System.Drawing.Imaging;
 using System.Net;
 using System.Text;
 
-namespace WorkWithPost
+namespace AddPost.Classes.VK
 {
     public sealed class Photo
     {
-        private readonly VkApiCustom api;
-        public Photo(VkApiCustom api)
+        private readonly VkApiCustom.VkApiCustom api;
+        public Photo(VkApiCustom.VkApiCustom api)
         {
             this.api = api;
         }
