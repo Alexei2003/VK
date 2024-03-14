@@ -3,7 +3,7 @@
   "DataSource": {
     "Type": "Folder",
     "Version": 1,
-    "FolderPath": "E:\\WPS\\VK\\Project\\VK\\AddPost\\ARTS\\ARTS\\Ready"
+    "FolderPath": "E:\\WPS\\VK\\Project\\VK\\NeuralNetwork\\ARTS\\ARTS\\Ready"
   },
   "Environment": {
     "Type": "LocalCPU",

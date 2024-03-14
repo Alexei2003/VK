@@ -133,13 +133,18 @@ namespace DownloaderDataSetPhoto.Downloader
                 }
 
                 var filesList = Directory.GetFiles("DATA_SET\\" + currentTag);
+                bool similar = false;
                 foreach (var file in filesList)
                 {
                     var tmpImage = new Bitmap(file);
-                    if (!DataSetPhoto.IsSimilarPhoto(DataSetPhoto.ChangeResolution224224(image), DataSetPhoto.ChangeResolution224224(tmpImage)))
+                    if (DataSetPhoto.IsSimilarPhoto(DataSetPhoto.ChangeResolution224224(image), DataSetPhoto.ChangeResolution224224(tmpImage)))
                     {
-                        DataSetPhoto.Save(image, currentTag);
+                        similar = true;
                     }
+                }
+                if (!similar)
+                {
+                    DataSetPhoto.Save(image, currentTag);
                 }
             }
         }

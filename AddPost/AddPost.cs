@@ -135,20 +135,6 @@ namespace AddPost
             tbDate.Text = postDate.ToString();
         }
 
-        private void BackgroundImageCopy()
-        {
-            if (Clipboard.ContainsImage())
-            {
-                var clipboardImage = new Bitmap(Clipboard.GetImage());
-
-                var resulTag = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(clipboardImage, percentOriginalTag);
-
-                AddInDataSet([new ImagesWithTag { image = clipboardImage, NeuralNetworkResultTag = resulTag }], tbTag.Text.Replace(" ", ""));
-
-                Clipboard.Clear();
-            }
-        }
-
         private void AddImage(Bitmap image, string tag)
         {
             if (imageList.Count < 10)
@@ -368,100 +354,9 @@ namespace AddPost
             }
         }
 
-        private void bBackgroundImageCopyOn_Click(object sender, EventArgs e)
-        {
-            bBackgroundImageCopyOn.Enabled = false;
-            bBackgroundImageCopyOff.Enabled = true;
-
-            tBackgroundImageCopy.Start();
-        }
-
-        private void bBackgroundImageCopyOff_Click(object sender, EventArgs e)
-        {
-            bBackgroundImageCopyOff.Enabled = false;
-            bBackgroundImageCopyOn.Enabled = true;
-
-            tBackgroundImageCopy.Stop();
-        }
-
-        private void tBackgroundImageCopy_Tick(object sender, EventArgs e)
-        {
-            BackgroundImageCopy();
-        }
-
         private void cbPercentOriginalTag_SelectedIndexChanged(object sender, EventArgs e)
         {
             percentOriginalTag = (cbPercentOriginalTag.SelectedIndex + 1) * 0.1f;
-        }
-
-        private static readonly char[] separator = ['\r', '\n'];
-
-        private async void bDownloadPhotos_Click(object sender, EventArgs e)
-        {
-/*            if (tbTag.Text.Length > 0)
-            {
-                int shift = 0;
-                int count = 0;
-                await Task.Run(() =>
-                {
-                    if (bDownloadPhotos.InvokeRequired)
-                    {
-                        bDownloadPhotos.Invoke((MethodInvoker)delegate
-                        {
-                            bDownloadPhotos.Enabled = false;
-                        });
-                    }
-                    else
-                    {
-                        bDownloadPhotos.Enabled = false;
-                    }
-
-                    if (tbShiftDownload.InvokeRequired)
-                    {
-                        tbShiftDownload.Invoke((MethodInvoker)delegate
-                        {
-                            shift = Convert.ToInt32(tbShiftDownload.Text);
-                            count = Convert.ToInt32(tbCountDownload.Text);
-                        });
-                    }
-                    else
-                    {
-                        shift = Convert.ToInt32(tbShiftDownload.Text);
-                        count = Convert.ToInt32(tbCountDownload.Text);
-                    }
-                    var downloaderVK = new DownloaderDataSetPhotoFromVK(api, tagList);
-
-                    try
-                    {
-                        var lockNeuralNetworkResult = new object();
-                        var tags = tbTag.Text.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-                        Parallel.For(0, tags.Length, i =>
-                        {
-                            downloaderVK.SavePhotosIdFromNewsfeed(tags[i], shift, count, groupId, percentOriginalTag, $"DataSet_{i}", lockNeuralNetworkResult);
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-
-                    if (bDownloadPhotos.InvokeRequired)
-                    {
-                        bDownloadPhotos.Invoke((MethodInvoker)delegate
-                        {
-                            bDownloadPhotos.Enabled = true;
-                        });
-                    }
-                    else
-                    {
-                        bDownloadPhotos.Enabled = true;
-                    }
-                });
-            }
-            else
-            {
-                MessageBox.Show("Tag is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }*/
         }
 
         private void bImageLeft_Click(object sender, EventArgs e)

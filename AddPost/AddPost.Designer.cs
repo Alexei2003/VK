@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             pbImage = new PictureBox();
             textBox1 = new TextBox();
             textBox2 = new TextBox();
@@ -48,17 +47,8 @@
             dgvDictionary = new DataGridView();
             tags = new DataGridViewTextBoxColumn();
             bDataSet = new Button();
-            bBackgroundImageCopyOn = new Button();
-            bBackgroundImageCopyOff = new Button();
-            tBackgroundImageCopy = new System.Windows.Forms.Timer(components);
             tbPercentOriginalTag = new TextBox();
             cbPercentOriginalTag = new ComboBox();
-            textBox6 = new TextBox();
-            tbShiftDownload = new TextBox();
-            tbCountDownload = new TextBox();
-            textBox10 = new TextBox();
-            textBox11 = new TextBox();
-            bDownloadPhotos = new Button();
             textBox7 = new TextBox();
             tbNeuralNetworkResult = new TextBox();
             bImageLeft = new Button();
@@ -252,32 +242,6 @@
             bDataSet.UseVisualStyleBackColor = true;
             bDataSet.Click += bDataSet_Click;
             // 
-            // bBackgroundImageCopyOn
-            // 
-            bBackgroundImageCopyOn.Location = new Point(623, 195);
-            bBackgroundImageCopyOn.Name = "bBackgroundImageCopyOn";
-            bBackgroundImageCopyOn.Size = new Size(110, 43);
-            bBackgroundImageCopyOn.TabIndex = 20;
-            bBackgroundImageCopyOn.Text = "Включить фоновое копирование";
-            bBackgroundImageCopyOn.UseVisualStyleBackColor = true;
-            bBackgroundImageCopyOn.Click += bBackgroundImageCopyOn_Click;
-            // 
-            // bBackgroundImageCopyOff
-            // 
-            bBackgroundImageCopyOff.Enabled = false;
-            bBackgroundImageCopyOff.Location = new Point(623, 244);
-            bBackgroundImageCopyOff.Name = "bBackgroundImageCopyOff";
-            bBackgroundImageCopyOff.Size = new Size(110, 43);
-            bBackgroundImageCopyOff.TabIndex = 21;
-            bBackgroundImageCopyOff.Text = "Выключить фоновое копирование";
-            bBackgroundImageCopyOff.UseVisualStyleBackColor = true;
-            bBackgroundImageCopyOff.Click += bBackgroundImageCopyOff_Click;
-            // 
-            // tBackgroundImageCopy
-            // 
-            tBackgroundImageCopy.Interval = 1000;
-            tBackgroundImageCopy.Tick += tBackgroundImageCopy_Tick;
-            // 
             // tbPercentOriginalTag
             // 
             tbPercentOriginalTag.Location = new Point(623, 293);
@@ -298,59 +262,6 @@
             cbPercentOriginalTag.Size = new Size(110, 25);
             cbPercentOriginalTag.TabIndex = 23;
             cbPercentOriginalTag.SelectedIndexChanged += cbPercentOriginalTag_SelectedIndexChanged;
-            // 
-            // textBox6
-            // 
-            textBox6.Location = new Point(1473, 13);
-            textBox6.Name = "textBox6";
-            textBox6.ReadOnly = true;
-            textBox6.Size = new Size(150, 25);
-            textBox6.TabIndex = 24;
-            textBox6.Text = "VK";
-            // 
-            // tbShiftDownload
-            // 
-            tbShiftDownload.Location = new Point(1473, 75);
-            tbShiftDownload.Name = "tbShiftDownload";
-            tbShiftDownload.Size = new Size(150, 25);
-            tbShiftDownload.TabIndex = 25;
-            tbShiftDownload.Text = "0";
-            // 
-            // tbCountDownload
-            // 
-            tbCountDownload.Location = new Point(1473, 137);
-            tbCountDownload.Name = "tbCountDownload";
-            tbCountDownload.Size = new Size(150, 25);
-            tbCountDownload.TabIndex = 26;
-            tbCountDownload.Text = "0";
-            // 
-            // textBox10
-            // 
-            textBox10.Location = new Point(1473, 44);
-            textBox10.Name = "textBox10";
-            textBox10.ReadOnly = true;
-            textBox10.Size = new Size(150, 25);
-            textBox10.TabIndex = 27;
-            textBox10.Text = "Отступ до скачки";
-            // 
-            // textBox11
-            // 
-            textBox11.Location = new Point(1473, 106);
-            textBox11.Name = "textBox11";
-            textBox11.ReadOnly = true;
-            textBox11.Size = new Size(150, 25);
-            textBox11.TabIndex = 28;
-            textBox11.Text = "Количество скачиваний";
-            // 
-            // bDownloadPhotos
-            // 
-            bDownloadPhotos.Location = new Point(1473, 168);
-            bDownloadPhotos.Name = "bDownloadPhotos";
-            bDownloadPhotos.Size = new Size(150, 25);
-            bDownloadPhotos.TabIndex = 29;
-            bDownloadPhotos.Text = "Скачать";
-            bDownloadPhotos.UseVisualStyleBackColor = true;
-            bDownloadPhotos.Click += bDownloadPhotos_Click;
             // 
             // textBox7
             // 
@@ -421,12 +332,12 @@
             bTbTagFix.UseVisualStyleBackColor = true;
             bTbTagFix.Click += bTbTagFix_Click;
             // 
-            // Form1
+            // AddPost
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1632, 703);
+            ClientSize = new Size(1478, 703);
             Controls.Add(bTbTagFix);
             Controls.Add(bImageDelete);
             Controls.Add(tbImageIndex);
@@ -434,16 +345,8 @@
             Controls.Add(bImageLeft);
             Controls.Add(tbNeuralNetworkResult);
             Controls.Add(textBox7);
-            Controls.Add(bDownloadPhotos);
-            Controls.Add(textBox11);
-            Controls.Add(textBox10);
-            Controls.Add(tbCountDownload);
-            Controls.Add(tbShiftDownload);
-            Controls.Add(textBox6);
             Controls.Add(cbPercentOriginalTag);
             Controls.Add(tbPercentOriginalTag);
-            Controls.Add(bBackgroundImageCopyOff);
-            Controls.Add(bBackgroundImageCopyOn);
             Controls.Add(bDataSet);
             Controls.Add(dgvDictionary);
             Controls.Add(tbGroupId);
@@ -463,8 +366,8 @@
             Controls.Add(textBox1);
             Controls.Add(pbImage);
             MaximizeBox = false;
-            Name = "Form1";
-            Text = "Form1";
+            Name = "AddPost";
+            Text = "AddPost";
             FormClosing += Form1_FormClosing;
             ((System.ComponentModel.ISupportInitialize)pbImage).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).EndInit();
@@ -493,17 +396,8 @@
         private DataGridView dgvDictionary;
         private Button bDataSet;
         private DataGridViewTextBoxColumn tags;
-        private Button bBackgroundImageCopyOn;
-        private Button bBackgroundImageCopyOff;
-        private System.Windows.Forms.Timer tBackgroundImageCopy;
         private TextBox tbPercentOriginalTag;
         private ComboBox cbPercentOriginalTag;
-        private TextBox textBox6;
-        private TextBox tbShiftDownload;
-        private TextBox tbCountDownload;
-        private TextBox textBox10;
-        private TextBox textBox11;
-        private Button bDownloadPhotos;
         private TextBox textBox7;
         private TextBox tbNeuralNetworkResult;
         private Button bImageLeft;
