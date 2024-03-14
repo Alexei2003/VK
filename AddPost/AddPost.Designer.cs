@@ -95,7 +95,7 @@
             textBox3.ReadOnly = true;
             textBox3.Size = new Size(110, 25);
             textBox3.TabIndex = 3;
-            textBox3.Text = "Тэги";
+            textBox3.Text = "Теги";
             // 
             // tbUrl
             // 

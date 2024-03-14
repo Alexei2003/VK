@@ -42,15 +42,18 @@
             textBox1 = new TextBox();
             pVK = new Panel();
             pBackgroundImageCopy = new Panel();
-            pDanbooru = new Panel();
+            pRule34 = new Panel();
+            tbRule34Url = new TextBox();
+            textBox4 = new TextBox();
+            bDownloadPhotosDanbooru = new Button();
             textBox2 = new TextBox();
             tBackgroundImageCopy = new System.Windows.Forms.Timer(components);
             bBackgroundImageCopy = new Button();
             bVK = new Button();
-            bDanbooru = new Button();
+            bRule34 = new Button();
             pVK.SuspendLayout();
             pBackgroundImageCopy.SuspendLayout();
-            pDanbooru.SuspendLayout();
+            pRule34.SuspendLayout();
             SuspendLayout();
             // 
             // tbTag
@@ -68,7 +71,7 @@
             textBox3.ReadOnly = true;
             textBox3.Size = new Size(110, 25);
             textBox3.TabIndex = 6;
-            textBox3.Text = "Тэги";
+            textBox3.Text = "Теги";
             // 
             // bDownloadPhotosVK
             // 
@@ -176,13 +179,42 @@
             pBackgroundImageCopy.Size = new Size(156, 200);
             pBackgroundImageCopy.TabIndex = 40;
             // 
-            // pDanbooru
+            // pRule34
             // 
-            pDanbooru.Controls.Add(textBox2);
-            pDanbooru.Location = new Point(188, 101);
-            pDanbooru.Name = "pDanbooru";
-            pDanbooru.Size = new Size(156, 200);
-            pDanbooru.TabIndex = 41;
+            pRule34.Controls.Add(tbRule34Url);
+            pRule34.Controls.Add(textBox4);
+            pRule34.Controls.Add(bDownloadPhotosDanbooru);
+            pRule34.Controls.Add(textBox2);
+            pRule34.Location = new Point(188, 101);
+            pRule34.Name = "pRule34";
+            pRule34.Size = new Size(156, 200);
+            pRule34.TabIndex = 41;
+            // 
+            // tbRule34Url
+            // 
+            tbRule34Url.Location = new Point(3, 65);
+            tbRule34Url.Name = "tbRule34Url";
+            tbRule34Url.Size = new Size(150, 25);
+            tbRule34Url.TabIndex = 46;
+            // 
+            // textBox4
+            // 
+            textBox4.Location = new Point(3, 34);
+            textBox4.Name = "textBox4";
+            textBox4.ReadOnly = true;
+            textBox4.Size = new Size(150, 25);
+            textBox4.TabIndex = 45;
+            textBox4.Text = "Тег";
+            // 
+            // bDownloadPhotosDanbooru
+            // 
+            bDownloadPhotosDanbooru.Location = new Point(3, 158);
+            bDownloadPhotosDanbooru.Name = "bDownloadPhotosDanbooru";
+            bDownloadPhotosDanbooru.Size = new Size(150, 25);
+            bDownloadPhotosDanbooru.TabIndex = 44;
+            bDownloadPhotosDanbooru.Text = "Скачать";
+            bDownloadPhotosDanbooru.UseVisualStyleBackColor = true;
+            bDownloadPhotosDanbooru.Click += bDownloadPhotosDanbooru_Click;
             // 
             // textBox2
             // 
@@ -191,7 +223,7 @@
             textBox2.ReadOnly = true;
             textBox2.Size = new Size(150, 25);
             textBox2.TabIndex = 36;
-            textBox2.Text = "Danbooru";
+            textBox2.Text = "Rule34";
             // 
             // tBackgroundImageCopy
             // 
@@ -218,37 +250,37 @@
             bVK.UseVisualStyleBackColor = true;
             bVK.Click += bVK_Click;
             // 
-            // bDanbooru
+            // bRule34
             // 
-            bDanbooru.Location = new Point(12, 199);
-            bDanbooru.Name = "bDanbooru";
-            bDanbooru.Size = new Size(150, 43);
-            bDanbooru.TabIndex = 43;
-            bDanbooru.Text = "Danbooru";
-            bDanbooru.UseVisualStyleBackColor = true;
-            bDanbooru.Click += bDanbooru_Click;
+            bRule34.Location = new Point(12, 199);
+            bRule34.Name = "bRule34";
+            bRule34.Size = new Size(150, 43);
+            bRule34.TabIndex = 43;
+            bRule34.Text = "Rule34";
+            bRule34.UseVisualStyleBackColor = true;
+            bRule34.Click += bRule34_Click;
             // 
             // DownloaderDataSetPhoto
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(360, 365);
-            Controls.Add(bDanbooru);
+            Controls.Add(bRule34);
             Controls.Add(bVK);
             Controls.Add(bBackgroundImageCopy);
-            Controls.Add(pDanbooru);
-            Controls.Add(pBackgroundImageCopy);
-            Controls.Add(pVK);
             Controls.Add(textBox3);
             Controls.Add(tbTag);
+            Controls.Add(pRule34);
+            Controls.Add(pBackgroundImageCopy);
+            Controls.Add(pVK);
             Name = "DownloaderDataSetPhoto";
             Text = "DownloaderDataSetPhoto";
             pVK.ResumeLayout(false);
             pVK.PerformLayout();
             pBackgroundImageCopy.ResumeLayout(false);
             pBackgroundImageCopy.PerformLayout();
-            pDanbooru.ResumeLayout(false);
-            pDanbooru.PerformLayout();
+            pRule34.ResumeLayout(false);
+            pRule34.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -268,11 +300,14 @@
         private TextBox textBox1;
         private Panel pVK;
         private Panel pBackgroundImageCopy;
-        private Panel pDanbooru;
+        private Panel pRule34;
         private TextBox textBox2;
         private System.Windows.Forms.Timer tBackgroundImageCopy;
         private Button bBackgroundImageCopy;
         private Button bVK;
-        private Button bDanbooru;
+        private Button bRule34;
+        private Button bDownloadPhotosDanbooru;
+        private TextBox textBox4;
+        private TextBox tbRule34Url;
     }
 }

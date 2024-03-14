@@ -1,6 +1,7 @@
 using DataSet;
 using DataSet.DataStruct;
-using DownloaderDataSetPhoto.Downloader;
+using DownloaderDataSetPhoto.Downloaders;
+using MyCustomClasses;
 
 namespace DownloaderDataSetPhoto
 {
@@ -15,9 +16,10 @@ namespace DownloaderDataSetPhoto
         {
             InitializeComponent();
             var accessToken = File.ReadAllText("AccessToken.txt");
-            api = new VkApiCustom.VkApiCustom(accessToken);
+            api = new VkApiCustom(accessToken);
             tagList.LoadDictionary();
             groupId = 220199532;
+            HidePanels(pRule34);
         }
 
 
@@ -50,7 +52,7 @@ namespace DownloaderDataSetPhoto
         {
             pBackgroundImageCopy.Visible = false;
             pVK.Visible = false;
-            pDanbooru.Visible = false;
+            pRule34.Visible = false;
 
             panel.Visible = true;
         }
@@ -74,6 +76,21 @@ namespace DownloaderDataSetPhoto
         private void tBackgroundImageCopy_Tick(object sender, EventArgs e)
         {
             BackgroundImageCopy();
+        }
+
+        private void bBackgroundImageCopy_Click(object sender, EventArgs e)
+        {
+            HidePanels(pBackgroundImageCopy);
+        }
+
+        private void bVK_Click(object sender, EventArgs e)
+        {
+            HidePanels(pVK);
+        }
+
+        private void bRule34_Click(object sender, EventArgs e)
+        {
+            HidePanels(pRule34);
         }
 
         private static readonly char[] separator = ['\r', '\n'];
@@ -119,7 +136,7 @@ namespace DownloaderDataSetPhoto
                         var tags = tbTag.Text.Split(separator, StringSplitOptions.RemoveEmptyEntries);
                         Parallel.For(0, tags.Length, i =>
                         {
-                            downloaderVK.SavePhotosIdFromNewsfeed(tags[i], shift, count, groupId, percentOriginalTag, $"DataSet_{i}", lockNeuralNetworkResult);
+                            downloaderVK.SavePhotosFromNewsfeed(tags[i], shift, count, groupId, percentOriginalTag, $"DataSet_{i}", lockNeuralNetworkResult);
                         });
                     }
                     catch (Exception ex)
@@ -146,19 +163,53 @@ namespace DownloaderDataSetPhoto
             }
         }
 
-        private void bBackgroundImageCopy_Click(object sender, EventArgs e)
+        private async void bDownloadPhotosDanbooru_Click(object sender, EventArgs e)
         {
-            HidePanels(pBackgroundImageCopy);
-        }
+            if (tbTag.Text.Length > 0)
+            {
+                await Task.Run(() =>
+                {
+                    if (bDownloadPhotosDanbooru.InvokeRequired)
+                    {
+                        bDownloadPhotosDanbooru.Invoke((MethodInvoker)delegate
+                        {
+                            bDownloadPhotosDanbooru.Enabled = false;
+                        });
+                    }
+                    else
+                    {
+                        bDownloadPhotosDanbooru.Enabled = false;
+                    }
 
-        private void bVK_Click(object sender, EventArgs e)
-        {
-            HidePanels(pVK);
-        }
+                    try
+                    {
+                        var lockNeuralNetworkResult = new object();
+                        var tag = tbTag.Text;
+                        var url = tbRule34Url.Text;
+                        DownloaderDataSetPhotoFromRule34.SavePhotos(url, tag, percentOriginalTag, $"DataSet_{0}", lockNeuralNetworkResult);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
 
-        private void bDanbooru_Click(object sender, EventArgs e)
-        {
-            HidePanels(pDanbooru);
+                    if (bDownloadPhotosDanbooru.InvokeRequired)
+                    {
+                        bDownloadPhotosDanbooru.Invoke((MethodInvoker)delegate
+                        {
+                            bDownloadPhotosDanbooru.Enabled = true;
+                            tbTag.Text = "";
+                            tbRule34Url.Text = "";
+                        });
+                    }
+                    else
+                    {
+                        bDownloadPhotosDanbooru.Enabled = true;
+                        tbTag.Text = "";
+                        tbRule34Url.Text = "";
+                    }
+                });
+            }
         }
     }
 }
