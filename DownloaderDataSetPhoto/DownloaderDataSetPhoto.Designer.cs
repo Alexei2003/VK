@@ -204,7 +204,7 @@
             textBox4.ReadOnly = true;
             textBox4.Size = new Size(150, 25);
             textBox4.TabIndex = 45;
-            textBox4.Text = "Тег";
+            textBox4.Text = "Url";
             // 
             // bDownloadPhotosDanbooru
             // 
