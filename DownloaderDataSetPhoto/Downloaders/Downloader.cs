@@ -31,10 +31,11 @@ namespace DownloaderDataSetPhoto.Downloaders
             bool similar = false;
             foreach (var file in filesList)
             {
-                var tmpImage = new Bitmap(file);
+                using var tmpImage = new Bitmap(file);
                 if (DataSetPhoto.IsSimilarPhoto(DataSetPhoto.ChangeResolution224224(image), DataSetPhoto.ChangeResolution224224(tmpImage)))
                 {
                     similar = true;
+                    break;
                 }
             }
             if (!similar)

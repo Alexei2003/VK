@@ -1,4 +1,7 @@
-﻿namespace AddDataInDataSet
+﻿using DataSet;
+using System.Drawing;
+
+namespace AddDataInDataSet
 {
     internal static class Program
     {
@@ -35,20 +38,39 @@
             }
         }
 
-        private static void DirectoryMove(string source, string dest)
+
+        private static void DirectoryMove(string source, string destination)
         {
-            if (Directory.Exists(dest))
+            if (Directory.Exists(destination))
             {
                 var sourceInfo = new DirectoryInfo(source);
-                foreach (var file in sourceInfo.GetFiles())
+                var destinationInfo = new DirectoryInfo(destination);
+
+                foreach (var src in sourceInfo.GetFiles())
                 {
-                    file.MoveTo(dest + "\\" + file.Name);
+                    var similar = false;
+                    using (var srcBmp = new Bitmap(src.FullName))
+                    {
+                        foreach (var dest in destinationInfo.GetFiles())
+                        {
+                            using var destBmp = new Bitmap(dest.FullName);
+                            if (DataSetPhoto.IsSimilarPhoto(srcBmp, destBmp))
+                            {
+                                similar = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!similar)
+                    {
+                        src.MoveTo(destination + "\\" + src.Name);
+                    }
                 }
                 Directory.Delete(source, true);
             }
             else
             {
-                Directory.Move(source, dest);
+                Directory.Move(source, destination);
             }
         }
 
@@ -59,7 +81,9 @@
             var readDirectories = Directory.GetDirectories(READY_PATH);
             var newDirectories = Directory.GetDirectories(NEW_PATH);
 
-            foreach (var newDirectory in newDirectories)
+            var lockObj = new Object();
+
+            Parallel.ForEach(newDirectories, newDirectory =>
             {
                 var directoryNameParts = newDirectory.Split("\\", StringSplitOptions.RemoveEmptyEntries);
                 bool DirectoryAdded = false;
@@ -68,17 +92,21 @@
                     if (readyDirectory.Contains(directoryNameParts.Last()))
                     {
                         DirectoryMove(newDirectory, readyDirectory);
-                        countReady++;
-                        DirectoryAdded = true;
+                        lock (lockObj)
+                        {
+                            countReady++;
+                            DirectoryAdded = true;
+                        }
                         break;
                     }
                 }
+
                 if (!DirectoryAdded)
                 {
                     DirectoryMove(newDirectory, LITTLE_PATH + "\\" + directoryNameParts.Last());
                     countLittle++;
                 }
-            }
+            });
 
             Console.WriteLine($"Количество перенесеных в Little = {countLittle}");
             Console.WriteLine($"Количество перенесеных в Ready = {countReady}");
@@ -89,16 +117,21 @@
             int countReady = 0;
             var littleDirectories = Directory.GetDirectories(LITTLE_PATH);
 
-            foreach (var littleDirectory in littleDirectories)
+            var lockObj = new Object();
+
+            Parallel.ForEach(littleDirectories, littleDirectory =>
             {
                 var sourceInfo = new DirectoryInfo(littleDirectory);
                 if (sourceInfo.GetFiles().Length >= MIN_COUNT_FILES)
                 {
                     var directoryNameParts = littleDirectory.Split("\\", StringSplitOptions.RemoveEmptyEntries);
                     DirectoryMove(littleDirectory, READY_PATH + "\\" + directoryNameParts.Last());
-                    countReady++;
+                    lock (lockObj)
+                    {
+                        countReady++;
+                    }
                 }
-            }
+            });
 
             Console.WriteLine($"Количество перенесеных в Ready = {countReady}");
         }

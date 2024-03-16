@@ -337,6 +337,7 @@
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.ControlLightLight;
             ClientSize = new Size(1478, 703);
             Controls.Add(bTbTagFix);
             Controls.Add(bImageDelete);

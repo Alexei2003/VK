@@ -158,6 +158,7 @@
             // 
             // pVK
             // 
+            pVK.BorderStyle = BorderStyle.FixedSingle;
             pVK.Controls.Add(textBox6);
             pVK.Controls.Add(tbShiftDownload);
             pVK.Controls.Add(tbCountDownload);
@@ -166,28 +167,30 @@
             pVK.Controls.Add(bDownloadPhotosVK);
             pVK.Location = new Point(188, 101);
             pVK.Name = "pVK";
-            pVK.Size = new Size(156, 200);
+            pVK.Size = new Size(158, 200);
             pVK.TabIndex = 39;
             // 
             // pBackgroundImageCopy
             // 
+            pBackgroundImageCopy.BorderStyle = BorderStyle.FixedSingle;
             pBackgroundImageCopy.Controls.Add(textBox1);
             pBackgroundImageCopy.Controls.Add(bBackgroundImageCopyOn);
             pBackgroundImageCopy.Controls.Add(bBackgroundImageCopyOff);
             pBackgroundImageCopy.Location = new Point(188, 101);
             pBackgroundImageCopy.Name = "pBackgroundImageCopy";
-            pBackgroundImageCopy.Size = new Size(156, 200);
+            pBackgroundImageCopy.Size = new Size(158, 200);
             pBackgroundImageCopy.TabIndex = 40;
             // 
             // pRule34
             // 
+            pRule34.BorderStyle = BorderStyle.FixedSingle;
             pRule34.Controls.Add(tbRule34Url);
             pRule34.Controls.Add(textBox4);
             pRule34.Controls.Add(bDownloadPhotosDanbooru);
             pRule34.Controls.Add(textBox2);
             pRule34.Location = new Point(188, 101);
             pRule34.Name = "pRule34";
-            pRule34.Size = new Size(156, 200);
+            pRule34.Size = new Size(158, 200);
             pRule34.TabIndex = 41;
             // 
             // tbRule34Url
@@ -264,7 +267,8 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(360, 365);
+            BackColor = SystemColors.ControlLightLight;
+            ClientSize = new Size(360, 314);
             Controls.Add(bRule34);
             Controls.Add(bVK);
             Controls.Add(bBackgroundImageCopy);

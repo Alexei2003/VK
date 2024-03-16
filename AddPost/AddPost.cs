@@ -1,6 +1,7 @@
 using AddPost.Classes;
 using DataSet;
 using DataSet.DataStruct;
+using MyCustomClasses;
 using System.ComponentModel;
 
 namespace AddPost
@@ -26,7 +27,7 @@ namespace AddPost
         {
             InitializeComponent();
             var accessToken = File.ReadAllText("AccessToken.txt");
-            api = new VkApiCustom.VkApiCustom(accessToken);
+            api = new VkApiCustom(accessToken);
             tagList.LoadDictionary();
             groupId = Convert.ToInt64(tbGroupId.Text);
             cbTimeBetweenPost.SelectedIndex = 1;
@@ -224,7 +225,7 @@ namespace AddPost
             }
 
             // Удаление без # тегов
-            tagsArr = tagsStr.Split('#', StringSplitOptions.RemoveEmptyEntries);
+            tagsArr = tagsStr.Split('#');
             tagsStr = "";
             for (var i = 0; i < tagsArr.Length; i++)
             {
