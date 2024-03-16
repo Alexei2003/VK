@@ -1,4 +1,5 @@
-﻿using VkNet.Enums.StringEnums;
+﻿using MyCustomClasses;
+using VkNet.Enums.StringEnums;
 using VkNet.Model;
 
 namespace RepetitionOfPostsBot
@@ -9,7 +10,7 @@ namespace RepetitionOfPostsBot
         private static void Main()
         {
             var accessToken = File.ReadAllText("AccessToken.txt");
-            var api = new VkApiCustom.VkApiCustom(accessToken);
+            var api = new VkApiCustom(accessToken);
 
             var threadRepetitionOfPosts = new Thread(new ParameterizedThreadStart(RepetitionOfPosts));
             threadRepetitionOfPosts.Start(api);

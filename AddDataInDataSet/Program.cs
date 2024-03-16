@@ -39,7 +39,7 @@ namespace AddDataInDataSet
         }
 
 
-        private static void DirectoryMove(string source, string destination)
+        private static void DirectoryMove(string source, string destination, bool checkSimilar)
         {
             if (Directory.Exists(destination))
             {
@@ -49,8 +49,9 @@ namespace AddDataInDataSet
                 foreach (var src in sourceInfo.GetFiles())
                 {
                     var similar = false;
-                    using (var srcBmp = new Bitmap(src.FullName))
+                    if (checkSimilar)
                     {
+                        using var srcBmp = new Bitmap(src.FullName);
                         foreach (var dest in destinationInfo.GetFiles())
                         {
                             using var destBmp = new Bitmap(dest.FullName);
@@ -91,7 +92,7 @@ namespace AddDataInDataSet
                 {
                     if (readyDirectory.Contains(directoryNameParts.Last()))
                     {
-                        DirectoryMove(newDirectory, readyDirectory);
+                        DirectoryMove(newDirectory, readyDirectory, true);
                         lock (lockObj)
                         {
                             countReady++;
@@ -103,7 +104,7 @@ namespace AddDataInDataSet
 
                 if (!DirectoryAdded)
                 {
-                    DirectoryMove(newDirectory, LITTLE_PATH + "\\" + directoryNameParts.Last());
+                    DirectoryMove(newDirectory, LITTLE_PATH + "\\" + directoryNameParts.Last(), true);
                     countLittle++;
                 }
             });
@@ -125,7 +126,7 @@ namespace AddDataInDataSet
                 if (sourceInfo.GetFiles().Length >= MIN_COUNT_FILES)
                 {
                     var directoryNameParts = littleDirectory.Split("\\", StringSplitOptions.RemoveEmptyEntries);
-                    DirectoryMove(littleDirectory, READY_PATH + "\\" + directoryNameParts.Last());
+                    DirectoryMove(littleDirectory, READY_PATH + "\\" + directoryNameParts.Last(), false);
                     lock (lockObj)
                     {
                         countReady++;
