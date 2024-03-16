@@ -1,10 +1,4 @@
 bin/
 obj/
 ARTS/
-*.mlnet
-/AddPost/ComputerVision.mlnet
-AddPost/ComputerVision.mlnet
-/AddPost/ComputerVision.mlnet
 .vs/
-*.mlnet
-AddPost/ComputerVision.mlnet
