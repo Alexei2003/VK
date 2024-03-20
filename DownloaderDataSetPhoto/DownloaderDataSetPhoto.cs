@@ -149,11 +149,13 @@ namespace DownloaderDataSetPhoto
                         bDownloadPhotosVK.Invoke((MethodInvoker)delegate
                         {
                             bDownloadPhotosVK.Enabled = true;
+                            tbTag.Text = "";
                         });
                     }
                     else
                     {
                         bDownloadPhotosVK.Enabled = true;
+                        tbTag.Text = "";
                     }
                 });
             }
