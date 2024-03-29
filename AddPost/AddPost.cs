@@ -132,7 +132,7 @@ namespace AddPost
         {
             var date = new Date(api);
             var postDate = date.ChangeTimeNewPostUseLastPost(groupId, cbTimeBetweenPost.SelectedIndex + 1);
-            postDate.Value.AddHours(3);
+            postDate = postDate.Value.AddHours(3);
             tbDate.Text = postDate.ToString();
         }
 

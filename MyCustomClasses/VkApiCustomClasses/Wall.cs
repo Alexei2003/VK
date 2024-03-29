@@ -74,14 +74,6 @@ namespace MyCustomClasses.VkApiCustomClasses
             }
         }
 
-        public const int SHIFT_MINUTES = 11;
-
-        public long PostWithShiftDataTime(WallPostParams @params, int shiftMinute = SHIFT_MINUTES)
-        {
-            @params.PublishDate.Value.AddMinutes(shiftMinute);
-            return Post(@params);
-        }
-
         public long Post(WallPostParams @params)
         {
             while (true)
