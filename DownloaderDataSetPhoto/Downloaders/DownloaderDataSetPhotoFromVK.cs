@@ -1,5 +1,4 @@
-﻿using DataSet;
-using DataSet.DataStruct;
+﻿using DataSet.DataStruct;
 using System.Net;
 using VkNet.Model;
 

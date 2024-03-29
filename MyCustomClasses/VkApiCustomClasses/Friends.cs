@@ -24,8 +24,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Friends.GetSuggestions(filter, count, offset, fields, nameCase);
-                    return res;
+                    return ApiOriginal.Friends.GetSuggestions(filter, count, offset, fields, nameCase);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {
@@ -40,8 +39,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Friends.Add(userId, text, follow);
-                    return res;
+                    return ApiOriginal.Friends.Add(userId, text, follow);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {
@@ -60,8 +58,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Friends.GetRequests(@params);
-                    return res;
+                    return ApiOriginal.Friends.GetRequests(@params);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {
@@ -76,8 +73,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Friends.Get(@params, skipAuthorization);
-                    return res;
+                    return ApiOriginal.Friends.Get(@params, skipAuthorization);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {

@@ -24,8 +24,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Users.GetSubscriptions(userId, count, offset, fields);
-                    return res;
+                    return ApiOriginal.Users.GetSubscriptions(userId, count, offset, fields);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {
@@ -44,8 +43,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Users.GetFollowers(userId, count, offset, fields, nameCase);
-                    return res;
+                    return ApiOriginal.Users.GetFollowers(userId, count, offset, fields, nameCase);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {
@@ -71,8 +69,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Users.Get(userIds, fields, nameCase);
-                    return res;
+                    return ApiOriginal.Users.Get(userIds, fields, nameCase);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {

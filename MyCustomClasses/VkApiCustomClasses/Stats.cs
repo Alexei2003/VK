@@ -19,8 +19,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Stats.TrackVisitor();
-                    return res;
+                    return ApiOriginal.Stats.TrackVisitor();
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {

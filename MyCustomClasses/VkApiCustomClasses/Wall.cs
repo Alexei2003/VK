@@ -20,8 +20,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Wall.Get(@params, skipAuthorization);
-                    return res;
+                    return ApiOriginal.Wall.Get(@params, skipAuthorization);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {
@@ -36,8 +35,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Wall.Repost(@object, message, groupId, markAsAds);
-                    return res;
+                    return ApiOriginal.Wall.Repost(@object, message, groupId, markAsAds);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {
@@ -52,8 +50,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Wall.CreateComment(@params);
-                    return res;
+                    return ApiOriginal.Wall.CreateComment(@params);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {
@@ -68,8 +65,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Wall.GetComments(@params, skipAuthorization);
-                    return res;
+                    return ApiOriginal.Wall.GetComments(@params, skipAuthorization);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {
@@ -78,14 +74,21 @@ namespace MyCustomClasses.VkApiCustomClasses
             }
         }
 
+        public const int SHIFT_MINUTES = 11;
+
+        public long PostWithShiftDataTime(WallPostParams @params, int shiftMinute = SHIFT_MINUTES)
+        {
+            @params.PublishDate.Value.AddMinutes(shiftMinute);
+            return Post(@params);
+        }
+
         public long Post(WallPostParams @params)
         {
             while (true)
             {
                 try
                 {
-                    var res = ApiOriginal.Wall.Post(@params);
-                    return res;
+                    return ApiOriginal.Wall.Post(@params);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {

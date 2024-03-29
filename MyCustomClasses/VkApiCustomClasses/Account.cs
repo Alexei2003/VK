@@ -19,8 +19,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Account.SetOnline(voip);
-                    return res;
+                    return ApiOriginal.Account.SetOnline(voip);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {
@@ -36,8 +35,7 @@ namespace MyCustomClasses.VkApiCustomClasses
                 try
                 {
 
-                    var res = ApiOriginal.Account.Ban(ownerId);
-                    return res;
+                    return ApiOriginal.Account.Ban(ownerId);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {

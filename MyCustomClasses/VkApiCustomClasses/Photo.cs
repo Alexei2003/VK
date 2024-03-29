@@ -21,8 +21,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Photo.GetWallUploadServer(groupId);
-                    return res;
+                    return ApiOriginal.Photo.GetWallUploadServer(groupId);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {
@@ -37,8 +36,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Photo.SaveWallPhoto(response, userId, groupId, caption);
-                    return res;
+                    return ApiOriginal.Photo.SaveWallPhoto(response, userId, groupId, caption);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {
@@ -52,8 +50,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Photo.GetById(photos, extended, photoSizes);
-                    return res;
+                    return ApiOriginal.Photo.GetById(photos, extended, photoSizes);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {

@@ -20,8 +20,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Likes.Add(@params);
-                    return res;
+                    return ApiOriginal.Likes.Add(@params);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {

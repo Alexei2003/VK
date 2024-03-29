@@ -7,6 +7,7 @@ namespace RepetitionOfPostsBot
     internal static class Program
     {
         private const Int64 groupId = 220199532;
+        private static Random rand = new();
         private static void Main()
         {
             var accessToken = File.ReadAllText("AccessToken.txt");
@@ -25,10 +26,9 @@ namespace RepetitionOfPostsBot
         {
             var api = data as MyCustomClasses.VkApiCustom;
 
-            ulong indexResendedPost = 20;
+            ulong indexResendedPost = 0;
             while (true)
             {
-                while (DateTime.UtcNow.Minute < 50 || DateTime.UtcNow.Minute > 55) ;
                 try
                 {
                     var wall = api.Wall.Get(new WallGetParams
@@ -51,7 +51,7 @@ namespace RepetitionOfPostsBot
 
                         if (offsetIndexPost < 1000)
                         {
-                            indexResendedPost = 1;
+                            indexResendedPost = 0;
                             continue;
                         }
 
@@ -82,15 +82,16 @@ namespace RepetitionOfPostsBot
                             Attachments = new MediaAttachment[] { new PhotoMy { OwnerId = post.Attachment.Instance.OwnerId, Id = post.Attachment.Instance.Id, AccessKey = post.Attachment.Instance.AccessKey } },
                             PublishDate = postData.Value.AddHours(1),
                         });
-                        indexResendedPost++;
+                        indexResendedPost += Convert.ToUInt64(1 + rand.Next(10));
                     }
                     else
                     {
-                        Thread.Sleep(TimeSpan.FromHours(1));
+                        Thread.Sleep(TimeSpan.FromMinutes(30));
                     }
                 }
                 catch
                 {
+                    indexResendedPost++;
                     continue;
                 }
             }

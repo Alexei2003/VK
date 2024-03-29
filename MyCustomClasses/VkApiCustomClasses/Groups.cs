@@ -21,8 +21,7 @@ namespace MyCustomClasses.VkApiCustomClasses
             {
                 try
                 {
-                    var res = ApiOriginal.Groups.GetMembers(@params);
-                    return res;
+                    return ApiOriginal.Groups.GetMembers(@params);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {
