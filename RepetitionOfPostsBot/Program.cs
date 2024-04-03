@@ -65,6 +65,12 @@ namespace RepetitionOfPostsBot
                             Filter = WallFilter.All
                         });
 
+                        if (wall.WallPosts.Count == 0)
+                        {
+                            indexResendedPost++;
+                            continue;
+                        }
+
                         var post = wall.WallPosts.First();
                         var tags = post.Text;
 
