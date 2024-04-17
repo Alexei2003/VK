@@ -75,8 +75,6 @@ namespace DownloaderDataSetPhoto.Downloaders
         private static readonly char[] separator = [' ', '@', ',', '\r', '\n'];
         private void SavePhotos(string currentTag, NewsSearchItem post, long groupId, float percentOriginalTag, string fileName, object lockNeuralNetworkResult, WebClient wc)
         {
-            var stringList = new List<string>(10);
-
             if (post.OwnerId == -1 * groupId)
             {
                 return;
@@ -87,10 +85,11 @@ namespace DownloaderDataSetPhoto.Downloaders
                 return;
             }
 
-            var mediaObject = post.Attachments[0].Instance.ToString();
-            if (mediaObject.Contains("photo"))
+            Photo photo;
+
+            if (post.Attachments[0].Type == typeof(Photo))
             {
-                stringList.Add(mediaObject.Replace("photo", ""));
+                photo = (Photo)post.Attachments[0].Instance;
             }
             else
             {
@@ -114,9 +113,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                 return;
             }
 
-            var photos = api.Photo.GetById(stringList, photoSizes: true);
-
-            Downloader.DownloadPhoto(wc, photos[0].Sizes[2].Url.ToString(), currentTag, percentOriginalTag, fileName, lockNeuralNetworkResult);
+            Downloader.DownloadPhoto(wc, photo.Photo604.ToString(), currentTag, percentOriginalTag, fileName, lockNeuralNetworkResult);
         }
     }
 }

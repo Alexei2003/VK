@@ -8,6 +8,7 @@ namespace AddPost
 {
     public partial class AddPost : Form
     {
+        private string groupShortUrl = "@anime_art_for_every_day";
 
         private Int64 groupId;
         private readonly TagsLIst tagList = new();
@@ -264,7 +265,7 @@ namespace AddPost
                 {
                     var date = new Date(api);
                     var post = new Post(api);
-                    post.Publish(imageList.Select(x => x.image).ToArray(), tags, tbUrl.Text, date.ChangeTimeNewPostUseLastPost(groupId, index), groupId);
+                    post.Publish(imageList.Select(x => x.image).ToArray(), tags, tbUrl.Text, date.ChangeTimeNewPostUseLastPost(groupId, index), groupId, groupShortUrl);
                 });
 
                 AddInDataSet(imageList, tags);

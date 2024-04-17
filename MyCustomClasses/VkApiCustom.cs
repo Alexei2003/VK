@@ -18,12 +18,14 @@ namespace MyCustomClasses
         public Users Users { get; }
         public VkApiCustomClasses.Wall Wall { get; }
         public Newsfeed Newsfeed { get; }
+        public Polls Polls { get; }
 
         public VkApiCustom()
         {
             TIME_SLEEP = TimeSpan.FromSeconds(2);
 
             ApiOriginal = new();
+            Polls = new Polls(ApiOriginal, TIME_SLEEP);
             Account = new(ApiOriginal, TIME_SLEEP);
             Friends = new(ApiOriginal, TIME_SLEEP);
             Groups = new(ApiOriginal, TIME_SLEEP);

@@ -65,9 +65,9 @@ namespace LikesRepostsBots.Classes
             }
 
             RepostResult repostResult;
-            bool likeOriginal = true;
             for (int numbPost = countPosts - 1; numbPost > -1;)
             {
+                // Лайк репост
                 if (rand.Next(CHANCE_REPOST) == 0)
                 {
                     repostResult = api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", api.ApiOriginal.UserId, false);
@@ -78,16 +78,9 @@ namespace LikesRepostsBots.Classes
                         Type = LikeObjectType.Post,
                         ItemId = Convert.ToInt64(repostResult.PostId),
                     });
-                    likeOriginal = false;
                 }
-
-                int likes = AddCommentsLike(groupId, wall.WallPosts[numbPost].Id);
-                if (likes > 0)
-                {
-                    Console.WriteLine($"Число лайкнутых комментариев {likes}");
-                }
-
-                if (likeOriginal)
+                // Лайк оригинала
+                else
                 {
                     api.Likes.Add(new LikesAddParams
                     {
@@ -96,9 +89,30 @@ namespace LikesRepostsBots.Classes
                         ItemId = Convert.ToInt64(wall.WallPosts[numbPost].Id),
                     });
                 }
-                else
+
+                // Выбор в опросе
+                foreach (var attachment in wall.WallPosts[numbPost].Attachments)
                 {
-                    likeOriginal = true;
+                    if (attachment.Type == typeof(Poll))
+                    {
+                        var poll = (Poll)attachment.Instance;
+                        var index = rand.Next(poll.Answers.Count - 1);
+
+                        api.Polls.AddVote(new PollsAddVoteParams
+                        {
+                            OwnerId = poll.OwnerId,
+                            PollId = poll.Id.Value,
+                            AnswerId = poll.Answers[index].Id.Value
+                        });
+
+                    }
+                }
+
+                // Лайк комментов
+                int likes = AddCommentsLike(groupId, wall.WallPosts[numbPost].Id);
+                if (likes > 0)
+                {
+                    Console.WriteLine($"Число лайкнутых комментариев {likes}");
                 }
 
                 Console.WriteLine($"{countPosts - numbPost}/{countPosts}");

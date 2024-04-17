@@ -13,13 +13,18 @@ namespace AddPost.Classes
             photo = new Photo(api);
         }
 
-        public void Publish(Bitmap[] images, string tag, string copyright, DateTime? postDate, long groupId)
+        public void Publish(Bitmap[] images, string tag, string copyright, DateTime? postDate, long groupId, string groupShortUrl)
         {
             var imageList = new List<VkNet.Model.Photo>(10);
             foreach (var image in images)
             {
                 imageList.Add(photo.AddOnVKServer(image).First());
             }
+
+            var tags = tag.Split('#', StringSplitOptions.RemoveEmptyEntries);
+
+            tag = string.Join("", tags.Select(s => "#" + s + groupShortUrl + "\n"));
+
             api.Wall.Post(new WallPostParams()
             {
                 OwnerId = -1 * groupId,
