@@ -25,6 +25,21 @@ namespace AddDataInDataSet
                     image = Reflection(image, settings[i].Reflection);
                 }
 
+                if (settings[i].Blur)
+                {
+                    image = Blur(image);
+                }
+
+                if (settings[i].Noise)
+                {
+                    image = Noise(image);
+                }
+
+                if (settings[i].Contrast != 0)
+                {
+                    image = Contrast(image, settings[i].Contrast);
+                }
+
                 resultImages.Add(DataSetPhoto.ImageTo32bpp(image));
             }
 
@@ -33,8 +48,8 @@ namespace AddDataInDataSet
 
         private static Bitmap Rotate(Bitmap originalImage, int angle)
         {
-            var rotationFilter = new RotateBilinear(angle);
-            return rotationFilter.Apply(originalImage);
+            var rotation = new RotateBilinear(angle);
+            return rotation.Apply(originalImage);
         }
 
         private static Bitmap Reflection(Bitmap originalImage, GeneratorArtificialImageSetting.ReflectionStruct reflection)
@@ -43,6 +58,23 @@ namespace AddDataInDataSet
             return mirror.Apply(originalImage);
         }
 
+        private static Bitmap Blur(Bitmap originalImage)
+        {
+            var blur = new GaussianBlur();
+            return blur.Apply(originalImage);
+        }
+
+        private static Bitmap Noise(Bitmap originalImage)
+        {
+            var noise = new AdditiveNoise();
+            return noise.Apply(originalImage);
+        }
+
+        private static Bitmap Contrast(Bitmap originalImage, int level)
+        {
+            var contrast = new ContrastCorrection(level);
+            return contrast.Apply(originalImage);
+        }
 
 
         public class GeneratorArtificialImageSetting()
@@ -57,6 +89,11 @@ namespace AddDataInDataSet
             }
 
             public ReflectionStruct Reflection { get; set; } = new ReflectionStruct();
+
+            public bool Blur { get; set; } = false;
+            public bool Noise { get; set; } = false;
+            public int Contrast { get; set; } = 0;
+
 
             public string GetCodeAction()
             {
@@ -75,6 +112,21 @@ namespace AddDataInDataSet
                 if (Reflection.Y)
                 {
                     codeAction += "-RY";
+                }
+
+                if (Blur)
+                {
+                    codeAction += "-B";
+                }
+
+                if (Noise)
+                {
+                    codeAction += "-N";
+                }
+
+                if (Contrast != 0)
+                {
+                    codeAction += "-C" + Contrast;
                 }
 
                 return codeAction;

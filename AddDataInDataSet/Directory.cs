@@ -82,12 +82,12 @@ namespace AddDataInDataSet
 
             var settings = new GeneratorArtificialImage.GeneratorArtificialImageSetting[]
             {
-                new(){RotateAngle = 90, Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ X = true } },
+                new(){RotateAngle = 90, Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ X = true }, Blur = true, Noise = true, Contrast= 50 },
             };
 
             var settingAdds = new string[settings.Length];
 
-            for(var i =0; i < settingAdds.Length; i++)
+            for (var i = 0; i < settingAdds.Length; i++)
             {
                 settingAdds[i] = settings[i].GetCodeAction();
             }
@@ -106,7 +106,7 @@ namespace AddDataInDataSet
 
                     var outputFilesReady = Directory.GetFiles(directoryPath);
 
-                    if(!outputFilesReady.Contains(directoryPath + "\\" + imageName + ".jpg"))
+                    if (!outputFilesReady.Contains(directoryPath + "\\" + imageName + ".jpg"))
                     {
                         originalImage.Save(directoryPath + "\\" + imageName + ".jpg", ImageFormat.Jpeg);
                     }
