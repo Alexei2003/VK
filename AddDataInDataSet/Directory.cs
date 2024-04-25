@@ -85,6 +85,13 @@ namespace AddDataInDataSet
                 new(){RotateAngle = 90, Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ X = true } },
             };
 
+            var settingAdds = new string[settings.Length];
+
+            for(var i =0; i < settingAdds.Length; i++)
+            {
+                settingAdds[i] = settings[i].GetCodeAction();
+            }
+
             Parallel.ForEach(tagDirectories, tag =>
             {
                 var tagDirectoryFiles = Directory.GetFiles(tag);
@@ -108,10 +115,9 @@ namespace AddDataInDataSet
 
                     for (int i = 0; i < outputImages.Count; i++)
                     {
-                        var settingAdd = "-" + i.ToString();
-                        if (!outputFilesReady.Contains(directoryPath + "\\" + imageName + settingAdd + ".jpg"))
+                        if (!outputFilesReady.Contains(directoryPath + "\\" + imageName + settingAdds[i] + ".jpg"))
                         {
-                            outputImages[i].Save(directoryPath + "\\" + imageName + settingAdd + ".jpg", ImageFormat.Jpeg);
+                            outputImages[i].Save(directoryPath + "\\" + imageName + settingAdds[i] + ".jpg", ImageFormat.Jpeg);
                         }
                     }
                 }

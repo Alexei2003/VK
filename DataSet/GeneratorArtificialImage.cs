@@ -57,6 +57,28 @@ namespace AddDataInDataSet
             }
 
             public ReflectionStruct Reflection { get; set; } = new ReflectionStruct();
+
+            public string GetCodeAction()
+            {
+                var codeAction = "_";
+
+                if (RotateAngle != 0)
+                {
+                    codeAction += "-R" + RotateAngle;
+                }
+
+                if (Reflection.X)
+                {
+                    codeAction += "-RX";
+                }
+
+                if (Reflection.Y)
+                {
+                    codeAction += "-RY";
+                }
+
+                return codeAction;
+            }
         }
     }
 }
