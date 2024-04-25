@@ -44,9 +44,21 @@ namespace DataSet
         }
         public static Bitmap ImageTo24bpp(Bitmap img)
         {
-            var bmp = new Bitmap(img.Width, img.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            var bmp = new Bitmap(img.Width, img.Height, PixelFormat.Format24bppRgb);
             using (var gr = Graphics.FromImage(bmp))
+            {
                 gr.DrawImage(img, new Rectangle(0, 0, img.Width, img.Height));
+            }
+            return bmp;
+        }
+
+        public static Bitmap ImageTo32bpp(Bitmap img)
+        {
+            var bmp = new Bitmap(img.Width, img.Height, PixelFormat.Format32bppArgb);
+            using (var gr = Graphics.FromImage(bmp))
+            {
+                gr.DrawImage(img, new Rectangle(0, 0, img.Width, img.Height));
+            }
             return bmp;
         }
 
