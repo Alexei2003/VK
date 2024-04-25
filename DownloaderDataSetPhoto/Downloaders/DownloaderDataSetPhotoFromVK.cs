@@ -113,7 +113,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                 return;
             }
 
-            Downloader.DownloadPhoto(wc, photo.Photo604.ToString(), currentTag, percentOriginalTag, fileName, lockNeuralNetworkResult);
+            Downloader.DownloadPhoto(wc, photo.Sizes[2].Url.ToString(), currentTag, percentOriginalTag, fileName, lockNeuralNetworkResult);
         }
     }
 }
