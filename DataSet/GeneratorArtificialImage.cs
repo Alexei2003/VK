@@ -25,19 +25,24 @@ namespace AddDataInDataSet
                     image = Reflection(image, settings[i].Reflection);
                 }
 
-                if (settings[i].Blur)
+                if (settings[i].GaussianBlur)
                 {
-                    image = Blur(image);
+                    image = GaussianBlur(image);
                 }
 
-                if (settings[i].Noise)
+                if (settings[i].AdditiveNoise)
                 {
-                    image = Noise(image);
+                    image = AdditiveNoise(image);
                 }
 
-                if (settings[i].Contrast != 0)
+                if (settings[i].ContrastCorrection != 0)
                 {
-                    image = Contrast(image, settings[i].Contrast);
+                    image = ContrastCorrection(image, settings[i].ContrastCorrection);
+                }
+
+                if (settings[i].Resize != 0)
+                {
+                    image = Resize(image, settings[i].Resize);
                 }
 
                 resultImages.Add(DataSetPhoto.ImageTo32bpp(image));
@@ -58,24 +63,29 @@ namespace AddDataInDataSet
             return mirror.Apply(originalImage);
         }
 
-        private static Bitmap Blur(Bitmap originalImage)
+        private static Bitmap GaussianBlur(Bitmap originalImage)
         {
             var blur = new GaussianBlur();
             return blur.Apply(originalImage);
         }
 
-        private static Bitmap Noise(Bitmap originalImage)
+        private static Bitmap AdditiveNoise(Bitmap originalImage)
         {
+            new AdditiveNoise();
             var noise = new AdditiveNoise();
             return noise.Apply(originalImage);
         }
 
-        private static Bitmap Contrast(Bitmap originalImage, int level)
+        private static Bitmap ContrastCorrection(Bitmap originalImage, int level)
         {
             var contrast = new ContrastCorrection(level);
             return contrast.Apply(originalImage);
         }
 
+        private static Bitmap Resize(Bitmap originalImage, int maxSize)
+        {
+            return DataSetPhoto.ChangeResolution(originalImage, maxSize);
+        }
 
         public class GeneratorArtificialImageSetting()
         {
@@ -90,10 +100,11 @@ namespace AddDataInDataSet
 
             public ReflectionStruct Reflection { get; set; } = new ReflectionStruct();
 
-            public bool Blur { get; set; } = false;
-            public bool Noise { get; set; } = false;
-            public int Contrast { get; set; } = 0;
+            public bool GaussianBlur { get; set; } = false;
+            public bool AdditiveNoise { get; set; } = false;
+            public int ContrastCorrection { get; set; } = 0;
 
+            public int Resize { get; set; } = 0;
 
             public string GetCodeAction()
             {
@@ -114,19 +125,25 @@ namespace AddDataInDataSet
                     codeAction += "-RY";
                 }
 
-                if (Blur)
+                if (GaussianBlur)
                 {
-                    codeAction += "-B";
+                    codeAction += "-GB";
                 }
 
-                if (Noise)
+                if (AdditiveNoise)
                 {
-                    codeAction += "-N";
+                    codeAction += "-AN";
                 }
 
-                if (Contrast != 0)
+                if (ContrastCorrection != 0)
                 {
-                    codeAction += "-C" + Contrast;
+                    codeAction += "-CС" + ContrastCorrection;
+                }
+
+
+                if (Resize != 0)
+                {
+                    codeAction += "-RS" + Resize;
                 }
 
                 return codeAction;

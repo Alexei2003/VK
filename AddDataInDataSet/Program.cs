@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace AddDataInDataSet
+﻿namespace AddDataInDataSet
 {
     internal class Program
     {
@@ -57,7 +55,7 @@ namespace AddDataInDataSet
             {
                 intWrite = count[0];
 
-                if(intWrite == -1)
+                if (intWrite == -1)
                 {
                     break;
                 }
@@ -67,6 +65,8 @@ namespace AddDataInDataSet
 
                 // Заменяем текущую строку новым текстом
                 Console.Write("Обработано тегов : " + intWrite);
+
+                Thread.Sleep(1000);
             }
         }
     }

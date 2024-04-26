@@ -84,10 +84,8 @@ namespace AddDataInDataSet
 
             var settings = new GeneratorArtificialImage.GeneratorArtificialImageSetting[]
             {
-                new(){RotateAngle = 180, Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ X = true },Blur = true},
-                new(){Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ Y = true },Noise = true},
-                new(){RotateAngle = 90, Contrast = 89},
-                new(){RotateAngle = 270, Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ Y = true }, Blur = true, Noise = true, Contrast = 45 },
+                new(){RotateAngle = 180, ContrastCorrection = 20, AdditiveNoise = true, Resize = 168},
+                new(){RotateAngle = 90, Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ X = true }, ContrastCorrection = 10, GaussianBlur = true, Resize = 196},
             };
 
             var settingAdds = new string[settings.Length];
@@ -105,7 +103,7 @@ namespace AddDataInDataSet
                 foreach (var imagePath in tagDirectoryFiles)
                 {
                     var originalImage = new Bitmap(imagePath);
-                    double countImageExtraDouble = double.Round(((max*1.0) / tagDirectoryFiles.Count()) - 1);
+                    double countImageExtraDouble = double.Round(((max * 1.0) / tagDirectoryFiles.Count()) - 1);
                     int countImageExtra = Convert.ToInt32(countImageExtraDouble);
 
                     if (countImageExtra > settings.Length)

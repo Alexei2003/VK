@@ -6,8 +6,6 @@ namespace DataSet
 {
     public static class DataSetPhoto
     {
-        private const double MAX_SIZE = 224;
-
         public static void Save(Bitmap image, string tags)
         {
             image = ChangeResolution224224(image);
@@ -17,11 +15,16 @@ namespace DataSet
 
         public static Bitmap ChangeResolution224224(Bitmap image)
         {
-            if (image.Width - image.Height > 0)
+            return ChangeResolution(image, 224);
+        }
+
+        public static Bitmap ChangeResolution(Bitmap image, float maxSize)
+        {
+            if (image.Width > image.Height)
             {
-                if (image.Width > MAX_SIZE)
+                if (image.Width > maxSize)
                 {
-                    var delta = image.Width / MAX_SIZE;
+                    var delta = image.Width / maxSize;
                     return ImageTo24bpp(new Bitmap(image, Convert.ToInt32(image.Width / delta), Convert.ToInt32(image.Height / delta)));
                 }
                 else
@@ -31,9 +34,9 @@ namespace DataSet
             }
             else
             {
-                if (image.Height > MAX_SIZE)
+                if (image.Height > maxSize)
                 {
-                    var delta = image.Height / MAX_SIZE;
+                    var delta = image.Height / maxSize;
                     return ImageTo24bpp(new Bitmap(image, Convert.ToInt32(image.Width / delta), Convert.ToInt32(image.Height / delta)));
                 }
                 else
