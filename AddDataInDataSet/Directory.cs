@@ -63,7 +63,7 @@ namespace AddDataInDataSet
             {
                 count[0]++;
 
-                DirectoryMove(tag, MAIN_DIRECTORY + "\\" + ORIGINAL_PATH + "\\" + Path.GetDirectoryName(tag), true);
+                DirectoryMove(tag, MAIN_DIRECTORY + "\\" + ORIGINAL_PATH + "\\" + GetDirectoryName(tag), true);
             });
         }
 
@@ -105,7 +105,8 @@ namespace AddDataInDataSet
                 foreach (var imagePath in tagDirectoryFiles)
                 {
                     var originalImage = new Bitmap(imagePath);
-                    var countImageExtra = (max / tagDirectoryFiles.Count()) - 1;
+                    double countImageExtraDouble = double.Round(((max*1.0) / tagDirectoryFiles.Count()) - 1);
+                    int countImageExtra = Convert.ToInt32(countImageExtraDouble);
 
                     if (countImageExtra > settings.Length)
                     {
