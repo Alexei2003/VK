@@ -1,4 +1,5 @@
-﻿using DataSet;
+﻿using AForge.Imaging.Filters;
+using DataSet;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -86,6 +87,8 @@ namespace AddDataInDataSet
             {
                 new(){RotateAngle = 180, ContrastCorrection = 20, AdditiveNoise = true, Resize = 168},
                 new(){RotateAngle = 90, Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ X = true }, ContrastCorrection = 10, GaussianBlur = true, Resize = 196},
+                new(){Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ Y = true}, ContrastCorrection = -50 },
+                new(){RotateAngle = 270, GaussianBlur = true, ContrastCorrection = -25 },
             };
 
             var settingAdds = new string[settings.Length];
