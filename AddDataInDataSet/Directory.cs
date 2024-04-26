@@ -55,17 +55,19 @@ namespace AddDataInDataSet
             return dir.Split('\\', StringSplitOptions.RemoveEmptyEntries).Last();
         }
 
-        public static void MoveDataFromNewToReady()
+        public static void MoveDataFromNewToReady(int[] count)
         {
             var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + NEW_PATH);
 
             Parallel.ForEach(tagDirectories, tag =>
             {
+                count[0]++;
+
                 DirectoryMove(tag, MAIN_DIRECTORY + "\\" + ORIGINAL_PATH + "\\" + Path.GetDirectoryName(tag), true);
             });
         }
 
-        public static void MoveDataToOutput()
+        public static void MoveDataToOutput(int[] count)
         {
             var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + ORIGINAL_PATH);
 
@@ -82,7 +84,10 @@ namespace AddDataInDataSet
 
             var settings = new GeneratorArtificialImage.GeneratorArtificialImageSetting[]
             {
-                new(){RotateAngle = 90, Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ X = true }, Blur = true, Noise = true, Contrast= 50 },
+                new(){RotateAngle = 180, Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ X = true },Blur = true},
+                new(){Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ Y = true },Noise = true},
+                new(){RotateAngle = 90, Contrast = 89},
+                new(){RotateAngle = 270, Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ Y = true }, Blur = true, Noise = true, Contrast = 45 },
             };
 
             var settingAdds = new string[settings.Length];
@@ -94,11 +99,19 @@ namespace AddDataInDataSet
 
             Parallel.ForEach(tagDirectories, tag =>
             {
+                count[0]++;
+
                 var tagDirectoryFiles = Directory.GetFiles(tag);
                 foreach (var imagePath in tagDirectoryFiles)
                 {
                     var originalImage = new Bitmap(imagePath);
-                    var countImage = ((max / tagDirectoryFiles.Count()) % settings.Length) + 1;
+                    var countImageExtra = (max / tagDirectoryFiles.Count()) - 1;
+
+                    if (countImageExtra > settings.Length)
+                    {
+                        countImageExtra = settings.Length;
+                    }
+
                     var directoryPath = MAIN_DIRECTORY + "\\" + OUTPUT_PATH + "\\" + GetDirectoryName(tag);
                     var imageName = Path.GetFileNameWithoutExtension(imagePath);
 
@@ -111,7 +124,7 @@ namespace AddDataInDataSet
                         originalImage.Save(directoryPath + "\\" + imageName + ".jpg", ImageFormat.Jpeg);
                     }
 
-                    var outputImages = GeneratorArtificialImage.Generate(originalImage, settings, countImage);
+                    var outputImages = GeneratorArtificialImage.Generate(originalImage, settings, countImageExtra);
 
                     for (int i = 0; i < outputImages.Count; i++)
                     {
