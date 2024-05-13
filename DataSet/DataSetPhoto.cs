@@ -89,14 +89,18 @@ namespace DataSet
         public static bool IsSimilarPhoto(Bitmap bmp1, Bitmap bmp2)
         {
             // Создаем экземпляр алгоритма сравнения шаблонов
-            var tm = new ExhaustiveTemplateMatching(0.8f);
+            var tm = new ExhaustiveTemplateMatching(0.95f);
 
             // Находим все совпадения с заданным порогом сходства
-            var matches = tm.ProcessImage(ImageTo24bpp(new Bitmap(bmp1, bmp2.Width, bmp2.Height)), bmp2);
+            var matches = tm.ProcessImage(ImageTo24bpp(new Bitmap(bmp1, bmp2.Width, bmp2.Height)), ImageTo24bpp(bmp2));
 
             if (matches.Length > 0)
             {
-                return true;
+                if (matches[0].Similarity > 0 && matches[0].Similarity < 1)
+                {
+                    return true;
+                }
+                return false;
             }
             else
             {

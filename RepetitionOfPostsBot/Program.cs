@@ -118,14 +118,5 @@ namespace RepetitionOfPostsBot
                 }
             }
         }
-
-        public static void ShowPopularPosts(object data)
-        {
-            while (true)
-            {
-                while (DateTime.UtcNow.Minute < 5 || DateTime.UtcNow.Minute > 10) ;
-
-            }
-        }
     }
 }

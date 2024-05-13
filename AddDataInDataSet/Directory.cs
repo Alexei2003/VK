@@ -37,7 +37,10 @@ namespace AddDataInDataSet
                     }
                     if (!similar)
                     {
-                        src.MoveTo(destination + "\\" + src.Name);
+                        if(!File.Exists(destination + "\\" + src.Name))
+                        {
+                            src.MoveTo(destination + "\\" + src.Name);
+                        }
                     }
                 }
                 if (deleteOriginal)
@@ -64,7 +67,7 @@ namespace AddDataInDataSet
             {
                 count[0]++;
 
-                DirectoryMove(tag, MAIN_DIRECTORY + "\\" + ORIGINAL_PATH + "\\" + GetDirectoryName(tag), true);
+                DirectoryMove(tag, MAIN_DIRECTORY + "\\" + ORIGINAL_PATH + "\\" + GetDirectoryName(tag), true, true);
             });
         }
 
