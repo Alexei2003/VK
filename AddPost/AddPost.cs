@@ -1,7 +1,8 @@
 using AddPost.Classes;
 using DataSet;
-using DataSet.DataStruct;
 using MyCustomClasses;
+using MyCustomClasses.Tags;
+using MyCustomClasses.VK;
 using System.ComponentModel;
 
 namespace AddPost
@@ -16,7 +17,7 @@ namespace AddPost
         private List<ImagesWithTag> imageList = [];
         private int imageIndex = -1;
         private readonly Random rand = new();
-        private readonly MyCustomClasses.VkApiCustom api;
+        private readonly VkApiCustom api;
 
         private struct ImagesWithTag
         {
@@ -27,8 +28,8 @@ namespace AddPost
         public AddPost()
         {
             InitializeComponent();
-            var accessToken = File.ReadAllText("AccessToken.txt");
-            api = new VkApiCustom(accessToken);
+            var accessTokens = GosUslugi.GetAccessTokens();
+            api = new VkApiCustom(accessTokens.GetValueOrDefault(GosUslugi.VK));
             tagList.LoadDictionary();
             groupId = Convert.ToInt64(tbGroupId.Text);
             cbTimeBetweenPost.SelectedIndex = 1;

@@ -1,5 +1,4 @@
-﻿using AForge.Imaging.Filters;
-using DataSet;
+﻿using DataSet;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -37,7 +36,7 @@ namespace AddDataInDataSet
                     }
                     if (!similar)
                     {
-                        if(!File.Exists(destination + "\\" + src.Name))
+                        if (!File.Exists(destination + "\\" + src.Name))
                         {
                             src.MoveTo(destination + "\\" + src.Name);
                         }

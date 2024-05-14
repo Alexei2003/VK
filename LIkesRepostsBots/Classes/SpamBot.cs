@@ -1,4 +1,5 @@
-﻿using VkNet.Enums.StringEnums;
+﻿using MyCustomClasses.VK;
+using VkNet.Enums.StringEnums;
 using VkNet.Model;
 using VkNet.Utils;
 using static LikesRepostsBots.Classes.BotsWorksParams;
@@ -7,7 +8,7 @@ namespace LikesRepostsBots.Classes
 {
     internal sealed class SpamBot
     {
-        private readonly MyCustomClasses.VkApiCustom api;
+        private readonly VkApiCustom api;
         private readonly Random rand;
         private const int CHANCE_LIKE = 5;
         private const int CHANCE_REPOST = 5;
@@ -42,7 +43,7 @@ namespace LikesRepostsBots.Classes
 
             var botWall = api.Wall.Get(new WallGetParams
             {
-                OwnerId = api.ApiOriginal.UserId,
+                OwnerId = api.UserId,
                 Count = 1,
                 Filter = WallFilter.All
             });
@@ -70,7 +71,7 @@ namespace LikesRepostsBots.Classes
                 // Лайк репост
                 if (rand.Next(CHANCE_REPOST) == 0)
                 {
-                    repostResult = api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", api.ApiOriginal.UserId, false);
+                    repostResult = api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", api.UserId, false);
                     Console.WriteLine("репост");
 
                     api.Likes.Add(new LikesAddParams

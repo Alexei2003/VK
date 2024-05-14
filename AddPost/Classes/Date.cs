@@ -1,13 +1,14 @@
-﻿using VkNet.Enums.StringEnums;
+﻿using MyCustomClasses.VK;
+using VkNet.Enums.StringEnums;
 using VkNet.Model;
 
 namespace AddPost.Classes
 {
     internal sealed class Date
     {
-        private readonly MyCustomClasses.VkApiCustom api;
+        private readonly VkApiCustom api;
 
-        public Date(MyCustomClasses.VkApiCustom api)
+        public Date(VkApiCustom api)
         {
             this.api = api;
         }

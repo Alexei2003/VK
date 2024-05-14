@@ -1,7 +1,8 @@
 using DataSet;
-using DataSet.DataStruct;
 using DownloaderDataSetPhoto.Downloaders;
 using MyCustomClasses;
+using MyCustomClasses.Tags;
+using MyCustomClasses.VK;
 
 namespace DownloaderDataSetPhoto
 {
@@ -10,13 +11,13 @@ namespace DownloaderDataSetPhoto
         private Int64 groupId;
         private readonly TagsLIst tagList = new();
         private float percentOriginalTag = 0.6f;
-        private readonly MyCustomClasses.VkApiCustom api;
+        private readonly VkApiCustom api;
 
         public DownloaderDataSetPhoto()
         {
             InitializeComponent();
-            var accessToken = File.ReadAllText("AccessToken.txt");
-            api = new VkApiCustom(accessToken);
+            var accessTokens = GosUslugi.GetAccessTokens();
+            api = new VkApiCustom(accessTokens.GetValueOrDefault(GosUslugi.VK));
             tagList.LoadDictionary();
             groupId = 220199532;
             HidePanels(pRule34);

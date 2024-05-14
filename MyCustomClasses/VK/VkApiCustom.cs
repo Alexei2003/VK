@@ -1,22 +1,23 @@
-﻿using MyCustomClasses.VkApiCustomClasses;
+﻿using MyCustomClasses.VK.VKApiCustomClasses;
 using VkNet;
 using VkNet.Model;
 
-namespace MyCustomClasses
+namespace MyCustomClasses.VK
 {
     public class VkApiCustom
     {
         private readonly TimeSpan TIME_SLEEP;
-        public VkApi ApiOriginal { get; }
+        public long? UserId { get; private set; }
 
+        private readonly VkApi apiOriginal;
         public Account Account { get; }
         public Friends Friends { get; }
         public Groups Groups { get; }
-        public VkApiCustomClasses.Likes Likes { get; }
-        public VkApiCustomClasses.Photo Photo { get; }
+        public VKApiCustomClasses.Likes Likes { get; }
+        public VKApiCustomClasses.Photo Photo { get; }
         public Stats Stats { get; }
         public Users Users { get; }
-        public VkApiCustomClasses.Wall Wall { get; }
+        public VKApiCustomClasses.Wall Wall { get; }
         public Newsfeed Newsfeed { get; }
         public Polls Polls { get; }
 
@@ -24,17 +25,17 @@ namespace MyCustomClasses
         {
             TIME_SLEEP = TimeSpan.FromSeconds(2);
 
-            ApiOriginal = new();
-            Polls = new Polls(ApiOriginal, TIME_SLEEP);
-            Account = new(ApiOriginal, TIME_SLEEP);
-            Friends = new(ApiOriginal, TIME_SLEEP);
-            Groups = new(ApiOriginal, TIME_SLEEP);
-            Likes = new(ApiOriginal, TIME_SLEEP);
-            Photo = new(ApiOriginal, TIME_SLEEP);
-            Stats = new(ApiOriginal, TIME_SLEEP);
-            Users = new(ApiOriginal, TIME_SLEEP);
-            Wall = new(ApiOriginal, TIME_SLEEP);
-            Newsfeed = new(ApiOriginal, TIME_SLEEP);
+            apiOriginal = new();
+            Polls = new Polls(apiOriginal, TIME_SLEEP);
+            Account = new(apiOriginal, TIME_SLEEP);
+            Friends = new(apiOriginal, TIME_SLEEP);
+            Groups = new(apiOriginal, TIME_SLEEP);
+            Likes = new(apiOriginal, TIME_SLEEP);
+            Photo = new(apiOriginal, TIME_SLEEP);
+            Stats = new(apiOriginal, TIME_SLEEP);
+            Users = new(apiOriginal, TIME_SLEEP);
+            Wall = new(apiOriginal, TIME_SLEEP);
+            Newsfeed = new(apiOriginal, TIME_SLEEP);
         }
 
         public VkApiCustom(string accessToken) : this()
@@ -48,7 +49,8 @@ namespace MyCustomClasses
             {
                 try
                 {
-                    ApiOriginal.Authorize(@params);
+                    apiOriginal.Authorize(@params);
+                    UserId = apiOriginal.UserId;
                     return;
                 }
                 catch (VkNet.Exception.TooManyRequestsException)

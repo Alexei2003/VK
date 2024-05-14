@@ -1,6 +1,6 @@
 ﻿using VkNet;
 
-namespace MyCustomClasses.VkApiCustomClasses
+namespace MyCustomClasses.VK.VKApiCustomClasses
 {
     public class Account
     {

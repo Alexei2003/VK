@@ -1,4 +1,5 @@
-﻿using DataSet.DataStruct;
+﻿using MyCustomClasses.Tags;
+using MyCustomClasses.VK;
 using System.Net;
 using VkNet.Model;
 
@@ -6,9 +7,9 @@ namespace DownloaderDataSetPhoto.Downloaders
 {
     internal sealed class DownloaderDataSetPhotoFromVK
     {
-        private readonly MyCustomClasses.VkApiCustom api;
+        private readonly VkApiCustom api;
         private readonly TagsLIst tagList;
-        public DownloaderDataSetPhotoFromVK(MyCustomClasses.VkApiCustom api, TagsLIst tagList)
+        public DownloaderDataSetPhotoFromVK(VkApiCustom api, TagsLIst tagList)
         {
             this.api = api;
             this.tagList = tagList;

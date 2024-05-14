@@ -5,7 +5,7 @@ using VkNet.Enums.StringEnums;
 using VkNet.Model;
 using VkNet.Utils;
 
-namespace MyCustomClasses.VkApiCustomClasses
+namespace MyCustomClasses.VK.VKApiCustomClasses
 {
     public class Users
     {

@@ -1,25 +1,27 @@
 ﻿using VkNet;
+using VkNet.Model;
+using VkNet.Utils;
 
-namespace MyCustomClasses.VkApiCustomClasses
+namespace MyCustomClasses.VK.VKApiCustomClasses
 {
-    public class Stats
+    public class Groups
     {
         private readonly TimeSpan TIME_SLEEP;
         public VkApi ApiOriginal { get; }
 
-        public Stats(VkApi ApiOriginal, TimeSpan TIME_SLEEP)
+        public Groups(VkApi ApiOriginal, TimeSpan TIME_SLEEP)
         {
             this.ApiOriginal = ApiOriginal;
             this.TIME_SLEEP = TIME_SLEEP;
         }
 
-        public bool TrackVisitor()
+        public VkCollection<User> GetMembers(GroupsGetMembersParams @params)
         {
             while (true)
             {
                 try
                 {
-                    return ApiOriginal.Stats.TrackVisitor();
+                    return ApiOriginal.Groups.GetMembers(@params);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {

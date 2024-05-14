@@ -1,13 +1,14 @@
-﻿using VkNet.Model;
+﻿using MyCustomClasses.VK;
+using VkNet.Model;
 
 namespace AddPost.Classes
 {
     public sealed class Post
     {
-        private readonly MyCustomClasses.VkApiCustom api;
+        private readonly VkApiCustom api;
         private readonly Photo photo;
 
-        public Post(MyCustomClasses.VkApiCustom api)
+        public Post(VkApiCustom api)
         {
             this.api = api;
             photo = new Photo(api);

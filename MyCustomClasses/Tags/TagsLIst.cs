@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Concurrent;
 
-namespace DataSet.DataStruct
+namespace MyCustomClasses.Tags
 {
     public sealed class TagsLIst
     {
