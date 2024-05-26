@@ -1,4 +1,5 @@
-﻿using MyCustomClasses.VK;
+﻿using MyCustomClasses.Tags;
+using MyCustomClasses.VK;
 using VkNet.Model;
 
 namespace AddPost.Classes
@@ -25,6 +26,8 @@ namespace AddPost.Classes
             var tags = tag.Split('#', StringSplitOptions.RemoveEmptyEntries);
 
             tag = string.Join("", tags.Select(s => "#" + s + groupShortUrl + "\n"));
+
+            tag = TagsCreator.GetBaseTagsWithNextLine() + tag;
 
             api.Wall.Post(new WallPostParams()
             {
