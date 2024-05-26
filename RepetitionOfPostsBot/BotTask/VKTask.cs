@@ -1,8 +1,9 @@
-﻿using MyCustomClasses.VK;
+﻿using MyCustomClasses.Tags;
+using MyCustomClasses.VK;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 
-namespace RepetitionOfPostsBot.BotsTask
+namespace RepetitionOfPostsBot.BotTask
 {
     internal static class VKTask
     {
@@ -70,26 +71,28 @@ namespace RepetitionOfPostsBot.BotsTask
                         var post = wall.WallPosts.First();
                         var tags = post.Text;
 
-                        if (tags.Split('#', StringSplitOptions.RemoveEmptyEntries).Length < 2 || tags.Contains('.') || tags.Contains(' '))
+                        if (!tags.Contains('@'))
                         {
-                            indexResendedPost++;
-                            continue;
-                        }
+                            tags = TagsCreator.RemoveBaseTags(tags);
 
-                        var tag = post.Text;
+                            var tagsArr = tags.Split('#', StringSplitOptions.RemoveEmptyEntries);
 
-                        if (!tag.Contains('@'))
-                        {
-                            var tagsArr = tag.Split('#', StringSplitOptions.RemoveEmptyEntries);
+                            if (tagsArr.Length > 2 || tags.Contains('.') || tags.Contains(' '))
+                            {
+                                indexResendedPost++;
+                                continue;
+                            }
 
-                            tag = string.Join("", tagsArr.Select(s => "#" + s + groupVKShortUrl + "\n"));
+                            tags = string.Join("", tagsArr.Select(s => "#" + s + groupVKShortUrl + "\n"));
+
+                            tags = TagsCreator.GetBaseTagsWithNextLine() + tags;
                         }
 
                         api.Wall.Post(new WallPostParams()
                         {
                             OwnerId = -1 * groupVKId,
                             FromGroup = true,
-                            Message = '.' + tag,
+                            Message = '.' + tags,
                             Attachments = new MediaAttachment[] { new PhotoMy { OwnerId = post.Attachment.Instance.OwnerId, Id = post.Attachment.Instance.Id, AccessKey = post.Attachment.Instance.AccessKey } },
                             PublishDate = postData.Value.AddHours(1),
                         });

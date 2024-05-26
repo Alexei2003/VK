@@ -11,4 +11,8 @@
     <ProjectReference Include="..\MyCustomClasses\MyCustomClasses.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Funcs\" />
+  </ItemGroup>
+
 </Project>

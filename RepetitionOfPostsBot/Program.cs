@@ -1,5 +1,7 @@
 ﻿using MyCustomClasses;
 using MyCustomClasses.Instagram;
+using MyCustomClasses.VK;
+using RepetitionOfPostsBot.BotTask;
 
 namespace RepetitionOfPostsBot
 {
@@ -10,12 +12,10 @@ namespace RepetitionOfPostsBot
         {
             var accessTokens = GosUslugi.GetAccessTokens();
 
-            /*            var vkApi = new VkApiCustom(accessTokens.GetValueOrDefault(GosUslugi.VK));
+            var vkApi = new VkApiCustom(accessTokens.GetValueOrDefault(GosUslugi.VK));
 
-                        var threadRepetitionOfPosts = new Thread(new ParameterizedThreadStart(VKTask.RepetitionOfVKPosts));
-                        threadRepetitionOfPosts.Start(vkApi);*/
-
-            InstagramApi.Test();
+            var threadRepetitionOfPosts = new Thread(new ParameterizedThreadStart(VKTask.RepetitionOfVKPosts));
+            threadRepetitionOfPosts.Start(vkApi);
 
             while (true)
             {

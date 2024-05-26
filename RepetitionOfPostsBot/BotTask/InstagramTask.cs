@@ -1,4 +1,4 @@
-﻿namespace RepetitionOfPostsBot.BotsTask
+﻿namespace RepetitionOfPostsBot.BotTask
 {
     internal class InstagramTask
     {
