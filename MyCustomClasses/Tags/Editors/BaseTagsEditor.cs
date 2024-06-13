@@ -40,6 +40,7 @@
                     if (sourceTags[i].Contains(BASE_TAGS[j]))
                     {
                         listFindIndex.Add(i);
+                        break;
                     }
                 }
             }
@@ -54,7 +55,7 @@
             {
                 if (!listFindIndex.Contains(i))
                 {
-                    tagWithRemove += sourceTags[i];
+                    tagWithRemove += '#' + sourceTags[i];
                 }
             }
 
