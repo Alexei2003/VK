@@ -3,7 +3,6 @@ using MyCustomClasses.Tags.Editors;
 using MyCustomClasses.VK;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
-using VkNet.Utils;
 
 namespace RepetitionOfPostsBot.BotTask
 {
@@ -195,7 +194,7 @@ namespace RepetitionOfPostsBot.BotTask
                         }
                     }
 
-                     var imagesUrl = new List<Uri>();
+                    var imagesUrl = new List<Uri>();
 
                     // Достать картинки из поста
                     foreach (var attachment in post.Attachments)

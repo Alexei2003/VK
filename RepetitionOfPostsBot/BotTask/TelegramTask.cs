@@ -1,7 +1,6 @@
 ﻿using MyCustomClasses.Tags.Editors;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using VkNet.Model;
 
 namespace RepetitionOfPostsBot.BotTask
 {
@@ -27,9 +26,9 @@ namespace RepetitionOfPostsBot.BotTask
 
             caption = "";
 
-            for (var i=0;i<tags.Length; i++)
+            for (var i = 0; i < tags.Length; i++)
             {
-                caption += tags[i].Split('@', StringSplitOptions.RemoveEmptyEntries).First();
+                caption += '#' + tags[i].Split('@', StringSplitOptions.RemoveEmptyEntries).First() + '\n';
             }
 
             mediaArr.First().Caption = caption;
