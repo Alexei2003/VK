@@ -152,7 +152,7 @@ namespace RepetitionOfPostsBot.BotTask
 
             long lastSendPostId = -1;
 
-            var timeSleep = TimeSpan.FromMinutes(30);
+            var timeSleep = TimeSpan.FromMinutes(5);
 
             while (true)
             {
