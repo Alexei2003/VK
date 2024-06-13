@@ -1,6 +1,6 @@
 ﻿namespace RepetitionOfPostsBot.BotTask
 {
-    internal class DiscordTask
+    internal class TilTokTask
     {
     }
 }

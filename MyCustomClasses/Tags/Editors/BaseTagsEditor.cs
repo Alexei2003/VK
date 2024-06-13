@@ -4,9 +4,9 @@
     {
         public static string[] BASE_TAGS =
         [
-            "#Anime",
-            "#Arts",
-            "#Art"
+            "Anime",
+            "Arts",
+            "Art"
         ];
 
         public static string GetBaseTags()
@@ -15,7 +15,7 @@
 
             foreach (string tag in BASE_TAGS)
             {
-                tags += tag;
+                tags += '#' + tag;
             }
 
             return tags;
@@ -37,7 +37,7 @@
             {
                 for (int j = 0; j < BASE_TAGS.Length; j++)
                 {
-                    if (sourceTags[i] == BASE_TAGS[j])
+                    if (sourceTags[i].Contains(BASE_TAGS[j]))
                     {
                         listFindIndex.Add(i);
                     }
