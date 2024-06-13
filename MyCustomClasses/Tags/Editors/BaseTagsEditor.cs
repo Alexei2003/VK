@@ -1,6 +1,6 @@
-﻿namespace MyCustomClasses.Tags
+﻿namespace MyCustomClasses.Tags.Editors
 {
-    public static class TagsCreator
+    public static class BaseTagsEditor
     {
         public static string[] BASE_TAGS =
         [
@@ -59,11 +59,6 @@
             }
 
             return tagWithRemove;
-        }
-
-        public static string ReplaceTagToInstagram(string tag)
-        {
-            return tag.Replace("_", "");
         }
     }
 }

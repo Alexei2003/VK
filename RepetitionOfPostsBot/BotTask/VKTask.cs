@@ -1,4 +1,4 @@
-﻿using MyCustomClasses.Tags;
+﻿using MyCustomClasses.Tags.Editors;
 using MyCustomClasses.VK;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
@@ -11,6 +11,8 @@ namespace RepetitionOfPostsBot.BotTask
         private const Int64 groupVKId = 220199532;
 
         private static Random rand = new();
+
+        private static string[] tagsNotRepost = ["#Угадайка"];
 
         public static void RepetitionOfVKPosts(object data)
         {
@@ -28,6 +30,7 @@ namespace RepetitionOfPostsBot.BotTask
             {
                 try
                 {
+                    // Получение первого отложеного поста
                     wall = api.Wall.Get(new WallGetParams
                     {
                         OwnerId = -1 * groupVKId,
@@ -37,6 +40,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                     if (wall.WallPosts.Count < 1 || ((wall.WallPosts.First().Date.Value.Hour) != (DateTime.UtcNow.AddHours(1).Hour)))
                     {
+                        // Получение самого первого поста
                         wall = api.Wall.Get(new WallGetParams
                         {
                             OwnerId = -1 * groupVKId,
@@ -52,8 +56,9 @@ namespace RepetitionOfPostsBot.BotTask
                             continue;
                         }
 
-                        var postData = wall.WallPosts[0].Date;
+                        var firstPostData = wall.WallPosts[0].Date;
 
+                        // Получение поста по id 
                         wall = api.Wall.Get(new WallGetParams
                         {
                             OwnerId = -1 * groupVKId,
@@ -62,6 +67,7 @@ namespace RepetitionOfPostsBot.BotTask
                             Filter = WallFilter.All
                         });
 
+                        // Выход если поста несуществует
                         if (wall.WallPosts.Count == 0)
                         {
                             indexResendedPost++;
@@ -69,32 +75,57 @@ namespace RepetitionOfPostsBot.BotTask
                         }
 
                         var post = wall.WallPosts.First();
-                        var tags = post.Text;
+                        var tagsString = post.Text;
 
-                        if (!tags.Contains('@'))
+                        // Проверка тега
+                        tagsString = BaseTagsEditor.RemoveBaseTags(tagsString);
+
+                        var tagsArr = tagsString.Split('#', StringSplitOptions.RemoveEmptyEntries);
+
+                        if (tagsArr.Length > 2 || tagsString.Contains('.') || tagsString.Contains(' '))
                         {
-                            tags = TagsCreator.RemoveBaseTags(tags);
+                            indexResendedPost++;
+                            continue;
+                        }
 
-                            var tagsArr = tags.Split('#', StringSplitOptions.RemoveEmptyEntries);
-
-                            if (tagsArr.Length > 2 || tags.Contains('.') || tags.Contains(' '))
+                        foreach(var tag in tagsNotRepost)
+                        {
+                            if (tagsString.Contains(tag))
                             {
                                 indexResendedPost++;
                                 continue;
                             }
-
-                            tags = string.Join("", tagsArr.Select(s => "#" + s + groupVKShortUrl + "\n"));
-
-                            tags = TagsCreator.GetBaseTagsWithNextLine() + tags;
                         }
 
+                        tagsString = string.Join("", tagsArr.Select(s => "#" + s + groupVKShortUrl + "\n"));
+
+                        tagsString = BaseTagsEditor.GetBaseTagsWithNextLine() + tagsString;
+
+
+                        var mediaAttachmentList = new List<MediaAttachment>();
+
+                        foreach (var attachment in post.Attachments)
+                        {
+                            if (attachment.Type.Name == "Photo")
+                            {
+                                mediaAttachmentList.Add(new PhotoMy { OwnerId = attachment.Instance.OwnerId, Id = attachment.Instance.Id, AccessKey = attachment.Instance.AccessKey });
+                            }
+                        }
+
+                        if(mediaAttachmentList.Count == 0)
+                        {
+                            indexResendedPost++;
+                            continue;
+                        }
+
+                        // Повторый пост
                         api.Wall.Post(new WallPostParams()
                         {
                             OwnerId = -1 * groupVKId,
                             FromGroup = true,
-                            Message = '.' + tags,
-                            Attachments = new MediaAttachment[] { new PhotoMy { OwnerId = post.Attachment.Instance.OwnerId, Id = post.Attachment.Instance.Id, AccessKey = post.Attachment.Instance.AccessKey } },
-                            PublishDate = postData.Value.AddHours(1),
+                            Message = '.' + tagsString,
+                            Attachments = mediaAttachmentList,
+                            PublishDate = firstPostData.Value.AddHours(1),
                         });
 
                         indexResendedPost += Convert.ToUInt64(1 + rand.Next(Convert.ToInt32(totalCountPosts / 100)));

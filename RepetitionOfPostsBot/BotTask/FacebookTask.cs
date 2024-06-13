@@ -1,6 +1,6 @@
 ﻿namespace RepetitionOfPostsBot.BotTask
 {
-    internal class InstagramTask
+    internal class FacebookTask
     {
     }
 }
