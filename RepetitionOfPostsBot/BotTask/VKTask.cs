@@ -48,9 +48,21 @@ namespace RepetitionOfPostsBot.BotTask
                         wall = api.Wall.Get(new WallGetParams
                         {
                             OwnerId = -1 * GROUP_ID,
-                            Count = 1,
+                            Count = 2,
                             Filter = WallFilter.All
                         });
+
+                        Post post;
+                        if (wall.WallPosts[0].IsPinned.Value)
+                        {
+                            post = wall.WallPosts[1];
+                        }
+                        else
+                        {
+                            post = wall.WallPosts[0];
+                        }
+
+
                         var totalCountPosts = wall.TotalCount;
                         var offsetIndexPost = totalCountPosts - indexResendedPost;
 
@@ -60,7 +72,7 @@ namespace RepetitionOfPostsBot.BotTask
                             continue;
                         }
 
-                        var firstPostData = wall.WallPosts[0].Date;
+                        var firstPostData = post.Date;
 
                         // Получение поста по id 
                         wall = api.Wall.Get(new WallGetParams
@@ -78,7 +90,7 @@ namespace RepetitionOfPostsBot.BotTask
                             continue;
                         }
 
-                        var post = wall.WallPosts.First();
+                        post = wall.WallPosts.First();
                         var postText = post.Text;
 
                         // Проверка тега
@@ -163,11 +175,19 @@ namespace RepetitionOfPostsBot.BotTask
                     var wall = vkApi.Wall.Get(new WallGetParams
                     {
                         OwnerId = -1 * GROUP_ID,
-                        Count = 1,
+                        Count = 2,
                         Filter = WallFilter.All
                     });
 
-                    var post = wall.WallPosts.First();
+                    Post post;
+                    if(wall.WallPosts[0].IsPinned.Value)
+                    {
+                        post = wall.WallPosts[1];
+                    }
+                    else
+                    {
+                        post = wall.WallPosts[0];
+                    }
 
                     // Проверка на новые посты
                     if (lastSendPostId == post.Id)

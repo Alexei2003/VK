@@ -42,6 +42,8 @@ namespace RepetitionOfPostsBot.BotTask
                     await client.SendMessageAsync(channel, message);
                 }
             }
+
+            client.Dispose();
         }
 
         private static Task Client_Ready(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs args)
