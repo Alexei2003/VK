@@ -1,4 +1,4 @@
-﻿using MyCustomClasses.Tags.Editors;
+﻿using MyCustomClasses.Tags;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -19,19 +19,7 @@ namespace RepetitionOfPostsBot.BotTask
                 mediaArr[i] = new InputMediaPhoto(InputFile.FromUri(imagesUrl[i]));
             }
 
-
-            caption = BaseTagsEditor.RemoveBaseTags(caption);
-
-            var tags = caption.Split('#', StringSplitOptions.RemoveEmptyEntries);
-
-            caption = "";
-
-            for (var i = 0; i < tags.Length; i++)
-            {
-                caption += '#' + tags[i].Split('@', StringSplitOptions.RemoveEmptyEntries).First() + '\n';
-            }
-
-            mediaArr.First().Caption = caption;
+            mediaArr.First().Caption = TagsReplacer.ReplaceTagToTelegram(caption);
 
             var message = botClient.SendMediaGroupAsync
             (
