@@ -1,4 +1,5 @@
 ﻿using MyCustomClasses;
+using MyCustomClasses.Tags;
 using MyCustomClasses.Tags.Editors;
 using MyCustomClasses.VK;
 using VkNet.Enums.StringEnums;
@@ -206,8 +207,18 @@ namespace RepetitionOfPostsBot.BotTask
                         }
                     }
 
-                    // Отправка в ТГ
-                    TelegramTask.PushPost(accessTokens.GetValueOrDefault(GosUslugi.TELEGRAM), postText, imagesUrl.ToArray());
+                    if (imagesUrl.Count == 0)
+                    {
+                        Thread.Sleep(timeSleep);
+                        continue;
+                    }
+
+                    // Отправка в другие сети
+                    var caption = TagsReplacer.ReplaceTagRemoveExcessFromVk(postText);
+                    TelegramTask.PushPost(accessTokens.GetValueOrDefault(GosUslugi.TELEGRAM), caption, imagesUrl.ToArray());
+
+                    caption = BaseTagsEditor.RemoveBaseTags(caption);
+                    DiscordTask.PushPost(accessTokens.GetValueOrDefault(GosUslugi.DISCORD), caption, imagesUrl.ToArray());
 
 
                 }

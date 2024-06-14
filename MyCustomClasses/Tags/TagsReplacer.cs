@@ -2,7 +2,7 @@
 {
     public class TagsReplacer
     {
-        public static string ReplaceTagToTelegram(string tag)
+        public static string ReplaceTagRemoveExcessFromVk(string tag)
         {
             tag = tag.Replace(".", "");
             tag = tag.Replace("!", "");

@@ -1,5 +1,4 @@
-﻿using MyCustomClasses.Tags;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace RepetitionOfPostsBot.BotTask
@@ -8,20 +7,20 @@ namespace RepetitionOfPostsBot.BotTask
     {
         private const long CHAT_ID = -1002066495859;
 
-        public static void PushPost(string accessToken, string caption, Uri[] imagesUrl)
+        public static async void PushPost(string accessToken, string caption, Uri[] imagesUrls)
         {
             var botClient = new TelegramBotClient(accessToken);
 
-            var mediaArr = new InputMediaPhoto[imagesUrl.Length];
+            var mediaArr = new InputMediaPhoto[imagesUrls.Length];
 
-            for (var i = 0; i < imagesUrl.Length; i++)
+            for (var i = 0; i < imagesUrls.Length; i++)
             {
-                mediaArr[i] = new InputMediaPhoto(InputFile.FromUri(imagesUrl[i]));
+                mediaArr[i] = new InputMediaPhoto(InputFile.FromUri(imagesUrls[i]));
             }
 
-            mediaArr.First().Caption = TagsReplacer.ReplaceTagToTelegram(caption);
+            mediaArr.First().Caption = caption;
 
-            var message = botClient.SendMediaGroupAsync
+            var message = await botClient.SendMediaGroupAsync
             (
                 chatId: CHAT_ID,
                 media: mediaArr
