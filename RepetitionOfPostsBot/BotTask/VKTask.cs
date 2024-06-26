@@ -95,6 +95,8 @@ namespace RepetitionOfPostsBot.BotTask
 
                         // Проверка тега
                         postText = BaseTagsEditor.RemoveBaseTags(postText);
+                        postText = TagsReplacer.RemoveDogGroupFromTag(postText);
+                        postText = postText.Replace("\n", "");
 
                         var tagsArr = postText.Split('#', StringSplitOptions.RemoveEmptyEntries);
 
@@ -237,8 +239,8 @@ namespace RepetitionOfPostsBot.BotTask
                     var caption = TagsReplacer.ReplaceTagRemoveExcessFromVk(postText);
                     TelegramTask.PushPost(accessTokens.GetValueOrDefault(GosUslugi.TELEGRAM), caption, imagesUrl.ToArray());
 
-                    caption = BaseTagsEditor.RemoveBaseTags(caption);
-                    DiscordTask.PushPost(accessTokens.GetValueOrDefault(GosUslugi.DISCORD), caption, imagesUrl.ToArray());
+                    var discordCaption = BaseTagsEditor.RemoveBaseTags(caption);
+                    DiscordTask.PushPost(accessTokens.GetValueOrDefault(GosUslugi.DISCORD), discordCaption, imagesUrl.ToArray());
 
 
                 }

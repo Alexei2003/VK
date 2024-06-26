@@ -254,7 +254,7 @@ namespace LikesRepostsBots.Classes
                 var users = api.Users.Get(friends.Select(user => user.Id).ToArray());
                 foreach (var user in users)
                 {
-                    if (user.Id != 713712954 && user.Id != 338992901)
+                    if (user.Id == 713712954 || user.Id == 338992901)
                     {
                         continue;
                     }

@@ -12,6 +12,7 @@
     <PackageReference Include="DSharpPlus.CommandsNext" Version="4.4.6" />
     <PackageReference Include="DSharpPlus.Interactivity" Version="4.4.6" />
     <PackageReference Include="Telegram.Bot" Version="19.0.0" />
+    <PackageReference Include="TikTokLive_Sharp" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>
