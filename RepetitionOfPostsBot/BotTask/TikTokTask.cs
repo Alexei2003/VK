@@ -1,7 +1,4 @@
-﻿using TikTokLiveSharp.Client;
-using TikTokLiveSharp.Models.HTTP;
-
-namespace RepetitionOfPostsBot.BotTask
+﻿namespace RepetitionOfPostsBot.BotTask
 {
     internal class TilTokTask
     {

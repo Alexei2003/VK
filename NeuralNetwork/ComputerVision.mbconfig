@@ -9,13 +9,54 @@
     "Type": "LocalGPU",
     "Version": 1
   },
+  "RunHistory": {
+    "Version": 3,
+    "Type": "Result",
+    "Trials": [
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ImageClassificationMulti",
+        "Score": 0.42663628475632409,
+        "RuntimeInSeconds": 3433.288,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e2",
+          "e0": {
+            "OutputColumnName": "Label",
+            "InputColumnName": "Label",
+            "AddKeyValueAnnotationsAsText": false
+          },
+          "e1": {
+            "LabelColumnName": "Label",
+            "ScoreColumnName": "Score",
+            "FeatureColumnName": "ImageSource",
+            "Arch": "ResnetV250",
+            "BatchSize": 10,
+            "Epoch": 200
+          },
+          "e2": {
+            "OutputColumnName": "PredictedLabel",
+            "InputColumnName": "PredictedLabel"
+          }
+        }
+      }
+    ],
+    "Estimators": {
+      "e0": "MapValueToKey",
+      "e1": "ImageClassificationMulti",
+      "e2": "MapKeyToValue"
+    },
+    "Schema": "e0 * e1 * e2",
+    "MetricName": "MacroAccuracy",
+    "ModelFilePath": "F:\\WPS\\VK\\Project\\VK\\NeuralNetwork\\ComputerVision.mlnet"
+  },
   "Type": "TrainingConfig",
   "Version": 5,
   "TrainingOption": {
     "Version": 2,
     "Subsampling": false,
     "Type": "ClassificationTrainingOption",
-    "TrainingTime": 0,
+    "TrainingTime": 2147483647,
     "OptimizeMetric": "MacroAccuracy",
     "ValidationOption": {
       "Version": 0,

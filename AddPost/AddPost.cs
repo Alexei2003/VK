@@ -262,12 +262,23 @@ namespace AddPost
 
                 var index = cbTimeBetweenPost.SelectedIndex + 1;
 
+                bSend.Enabled = false;
+
                 await Task.Run(() =>
                 {
                     var date = new Date(api);
                     var post = new Post(api);
-                    post.Publish(imageList.Select(x => x.image).ToArray(), tags, tbUrl.Text, date.ChangeTimeNewPostUseLastPost(groupId, index), groupId, groupShortUrl);
+                    try
+                    {
+                        post.Publish(imageList.Select(x => x.image).ToArray(), tags, tbUrl.Text, date.ChangeTimeNewPostUseLastPost(groupId, index), groupId, groupShortUrl);
+                    }
+                    catch (Exception ex ) 
+                    {
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 });
+
+                bSend.Enabled = true;
 
                 AddInDataSet(imageList, tags);
 

@@ -1,5 +1,12 @@
 ﻿using MyCustomClasses;
+using MyCustomClasses.VK;
+using Newtonsoft.Json.Linq;
 using RepetitionOfPostsBot.BotTask;
+using System.Net;
+using System.Text;
+using VkNet.Abstractions;
+using VkNet.Model;
+using VkNet.Utils;
 
 namespace RepetitionOfPostsBot
 {
@@ -10,8 +17,8 @@ namespace RepetitionOfPostsBot
         {
             var accessTokens = GosUslugi.GetAccessTokens();
 
-            var RepeatVKPosts = new Thread(new ParameterizedThreadStart(VKTask.RepeatVKPosts));
-            RepeatVKPosts.Start(accessTokens.GetValueOrDefault(GosUslugi.VK));
+            var threadRepeatVKPosts = new Thread(new ParameterizedThreadStart(VKTask.RepeatVKPosts));
+            threadRepeatVKPosts.Start(accessTokens.GetValueOrDefault(GosUslugi.VK));
 
             var threadSendVkPostToOther = new Thread(new ParameterizedThreadStart(VKTask.SendVkPostToOther));
             threadSendVkPostToOther.Start(accessTokens);

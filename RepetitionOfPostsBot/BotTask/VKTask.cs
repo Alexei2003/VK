@@ -182,7 +182,7 @@ namespace RepetitionOfPostsBot.BotTask
                     });
 
                     Post post;
-                    if(wall.WallPosts[0].IsPinned.Value)
+                    if (wall.WallPosts[0].IsPinned.Value)
                     {
                         post = wall.WallPosts[1];
                     }
@@ -234,6 +234,14 @@ namespace RepetitionOfPostsBot.BotTask
                         Thread.Sleep(timeSleep);
                         continue;
                     }
+
+
+
+                    vkApi.Stories.Post(new VkNet.Model.GetPhotoUploadServerParams()
+                    {
+                        AddToNews = true,
+                        GroupId = (ulong)GROUP_ID,
+                    }, accessTokens.GetValueOrDefault(GosUslugi.VK),"");
 
                     // Отправка в другие сети
                     var caption = TagsReplacer.ReplaceTagRemoveExcessFromVk(postText);

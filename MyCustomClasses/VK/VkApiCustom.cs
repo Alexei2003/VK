@@ -9,7 +9,7 @@ namespace MyCustomClasses.VK
         private readonly TimeSpan TIME_SLEEP;
         public long? UserId { get; private set; }
 
-        private readonly VkApi apiOriginal;
+        public VkApi ApiOriginal { get; }
         public Account Account { get; }
         public Friends Friends { get; }
         public Groups Groups { get; }
@@ -20,22 +20,26 @@ namespace MyCustomClasses.VK
         public VKApiCustomClasses.Wall Wall { get; }
         public Newsfeed Newsfeed { get; }
         public Polls Polls { get; }
+        public Stories Stories { get; }
+        public ShortVideo ShortVideo { get;}
 
         public VkApiCustom()
         {
             TIME_SLEEP = TimeSpan.FromSeconds(2);
 
-            apiOriginal = new();
-            Polls = new Polls(apiOriginal, TIME_SLEEP);
-            Account = new(apiOriginal, TIME_SLEEP);
-            Friends = new(apiOriginal, TIME_SLEEP);
-            Groups = new(apiOriginal, TIME_SLEEP);
-            Likes = new(apiOriginal, TIME_SLEEP);
-            Photo = new(apiOriginal, TIME_SLEEP);
-            Stats = new(apiOriginal, TIME_SLEEP);
-            Users = new(apiOriginal, TIME_SLEEP);
-            Wall = new(apiOriginal, TIME_SLEEP);
-            Newsfeed = new(apiOriginal, TIME_SLEEP);
+            ApiOriginal = new();
+            Polls = new Polls(ApiOriginal, TIME_SLEEP);
+            Account = new(ApiOriginal, TIME_SLEEP);
+            Friends = new(ApiOriginal, TIME_SLEEP);
+            Groups = new(ApiOriginal, TIME_SLEEP);
+            Likes = new(ApiOriginal, TIME_SLEEP);
+            Photo = new(ApiOriginal, TIME_SLEEP);
+            Stats = new(ApiOriginal, TIME_SLEEP);
+            Users = new(ApiOriginal, TIME_SLEEP);
+            Wall = new(ApiOriginal, TIME_SLEEP);
+            Newsfeed = new(ApiOriginal, TIME_SLEEP);
+            Stories = new(ApiOriginal, TIME_SLEEP);
+            ShortVideo = new(ApiOriginal, TIME_SLEEP);
         }
 
         public VkApiCustom(string accessToken) : this()
@@ -49,8 +53,8 @@ namespace MyCustomClasses.VK
             {
                 try
                 {
-                    apiOriginal.Authorize(@params);
-                    UserId = apiOriginal.UserId;
+                    ApiOriginal.Authorize(@params);
+                    UserId = ApiOriginal.UserId;
                     return;
                 }
                 catch (VkNet.Exception.TooManyRequestsException)

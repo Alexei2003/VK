@@ -21,6 +21,8 @@ namespace DownloaderDataSetPhoto
             tagList.LoadDictionary();
             groupId = 220199532;
             HidePanels(pRule34);
+
+            cbPercentOriginalTag.SelectedIndex = 5;
         }
 
 
@@ -56,6 +58,10 @@ namespace DownloaderDataSetPhoto
             pRule34.Visible = false;
 
             panel.Visible = true;
+        }
+        private void cbPercentOriginalTag_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            percentOriginalTag = (cbPercentOriginalTag.SelectedIndex + 1) * 0.1f;
         }
 
         private void bBackgroundImageCopyOn_Click(object sender, EventArgs e)
