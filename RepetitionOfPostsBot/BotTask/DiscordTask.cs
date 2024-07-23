@@ -8,7 +8,7 @@ namespace RepetitionOfPostsBot.BotTask
     {
         private const ulong THREAD_ID = 1251120297050898473;
 
-        public static async void PushPost(string accessToken, string caption, Uri[] imagesUrls)
+        public static async Task PushPost(string accessToken, string caption, Uri[] imagesUrls)
         {
             var config = new DiscordConfiguration()
             {
@@ -18,7 +18,7 @@ namespace RepetitionOfPostsBot.BotTask
                 AutoReconnect = true,
             };
 
-            var client = new DiscordClient(config);
+            using var client = new DiscordClient(config);
 
             client.Ready += Client_Ready;
 
@@ -42,8 +42,6 @@ namespace RepetitionOfPostsBot.BotTask
                     await client.SendMessageAsync(channel, message);
                 }
             }
-
-            client.Dispose();
         }
 
         private static Task Client_Ready(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs args)

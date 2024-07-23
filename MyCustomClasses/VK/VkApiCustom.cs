@@ -21,7 +21,7 @@ namespace MyCustomClasses.VK
         public Newsfeed Newsfeed { get; }
         public Polls Polls { get; }
         public Stories Stories { get; }
-        public ShortVideo ShortVideo { get;}
+        public ShortVideo ShortVideo { get; }
 
         public VkApiCustom()
         {

@@ -7,7 +7,7 @@ namespace RepetitionOfPostsBot.BotTask
     {
         private const long CHAT_ID = -1002066495859;
 
-        public static async void PushPost(string accessToken, string caption, Uri[] imagesUrls)
+        public static async Task PushPost(string accessToken, string caption, Uri[] imagesUrls)
         {
             var botClient = new TelegramBotClient(accessToken);
 

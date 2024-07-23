@@ -1,12 +1,5 @@
 ﻿using MyCustomClasses;
-using MyCustomClasses.VK;
-using Newtonsoft.Json.Linq;
 using RepetitionOfPostsBot.BotTask;
-using System.Net;
-using System.Text;
-using VkNet.Abstractions;
-using VkNet.Model;
-using VkNet.Utils;
 
 namespace RepetitionOfPostsBot
 {

@@ -2,9 +2,7 @@
 using System.Net;
 using System.Text;
 using VkNet;
-using VkNet.Abstractions;
 using VkNet.Model;
-using VkNet.Utils;
 
 namespace MyCustomClasses.VK.VKApiCustomClasses
 {

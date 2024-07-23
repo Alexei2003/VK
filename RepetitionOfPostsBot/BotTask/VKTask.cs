@@ -119,7 +119,6 @@ namespace RepetitionOfPostsBot.BotTask
 
                         postText = BaseTagsEditor.GetBaseTagsWithNextLine() + postText;
 
-
                         var mediaAttachmentList = new List<MediaAttachment>();
 
                         // Достать картинки из поста
@@ -145,6 +144,7 @@ namespace RepetitionOfPostsBot.BotTask
                             Message = '.' + postText,
                             Attachments = mediaAttachmentList,
                             PublishDate = firstPostData.Value.AddHours(1),
+
                         });
 
                         indexResendedPost += Convert.ToUInt64(1 + rand.Next(Convert.ToInt32(totalCountPosts / 100)));
@@ -235,13 +235,11 @@ namespace RepetitionOfPostsBot.BotTask
                         continue;
                     }
 
-
-
-                    vkApi.Stories.Post(new VkNet.Model.GetPhotoUploadServerParams()
+/*                    vkApi.Stories.Post(new VkNet.Model.GetPhotoUploadServerParams()
                     {
                         AddToNews = true,
                         GroupId = (ulong)GROUP_ID,
-                    }, accessTokens.GetValueOrDefault(GosUslugi.VK),"");
+                    }, accessTokens.GetValueOrDefault(GosUslugi.VK), "");*/
 
                     // Отправка в другие сети
                     var caption = TagsReplacer.ReplaceTagRemoveExcessFromVk(postText);
