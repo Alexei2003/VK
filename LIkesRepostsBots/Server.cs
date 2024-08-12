@@ -22,7 +22,7 @@ namespace LikesRepostsBots
 
             var bots = new BotsLIst(accessTokensAndNames, people, rand);
 
-            const int TIME_WORK = 10 * 60 * 60 * 1000;
+            const int TIME_WORK = 24 * 60 * 60 * 1000;
             int count = 0;
             int stepBetweenBots = TIME_WORK / bots.Count;
             var indexRip = new Stack<int>(bots.Count);

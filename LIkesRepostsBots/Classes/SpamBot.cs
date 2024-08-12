@@ -69,7 +69,7 @@ namespace LikesRepostsBots.Classes
             for (int numbPost = countPosts - 1; numbPost > -1;)
             {
                 // Лайк репост
-                if (rand.Next(CHANCE_REPOST) == 0)
+                if (rand.Next(CHANCE_REPOST) == 0 && !wall.WallPosts[numbPost].Text.Contains('!'))
                 {
                     repostResult = api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", api.UserId, false);
                     Console.WriteLine("репост");

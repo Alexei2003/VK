@@ -2,6 +2,7 @@
 using MyCustomClasses.Tags;
 using MyCustomClasses.Tags.Editors;
 using MyCustomClasses.VK;
+using System.Net;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 
@@ -147,7 +148,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                         });
 
-                        indexResendedPost += Convert.ToUInt64(1 + rand.Next(Convert.ToInt32(totalCountPosts / 100)));
+                        indexResendedPost += Convert.ToUInt64(1 + rand.Next(Convert.ToInt32(totalCountPosts / 10)));
                     }
                     Thread.Sleep(TimeSpan.FromMinutes(30));
                 }
@@ -235,11 +236,21 @@ namespace RepetitionOfPostsBot.BotTask
                         continue;
                     }
 
-/*                    vkApi.Stories.Post(new VkNet.Model.GetPhotoUploadServerParams()
+                    using var wc = new WebClient();
+
+                    if (rand.Next(10) == 0)
                     {
-                        AddToNews = true,
-                        GroupId = (ulong)GROUP_ID,
-                    }, accessTokens.GetValueOrDefault(GosUslugi.VK), "");*/
+                        wc.DownloadFile(imagesUrl.First(), "Story.jpg");
+
+                        vkApi.Stories.Post(new VkNet.Model.GetPhotoUploadServerParams()
+                        {
+                            AddToNews = true,
+                            GroupId = (ulong)GROUP_ID,
+                        }, accessTokens.GetValueOrDefault(GosUslugi.VK), "Story.jpg");
+                    }
+
+                    // Клипы
+
 
                     // Отправка в другие сети
                     var caption = TagsReplacer.ReplaceTagRemoveExcessFromVk(postText);
@@ -247,8 +258,6 @@ namespace RepetitionOfPostsBot.BotTask
 
                     var discordCaption = BaseTagsEditor.RemoveBaseTags(caption);
                     DiscordTask.PushPost(accessTokens.GetValueOrDefault(GosUslugi.DISCORD), discordCaption, imagesUrl.ToArray());
-
-
                 }
                 catch
                 {
