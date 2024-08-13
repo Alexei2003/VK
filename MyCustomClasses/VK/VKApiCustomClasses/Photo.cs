@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Net;
 using VkNet;
 using VkNet.Model;
 

@@ -238,6 +238,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                     using var wc = new WebClient();
 
+                    // Истории
                     if (rand.Next(10) == 0)
                     {
                         wc.DownloadFile(imagesUrl.First(), "Story.jpg");
@@ -246,6 +247,8 @@ namespace RepetitionOfPostsBot.BotTask
                         {
                             AddToNews = true,
                             GroupId = (ulong)GROUP_ID,
+                            LinkText = StoryLinkText.Open,
+                            LinkUrl = "https://vk.com/" + post.ToString().Replace("post", "wall")
                         }, accessTokens.GetValueOrDefault(GosUslugi.VK), "Story.jpg");
                     }
 
