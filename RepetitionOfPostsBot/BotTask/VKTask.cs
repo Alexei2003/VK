@@ -66,10 +66,11 @@ namespace RepetitionOfPostsBot.BotTask
 
                         var totalCountPosts = wall.TotalCount;
                         var offsetIndexPost = totalCountPosts - indexResendedPost;
+                        var tenPassentCountPosts = totalCountPosts / 10;
 
-                        if (offsetIndexPost < 1000)
+                        if (offsetIndexPost < tenPassentCountPosts)
                         {
-                            indexResendedPost = 0;
+                            indexResendedPost = offsetIndexPost;
                             continue;
                         }
 
@@ -96,12 +97,12 @@ namespace RepetitionOfPostsBot.BotTask
 
                         // Проверка тега
                         postText = BaseTagsEditor.RemoveBaseTags(postText);
-                        postText = TagsReplacer.RemoveDogGroupFromTag(postText);
+                        postText = TagsReplacer.RemoveGroupLinkFromTag(postText);
                         postText = postText.Replace("\n", "");
 
                         var tagsArr = postText.Split('#', StringSplitOptions.RemoveEmptyEntries);
 
-                        if (tagsArr.Length > 2 || postText.Contains('.') || postText.Contains(' ') || postText.Contains('!'))
+                        if (tagsArr.Length > 2 || tagsArr.Length == 0 || postText.Contains('.') || postText.Contains(' ') || postText.Contains('!'))
                         {
                             indexResendedPost++;
                             continue;
@@ -148,7 +149,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                         });
 
-                        indexResendedPost += Convert.ToUInt64(1 + rand.Next(Convert.ToInt32(totalCountPosts / 10)));
+                        indexResendedPost += Convert.ToUInt64(1 + rand.Next(Convert.ToInt32(tenPassentCountPosts)));
                     }
                     Thread.Sleep(TimeSpan.FromMinutes(30));
                 }
@@ -253,7 +254,6 @@ namespace RepetitionOfPostsBot.BotTask
                     }
 
                     // Клипы
-
 
                     // Отправка в другие сети
                     var caption = TagsReplacer.ReplaceTagRemoveExcessFromVk(postText);

@@ -4,20 +4,21 @@
     {
         public static string ReplaceTagRemoveExcessFromVk(string tag)
         {
-            tag = RemoveFirstChirFromTag(tag);
+            tag = RemoveKeyCharFromTag(tag);
 
-            return RemoveDogGroupFromTag(tag);
+            return RemoveGroupLinkFromTag(tag);
         }
 
-        public static string RemoveFirstChirFromTag(string tag)
+        public static string RemoveKeyCharFromTag(string tag)
         {
             tag = tag.Replace(".", "");
             tag = tag.Replace("!", "");
+            
 
             return tag;
         }
 
-        public static string RemoveDogGroupFromTag(string tag)
+        public static string RemoveGroupLinkFromTag(string tag)
         {
             var tags = tag.Split('#', StringSplitOptions.RemoveEmptyEntries);
 
