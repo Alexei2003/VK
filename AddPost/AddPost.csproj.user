@@ -3,9 +3,4 @@
   <PropertyGroup>
     <_LastSelectedProfileId>F:\WPS\VK\Project\VK\AddPost\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Update="AddPost.cs">
-      <SubType>Form</SubType>
-    </Compile>
-  </ItemGroup>
 </Project>
