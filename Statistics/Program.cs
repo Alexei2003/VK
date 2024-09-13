@@ -48,7 +48,6 @@ internal class Program
 
                 postText = postText.Replace("!", "");
                 postText = postText.Replace(".", "");
-                postText = postText.Replace("\n", "");
 
                 var tagsArr = postText.Split('#', StringSplitOptions.RemoveEmptyEntries);
 
@@ -58,6 +57,7 @@ internal class Program
                 }
 
                 postText = TagsReplacer.RemoveGroupLinkFromTag(postText);
+                postText = postText.Replace("\n", "");
 
                 var viewsCount = post.Views.Count;
                 var likesCount = post.Likes.Count;
