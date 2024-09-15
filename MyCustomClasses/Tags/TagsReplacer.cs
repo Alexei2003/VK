@@ -18,6 +18,8 @@
             return tag;
         }
 
+        private static string TAG_REMOVE = "[club220199532|";
+
         public static string RemoveGroupLinkFromTag(string tag)
         {
             var tags = tag.Split('#', StringSplitOptions.RemoveEmptyEntries);
@@ -29,7 +31,7 @@
                 tag += '#' + tags[i].Split('@', StringSplitOptions.RemoveEmptyEntries).First() + '\n';
             }
 
-            return tag;
+            return tag.Replace(TAG_REMOVE,"");
         }
     }
 }

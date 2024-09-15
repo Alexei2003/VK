@@ -74,6 +74,8 @@ namespace RepetitionOfPostsBot.BotTask
                             continue;
                         }
 
+                        var offsetNextPost = Convert.ToUInt64(1 + rand.Next(Convert.ToInt32(tenPassentCountPosts)));
+
                         var firstPostData = post.Date;
 
                         // Получение поста по id 
@@ -88,7 +90,7 @@ namespace RepetitionOfPostsBot.BotTask
                         // Выход если поста несуществует
                         if (wall.WallPosts.Count == 0)
                         {
-                            indexResendedPost++;
+                            indexResendedPost+= offsetNextPost;
                             continue;
                         }
 
@@ -104,7 +106,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                         if (tagsArr.Length > 2 || tagsArr.Length == 0 || postText.Contains('.') || postText.Contains(' ') || postText.Contains('!'))
                         {
-                            indexResendedPost++;
+                            indexResendedPost += offsetNextPost;
                             continue;
                         }
 
@@ -112,7 +114,7 @@ namespace RepetitionOfPostsBot.BotTask
                         {
                             if (postText.Contains(tag))
                             {
-                                indexResendedPost++;
+                                indexResendedPost += offsetNextPost; 
                                 continue;
                             }
                         }
@@ -134,7 +136,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                         if (mediaAttachmentList.Count == 0)
                         {
-                            indexResendedPost++;
+                            indexResendedPost += offsetNextPost;
                             continue;
                         }
 
