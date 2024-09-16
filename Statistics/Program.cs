@@ -109,6 +109,7 @@ internal class Program
             worksheet.Cell(1, 8).Value = "Лайки среднее";
             worksheet.Cell(1, 9).Value = "Комментарии среднее";
             worksheet.Cell(1, 10).Value = "Репосты среднее";
+            worksheet.Cell(1, 11).Value = "Счёт";
 
             int i = 2;
             foreach (var tag in dictTag)
@@ -123,6 +124,7 @@ internal class Program
                 worksheet.Cell(i, 8).Value = tag.Value.LikesCount / tag.Value.Count;
                 worksheet.Cell(i, 9).Value = tag.Value.CommentsCount / tag.Value.Count;
                 worksheet.Cell(i, 10).Value = tag.Value.RepostsCount / tag.Value.Count;
+                worksheet.Cell(i, 11).Value = (int)(0.05 * tag.Value.ViewsCount + 0.4 * tag.Value.LikesCount + 1 * tag.Value.CommentsCount + 0.8 * tag.Value.RepostsCount) / tag.Value.Count;
 
                 i++;
             }
