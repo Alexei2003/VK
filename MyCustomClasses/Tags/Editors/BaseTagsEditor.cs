@@ -9,6 +9,13 @@
             "Art"
         ];
 
+        public static string[] BASE_TAGS_DELETE =
+        [
+            "Anime",
+            "Arts",
+            "Art",
+            "Art\n"
+        ];
         public static string GetBaseTags()
         {
             string tags = "";
@@ -35,9 +42,9 @@
 
             for (int i = 0; i < sourceTags.Length; i++)
             {
-                for (int j = 0; j < BASE_TAGS.Length; j++)
+                for (int j = 0; j < BASE_TAGS_DELETE.Length; j++)
                 {
-                    if (sourceTags[i] == BASE_TAGS[j])
+                    if (sourceTags[i] == BASE_TAGS_DELETE[j])
                     {
                         listFindIndex.Add(i);
                         break;
