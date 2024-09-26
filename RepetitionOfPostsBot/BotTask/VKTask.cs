@@ -17,6 +17,11 @@ namespace RepetitionOfPostsBot.BotTask
 
         private static string[] tagsNotRepost = ["Угадайка"];
 
+        public static ulong GetRandomID(ulong max)
+        {
+            return Convert.ToUInt64(1 + rand.NextInt64(Convert.ToInt64(max)));
+        }
+
         public static void RepeatVKPosts(object data)
         {
             var api = new VkApiCustom((string)data);
@@ -29,7 +34,7 @@ namespace RepetitionOfPostsBot.BotTask
                 Filter = WallFilter.Postponed
             });
 
-            ulong indexResendedPost = Convert.ToUInt64(rand.Next(Convert.ToInt32(wall.TotalCount)));
+            ulong indexResendedPost = GetRandomID(wall.TotalCount);
 
             while (true)
             {
@@ -66,15 +71,16 @@ namespace RepetitionOfPostsBot.BotTask
 
                         var totalCountPosts = wall.TotalCount;
                         var offsetIndexPost = totalCountPosts - indexResendedPost;
-                        var tenPassentCountPosts = totalCountPosts / 10;
+                        var notResendedCountPosts = totalCountPosts / 15;
+                        var maxRandomOffsetRessendedPosts = totalCountPosts / 5;
 
-                        if (offsetIndexPost < tenPassentCountPosts)
+                        if (offsetIndexPost < notResendedCountPosts)
                         {
                             indexResendedPost = offsetIndexPost;
                             continue;
                         }
 
-                        var offsetNextPost = Convert.ToUInt64(1 + rand.Next(Convert.ToInt32(tenPassentCountPosts)));
+                        var offsetNextPost = GetRandomID(maxRandomOffsetRessendedPosts);
 
                         var firstPostData = post.Date;
 
@@ -90,7 +96,7 @@ namespace RepetitionOfPostsBot.BotTask
                         // Выход если поста несуществует
                         if (wall.WallPosts.Count == 0)
                         {
-                            indexResendedPost+= offsetNextPost;
+                            indexResendedPost += offsetNextPost;
                             continue;
                         }
 
@@ -114,7 +120,7 @@ namespace RepetitionOfPostsBot.BotTask
                         {
                             if (postText.Contains(tag))
                             {
-                                indexResendedPost += offsetNextPost; 
+                                indexResendedPost += offsetNextPost;
                                 continue;
                             }
                         }
@@ -151,7 +157,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                         });
 
-                        indexResendedPost += Convert.ToUInt64(1 + rand.Next(Convert.ToInt32(tenPassentCountPosts)));
+                        indexResendedPost += offsetNextPost;
                     }
                     Thread.Sleep(TimeSpan.FromMinutes(30));
                 }

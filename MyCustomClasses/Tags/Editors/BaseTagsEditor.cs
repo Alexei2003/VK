@@ -37,7 +37,7 @@
             {
                 for (int j = 0; j < BASE_TAGS.Length; j++)
                 {
-                    if (sourceTags[i].Contains(BASE_TAGS[j]))
+                    if (sourceTags[i] == BASE_TAGS[j])
                     {
                         listFindIndex.Add(i);
                         break;

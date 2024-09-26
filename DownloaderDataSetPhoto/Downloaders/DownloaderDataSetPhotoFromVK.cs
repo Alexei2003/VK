@@ -44,7 +44,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                         {
                             SavePhotos(currentTag, post, ignorGroupId, percentOriginalTag, fileName, lockNeuralNetworkResult, wc);
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             continue;
                         }
