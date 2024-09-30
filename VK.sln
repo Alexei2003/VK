@@ -30,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataSet", "DataSet\DataSet.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DownloaderDataSetPhoto", "DownloaderDataSetPhoto\DownloaderDataSetPhoto.csproj", "{42802816-62B6-4328-B12A-32A3E740D460}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statistics", "Statistics\Statistics.csproj", "{FC2923D4-6C41-461C-BC98-2796951EE9F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Statistics", "Statistics\Statistics.csproj", "{FC2923D4-6C41-461C-BC98-2796951EE9F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
