@@ -72,7 +72,6 @@ namespace LikesRepostsBots.Classes
                 if (rand.Next(CHANCE_REPOST) == 0 && !wall.WallPosts[numbPost].Text.Contains('!'))
                 {
                     repostResult = api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", api.UserId, false);
-                    Console.WriteLine("репост");
 
                     api.Likes.Add(new LikesAddParams
                     {
@@ -111,12 +110,7 @@ namespace LikesRepostsBots.Classes
 
                 // Лайк комментов
                 int likes = AddCommentsLike(groupId, wall.WallPosts[numbPost].Id);
-                if (likes > 0)
-                {
-                    Console.WriteLine($"Число лайкнутых комментариев {likes}");
-                }
 
-                Console.WriteLine($"{countPosts - numbPost}/{countPosts}");
                 numbPost--;
             }
         }
@@ -128,14 +122,11 @@ namespace LikesRepostsBots.Classes
 
         private void AddToFriendsFromRecomendedList()
         {
-            Console.WriteLine("Добавление друзей");
             const ulong countFriends = 1;
 
             var suggestions = api.Friends.GetSuggestions();
 
             int index = 0;
-            int banCount = 0;
-            int newUserCount = 0;
             for (ulong i = 0; i < countFriends && index < suggestions.Count; index++)
             {
                 if (people.Add(suggestions[index].Id))
@@ -147,21 +138,13 @@ namespace LikesRepostsBots.Classes
                     else
                     {
                         api.Account.Ban(suggestions[index].Id);
-                        banCount++;
                     }
-                    newUserCount++;
                 }
                 else
                 {
                     api.Account.Ban(suggestions[index].Id);
-                    banCount++;
                 }
-
-                AnimatedLoad();
             }
-            Console.WriteLine();
-            Console.WriteLine($"Количество забанненых аккаунтов {banCount}");
-            Console.WriteLine($"Количество новых аккаунтов в списке  {newUserCount}");
         }
 
         private bool IsMassAccount(long personId)
@@ -235,10 +218,8 @@ namespace LikesRepostsBots.Classes
 
         private void BanDiedAndMassFriends(ClearFriendsType clearFriends)
         {
-            Console.WriteLine("Бан мёртвых друзей");
             VkCollection<User> friends;
             int offset = 0;
-            int countBans = 0;
             const int COUNT_USER = 5000;
             do
             {
@@ -248,8 +229,6 @@ namespace LikesRepostsBots.Classes
                     Offset = offset,
                 });
                 offset += friends.Count;
-
-                AnimatedLoad();
 
                 var users = api.Users.Get(friends.Select(user => user.Id).ToArray());
                 foreach (var user in users)
@@ -262,28 +241,23 @@ namespace LikesRepostsBots.Classes
                     if (user.Deactivated != Deactivated.Activated)
                     {
                         api.Account.Ban(user.Id);
-                        countBans++;
                     }
                     else
                     {
                         if (clearFriends == ClearFriendsType.BanAndMathAccount && IsMassAccount(user.Id))
                         {
                             api.Account.Ban(user.Id);
-                            countBans++;
                         }
                     }
                 }
             }
             while (friends.Count == COUNT_USER);
-            Console.WriteLine($"Количество забаненых {countBans}");
         }
 
         private void BanPeopleFromGroup(long groupId)
         {
-            Console.WriteLine("Бан людей из мусор группы");
             VkCollection<User> members;
             int offset = 0;
-            int countBans = 0;
             const int COUNT_USER = 1000;
             do
             {
@@ -295,23 +269,12 @@ namespace LikesRepostsBots.Classes
                 });
                 offset += members.Count;
 
-                AnimatedLoad();
-
                 foreach (var member in members)
                 {
-                    if (people.Add(member.Id))
-                    {
-                        countBans++;
-                    }
+                    people.Add(member.Id);
                 }
             }
             while (members.Count == COUNT_USER);
-            Console.WriteLine($"Количество забаненых {countBans}");
-        }
-
-        private static void AnimatedLoad()
-        {
-            Console.Write("/");
         }
 
         public bool Start(BotsWorksParams botParams)

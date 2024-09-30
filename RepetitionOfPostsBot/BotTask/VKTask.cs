@@ -267,8 +267,8 @@ namespace RepetitionOfPostsBot.BotTask
                     var caption = TagsReplacer.ReplaceTagRemoveExcessFromVk(postText);
                     TelegramTask.PushPost(accessTokens.GetValueOrDefault(GosUslugi.TELEGRAM), caption, imagesUrl.ToArray());
 
-                    var discordCaption = BaseTagsEditor.RemoveBaseTags(caption);
-                    DiscordTask.PushPost(accessTokens.GetValueOrDefault(GosUslugi.DISCORD), discordCaption, imagesUrl.ToArray());
+                    //var discordCaption = BaseTagsEditor.RemoveBaseTags(caption);
+                    //DiscordTask.PushPost(accessTokens.GetValueOrDefault(GosUslugi.DISCORD), discordCaption, imagesUrl.ToArray());
                 }
                 catch
                 {

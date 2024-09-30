@@ -14,7 +14,7 @@ namespace RepetitionOfPostsBot
             threadRepeatVKPosts.Start(accessTokens.GetValueOrDefault(GosUslugi.VK));
 
             var threadSendVkPostToOther = new Thread(new ParameterizedThreadStart(VKTask.SendVkPostToOther));
-            //threadSendVkPostToOther.Start(accessTokens);
+            threadSendVkPostToOther.Start(accessTokens);
 
             while (true)
             {

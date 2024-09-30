@@ -60,7 +60,7 @@ namespace LikesRepostsBots
             PeoplesLIst people = new();
 
             var rand = new Random();
-            var bots = new BotsLIst(accessTokensAndNames, people, rand);
+            var bots = new BotsList(accessTokensAndNames, people, rand);
 
             people.Read();
 

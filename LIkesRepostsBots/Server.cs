@@ -20,7 +20,7 @@ namespace LikesRepostsBots
             PeoplesLIst people = new();
             people.Read();
 
-            var bots = new BotsLIst(accessTokensAndNames, people, rand);
+            var bots = new BotsList(accessTokensAndNames, people, rand);
 
             const int TIME_WORK = 24 * 60 * 60 * 1000;
             int count = 0;
@@ -30,32 +30,30 @@ namespace LikesRepostsBots
             {
                 if (bots.Count == 0)
                 {
-                    bots = new BotsLIst(accessTokensAndNames, people, rand);
+                    bots = new BotsList(accessTokensAndNames, people, rand);
                 }
 
                 bots.Mix();
 
-                if (count % 10 == 0)
+                switch (count)
                 {
-                    botParams.ClearFriends = ClearFriendsType.BanAccount;
-                }
-
-                if (count >= 50)
-                {
-                    count = 0;
-                    botParams.ClearFriends = ClearFriendsType.BanAndMathAccount;
+                    case 7:
+                        botParams.ClearFriends = ClearFriendsType.BanAccount;
+                        break;
+                    case 14:
+                        count = 0;
+                        botParams.ClearFriends = ClearFriendsType.BanAndMathAccount;
+                        break;
+                    default:
+                        break;
                 }
 
                 for (int i = 0; i < bots.Count; i++)
                 {
-                    Console.WriteLine($"Бот номер {i + 1} {bots[i].BotName}\n" +
-                                      $"Номер итерации {count}");
                     if (!bots[i].Start(botParams))
                     {
                         indexRip.Push(i);
                     }
-                    Console.WriteLine($"Бот номер {i + 1} {bots[i].BotName}\n" +
-                                      $"Номер итерации {count}");
                     Thread.Sleep(rand.Next(stepBetweenBots));
                 }
 
