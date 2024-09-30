@@ -8,10 +8,15 @@ namespace LikesRepostsBots.Classes
 
         public void Read()
         {
-            string json = File.ReadAllText(Path.Combine("PeopleDictionary.txt"));
-            if (json?.Length != 0)
+            string filePath = Path.Combine("PeopleDictionary.txt");
+
+            if (File.Exists(filePath))
             {
-                people = JsonConvert.DeserializeObject<HashSet<long>>(json);
+                string json = File.ReadAllText(filePath);
+                if (json?.Length != 0)
+                {
+                    people = JsonConvert.DeserializeObject<HashSet<long>>(json);
+                }
             }
         }
 

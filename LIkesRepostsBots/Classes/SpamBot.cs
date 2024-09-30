@@ -109,26 +109,96 @@ namespace LikesRepostsBots.Classes
                 }
 
                 // Лайк комментов
-                int likes = AddCommentsLike(groupId, wall.WallPosts[numbPost].Id);
+                AddCommentsLike(groupId, wall.WallPosts[numbPost].Id);
 
                 numbPost--;
             }
         }
 
-        private void WorkWithFriends()
+        private int AddCommentsLike(long groupId, long? postId)
         {
-            AddToFriendsFromRecomendedList();
+            var comments = api.Wall.GetComments(new WallGetCommentsParams
+            {
+                OwnerId = -1 * groupId,
+                PostId = Convert.ToInt64(postId),
+                Count = 100,
+            });
+
+            int likes = 0;
+            foreach (var comment in comments.Items)
+            {
+                int randNumb = rand.Next(CHANCE_LIKE);
+                if (randNumb == 0)
+                {
+                    api.Likes.Add(new LikesAddParams
+                    {
+                        Type = LikeObjectType.Comment,
+                        ItemId = comment.Id,
+                        OwnerId = comment.OwnerId,
+                    });
+                    likes++;
+                }
+            }
+
+            return likes;
         }
 
-        private void AddToFriendsFromRecomendedList()
+        private void WorkWithFriends(int addCountFriends)
         {
-            const ulong countFriends = 1;
+            ClearSpaceForFriends(addCountFriends);
 
-            var suggestions = api.Friends.GetSuggestions();
+            AddToFriendsFromRecomendedList(addCountFriends);
+        }
+
+        private void ClearSpaceForFriends(int addCountFriends)
+        {
+            var friends = api.Friends.Get(new FriendsGetParams
+            {
+                UserId = api.UserId,
+                Order = FriendsOrder.Random
+            });
+
+            var sendRequests = api.Friends.GetRequests(new FriendsGetRequestsParams
+            {
+                Out = true
+            });
+
+            var totalCount = friends.TotalCount + sendRequests.Count;
+
+            if (totalCount > 9000)
+            {
+                if (sendRequests.Count > 100)
+                {
+                    for (int i = 0; i < addCountFriends; i++)
+                    {
+                        api.Account.Ban(sendRequests.Items[i]);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < addCountFriends; i++)
+                    {
+                        api.Account.Ban(friends[i].Id);
+                    }
+                }
+            }
+        }
+
+        private void AddToFriendsFromRecomendedList(int addCountFriends)
+        {
+            int offset = 0;
+            var suggestions = api.Friends.GetSuggestions(offset: offset);
 
             int index = 0;
-            for (ulong i = 0; i < countFriends && index < suggestions.Count; index++)
+            for (int i = 0; i < addCountFriends; index++)
             {
+                if (index == suggestions.Count)
+                {
+                    offset += 500;
+                    suggestions = api.Friends.GetSuggestions(offset: offset);
+                    index = 0;
+                }
+
                 if (people.Add(suggestions[index].Id))
                 {
                     if (!IsMassAccount(suggestions[index].Id) && api.Friends.Add(suggestions[index].Id) != null)
@@ -150,8 +220,8 @@ namespace LikesRepostsBots.Classes
         private bool IsMassAccount(long personId)
         {
             const int COUNT_FRIENDS = 300;
-            const int COUNT_FOLLOWING = 400;
-            const int COUNT_FOLOWERS = 500;
+            const int COUNT_FOLLOWING = 300;
+            const int COUNT_FOLOWERS = 300;
 
             var user = api.Users.Get(new long[] { personId });
             if (user[0].IsClosed == true)
@@ -186,34 +256,6 @@ namespace LikesRepostsBots.Classes
             }
 
             return false;
-        }
-
-        private int AddCommentsLike(long groupId, long? postId)
-        {
-            var comments = api.Wall.GetComments(new WallGetCommentsParams
-            {
-                OwnerId = -1 * groupId,
-                PostId = Convert.ToInt64(postId),
-                Count = 100,
-            });
-
-            int likes = 0;
-            foreach (var comment in comments.Items)
-            {
-                int randNumb = rand.Next(CHANCE_LIKE);
-                if (randNumb == 0)
-                {
-                    api.Likes.Add(new LikesAddParams
-                    {
-                        Type = LikeObjectType.Comment,
-                        ItemId = comment.Id,
-                        OwnerId = comment.OwnerId,
-                    });
-                    likes++;
-                }
-            }
-
-            return likes;
         }
 
         private void BanDiedAndMassFriends(ClearFriendsType clearFriends)
@@ -296,10 +338,7 @@ namespace LikesRepostsBots.Classes
                             }
                             break;
                         case 1:
-                            for (int i = 0; i < botParams.AddFriendsCount; i++)
-                            {
-                                WorkWithFriends();
-                            }
+                            WorkWithFriends(botParams.AddFriendsCount);
                             break;
                         case 2:
                             if (botParams.ClearFriends > 0)
