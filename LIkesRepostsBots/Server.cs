@@ -7,6 +7,18 @@ namespace LikesRepostsBots
     {
         public static void Start()
         {
+            var thread = new Thread(new ParameterizedThreadStart(StartBot));
+            thread.Start();
+
+            while (true)
+            {
+                Console.WriteLine("LikesRepostsBots work " + DateTime.Now.ToString());
+                Thread.Sleep(TimeSpan.FromHours(1));
+            }
+        }
+
+        public static void StartBot(object data)
+        {
             BotsWorksParams botParams = new()
             {
                 MakeRepost = true,
@@ -54,7 +66,7 @@ namespace LikesRepostsBots
                     {
                         indexRip.Push(i);
                     }
-                    Thread.Sleep(rand.Next(stepBetweenBots));
+                    //Thread.Sleep(rand.Next(stepBetweenBots));
                 }
 
                 if (indexRip.Count > 0)

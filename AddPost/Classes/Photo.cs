@@ -22,7 +22,7 @@ namespace AddPost.Classes
 
             var responseFile = Encoding.ASCII.GetString(wc.UploadFile(uploadServer.UploadUrl, "Post.jpg"));
 
-            return api.Photo.SaveWallPhoto(responseFile, Convert.ToUInt32(api.UserId));
+            return api.Photo.SaveWallPhoto(responseFile, null);
         }
     }
 }

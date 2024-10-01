@@ -43,7 +43,6 @@ namespace LikesRepostsBots.Classes
 
             var botWall = api.Wall.Get(new WallGetParams
             {
-                OwnerId = api.UserId,
                 Count = 1,
                 Filter = WallFilter.All
             });
@@ -71,7 +70,7 @@ namespace LikesRepostsBots.Classes
                 // Лайк репост
                 if (rand.Next(CHANCE_REPOST) == 0 && !wall.WallPosts[numbPost].Text.Contains('!'))
                 {
-                    repostResult = api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", api.UserId, false);
+                    repostResult = api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", null, false);
 
                     api.Likes.Add(new LikesAddParams
                     {
@@ -147,14 +146,15 @@ namespace LikesRepostsBots.Classes
         {
             ClearSpaceForFriends(addCountFriends);
 
-            AddToFriendsFromRecomendedList(addCountFriends);
+            //AddToFriendsFromRecomendedList(addCountFriends);
+
+            api.Friends.Add(713712954);
         }
 
         private void ClearSpaceForFriends(int addCountFriends)
         {
             var friends = api.Friends.Get(new FriendsGetParams
             {
-                UserId = api.UserId,
                 Order = FriendsOrder.Random
             });
 

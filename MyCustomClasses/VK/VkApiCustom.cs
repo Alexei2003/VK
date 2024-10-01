@@ -7,7 +7,6 @@ namespace MyCustomClasses.VK
     public class VkApiCustom
     {
         private readonly TimeSpan TIME_SLEEP;
-        public long? UserId { get; private set; }
 
         public VkApi ApiOriginal { get; }
         public Account Account { get; }
@@ -54,7 +53,6 @@ namespace MyCustomClasses.VK
                 try
                 {
                     ApiOriginal.Authorize(@params);
-                    UserId = ApiOriginal.UserId;
                     return;
                 }
                 catch (VkNet.Exception.TooManyRequestsException)

@@ -18,7 +18,8 @@ namespace RepetitionOfPostsBot
 
             while (true)
             {
-                Thread.Sleep(TimeSpan.FromDays(10));
+                Console.WriteLine("RepetitionOfPostsBot work " + DateTime.Now.ToString());
+                Thread.Sleep(TimeSpan.FromHours(1));
             }
         }
     }
