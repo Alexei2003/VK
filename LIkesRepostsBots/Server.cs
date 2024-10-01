@@ -66,7 +66,7 @@ namespace LikesRepostsBots
                     {
                         indexRip.Push(i);
                     }
-                    //Thread.Sleep(rand.Next(stepBetweenBots));
+                    Thread.Sleep(rand.Next(stepBetweenBots));
                 }
 
                 if (indexRip.Count > 0)

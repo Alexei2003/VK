@@ -146,9 +146,7 @@ namespace LikesRepostsBots.Classes
         {
             ClearSpaceForFriends(addCountFriends);
 
-            //AddToFriendsFromRecomendedList(addCountFriends);
-
-            api.Friends.Add(713712954);
+            AddToFriendsFromRecomendedList(addCountFriends);
         }
 
         private void ClearSpaceForFriends(int addCountFriends)
