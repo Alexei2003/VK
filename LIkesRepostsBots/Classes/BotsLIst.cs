@@ -1,18 +1,17 @@
-﻿namespace LikesRepostsBots.Classes
+﻿using MyCustomClasses;
+
+namespace LikesRepostsBots.Classes
 {
     internal sealed class BotsList
     {
         private readonly List<SpamBot> bots = [];
         public int Count { get; private set; }
 
-        private readonly Random rand;
-
-        public BotsList(string[] accessTokensAndNames, PeoplesLIst people, Random rand)
+        public BotsList(string[] accessTokensAndNames, PeoplesLIst people)
         {
-            this.rand = rand;
             for (int i = 1; i < accessTokensAndNames.Length; i += 2)
             {
-                bots.Add(new SpamBot(accessTokensAndNames[i - 1], accessTokensAndNames[i], people, rand));
+                bots.Add(new SpamBot(accessTokensAndNames[i - 1], accessTokensAndNames[i], people));
             }
             Count = bots.Count;
         }
@@ -36,7 +35,7 @@
             int n = bots.Count;
             while (n > 1)
             {
-                int k = rand.Next(n--);
+                int k = RandomStatic.Rand.Next(n--);
                 (bots[n], bots[k]) = (bots[k], bots[n]);
             }
         }

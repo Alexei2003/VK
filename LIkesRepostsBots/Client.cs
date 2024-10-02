@@ -1,4 +1,5 @@
 ﻿using LikesRepostsBots.Classes;
+using MyCustomClasses;
 using static LikesRepostsBots.Classes.BotsWorksParams;
 
 namespace LikesRepostsBots
@@ -59,15 +60,14 @@ namespace LikesRepostsBots
 
             PeoplesLIst people = new();
 
-            var rand = new Random();
-            var bots = new BotsList(accessTokensAndNames, people, rand);
+            var bots = new BotsList(accessTokensAndNames, people);
 
             people.Read();
 
             botParams.GroupIdForGood = 220199532;
             for (int i = 0; i < bots.Count; i++)
             {
-                if (BanPeopleFromGroup && rand.Next(3) == 0)
+                if (BanPeopleFromGroup && RandomStatic.Rand.Next(3) == 0)
                 {
                     botParams.BanPeopleFromGroup = true;
                 }
@@ -78,7 +78,7 @@ namespace LikesRepostsBots
                     botParams.BanPeopleFromGroup = false;
                 }
 
-                Thread.Sleep(TimeSpan.FromSeconds(rand.Next(5) + 1));
+                Thread.Sleep(10 * RandomStatic._1SECOND + RandomStatic.Rand.Next(20 * RandomStatic._1SECOND));
             }
 
             people.Write();

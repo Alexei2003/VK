@@ -13,13 +13,11 @@ namespace RepetitionOfPostsBot.BotTask
         private const string GROUP_SHORT_URL = "@anime_art_for_every_day";
         private const long GROUP_ID = 220199532;
 
-        private static Random rand = new();
-
         private static string[] tagsNotRepost = ["Угадайка"];
 
         public static ulong GetRandomID(ulong max)
         {
-            return Convert.ToUInt64(1 + rand.NextInt64(Convert.ToInt64(max)));
+            return Convert.ToUInt64(1 + RandomStatic.Rand.NextInt64(Convert.ToInt64(max)));
         }
 
         public static void RepeatVKPosts(object data)
@@ -248,7 +246,7 @@ namespace RepetitionOfPostsBot.BotTask
                     using var wc = new WebClient();
 
                     // Истории
-                    if (rand.Next(10) == 0)
+                    if (RandomStatic.Rand.Next(10) == 0)
                     {
                         wc.DownloadFile(imagesUrl.First(), "Story.jpg");
 

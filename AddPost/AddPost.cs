@@ -16,7 +16,6 @@ namespace AddPost
         private float percentOriginalTag = 0.6f;
         private List<ImagesWithTag> imageList = [];
         private int imageIndex = -1;
-        private readonly Random rand = new();
         private readonly VkApiCustom api;
 
         private struct ImagesWithTag
@@ -108,11 +107,11 @@ namespace AddPost
 
             if (value > MIN_RGB)
             {
-                return value - (rand.Next(30) + 20);
+                return value - (RandomStatic.Rand.Next(30) + 20);
             }
             else
             {
-                return MIN_RGB + rand.Next(50);
+                return MIN_RGB + RandomStatic.Rand.Next(50);
             }
         }
 

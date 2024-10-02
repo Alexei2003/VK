@@ -3,9 +3,4 @@
   <PropertyGroup>
     <_LastSelectedProfileId>E:\WPS\VK\Project\VK\DownloaderDataSetPhoto\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Update="DownloaderDataSetPhoto.cs">
-      <SubType>Form</SubType>
-    </Compile>
-  </ItemGroup>
 </Project>

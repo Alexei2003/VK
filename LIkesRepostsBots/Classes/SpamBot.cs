@@ -1,4 +1,5 @@
-﻿using MyCustomClasses.VK;
+﻿using MyCustomClasses;
+using MyCustomClasses.VK;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 using VkNet.Utils;
@@ -9,20 +10,18 @@ namespace LikesRepostsBots.Classes
     internal sealed class SpamBot
     {
         private readonly VkApiCustom api;
-        private readonly Random rand;
         private const int CHANCE_LIKE = 5;
         private const int CHANCE_REPOST = 5;
-        private const int MAX_COUNT_POST = 16;
+        private const int MAX_COUNT_POST = 24;
         private readonly PeoplesLIst people;
         private readonly string accessToken;
 
         public string BotName { get; set; }
 
-        public SpamBot(string botName, string accessToken, PeoplesLIst people, Random rand)
+        public SpamBot(string botName, string accessToken, PeoplesLIst people)
         {
             api = new();
             this.people = people;
-            this.rand = rand;
             BotName = botName;
             this.accessToken = accessToken;
         }
@@ -30,27 +29,34 @@ namespace LikesRepostsBots.Classes
         private void Authorize()
         {
             api.AuthorizeAndTrackAndOnline(accessToken);
+            SleepAfterAction();
+        }
+
+        private static void SleepAfterAction()
+        {
+            Thread.Sleep(10 * RandomStatic._1SECOND + RandomStatic.Rand.Next(20 * RandomStatic._1SECOND));
         }
 
         private void WorkWithPosts(long groupId)
         {
+            var botWall = api.Wall.Get(new WallGetParams
+            {
+                Count = 1,
+                Filter = WallFilter.All
+            });
+            SleepAfterAction();
+
             var wall = api.Wall.Get(new WallGetParams
             {
                 OwnerId = -1 * groupId,
                 Count = MAX_COUNT_POST,
                 Filter = WallFilter.All
             });
-
-            var botWall = api.Wall.Get(new WallGetParams
-            {
-                Count = 1,
-                Filter = WallFilter.All
-            });
+            SleepAfterAction();
 
             int countPosts;
             if (botWall.WallPosts.Count > 0 && botWall.WallPosts[0].CopyHistory != null)
             {
-
                 for (countPosts = 0; countPosts < MAX_COUNT_POST; countPosts++)
                 {
                     if (wall.WallPosts[countPosts].Id == botWall.WallPosts[0].CopyHistory[0].Id)
@@ -68,26 +74,19 @@ namespace LikesRepostsBots.Classes
             for (int numbPost = countPosts - 1; numbPost > -1;)
             {
                 // Лайк репост
-                if (rand.Next(CHANCE_REPOST) == 0 && !wall.WallPosts[numbPost].Text.Contains('!'))
+                if (RandomStatic.Rand.Next(CHANCE_REPOST) == 0 && !wall.WallPosts[numbPost].Text.Contains('!'))
                 {
                     repostResult = api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", null, false);
-
-                    api.Likes.Add(new LikesAddParams
-                    {
-                        Type = LikeObjectType.Post,
-                        ItemId = Convert.ToInt64(repostResult.PostId),
-                    });
+                    SleepAfterAction();
                 }
                 // Лайк оригинала
-                else
+                api.Likes.Add(new LikesAddParams
                 {
-                    api.Likes.Add(new LikesAddParams
-                    {
-                        Type = LikeObjectType.Post,
-                        OwnerId = wall.WallPosts[numbPost].OwnerId,
-                        ItemId = Convert.ToInt64(wall.WallPosts[numbPost].Id),
-                    });
-                }
+                    Type = LikeObjectType.Post,
+                    OwnerId = wall.WallPosts[numbPost].OwnerId,
+                    ItemId = Convert.ToInt64(wall.WallPosts[numbPost].Id),
+                });
+                SleepAfterAction();
 
                 // Выбор в опросе
                 foreach (var attachment in wall.WallPosts[numbPost].Attachments)
@@ -95,7 +94,7 @@ namespace LikesRepostsBots.Classes
                     if (attachment.Type == typeof(Poll))
                     {
                         var poll = (Poll)attachment.Instance;
-                        var index = rand.Next(poll.Answers.Count - 1);
+                        var index = RandomStatic.Rand.Next(poll.Answers.Count - 1);
 
                         api.Polls.AddVote(new PollsAddVoteParams
                         {
@@ -103,7 +102,7 @@ namespace LikesRepostsBots.Classes
                             PollId = poll.Id.Value,
                             AnswerId = poll.Answers[index].Id.Value
                         });
-
+                        SleepAfterAction();
                     }
                 }
 
@@ -114,7 +113,7 @@ namespace LikesRepostsBots.Classes
             }
         }
 
-        private int AddCommentsLike(long groupId, long? postId)
+        private void AddCommentsLike(long groupId, long? postId)
         {
             var comments = api.Wall.GetComments(new WallGetCommentsParams
             {
@@ -122,11 +121,11 @@ namespace LikesRepostsBots.Classes
                 PostId = Convert.ToInt64(postId),
                 Count = 100,
             });
+            SleepAfterAction();
 
-            int likes = 0;
             foreach (var comment in comments.Items)
             {
-                int randNumb = rand.Next(CHANCE_LIKE);
+                int randNumb = RandomStatic.Rand.Next(CHANCE_LIKE);
                 if (randNumb == 0)
                 {
                     api.Likes.Add(new LikesAddParams
@@ -135,11 +134,9 @@ namespace LikesRepostsBots.Classes
                         ItemId = comment.Id,
                         OwnerId = comment.OwnerId,
                     });
-                    likes++;
+                    SleepAfterAction();
                 }
             }
-
-            return likes;
         }
 
         private void WorkWithFriends(int addCountFriends)
@@ -155,11 +152,13 @@ namespace LikesRepostsBots.Classes
             {
                 Order = FriendsOrder.Random
             });
+            SleepAfterAction();
 
             var sendRequests = api.Friends.GetRequests(new FriendsGetRequestsParams
             {
                 Out = true
             });
+            SleepAfterAction();
 
             var totalCount = friends.TotalCount + sendRequests.Count;
 
@@ -170,6 +169,7 @@ namespace LikesRepostsBots.Classes
                     for (int i = 0; i < addCountFriends; i++)
                     {
                         api.Account.Ban(sendRequests.Items[i]);
+                        SleepAfterAction();
                     }
                 }
                 else
@@ -177,6 +177,7 @@ namespace LikesRepostsBots.Classes
                     for (int i = 0; i < addCountFriends; i++)
                     {
                         api.Account.Ban(friends[i].Id);
+                        SleepAfterAction();
                     }
                 }
             }
@@ -186,6 +187,7 @@ namespace LikesRepostsBots.Classes
         {
             int offset = 0;
             var suggestions = api.Friends.GetSuggestions(offset: offset);
+            SleepAfterAction();
 
             int index = 0;
             for (int i = 0; i < addCountFriends; index++)
@@ -194,25 +196,37 @@ namespace LikesRepostsBots.Classes
                 {
                     offset += 500;
                     suggestions = api.Friends.GetSuggestions(offset: offset);
+                    SleepAfterAction();
                     index = 0;
                 }
 
                 if (people.Add(suggestions[index].Id))
                 {
-                    if (!IsMassAccount(suggestions[index].Id) && api.Friends.Add(suggestions[index].Id) != null)
+                    if (!IsMassAccountSleep(suggestions[index].Id) && api.Friends.Add(suggestions[index].Id) != null)
                     {
+                        SleepAfterAction();
                         i++;
                     }
                     else
                     {
                         api.Account.Ban(suggestions[index].Id);
+                        SleepAfterAction();
                     }
                 }
                 else
                 {
                     api.Account.Ban(suggestions[index].Id);
+                    SleepAfterAction();
                 }
             }
+        }
+
+        private bool IsMassAccountSleep(long personId)
+        {
+
+            var flag = IsMassAccount(personId);
+            SleepAfterAction();
+            return flag;
         }
 
         private bool IsMassAccount(long personId)
@@ -224,6 +238,7 @@ namespace LikesRepostsBots.Classes
             var user = api.Users.Get(new long[] { personId });
             if (user[0].IsClosed == true)
             {
+                
                 return true;
             }
 
@@ -271,6 +286,7 @@ namespace LikesRepostsBots.Classes
                 offset += friends.Count;
 
                 var users = api.Users.Get(friends.Select(user => user.Id).ToArray());
+                SleepAfterAction();
                 foreach (var user in users)
                 {
                     if (user.Id == 713712954 || user.Id == 338992901)
@@ -281,12 +297,14 @@ namespace LikesRepostsBots.Classes
                     if (user.Deactivated != Deactivated.Activated)
                     {
                         api.Account.Ban(user.Id);
+                        SleepAfterAction();
                     }
                     else
                     {
                         if (clearFriends == ClearFriendsType.BanAndMathAccount && IsMassAccount(user.Id))
                         {
                             api.Account.Ban(user.Id);
+                            SleepAfterAction();
                         }
                     }
                 }
@@ -307,6 +325,7 @@ namespace LikesRepostsBots.Classes
                     Offset = offset,
                     Count = COUNT_USER
                 });
+                SleepAfterAction();
                 offset += members.Count;
 
                 foreach (var member in members)
@@ -366,7 +385,7 @@ namespace LikesRepostsBots.Classes
             int n = action.Length;
             while (n > 1)
             {
-                int k = rand.Next(n--);
+                int k = RandomStatic.Rand.Next(n--);
                 (action[n], action[k]) = (action[k], action[n]);
             }
             return action;

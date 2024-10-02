@@ -1,4 +1,5 @@
 ﻿using LikesRepostsBots.Classes;
+using MyCustomClasses;
 using static LikesRepostsBots.Classes.BotsWorksParams;
 
 namespace LikesRepostsBots
@@ -27,22 +28,24 @@ namespace LikesRepostsBots
             };
 
             var accessTokensAndNames = File.ReadAllLines(Path.Combine("AccessTokens.txt"));
-            var rand = new Random();
 
             PeoplesLIst people = new();
             people.Read();
 
-            var bots = new BotsList(accessTokensAndNames, people, rand);
+            var bots = new BotsList(accessTokensAndNames, people);
 
-            const int TIME_WORK = 24 * 60 * 60 * 1000;
+
+            const int TIME_WORK = 12 * RandomStatic._1HOUR;
+            const int TIME_WORK_RANDOM = 12 * RandomStatic._1HOUR;
             int count = 0;
             int stepBetweenBots = TIME_WORK / bots.Count;
+            int stepBetweenBotsRandom = TIME_WORK_RANDOM / bots.Count;
             var indexRip = new Stack<int>(bots.Count);
             while (true)
             {
                 if (bots.Count == 0)
                 {
-                    bots = new BotsList(accessTokensAndNames, people, rand);
+                    bots = new BotsList(accessTokensAndNames, people);
                 }
 
                 bots.Mix();
@@ -66,7 +69,7 @@ namespace LikesRepostsBots
                     {
                         indexRip.Push(i);
                     }
-                    Thread.Sleep(rand.Next(stepBetweenBots));
+                    Thread.Sleep(stepBetweenBots + RandomStatic.Rand.Next(stepBetweenBotsRandom));
                 }
 
                 if (indexRip.Count > 0)
@@ -76,6 +79,7 @@ namespace LikesRepostsBots
                         bots.Remove(indexRip.Pop());
                     }
                     stepBetweenBots = TIME_WORK / bots.Count;
+                    stepBetweenBotsRandom = TIME_WORK_RANDOM / bots.Count;
                     indexRip.Clear();
                 }
 
