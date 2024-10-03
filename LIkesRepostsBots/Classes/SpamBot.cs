@@ -10,7 +10,7 @@ namespace LikesRepostsBots.Classes
     internal sealed class SpamBot
     {
         private readonly VkApiCustom api;
-        private const int CHANCE_LIKE = 5;
+        private const int CHANCE_LIKE_COMMENTS = 5;
         private const int CHANCE_REPOST = 5;
         private const int MAX_COUNT_POST = 24;
         private readonly PeoplesLIst people;
@@ -125,7 +125,7 @@ namespace LikesRepostsBots.Classes
 
             foreach (var comment in comments.Items)
             {
-                int randNumb = RandomStatic.Rand.Next(CHANCE_LIKE);
+                int randNumb = RandomStatic.Rand.Next(CHANCE_LIKE_COMMENTS);
                 if (randNumb == 0)
                 {
                     api.Likes.Add(new LikesAddParams

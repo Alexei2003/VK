@@ -1,4 +1,6 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 using MyCustomClasses;
 using MyCustomClasses.Tags;
 using MyCustomClasses.Tags.Editors;
@@ -112,14 +114,20 @@ internal class Program
             worksheet.Cell(1, 11).Value = "Счёт";
 
             int i = 2;
+            var tagInfoAverange = new TagInfo();
             foreach (var tag in dictTag)
             {
                 worksheet.Cell(i, 1).Value = tag.Key;
                 worksheet.Cell(i, 2).Value = tag.Value.Count;
+                tagInfoAverange.Count += tag.Value.Count;
                 worksheet.Cell(i, 3).Value = tag.Value.ViewsCount;
+                tagInfoAverange.ViewsCount += tag.Value.ViewsCount;
                 worksheet.Cell(i, 4).Value = tag.Value.LikesCount;
+                tagInfoAverange.LikesCount += tag.Value.LikesCount;
                 worksheet.Cell(i, 5).Value = tag.Value.CommentsCount;
+                tagInfoAverange.CommentsCount += tag.Value.CommentsCount;
                 worksheet.Cell(i, 6).Value = tag.Value.RepostsCount;
+                tagInfoAverange.RepostsCount += tag.Value.RepostsCount;
                 worksheet.Cell(i, 7).Value = tag.Value.ViewsCount / tag.Value.Count;
                 worksheet.Cell(i, 8).Value = tag.Value.LikesCount / tag.Value.Count;
                 worksheet.Cell(i, 9).Value = tag.Value.CommentsCount / tag.Value.Count;
@@ -128,6 +136,21 @@ internal class Program
 
                 i++;
             }
+
+            worksheet.Cell(i, 1).Value = "Итог";
+            worksheet.Cell(i, 2).Value = tagInfoAverange.Count;
+            worksheet.Cell(i, 3).Value = tagInfoAverange.ViewsCount;
+            worksheet.Cell(i, 4).Value = tagInfoAverange.LikesCount;
+            worksheet.Cell(i, 5).Value = tagInfoAverange.CommentsCount;
+            worksheet.Cell(i, 6).Value = tagInfoAverange.RepostsCount;
+            worksheet.Cell(i, 7).Value = tagInfoAverange.ViewsCount / tagInfoAverange.Count;
+            worksheet.Cell(i, 8).Value = tagInfoAverange.LikesCount / tagInfoAverange.Count;
+            worksheet.Cell(i, 9).Value = tagInfoAverange.CommentsCount / tagInfoAverange.Count;
+            worksheet.Cell(i, 10).Value = tagInfoAverange.RepostsCount / tagInfoAverange.Count;
+            worksheet.Cell(i, 11).Value = (int)(0.05 * tagInfoAverange.ViewsCount + 0.4 * tagInfoAverange.LikesCount + 1 * tagInfoAverange.CommentsCount + 0.8 * tagInfoAverange.RepostsCount) / tagInfoAverange.Count;
+
+            worksheet.Row(i).Style.Fill.BackgroundColor = XLColor.Yellow;
+
             workbook.SaveAs("tags.xlsx");
         }
     }
