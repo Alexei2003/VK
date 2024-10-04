@@ -12,6 +12,7 @@ namespace RepetitionOfPostsBot.BotTask
     {
         private const string GROUP_SHORT_URL = "@anime_art_for_every_day";
         private const long GROUP_ID = 220199532;
+        private static TimeSpan TIME_SLEEP = TimeSpan.FromMinutes(15);
 
         private static string[] tagsNotRepost = ["Угадайка"];
 
@@ -33,6 +34,7 @@ namespace RepetitionOfPostsBot.BotTask
             });
 
             ulong indexResendedPost = GetRandomID(wall.TotalCount);
+            ulong offsetNextPost = 0;
 
             while (true)
             {
@@ -78,90 +80,105 @@ namespace RepetitionOfPostsBot.BotTask
                             continue;
                         }
 
-                        var offsetNextPost = GetRandomID(maxRandomOffsetRessendedPosts);
+                        offsetNextPost = GetRandomID(maxRandomOffsetRessendedPosts);
 
                         var firstPostData = post.Date;
 
-                        // Получение поста по id 
-                        wall = api.Wall.Get(new WallGetParams
+                        while (true)
                         {
-                            OwnerId = -1 * GROUP_ID,
-                            Offset = offsetIndexPost,
-                            Count = 1,
-                            Filter = WallFilter.All
-                        });
+                            try
+                            {
 
-                        // Выход если поста несуществует
-                        if (wall.WallPosts.Count == 0)
-                        {
-                            indexResendedPost += offsetNextPost;
-                            continue;
-                        }
+                                // Получение поста по id 
+                                wall = api.Wall.Get(new WallGetParams
+                                {
+                                    OwnerId = -1 * GROUP_ID,
+                                    Offset = offsetIndexPost,
+                                    Count = 1,
+                                    Filter = WallFilter.All
+                                });
 
-                        post = wall.WallPosts.First();
-                        var postText = post.Text;
+                                // Выход если поста несуществует
+                                if (wall.WallPosts.Count == 0)
+                                {
+                                    indexResendedPost += offsetNextPost;
+                                    continue;
+                                }
 
-                        // Проверка тега
-                        postText = BaseTagsEditor.RemoveBaseTags(postText);
-                        postText = TagsReplacer.RemoveGroupLinkFromTag(postText);
-                        postText = postText.Replace("\n", "");
+                                post = wall.WallPosts.First();
+                                var postText = post.Text;
 
-                        var tagsArr = postText.Split('#', StringSplitOptions.RemoveEmptyEntries);
+                                // Проверка тега
+                                postText = BaseTagsEditor.RemoveBaseTags(postText);
+                                postText = TagsReplacer.RemoveGroupLinkFromTag(postText);
+                                postText = postText.Replace("\n", "");
 
-                        if (tagsArr.Length > 2 || tagsArr.Length == 0 || postText.Contains('.') || postText.Contains(' ') || postText.Contains('!'))
-                        {
-                            indexResendedPost += offsetNextPost;
-                            continue;
-                        }
+                                var tagsArr = postText.Split('#', StringSplitOptions.RemoveEmptyEntries);
 
-                        foreach (var tag in tagsNotRepost)
-                        {
-                            if (postText.Contains(tag))
+                                if (tagsArr.Length > 2 || tagsArr.Length == 0 || postText.Contains('.') || postText.Contains(' ') || postText.Contains('!'))
+                                {
+                                    indexResendedPost += offsetNextPost;
+                                    continue;
+                                }
+
+                                foreach (var tag in tagsNotRepost)
+                                {
+                                    if (postText.Contains(tag))
+                                    {
+                                        indexResendedPost += offsetNextPost;
+                                        continue;
+                                    }
+                                }
+
+                                postText = string.Join("", tagsArr.Select(s => "#" + s + GROUP_SHORT_URL + "\n"));
+
+                                postText = BaseTagsEditor.GetBaseTagsWithNextLine() + postText;
+
+                                var mediaAttachmentList = new List<MediaAttachment>();
+
+                                // Достать картинки из поста
+                                foreach (var attachment in post.Attachments)
+                                {
+                                    if (attachment.Type.Name == "Photo")
+                                    {
+                                        mediaAttachmentList.Add(new PhotoMy { OwnerId = attachment.Instance.OwnerId, Id = attachment.Instance.Id, AccessKey = attachment.Instance.AccessKey });
+                                    }
+                                }
+
+                                if (mediaAttachmentList.Count == 0)
+                                {
+                                    indexResendedPost += offsetNextPost;
+                                    continue;
+                                }
+
+                                // Повторый пост
+                                api.Wall.Post(new WallPostParams()
+                                {
+                                    OwnerId = -1 * GROUP_ID,
+                                    FromGroup = true,
+                                    Message = '.' + postText,
+                                    Attachments = mediaAttachmentList,
+                                    PublishDate = firstPostData.Value.AddHours(1),
+
+                                });
+                                indexResendedPost += offsetNextPost;
+
+                                break;
+                            }
+                            catch
                             {
                                 indexResendedPost += offsetNextPost;
+                                Thread.Sleep(TIME_SLEEP);
                                 continue;
                             }
                         }
-
-                        postText = string.Join("", tagsArr.Select(s => "#" + s + GROUP_SHORT_URL + "\n"));
-
-                        postText = BaseTagsEditor.GetBaseTagsWithNextLine() + postText;
-
-                        var mediaAttachmentList = new List<MediaAttachment>();
-
-                        // Достать картинки из поста
-                        foreach (var attachment in post.Attachments)
-                        {
-                            if (attachment.Type.Name == "Photo")
-                            {
-                                mediaAttachmentList.Add(new PhotoMy { OwnerId = attachment.Instance.OwnerId, Id = attachment.Instance.Id, AccessKey = attachment.Instance.AccessKey });
-                            }
-                        }
-
-                        if (mediaAttachmentList.Count == 0)
-                        {
-                            indexResendedPost += offsetNextPost;
-                            continue;
-                        }
-
-                        // Повторый пост
-                        api.Wall.Post(new WallPostParams()
-                        {
-                            OwnerId = -1 * GROUP_ID,
-                            FromGroup = true,
-                            Message = '.' + postText,
-                            Attachments = mediaAttachmentList,
-                            PublishDate = firstPostData.Value.AddHours(1),
-
-                        });
-
-                        indexResendedPost += offsetNextPost;
+                        Thread.Sleep(TimeSpan.FromMinutes(30));
                     }
-                    Thread.Sleep(TimeSpan.FromMinutes(30));
                 }
                 catch
                 {
-                    indexResendedPost++;
+                    indexResendedPost += offsetNextPost;
+                    Thread.Sleep(TIME_SLEEP);
                     continue;
                 }
             }
@@ -174,8 +191,6 @@ namespace RepetitionOfPostsBot.BotTask
             var vkApi = new VkApiCustom(accessTokens.GetValueOrDefault(GosUslugi.VK));
 
             long lastSendPostId = -1;
-
-            var timeSleep = TimeSpan.FromMinutes(5);
 
             while (true)
             {
@@ -202,7 +217,7 @@ namespace RepetitionOfPostsBot.BotTask
                     // Проверка на новые посты
                     if (lastSendPostId == post.Id)
                     {
-                        Thread.Sleep(timeSleep);
+                        Thread.Sleep(TIME_SLEEP);
                         continue;
                     }
                     lastSendPostId = post.Id.Value;
@@ -212,7 +227,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                     if (postText.Contains('!'))
                     {
-                        Thread.Sleep(timeSleep);
+                        Thread.Sleep(TIME_SLEEP);
                         continue;
                     }
 
@@ -220,7 +235,7 @@ namespace RepetitionOfPostsBot.BotTask
                     {
                         if (postText.Contains(tag))
                         {
-                            Thread.Sleep(timeSleep);
+                            Thread.Sleep(TIME_SLEEP);
                             continue;
                         }
                     }
@@ -239,7 +254,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                     if (imagesUrl.Count == 0)
                     {
-                        Thread.Sleep(timeSleep);
+                        Thread.Sleep(TIME_SLEEP);
                         continue;
                     }
 
@@ -270,7 +285,7 @@ namespace RepetitionOfPostsBot.BotTask
                 }
                 catch
                 {
-                    Thread.Sleep(timeSleep);
+                    Thread.Sleep(TIME_SLEEP);
                     continue;
                 }
             }

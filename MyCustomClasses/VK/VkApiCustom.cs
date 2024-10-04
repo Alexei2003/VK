@@ -24,7 +24,7 @@ namespace MyCustomClasses.VK
 
         public VkApiCustom()
         {
-            TIME_SLEEP = TimeSpan.FromSeconds(2);
+            TIME_SLEEP = TimeSpan.FromSeconds(10);
 
             ApiOriginal = new();
             Polls = new Polls(ApiOriginal, TIME_SLEEP);
