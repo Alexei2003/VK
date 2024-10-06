@@ -35,59 +35,80 @@ namespace LikesRepostsBots
             var bots = new BotsList(accessTokensAndNames, people);
 
 
-            const int TIME_WORK = 12 * RandomStatic._1HOUR;
-            const int TIME_WORK_RANDOM = 12 * RandomStatic._1HOUR;
+            const int TIME_WORK = 6 * RandomStatic._1HOUR;
+            const int TIME_WORK_RANDOM = 6 * RandomStatic._1HOUR;
             int count = 0;
             int stepBetweenBots = TIME_WORK / bots.Count;
             int stepBetweenBotsRandom = TIME_WORK_RANDOM / bots.Count;
             var indexRip = new Stack<int>(bots.Count);
+            bool addFriend = true;
             while (true)
             {
-                if (bots.Count == 0)
+                try
                 {
-                    bots = new BotsList(accessTokensAndNames, people);
-                }
-
-                bots.Mix();
-
-                switch (count)
-                {
-                    case 7:
-                        botParams.ClearFriends = ClearFriendsType.BanAccount;
-                        break;
-                    case 14:
-                        count = 0;
-                        botParams.ClearFriends = ClearFriendsType.BanAndMathAccount;
-                        break;
-                    default:
-                        break;
-                }
-
-                for (int i = 0; i < bots.Count; i++)
-                {
-                    if (!bots[i].Start(botParams))
+                    if (bots.Count == 0)
                     {
-                        indexRip.Push(i);
+                        bots = new BotsList(accessTokensAndNames, people);
                     }
-                    Thread.Sleep(stepBetweenBots + RandomStatic.Rand.Next(stepBetweenBotsRandom));
-                }
 
-                if (indexRip.Count > 0)
-                {
-                    for (var i = 0; i < indexRip.Count; i++)
+                    bots.Mix();
+
+                    switch (count)
                     {
-                        bots.Remove(indexRip.Pop());
+                        case 7:
+                            botParams.ClearFriends = ClearFriendsType.BanAccount;
+                            break;
+                        case 14:
+                            count = 0;
+                            botParams.ClearFriends = ClearFriendsType.BanAndMathAccount;
+                            break;
+                        default:
+                            break;
                     }
-                    stepBetweenBots = TIME_WORK / bots.Count;
-                    stepBetweenBotsRandom = TIME_WORK_RANDOM / bots.Count;
-                    indexRip.Clear();
+
+                    if (addFriend)
+                    {
+                        addFriend = false;
+                        botParams.AddFriendsCount = 1;
+                    }
+                    else
+                    {
+                        addFriend = true;
+                        botParams.AddFriendsCount = 0;
+                    }
+
+                    for (int i = 0; i < bots.Count; i++)
+                    {
+                        if (!bots[i].Start(botParams))
+                        {
+                            indexRip.Push(i);
+                        }
+                        Thread.Sleep(stepBetweenBots + RandomStatic.Rand.Next(stepBetweenBotsRandom));
+                    }
+
+                    if (indexRip.Count > 0)
+                    {
+                        for (var i = 0; i < indexRip.Count; i++)
+                        {
+                            bots.Remove(indexRip.Pop());
+                        }
+                        stepBetweenBots = TIME_WORK / bots.Count;
+                        stepBetweenBotsRandom = TIME_WORK_RANDOM / bots.Count;
+                        indexRip.Clear();
+                    }
+
+                    botParams.ClearFriends = ClearFriendsType.None;
+
+                    people.Write();
+
+                    count++;
                 }
-
-                botParams.ClearFriends = ClearFriendsType.None;
-
-                people.Write();
-
-                count++;
+                catch (Exception e)
+                {
+                    Logs.WriteExcemption(e);
+                    Thread.Sleep(10);
+                    continue;
+                }
             }
         }
     }

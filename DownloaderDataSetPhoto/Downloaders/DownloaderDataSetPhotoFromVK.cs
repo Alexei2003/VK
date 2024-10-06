@@ -1,4 +1,5 @@
-﻿using MyCustomClasses.Tags;
+﻿using MyCustomClasses;
+using MyCustomClasses.Tags;
 using MyCustomClasses.VK;
 using System.Net;
 using VkNet.Model;
@@ -44,8 +45,9 @@ namespace DownloaderDataSetPhoto.Downloaders
                         {
                             SavePhotos(currentTag, post, ignorGroupId, percentOriginalTag, fileName, lockNeuralNetworkResult, wc);
                         }
-                        catch
+                        catch (Exception e)
                         {
+                            Logs.WriteExcemption(e);
                             continue;
                         }
                     }

@@ -165,8 +165,9 @@ namespace RepetitionOfPostsBot.BotTask
 
                                 break;
                             }
-                            catch
+                            catch (Exception e)
                             {
+                                Logs.WriteExcemption(e);
                                 indexResendedPost += offsetNextPost;
                                 Thread.Sleep(TIME_SLEEP);
                                 continue;
@@ -175,8 +176,9 @@ namespace RepetitionOfPostsBot.BotTask
                         Thread.Sleep(TimeSpan.FromMinutes(30));
                     }
                 }
-                catch
+                catch (Exception e)
                 {
+                    Logs.WriteExcemption(e);
                     indexResendedPost += offsetNextPost;
                     Thread.Sleep(TIME_SLEEP);
                     continue;
@@ -283,8 +285,9 @@ namespace RepetitionOfPostsBot.BotTask
                     //var discordCaption = BaseTagsEditor.RemoveBaseTags(caption);
                     //DiscordTask.PushPost(accessTokens.GetValueOrDefault(GosUslugi.DISCORD), discordCaption, imagesUrl.ToArray());
                 }
-                catch
+                catch (Exception e)
                 {
+                    Logs.WriteExcemption(e);
                     Thread.Sleep(TIME_SLEEP);
                     continue;
                 }

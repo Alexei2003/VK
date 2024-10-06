@@ -190,14 +190,19 @@ namespace LikesRepostsBots.Classes
             SleepAfterAction();
 
             int index = 0;
-            for (int i = 0; i < addCountFriends; index++)
+            for (int numbNewFriends = 0; numbNewFriends < addCountFriends; index++)
             {
                 if (index == suggestions.Count)
                 {
-                    offset += 500;
+                    offset += suggestions.Count;
                     suggestions = api.Friends.GetSuggestions(offset: offset);
                     SleepAfterAction();
                     index = 0;
+
+                    if (suggestions.Count == 0)
+                    {
+                        return;
+                    }
                 }
 
                 if (people.Add(suggestions[index].Id))
@@ -205,7 +210,7 @@ namespace LikesRepostsBots.Classes
                     if (!IsMassAccountSleep(suggestions[index].Id) && api.Friends.Add(suggestions[index].Id) != null)
                     {
                         SleepAfterAction();
-                        i++;
+                        numbNewFriends++;
                     }
                     else
                     {
@@ -238,7 +243,7 @@ namespace LikesRepostsBots.Classes
             var user = api.Users.Get(new long[] { personId });
             if (user[0].IsClosed == true)
             {
-                
+
                 return true;
             }
 

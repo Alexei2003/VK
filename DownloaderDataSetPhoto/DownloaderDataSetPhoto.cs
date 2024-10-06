@@ -146,9 +146,9 @@ namespace DownloaderDataSetPhoto
                             downloaderVK.SavePhotosFromNewsfeed(tags[i], shift, count, groupId, percentOriginalTag, $"DataSet_{i}", lockNeuralNetworkResult);
                         });
                     }
-                    catch (Exception ex)
+                    catch (Exception e)
                     {
-                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
 
                     if (bDownloadPhotosVK.InvokeRequired)
@@ -197,9 +197,9 @@ namespace DownloaderDataSetPhoto
                         var url = tbRule34Url.Text;
                         DownloaderDataSetPhotoFromRule34.SavePhotos(url, tag, percentOriginalTag, $"DataSet_{0}", lockNeuralNetworkResult);
                     }
-                    catch (Exception ex)
+                    catch (Exception e)
                     {
-                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
 
                     if (bDownloadPhotosDanbooru.InvokeRequired)

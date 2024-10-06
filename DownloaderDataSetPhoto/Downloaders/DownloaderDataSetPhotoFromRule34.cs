@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using MyCustomClasses;
+using System.Net;
 
 namespace DownloaderDataSetPhoto.Downloaders
 {
@@ -39,10 +40,13 @@ namespace DownloaderDataSetPhoto.Downloaders
                     }
                 }
             }
-            catch { }
+            catch (Exception e)
+            {
+                Logs.WriteExcemption(e);
+            }
         }
 
-        private static void SavePhoto(string url, string currentTag, float percentOriginalTag, string fileName, object lockNeuralNetworkResult, WebClient wc)
+            private static void SavePhoto(string url, string currentTag, float percentOriginalTag, string fileName, object lockNeuralNetworkResult, WebClient wc)
         {
             Downloader.DownloadPhoto(wc, url, currentTag, percentOriginalTag, fileName, lockNeuralNetworkResult);
         }
