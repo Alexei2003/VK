@@ -3,6 +3,7 @@ using MyCustomClasses.Tags;
 using MyCustomClasses.Tags.Editors;
 using MyCustomClasses.VK;
 using System.Net;
+using System.Runtime.InteropServices;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 
@@ -33,8 +34,7 @@ namespace RepetitionOfPostsBot.BotTask
                 Filter = WallFilter.Postponed
             });
 
-            ulong indexResendedPost = GetRandomID(wall.TotalCount);
-            ulong offsetNextPost = 0;
+            ulong offsetPost = GetRandomID(wall.TotalCount);
 
             while (true)
             {
@@ -58,55 +58,57 @@ namespace RepetitionOfPostsBot.BotTask
                             Filter = WallFilter.All
                         });
 
-                        Post post;
+                        Post firstPost;
                         if (wall.WallPosts[0].IsPinned.Value)
                         {
-                            post = wall.WallPosts[1];
+                            firstPost = wall.WallPosts[1];
                         }
                         else
                         {
-                            post = wall.WallPosts[0];
+                            firstPost = wall.WallPosts[0];
                         }
 
+                        var firstPostData = firstPost.Date;
 
                         var totalCountPosts = wall.TotalCount;
-                        var offsetIndexPost = totalCountPosts - indexResendedPost;
                         var notResendedCountPosts = totalCountPosts / 15;
                         var maxRandomOffsetRessendedPosts = totalCountPosts / 5;
 
-                        if (offsetIndexPost < notResendedCountPosts)
-                        {
-                            indexResendedPost = offsetIndexPost;
-                            continue;
-                        }
-
-                        offsetNextPost = GetRandomID(maxRandomOffsetRessendedPosts);
-
-                        var firstPostData = post.Date;
-
+                        List<MediaAttachment> mediaAttachmentList = null;
+                        string postText = null;
                         while (true)
                         {
-                            try
-                            {
+                            var offsetNextPost = GetRandomID(maxRandomOffsetRessendedPosts);
+                            offsetPost += offsetNextPost;
+                            offsetPost %= totalCountPosts;
 
-                                // Получение поста по id 
-                                wall = api.Wall.Get(new WallGetParams
-                                {
-                                    OwnerId = -1 * GROUP_ID,
-                                    Offset = offsetIndexPost,
-                                    Count = 1,
-                                    Filter = WallFilter.All
-                                });
+                            if (offsetPost < notResendedCountPosts)
+                            {
+                                offsetPost += notResendedCountPosts;
+                            }
+
+                            // Получение поста по id 
+                            wall = api.Wall.Get(new WallGetParams
+                            {
+                                OwnerId = -1 * GROUP_ID,
+                                Offset = offsetPost,
+                                Count = 100,
+                                Filter = WallFilter.All
+                            });
+
+                            bool postFind = false;
+
+                            foreach (var post in wall.WallPosts)
+                            {
+                                mediaAttachmentList = [];
 
                                 // Выход если поста несуществует
                                 if (wall.WallPosts.Count == 0)
                                 {
-                                    indexResendedPost += offsetNextPost;
                                     continue;
                                 }
 
-                                post = wall.WallPosts.First();
-                                var postText = post.Text;
+                                postText = post.Text;
 
                                 // Проверка тега
                                 postText = BaseTagsEditor.RemoveBaseTags(postText);
@@ -115,9 +117,8 @@ namespace RepetitionOfPostsBot.BotTask
 
                                 var tagsArr = postText.Split('#', StringSplitOptions.RemoveEmptyEntries);
 
-                                if (tagsArr.Length > 2 || tagsArr.Length == 0 || postText.Contains('.') || postText.Contains(' ') || postText.Contains('!'))
+                                if (tagsArr.Length == 0 || postText.Contains('.') || postText.Contains(' ') || postText.Contains('!'))
                                 {
-                                    indexResendedPost += offsetNextPost;
                                     continue;
                                 }
 
@@ -125,7 +126,6 @@ namespace RepetitionOfPostsBot.BotTask
                                 {
                                     if (postText.Contains(tag))
                                     {
-                                        indexResendedPost += offsetNextPost;
                                         continue;
                                     }
                                 }
@@ -133,8 +133,6 @@ namespace RepetitionOfPostsBot.BotTask
                                 postText = string.Join("", tagsArr.Select(s => "#" + s + GROUP_SHORT_URL + "\n"));
 
                                 postText = BaseTagsEditor.GetBaseTagsWithNextLine() + postText;
-
-                                var mediaAttachmentList = new List<MediaAttachment>();
 
                                 // Достать картинки из поста
                                 foreach (var attachment in post.Attachments)
@@ -147,39 +145,35 @@ namespace RepetitionOfPostsBot.BotTask
 
                                 if (mediaAttachmentList.Count == 0)
                                 {
-                                    indexResendedPost += offsetNextPost;
                                     continue;
                                 }
 
-                                // Повторый пост
-                                api.Wall.Post(new WallPostParams()
-                                {
-                                    OwnerId = -1 * GROUP_ID,
-                                    FromGroup = true,
-                                    Message = '.' + postText,
-                                    Attachments = mediaAttachmentList,
-                                    PublishDate = firstPostData.Value.AddHours(1),
-
-                                });
-                                indexResendedPost += offsetNextPost;
-
+                                postFind = true;
                                 break;
                             }
-                            catch (Exception e)
+                            if (postFind)
                             {
-                                Logs.WriteExcemption(e);
-                                indexResendedPost += offsetNextPost;
-                                Thread.Sleep(TIME_SLEEP);
-                                continue;
+                                break;
                             }
                         }
+
+                        // Повторый пост
+                        api.Wall.Post(new WallPostParams()
+                        {
+                            OwnerId = -1 * GROUP_ID,
+                            FromGroup = true,
+                            Message = '.' + postText,
+                            Attachments = mediaAttachmentList,
+                            PublishDate = firstPostData.Value.AddHours(1),
+
+                        });
+
                         Thread.Sleep(TimeSpan.FromMinutes(30));
                     }
                 }
                 catch (Exception e)
                 {
                     Logs.WriteExcemption(e);
-                    indexResendedPost += offsetNextPost;
                     Thread.Sleep(TIME_SLEEP);
                     continue;
                 }
