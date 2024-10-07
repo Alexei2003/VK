@@ -14,6 +14,8 @@ namespace RepetitionOfPostsBot.BotTask
         private const string GROUP_SHORT_URL = "@anime_art_for_every_day";
         private const long GROUP_ID = 220199532;
         private static TimeSpan TIME_SLEEP = TimeSpan.FromMinutes(15);
+        private const int BEGIN_NOT_POST = 0;
+        private const int END_NOT_POST = 20;
 
         private static string[] tagsNotRepost = ["Угадайка"];
 
@@ -40,6 +42,12 @@ namespace RepetitionOfPostsBot.BotTask
             {
                 try
                 {
+                    if (BEGIN_NOT_POST < DateTime.UtcNow.Minute && DateTime.UtcNow.Minute < END_NOT_POST)
+                    {
+                        Thread.Sleep(TIME_SLEEP);
+                        continue;
+                    }
+
                     // Получение первого отложеного поста
                     wall = api.Wall.Get(new WallGetParams
                     {
