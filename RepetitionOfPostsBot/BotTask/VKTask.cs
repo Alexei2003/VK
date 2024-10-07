@@ -3,7 +3,6 @@ using MyCustomClasses.Tags;
 using MyCustomClasses.Tags.Editors;
 using MyCustomClasses.VK;
 using System.Net;
-using System.Runtime.InteropServices;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 
@@ -13,11 +12,9 @@ namespace RepetitionOfPostsBot.BotTask
     {
         private const string GROUP_SHORT_URL = "@anime_art_for_every_day";
         private const long GROUP_ID = 220199532;
-        private static TimeSpan TIME_SLEEP = TimeSpan.FromMinutes(15);
-        private const int BEGIN_NOT_POST = 0;
-        private const int END_NOT_POST = 20;
+        private static readonly TimeSpan TIME_SLEEP = TimeSpan.FromMinutes(15);
 
-        private static string[] tagsNotRepost = ["Угадайка"];
+        private static readonly string[] tagsNotRepost = ["Угадайка"];
 
         public static ulong GetRandomID(ulong max)
         {
@@ -42,12 +39,6 @@ namespace RepetitionOfPostsBot.BotTask
             {
                 try
                 {
-                    if (BEGIN_NOT_POST < DateTime.UtcNow.Minute && DateTime.UtcNow.Minute < END_NOT_POST)
-                    {
-                        Thread.Sleep(TIME_SLEEP);
-                        continue;
-                    }
-
                     // Получение первого отложеного поста
                     wall = api.Wall.Get(new WallGetParams
                     {
@@ -56,7 +47,7 @@ namespace RepetitionOfPostsBot.BotTask
                         Filter = WallFilter.Postponed
                     });
 
-                    if (wall.WallPosts.Count < 1 || ((wall.WallPosts.First().Date.Value.Hour) != (DateTime.UtcNow.AddHours(1).Hour)))
+                    if (wall.WallPosts.Count < 1 || ((wall.WallPosts.First().Date.Value.Hour) > (DateTime.UtcNow.AddHours(1).Hour)))
                     {
                         // Получение самого свежего поста
                         wall = api.Wall.Get(new WallGetParams
@@ -175,9 +166,9 @@ namespace RepetitionOfPostsBot.BotTask
                             PublishDate = firstPostData.Value.AddHours(1),
 
                         });
-
-                        Thread.Sleep(TimeSpan.FromMinutes(30));
                     }
+
+                    Thread.Sleep(TimeSpan.FromMinutes(30));
                 }
                 catch (Exception e)
                 {
