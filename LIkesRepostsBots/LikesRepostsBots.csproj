@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Classes\gqzo0n4r.u1j~" />
     <None Remove="Classes\SpamBot.cs~RF1ec7853.TMP" />
   </ItemGroup>
 

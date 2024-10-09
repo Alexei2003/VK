@@ -1,5 +1,6 @@
 ﻿using MyCustomClasses;
 using MyCustomClasses.VK;
+using System.Runtime.CompilerServices;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 using VkNet.Utils;
@@ -139,11 +140,25 @@ namespace LikesRepostsBots.Classes
             }
         }
 
-        private void WorkWithFriends(int addCountFriends)
+        private void WorkWithFriends(BotsWorksParams botsParams)
         {
+            var addCountFriends = botsParams.AddFriendsCount;
+
             ClearSpaceForFriends(addCountFriends);
 
-            AddToFriendsFromRecomendedList(addCountFriends);
+            var friends = api.Friends.Get(new FriendsGetParams
+            {
+                Order = FriendsOrder.Random
+            });
+
+            if (friends.TotalCount > 10 || botsParams.GroupIdForGood == null)
+            {
+                AddToFriendsFromRecomendedList(addCountFriends);
+            }
+            else
+            {
+                AddToFriendsFromGoodGroup(addCountFriends, botsParams.GroupIdForGood.Value);
+            }
         }
 
         private void ClearSpaceForFriends(int addCountFriends)
@@ -205,25 +220,70 @@ namespace LikesRepostsBots.Classes
                     }
                 }
 
-                if (people.Add(suggestions[index].Id))
+                if (AddToFriends(suggestions[index].Id))
                 {
-                    if (!IsMassAccountSleep(suggestions[index].Id) && api.Friends.Add(suggestions[index].Id) != null)
+                    numbNewFriends++;
+                }
+            }
+        }
+
+        private void AddToFriendsFromGoodGroup(int addCountFriends, long groupId)
+        {
+            int offset = 0;
+            var members = api.Groups.GetMembers(new GroupsGetMembersParams
+            {
+                GroupId = groupId.ToString()
+            });
+            SleepAfterAction();
+
+            int index = RandomStatic.Rand.Next(100);
+            for (int numbNewFriends = 0; numbNewFriends < addCountFriends; index += (1 + RandomStatic.Rand.Next(100)))
+            {
+                if (index == members.Count)
+                {
+                    offset += members.Count;
+                    members = api.Groups.GetMembers(new GroupsGetMembersParams
                     {
-                        SleepAfterAction();
-                        numbNewFriends++;
-                    }
-                    else
+                        GroupId = groupId.ToString()
+                    });
+                    SleepAfterAction();
+                    index = 0;
+
+                    if (members.Count == 0)
                     {
-                        api.Account.Ban(suggestions[index].Id);
-                        SleepAfterAction();
+                        return;
                     }
+                }
+
+                if (AddToFriends(members[index].Id, true))
+                {
+                    numbNewFriends++;
+                }
+            }
+        }
+
+        private bool AddToFriends(long userId, bool skipPeopleCheck = false)
+        {
+            if (people.Add(userId) || skipPeopleCheck)
+            {
+                if (!IsMassAccountSleep(userId) && api.Friends.Add(userId) != null)
+                {
+                    SleepAfterAction();
+                    return true;
                 }
                 else
                 {
-                    api.Account.Ban(suggestions[index].Id);
+                    api.Account.Ban(userId);
                     SleepAfterAction();
                 }
             }
+            else
+            {
+                api.Account.Ban(userId);
+                SleepAfterAction();
+            }
+
+            return false;
         }
 
         private bool IsMassAccountSleep(long personId)
@@ -360,7 +420,7 @@ namespace LikesRepostsBots.Classes
                             }
                             break;
                         case 1:
-                            WorkWithFriends(botParams.AddFriendsCount);
+                            WorkWithFriends(botParams);
                             break;
                         case 2:
                             if (botParams.ClearFriends > 0)
