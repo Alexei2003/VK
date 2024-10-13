@@ -35,13 +35,13 @@ namespace LikesRepostsBots
             var bots = new BotsList(accessTokensAndNames, people);
 
 
-            const int TIME_WORK = 6 * RandomStatic._1HOUR;
-            const int TIME_WORK_RANDOM = 6 * RandomStatic._1HOUR;
+            const int TIME_WORK = 3 * RandomStatic._1HOUR;
+            const int TIME_WORK_RANDOM = 3 * RandomStatic._1HOUR;
             int count = 0;
             int stepBetweenBots = TIME_WORK / bots.Count;
             int stepBetweenBotsRandom = TIME_WORK_RANDOM / bots.Count;
             var indexRip = new Stack<int>(bots.Count);
-            bool addFriend = true;
+            int addFriend = 1;
             while (true)
             {
                 try
@@ -66,14 +66,14 @@ namespace LikesRepostsBots
                             break;
                     }
 
-                    if (addFriend)
+                    if (addFriend <= 0)
                     {
-                        addFriend = false;
-                        botParams.AddFriendsCount = 1;
+                        addFriend = 4;
+                        botParams.AddFriendsCount = RandomStatic.Rand.Next(4);
                     }
                     else
                     {
-                        addFriend = true;
+                        addFriend--;
                         botParams.AddFriendsCount = 0;
                     }
 

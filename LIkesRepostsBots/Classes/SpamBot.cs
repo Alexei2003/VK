@@ -79,15 +79,24 @@ namespace LikesRepostsBots.Classes
                 {
                     repostResult = api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", null, false);
                     SleepAfterAction();
+                    api.Likes.Add(new LikesAddParams
+                    {
+                        Type = LikeObjectType.Post,
+                        ItemId = Convert.ToInt64(repostResult.PostId),
+                    }); 
+                    SleepAfterAction();
                 }
-                // Лайк оригинала
-                api.Likes.Add(new LikesAddParams
+                else
                 {
-                    Type = LikeObjectType.Post,
-                    OwnerId = wall.WallPosts[numbPost].OwnerId,
-                    ItemId = Convert.ToInt64(wall.WallPosts[numbPost].Id),
-                });
-                SleepAfterAction();
+                    // Лайк оригинала
+                    api.Likes.Add(new LikesAddParams
+                    {
+                        Type = LikeObjectType.Post,
+                        OwnerId = wall.WallPosts[numbPost].OwnerId,
+                        ItemId = Convert.ToInt64(wall.WallPosts[numbPost].Id),
+                    });
+                    SleepAfterAction();
+                }
 
                 // Выбор в опросе
                 foreach (var attachment in wall.WallPosts[numbPost].Attachments)
