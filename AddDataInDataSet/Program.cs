@@ -16,24 +16,24 @@
 
                 var thWrite = new Thread(WriteCountMake);
 
-                int[] count = [0];
+                int? count = 0;
 
                 switch (action)
                 {
                     case "1":
-                        count[0] = 0;
+                        count = 0;
                         thWrite.Start(count);
                         WorkWithDirectory.MoveDataFromNewToReady(count);
                         Thread.Sleep(100);
-                        count[0] = -1;
+                        count = -1;
                         thWrite.Join();
                         break;
                     case "2":
-                        count[0] = 0;
+                        count = 0;
                         thWrite.Start(count);
                         WorkWithDirectory.MoveDataToOutput(count);
                         Thread.Sleep(100);
-                        count[0] = -1;
+                        count = -1;
                         thWrite.Join();
                         break;
                     case "exit":
@@ -47,13 +47,11 @@
 
         private static void WriteCountMake(object obj)
         {
-            var count = (int[])obj;
-
             int intWrite;
 
             while (true)
             {
-                intWrite = count[0];
+                intWrite = ((int?)obj).Value;
 
                 if (intWrite == -1)
                 {

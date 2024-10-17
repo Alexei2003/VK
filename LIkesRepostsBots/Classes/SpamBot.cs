@@ -216,7 +216,7 @@ namespace LikesRepostsBots.Classes
             int index = 0;
             for (int numbNewFriends = 0; numbNewFriends < addCountFriends; index++)
             {
-                if (index == suggestions.Count)
+                if (index >= suggestions.Count)
                 {
                     offset += suggestions.Count;
                     suggestions = api.Friends.GetSuggestions(offset: offset);
@@ -245,10 +245,10 @@ namespace LikesRepostsBots.Classes
             });
             SleepAfterAction();
 
-            int index = RandomStatic.Rand.Next(100);
-            for (int numbNewFriends = 0; numbNewFriends < addCountFriends; index += (1 + RandomStatic.Rand.Next(100)))
+            int index = RandomStatic.Rand.Next(30);
+            for (int numbNewFriends = 0; numbNewFriends < addCountFriends; index += (1 + RandomStatic.Rand.Next(30)))
             {
-                if (index == members.Count)
+                if (index >= members.Count)
                 {
                     offset += members.Count;
                     members = api.Groups.GetMembers(new GroupsGetMembersParams
@@ -260,7 +260,8 @@ namespace LikesRepostsBots.Classes
 
                     if (members.Count == 0)
                     {
-                        return;
+                        offset=0;
+                        continue;
                     }
                 }
 
