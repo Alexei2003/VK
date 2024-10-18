@@ -58,19 +58,19 @@ namespace AddDataInDataSet
             return dir.Split('\\', StringSplitOptions.RemoveEmptyEntries).Last();
         }
 
-        public static void MoveDataFromNewToReady(int[] count)
+        public static void MoveDataFromNewToReady(int? count)
         {
             var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + NEW_PATH);
 
             Parallel.ForEach(tagDirectories, tag =>
             {
-                count[0]++;
+                count++;
 
                 DirectoryMove(tag, MAIN_DIRECTORY + "\\" + ORIGINAL_PATH + "\\" + GetDirectoryName(tag), true, true);
             });
         }
 
-        public static void MoveDataToOutput(int[] count)
+        public static void MoveDataToOutput(int? count)
         {
             var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + ORIGINAL_PATH);
 
@@ -102,7 +102,7 @@ namespace AddDataInDataSet
 
             Parallel.ForEach(tagDirectories, tag =>
             {
-                count[0]++;
+                count++;
 
                 var tagDirectoryFiles = Directory.GetFiles(tag);
                 foreach (var imagePath in tagDirectoryFiles)
