@@ -1,6 +1,7 @@
 ﻿using DataSet;
 using System.Drawing;
 using System.Drawing.Imaging;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AddDataInDataSet
 {
@@ -58,19 +59,19 @@ namespace AddDataInDataSet
             return dir.Split('\\', StringSplitOptions.RemoveEmptyEntries).Last();
         }
 
-        public static void MoveDataFromNewToReady(int? count)
+        public static void MoveDataFromNewToOriginal(int[] count)
         {
             var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + NEW_PATH);
 
             Parallel.ForEach(tagDirectories, tag =>
             {
-                count++;
+                count[0]++;
 
                 DirectoryMove(tag, MAIN_DIRECTORY + "\\" + ORIGINAL_PATH + "\\" + GetDirectoryName(tag), true, true);
             });
         }
 
-        public static void MoveDataToOutput(int? count)
+        public static void MoveDataToOutput(int[] count)
         {
             var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + ORIGINAL_PATH);
 
@@ -102,7 +103,7 @@ namespace AddDataInDataSet
 
             Parallel.ForEach(tagDirectories, tag =>
             {
-                count++;
+                count[0]++;
 
                 var tagDirectoryFiles = Directory.GetFiles(tag);
                 foreach (var imagePath in tagDirectoryFiles)
@@ -140,6 +141,59 @@ namespace AddDataInDataSet
                 }
             });
 
+        }
+
+        public static void FixDataInOriginal(int[] count)
+        {
+            var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + ORIGINAL_PATH);
+
+            var tagList = new TagsList();
+
+            Parallel.ForEach(tagDirectories, tag =>
+            {
+                count[0]++;
+
+                var name = GetDirectoryName(tag);
+
+                if (tagList.ContainTag(name)) 
+                { 
+                    if(name == "#Original")
+                    {
+                        var tageInfo = new DirectoryInfo(tag);
+
+                        var files = tageInfo.GetFiles();
+
+                        var pathBase = MAIN_DIRECTORY + "\\" + ORIGINAL_PATH + "\\" + "#Original_";
+                        while (files.Length >= 200)
+                        {
+                            var pathNewOriginal = pathBase + DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss.fff");
+                            if (Directory.Exists(pathNewOriginal))
+                            {
+                                Thread.Sleep(100);
+                                continue;
+                            }
+
+                            Directory.CreateDirectory(pathNewOriginal);
+                            string pathOld;
+                            for (int i = 0; i < 200; i++) 
+                            {
+                                pathOld = files[i].FullName;
+                                files[i].MoveTo(pathNewOriginal + "\\" + files[i].Name);
+                                File.Delete(pathOld);
+                             }
+
+                            files = tageInfo.GetFiles();
+                        }
+                    }
+                }
+                else
+                {
+                    if (!name.Contains("#Original_"))
+                    {
+                        Directory.Delete(tag, true);
+                    }
+                }
+            });
         }
     }
 }

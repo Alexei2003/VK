@@ -9,8 +9,8 @@ namespace DownloaderDataSetPhoto.Downloaders
     internal sealed class DownloaderDataSetPhotoFromVK
     {
         private readonly VkApiCustom api;
-        private readonly TagsLIst tagList;
-        public DownloaderDataSetPhotoFromVK(VkApiCustom api, TagsLIst tagList)
+        private readonly TagsList tagList;
+        public DownloaderDataSetPhotoFromVK(VkApiCustom api, TagsList tagList)
         {
             this.api = api;
             this.tagList = tagList;

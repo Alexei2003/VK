@@ -1,6 +1,5 @@
 ﻿using MyCustomClasses;
 using MyCustomClasses.VK;
-using System.Runtime.CompilerServices;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 using VkNet.Utils;
@@ -83,7 +82,7 @@ namespace LikesRepostsBots.Classes
                     {
                         Type = LikeObjectType.Post,
                         ItemId = Convert.ToInt64(repostResult.PostId),
-                    }); 
+                    });
                     SleepAfterAction();
                 }
                 else
@@ -260,7 +259,7 @@ namespace LikesRepostsBots.Classes
 
                     if (members.Count == 0)
                     {
-                        offset=0;
+                        offset = 0;
                         continue;
                     }
                 }

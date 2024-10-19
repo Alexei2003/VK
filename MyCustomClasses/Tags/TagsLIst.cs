@@ -3,22 +3,22 @@ using System.Collections.Concurrent;
 
 namespace MyCustomClasses.Tags
 {
-    public sealed class TagsLIst
+    public sealed class TagsList
     {
-        private List<string> tagsList;
+        private List<string> tagsList = null;
 
-        public TagsLIst()
+        public TagsList()
         {
-            tagsList = [];
+            Load();
         }
 
-        public void SaveDictionary()
+        public void Save()
         {
             string json = JsonConvert.SerializeObject(tagsList);
             File.WriteAllText("TagsDictionary.txt", json);
         }
 
-        public void LoadDictionary()
+        public void Load()
         {
             try
             {
@@ -27,8 +27,15 @@ namespace MyCustomClasses.Tags
                 {
                     tagsList = JsonConvert.DeserializeObject<List<string>>(json);
                 }
+                else
+                {
+                    tagsList = new List<string>();
+                }
             }
-            catch { }
+            catch 
+            {
+                tagsList = new List<string>();
+            }
         }
 
         public ConcurrentStack<string> FindLast(string tagsGet)

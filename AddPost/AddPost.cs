@@ -12,7 +12,7 @@ namespace AddPost
         private string groupShortUrl = "@anime_art_for_every_day";
 
         private Int64 groupId;
-        private readonly TagsLIst tagList = new();
+        private readonly TagsList tagList = new();
         private float percentOriginalTag = 0.6f;
         private List<ImagesWithTag> imageList = [];
         private int imageIndex = -1;
@@ -29,7 +29,6 @@ namespace AddPost
             InitializeComponent();
             var accessTokens = GosUslugi.GetAccessTokens();
             api = new VkApiCustom(accessTokens.GetValueOrDefault(GosUslugi.VK));
-            tagList.LoadDictionary();
             groupId = Convert.ToInt64(tbGroupId.Text);
             cbTimeBetweenPost.SelectedIndex = 1;
             cbPercentOriginalTag.SelectedIndex = 5;
@@ -297,7 +296,7 @@ namespace AddPost
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            tagList.SaveDictionary();
+            tagList.Save();
         }
 
         private void cbTimeBetweenPost_SelectedIndexChanged(object sender, EventArgs e)

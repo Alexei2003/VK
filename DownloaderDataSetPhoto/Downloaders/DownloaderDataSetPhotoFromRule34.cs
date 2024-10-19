@@ -46,7 +46,7 @@ namespace DownloaderDataSetPhoto.Downloaders
             }
         }
 
-            private static void SavePhoto(string url, string currentTag, float percentOriginalTag, string fileName, object lockNeuralNetworkResult, WebClient wc)
+        private static void SavePhoto(string url, string currentTag, float percentOriginalTag, string fileName, object lockNeuralNetworkResult, WebClient wc)
         {
             Downloader.DownloadPhoto(wc, url, currentTag, percentOriginalTag, fileName, lockNeuralNetworkResult);
         }

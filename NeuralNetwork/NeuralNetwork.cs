@@ -32,7 +32,7 @@ namespace NeuralNetwork
             var scores = resultArts.Score;
 
             resulTag = resultArts.PredictedLabel;
-            if (scores.Max() < percentOriginalTag || resulTag.Contains(".#Original"))
+            if (scores.Max() < percentOriginalTag || resulTag.Contains("#Original_"))
             {
                 resulTag = "#Original";
             };

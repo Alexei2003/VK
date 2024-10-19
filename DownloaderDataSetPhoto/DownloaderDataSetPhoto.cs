@@ -9,7 +9,7 @@ namespace DownloaderDataSetPhoto
     public partial class DownloaderDataSetPhoto : Form
     {
         private Int64 groupId;
-        private readonly TagsLIst tagList = new();
+        private readonly TagsList tagList = new();
         private float percentOriginalTag = 0.6f;
         private readonly VkApiCustom api;
 
@@ -18,7 +18,6 @@ namespace DownloaderDataSetPhoto
             InitializeComponent();
             var accessTokens = GosUslugi.GetAccessTokens();
             api = new VkApiCustom(accessTokens.GetValueOrDefault(GosUslugi.VK));
-            tagList.LoadDictionary();
             groupId = 220199532;
             HidePanels(pRule34);
 

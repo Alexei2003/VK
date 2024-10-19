@@ -2,6 +2,8 @@
 {
     internal class Program
     {
+        static int[] count = [1];
+
         private static void Main()
         {
             while (true)
@@ -10,30 +12,37 @@
                     "Выбор действия\n" +
                     "1.Переместить из New\n" +
                     "2.Генерация искуственных данных\n" +
+                    "3.Исправление Original\n" +
                     "Выход (напишите exit)\n");
 
                 var action = Console.ReadLine();
 
                 var thWrite = new Thread(WriteCountMake);
 
-                int? count = 0;
-
                 switch (action)
                 {
                     case "1":
-                        count = 0;
-                        thWrite.Start(count);
-                        WorkWithDirectory.MoveDataFromNewToReady(count);
+                        count[0] = 0;
+                        thWrite.Start();
+                        WorkWithDirectory.MoveDataFromNewToOriginal(count);
                         Thread.Sleep(100);
-                        count = -1;
+                        count[0] = -1;
                         thWrite.Join();
                         break;
                     case "2":
-                        count = 0;
-                        thWrite.Start(count);
+                        count[0] = 0;
+                        thWrite.Start();
                         WorkWithDirectory.MoveDataToOutput(count);
                         Thread.Sleep(100);
-                        count = -1;
+                        count[0] = -1;
+                        thWrite.Join();
+                        break;
+                    case "3":
+                        count[0] = 0;
+                        thWrite.Start();
+                        WorkWithDirectory.FixDataInOriginal(count);
+                        Thread.Sleep(100);
+                        count[0] = -1;
                         thWrite.Join();
                         break;
                     case "exit":
@@ -45,13 +54,13 @@
             }
         }
 
-        private static void WriteCountMake(object obj)
+        private static void WriteCountMake()
         {
             int intWrite;
 
             while (true)
             {
-                intWrite = ((int?)obj).Value;
+                intWrite = count[0];
 
                 if (intWrite == -1)
                 {

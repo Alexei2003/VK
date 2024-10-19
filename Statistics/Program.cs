@@ -5,12 +5,12 @@ using MyCustomClasses.Tags.Editors;
 using MyCustomClasses.VK;
 using VkNet.Enums.StringEnums;
 
-internal class Program
+internal static class Program
 {
     private const long GROUP_ID = 220199532;
     private const int SHIFT_POSTS = 100;
 
-    private static void Main(string[] args)
+    private static void Main()
     {
         var accessTokens = GosUslugi.GetAccessTokens();
 
