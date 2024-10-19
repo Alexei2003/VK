@@ -14,6 +14,8 @@ namespace DownloaderDataSetPhoto.Downloaders
             using var httpClient = new HttpClient(httpClientHandler);
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36");
 
+            url += "1girls+-completely_nude+-gangbang+-imminent_sex+-sex+-penis+-condom+-cum+-futa+-ai_generated+-torn_clothing+-1boy+-rape+-overeating+-filled_condom+-big_belly+-bdsm+-gigantic_breasts+-hyper_breasts+-hyper_thighs+-hyper_ass+-chubby";
+
             try
             {
                 for (var i = 0; i < 10; i++)
@@ -29,12 +31,22 @@ namespace DownloaderDataSetPhoto.Downloaders
                     {
                         foreach (var img in imageNodes)
                         {
-                            var src = img.GetAttributeValue("src", string.Empty);
-                            var alt = img.GetAttributeValue("alt", string.Empty);
-                            if (alt.Contains("futa") || alt.Length == 0 || alt.Split('(', StringSplitOptions.RemoveEmptyEntries).Length > 2)
+                            if (!img.OuterHtml.Contains("https"))
                             {
                                 continue;
                             }
+
+                            if (!img.OuterHtml.Contains("wimg.rule34.xxx"))
+                            {
+                                continue;
+                            }
+
+                            var src = img.GetAttributeValue("src", string.Empty);
+/*                            var alt = img.GetAttributeValue("alt", string.Empty);
+                            if (alt.Contains("futa") || alt.Length == 0 || alt.Split('(', StringSplitOptions.RemoveEmptyEntries).Length > 2)
+                            {
+                                continue;
+                            }*/
                             SavePhoto(src, currentTag, percentOriginalTag, fileName, lockNeuralNetworkResult, wc);
                         }
                     }
