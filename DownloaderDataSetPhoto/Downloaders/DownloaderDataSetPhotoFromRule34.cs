@@ -14,7 +14,9 @@ namespace DownloaderDataSetPhoto.Downloaders
             using var httpClient = new HttpClient(httpClientHandler);
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36");
 
-            url += "1girls+-completely_nude+-gangbang+-imminent_sex+-sex+-penis+-condom+-cum+-futa+-ai_generated+-torn_clothing+-1boy+-rape+-overeating+-filled_condom+-big_belly+-bdsm+-gigantic_breasts+-hyper_breasts+-hyper_thighs+-hyper_ass+-chubby";
+            url += "1girls+-completely_nude+-gangbang+-imminent_sex+-sex+-penis+-condom+-cum+-futa+-torn_clothing+-1boy+-rape+-overeating+-filled_condom+-big_belly+-bdsm+-gigantic_breasts" +
+                   "+-hyper_breasts+-hyper_thighs+-hyper_ass+-chubby+-anal+-2girls+-cosplay+-text+-hypnosis+-slave+-pussy+-nose_hook+-2boys+-penis_over_eyes+-multiple_penises+-anal_insertion+-dildo" +
+                   "+-object_insertion+-sex_toys+-bestiality+-licking_penis";
 
             try
             {
@@ -42,11 +44,6 @@ namespace DownloaderDataSetPhoto.Downloaders
                             }
 
                             var src = img.GetAttributeValue("src", string.Empty);
-/*                            var alt = img.GetAttributeValue("alt", string.Empty);
-                            if (alt.Contains("futa") || alt.Length == 0 || alt.Split('(', StringSplitOptions.RemoveEmptyEntries).Length > 2)
-                            {
-                                continue;
-                            }*/
                             SavePhoto(src, currentTag, percentOriginalTag, fileName, lockNeuralNetworkResult, wc);
                         }
                     }
