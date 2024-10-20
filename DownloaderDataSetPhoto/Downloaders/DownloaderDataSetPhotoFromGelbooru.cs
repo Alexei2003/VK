@@ -5,7 +5,7 @@ namespace DownloaderDataSetPhoto.Downloaders
 {
     internal class DownloaderDataSetPhotoFromGelbooru
     {
-        public static void SavePhotos(string url, string currentTag, float percentOriginalTag, string fileName, object lockNeuralNetworkResult)
+        public static void SavePhotos(string url, string currentTag, float percentOriginalTag, string fileName)
         {
             url += "1girls+-completely_nude+-gangbang+-imminent_sex+-sex+-penis+-condom+-cum+-futa+-torn_clothing+-1boy+-rape+-overeating+-filled_condom+-big_belly+-bdsm+-gigantic_breasts" +
                    "+-hyper_breasts+-hyper_thighs+-hyper_ass+-chubby+-anal+-2girls+-cosplay+-text+-hypnosis+-slave+-pussy+-nose_hook+-2boys+-penis_over_eyes+-multiple_penises+-anal_insertion+-dildo" +
@@ -46,7 +46,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                             }
 
                             var src = img.GetAttributeValue("src", string.Empty);
-                            SavePhoto(src, currentTag, percentOriginalTag, fileNameBuff, lockNeuralNetworkResult, wc);
+                            SavePhoto(src, currentTag, percentOriginalTag, fileNameBuff, wc);
                         }
                     }
                 });
@@ -57,9 +57,9 @@ namespace DownloaderDataSetPhoto.Downloaders
             }
         }
 
-        private static void SavePhoto(string url, string currentTag, float percentOriginalTag, string fileName, object lockNeuralNetworkResult, WebClient wc)
+        private static void SavePhoto(string url, string currentTag, float percentOriginalTag, string fileName, WebClient wc)
         {
-            Downloader.DownloadPhoto(wc, url, currentTag, percentOriginalTag, fileName, lockNeuralNetworkResult);
+            Downloader.DownloadPhoto(wc, url, currentTag, percentOriginalTag, fileName);
         }
     }
 }

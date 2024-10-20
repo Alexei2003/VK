@@ -138,11 +138,10 @@ namespace DownloaderDataSetPhoto
 
                     try
                     {
-                        var lockNeuralNetworkResult = new object();
                         var tags = tbTag.Text.Split(separator, StringSplitOptions.RemoveEmptyEntries);
                         Parallel.For(0, tags.Length, i =>
                         {
-                            downloaderVK.SavePhotosFromNewsfeed(tags[i], shift, count, groupId, percentOriginalTag, $"DataSet_{i}", lockNeuralNetworkResult);
+                            downloaderVK.SavePhotosFromNewsfeed(tags[i], shift, count, groupId, percentOriginalTag, $"DataSet_{i}");
                         });
                     }
                     catch (Exception e)
@@ -191,10 +190,9 @@ namespace DownloaderDataSetPhoto
 
                     try
                     {
-                        var lockNeuralNetworkResult = new object();
                         var tag = tbTag.Text;
                         var url = tbGelbooruUrl.Text;
-                        DownloaderDataSetPhotoFromGelbooru.SavePhotos(url, tag, percentOriginalTag, "DataSet_", lockNeuralNetworkResult);
+                        DownloaderDataSetPhotoFromGelbooru.SavePhotos(url, tag, percentOriginalTag, "DataSet_");
                     }
                     catch (Exception e)
                     {

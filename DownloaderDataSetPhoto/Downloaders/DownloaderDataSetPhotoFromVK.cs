@@ -16,7 +16,7 @@ namespace DownloaderDataSetPhoto.Downloaders
             this.tagList = tagList;
         }
 
-        public void SavePhotosFromNewsfeed(string currentTag, int shiftPost, int countPhoto, long ignorGroupId, float percentOriginalTag, string fileName, object lockNeuralNetworkResult)
+        public void SavePhotosFromNewsfeed(string currentTag, int shiftPost, int countPhoto, long ignorGroupId, float percentOriginalTag, string fileName)
         {
             using var wc = new WebClient();
             NewsSearchResult newsfeedPosts;
@@ -43,7 +43,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                         }
                         try
                         {
-                            SavePhotos(currentTag, post, ignorGroupId, percentOriginalTag, fileName, lockNeuralNetworkResult, wc);
+                            SavePhotos(currentTag, post, ignorGroupId, percentOriginalTag, fileName, wc);
                         }
                         catch (Exception e)
                         {
@@ -76,7 +76,7 @@ namespace DownloaderDataSetPhoto.Downloaders
         }
 
         private static readonly char[] separator = [' ', '@', ',', '\r', '\n'];
-        private void SavePhotos(string currentTag, NewsSearchItem post, long groupId, float percentOriginalTag, string fileName, object lockNeuralNetworkResult, WebClient wc)
+        private void SavePhotos(string currentTag, NewsSearchItem post, long groupId, float percentOriginalTag, string fileName, WebClient wc)
         {
             if (post.OwnerId == -1 * groupId)
             {
@@ -116,7 +116,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                 return;
             }
 
-            Downloader.DownloadPhoto(wc, photo.Sizes[2].Url.ToString(), currentTag, percentOriginalTag, fileName, lockNeuralNetworkResult);
+            Downloader.DownloadPhoto(wc, photo.Sizes[2].Url.ToString(), currentTag, percentOriginalTag, fileName);
         }
     }
 }

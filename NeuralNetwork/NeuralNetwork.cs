@@ -6,6 +6,8 @@ namespace NeuralNetwork
 {
     public static class NeuralNetwork
     {
+        private static object lockNeuralNetworkResult = new();
+
         public static string NeuralNetworkResult(Bitmap image, float percentOriginalTag)
         {
             string resulTag;
@@ -20,14 +22,18 @@ namespace NeuralNetwork
                 imageBytes = stream.ToArray();
             }
 
-            // Подача данных в модель
-            var sampleData = new ComputerVision.ModelInput()
+            ComputerVision.ModelOutput resultArts;
+            lock (lockNeuralNetworkResult)
             {
-                ImageSource = imageBytes,
-            };
+                // Подача данных в модель
+                var sampleData = new ComputerVision.ModelInput()
+                {
+                    ImageSource = imageBytes,
+                };
 
-            //Load model and predict output
-            var resultArts = ComputerVision.Predict(sampleData);
+                //Load model and predict output
+                resultArts = ComputerVision.Predict(sampleData);
+            }
 
             var scores = resultArts.Score;
 
