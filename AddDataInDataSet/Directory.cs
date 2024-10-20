@@ -164,7 +164,7 @@ namespace AddDataInDataSet
                         var files = tageInfo.GetFiles();
 
                         var pathBase = MAIN_DIRECTORY + "\\" + ORIGINAL_PATH + "\\" + "#Original_";
-                        while (files.Length >= 200)
+                        while (files.Length >= 500)
                         {
                             var pathNewOriginal = pathBase + DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss.fff");
                             if (Directory.Exists(pathNewOriginal))
@@ -175,7 +175,7 @@ namespace AddDataInDataSet
 
                             Directory.CreateDirectory(pathNewOriginal);
                             string pathOld;
-                            for (int i = 0; i < 200; i++) 
+                            for (int i = 0; i < 500; i++) 
                             {
                                 pathOld = files[i].FullName;
                                 files[i].MoveTo(pathNewOriginal + "\\" + files[i].Name);

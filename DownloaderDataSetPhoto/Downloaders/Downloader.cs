@@ -21,21 +21,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                 }
             }
 
-            var filesList = Directory.GetFiles("DATA_SET\\" + currentTag);
-            bool similar = false;
-            foreach (var file in filesList)
-            {
-                using var tmpImage = new Bitmap(file);
-                if (DataSetPhoto.IsSimilarPhoto(DataSetPhoto.ChangeResolution224224(image), DataSetPhoto.ChangeResolution224224(tmpImage)))
-                {
-                    similar = true;
-                    break;
-                }
-            }
-            if (!similar)
-            {
-                DataSetPhoto.Save(image, currentTag);
-            }
+            DataSetPhoto.Save(image, currentTag);
         }
     }
 }

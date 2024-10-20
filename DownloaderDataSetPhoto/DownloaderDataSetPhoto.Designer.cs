@@ -42,20 +42,20 @@
             textBox1 = new TextBox();
             pVK = new Panel();
             pBackgroundImageCopy = new Panel();
-            pRule34 = new Panel();
-            tbRule34Url = new TextBox();
+            pGelbooru = new Panel();
+            tbGelbooruUrl = new TextBox();
             textBox4 = new TextBox();
             bDownloadPhotosDanbooru = new Button();
             textBox2 = new TextBox();
             tBackgroundImageCopy = new System.Windows.Forms.Timer(components);
             bBackgroundImageCopy = new Button();
             bVK = new Button();
-            bRule34 = new Button();
+            bGelbooru = new Button();
             cbPercentOriginalTag = new ComboBox();
             tbPercentOriginalTag = new TextBox();
             pVK.SuspendLayout();
             pBackgroundImageCopy.SuspendLayout();
-            pRule34.SuspendLayout();
+            pGelbooru.SuspendLayout();
             SuspendLayout();
             // 
             // tbTag
@@ -183,24 +183,24 @@
             pBackgroundImageCopy.Size = new Size(158, 200);
             pBackgroundImageCopy.TabIndex = 40;
             // 
-            // pRule34
+            // pGelbooru
             // 
-            pRule34.BorderStyle = BorderStyle.FixedSingle;
-            pRule34.Controls.Add(tbRule34Url);
-            pRule34.Controls.Add(textBox4);
-            pRule34.Controls.Add(bDownloadPhotosDanbooru);
-            pRule34.Controls.Add(textBox2);
-            pRule34.Location = new Point(188, 101);
-            pRule34.Name = "pRule34";
-            pRule34.Size = new Size(158, 200);
-            pRule34.TabIndex = 41;
+            pGelbooru.BorderStyle = BorderStyle.FixedSingle;
+            pGelbooru.Controls.Add(tbGelbooruUrl);
+            pGelbooru.Controls.Add(textBox4);
+            pGelbooru.Controls.Add(bDownloadPhotosDanbooru);
+            pGelbooru.Controls.Add(textBox2);
+            pGelbooru.Location = new Point(188, 101);
+            pGelbooru.Name = "pGelbooru";
+            pGelbooru.Size = new Size(158, 200);
+            pGelbooru.TabIndex = 41;
             // 
-            // tbRule34Url
+            // tbGelbooruUrl
             // 
-            tbRule34Url.Location = new Point(3, 65);
-            tbRule34Url.Name = "tbRule34Url";
-            tbRule34Url.Size = new Size(150, 25);
-            tbRule34Url.TabIndex = 46;
+            tbGelbooruUrl.Location = new Point(3, 65);
+            tbGelbooruUrl.Name = "tbGelbooruUrl";
+            tbGelbooruUrl.Size = new Size(150, 25);
+            tbGelbooruUrl.TabIndex = 46;
             // 
             // textBox4
             // 
@@ -228,7 +228,7 @@
             textBox2.ReadOnly = true;
             textBox2.Size = new Size(150, 25);
             textBox2.TabIndex = 36;
-            textBox2.Text = "Rule34";
+            textBox2.Text = "Gelbooru";
             // 
             // tBackgroundImageCopy
             // 
@@ -255,15 +255,15 @@
             bVK.UseVisualStyleBackColor = true;
             bVK.Click += bVK_Click;
             // 
-            // bRule34
+            // bGelbooru
             // 
-            bRule34.Location = new Point(12, 199);
-            bRule34.Name = "bRule34";
-            bRule34.Size = new Size(150, 43);
-            bRule34.TabIndex = 43;
-            bRule34.Text = "Rule34";
-            bRule34.UseVisualStyleBackColor = true;
-            bRule34.Click += bRule34_Click;
+            bGelbooru.Location = new Point(12, 199);
+            bGelbooru.Name = "bGelbooru";
+            bGelbooru.Size = new Size(150, 43);
+            bGelbooru.TabIndex = 43;
+            bGelbooru.Text = "Gelbooru";
+            bGelbooru.UseVisualStyleBackColor = true;
+            bGelbooru.Click += bGelbooru_Click;
             // 
             // cbPercentOriginalTag
             // 
@@ -294,12 +294,12 @@
             ClientSize = new Size(360, 314);
             Controls.Add(cbPercentOriginalTag);
             Controls.Add(tbPercentOriginalTag);
-            Controls.Add(bRule34);
+            Controls.Add(bGelbooru);
             Controls.Add(bVK);
             Controls.Add(bBackgroundImageCopy);
             Controls.Add(textBox3);
             Controls.Add(tbTag);
-            Controls.Add(pRule34);
+            Controls.Add(pGelbooru);
             Controls.Add(pBackgroundImageCopy);
             Controls.Add(pVK);
             Name = "DownloaderDataSetPhoto";
@@ -308,8 +308,8 @@
             pVK.PerformLayout();
             pBackgroundImageCopy.ResumeLayout(false);
             pBackgroundImageCopy.PerformLayout();
-            pRule34.ResumeLayout(false);
-            pRule34.PerformLayout();
+            pGelbooru.ResumeLayout(false);
+            pGelbooru.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -329,15 +329,15 @@
         private TextBox textBox1;
         private Panel pVK;
         private Panel pBackgroundImageCopy;
-        private Panel pRule34;
+        private Panel pGelbooru;
         private TextBox textBox2;
         private System.Windows.Forms.Timer tBackgroundImageCopy;
         private Button bBackgroundImageCopy;
         private Button bVK;
-        private Button bRule34;
+        private Button bGelbooru;
         private Button bDownloadPhotosDanbooru;
         private TextBox textBox4;
-        private TextBox tbRule34Url;
+        private TextBox tbGelbooruUrl;
         private ComboBox cbPercentOriginalTag;
         private TextBox tbPercentOriginalTag;
     }
