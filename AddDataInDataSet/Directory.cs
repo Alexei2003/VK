@@ -1,7 +1,6 @@
 ﻿using DataSet;
 using System.Drawing;
 using System.Drawing.Imaging;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AddDataInDataSet
 {
@@ -14,43 +13,40 @@ namespace AddDataInDataSet
 
         private static void DirectoryMove(string source, string destination, bool checkSimilar, bool deleteOriginal = false)
         {
-            if (Directory.Exists(destination))
+            if (!Directory.Exists(destination)) 
             {
-                var sourceInfo = new DirectoryInfo(source);
-                var destinationInfo = new DirectoryInfo(destination);
+                Directory.CreateDirectory(destination);
+            }
 
-                foreach (var src in sourceInfo.GetFiles())
+            var sourceInfo = new DirectoryInfo(source);            
+            foreach (var src in sourceInfo.GetFiles())
+            {
+                var similar = false;
+                if (checkSimilar)
                 {
-                    var similar = false;
-                    if (checkSimilar)
+                    using var srcBmp = new Bitmap(src.FullName);
+                    var destinationInfo = new DirectoryInfo(destination);
+                    foreach (var dest in destinationInfo.GetFiles())
                     {
-                        using var srcBmp = new Bitmap(src.FullName);
-                        foreach (var dest in destinationInfo.GetFiles())
+                        using var destBmp = new Bitmap(dest.FullName);
+                        if (DataSetPhoto.IsSimilarPhoto(srcBmp, destBmp))
                         {
-                            using var destBmp = new Bitmap(dest.FullName);
-                            if (DataSetPhoto.IsSimilarPhoto(srcBmp, destBmp))
-                            {
-                                similar = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!similar)
-                    {
-                        if (!File.Exists(destination + "\\" + src.Name))
-                        {
-                            src.MoveTo(destination + "\\" + src.Name);
+                            similar = true;
+                            break;
                         }
                     }
                 }
-                if (deleteOriginal)
+                if (!similar)
                 {
-                    Directory.Delete(source, true);
+                    if (!File.Exists(destination + "\\" + src.Name))
+                    {
+                        src.MoveTo(destination + "\\" + src.Name);
+                    }
                 }
             }
-            else
+            if (deleteOriginal)
             {
-                Directory.Move(source, destination);
+                Directory.Delete(source, true);
             }
         }
 
@@ -63,7 +59,7 @@ namespace AddDataInDataSet
         {
             var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + NEW_PATH);
 
-            Parallel.ForEach(tagDirectories, tag =>
+            Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
             {
                 count[0]++;
 
@@ -77,7 +73,7 @@ namespace AddDataInDataSet
 
             int max = 0;
 
-            Parallel.ForEach(tagDirectories, tag =>
+            Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
             {
                 var tmpFiles = Directory.GetFiles(tag);
                 if (tmpFiles.Length > max)
@@ -101,7 +97,7 @@ namespace AddDataInDataSet
                 settingAdds[i] = settings[i].GetCodeAction();
             }
 
-            Parallel.ForEach(tagDirectories, tag =>
+            Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
             {
                 count[0]++;
 
@@ -149,15 +145,15 @@ namespace AddDataInDataSet
 
             var tagList = new TagsList();
 
-            Parallel.ForEach(tagDirectories, tag =>
+            Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
             {
                 count[0]++;
 
                 var name = GetDirectoryName(tag);
 
-                if (tagList.ContainTag(name)) 
-                { 
-                    if(name == "#Original")
+                if (tagList.ContainTag(name))
+                {
+                    if (name == "#Original")
                     {
                         var tageInfo = new DirectoryInfo(tag);
 
@@ -175,12 +171,10 @@ namespace AddDataInDataSet
 
                             Directory.CreateDirectory(pathNewOriginal);
                             string pathOld;
-                            for (int i = 0; i < 500; i++) 
+                            for (int i = 0; i < 500; i++)
                             {
-                                pathOld = files[i].FullName;
                                 files[i].MoveTo(pathNewOriginal + "\\" + files[i].Name);
-                                File.Delete(pathOld);
-                             }
+                            }
 
                             files = tageInfo.GetFiles();
                         }

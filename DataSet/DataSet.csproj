@@ -8,13 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AForge.Imaging" Version="2.2.5" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.3" />
+    <Compile Remove="DataStruct\**" />
+    <EmbeddedResource Remove="DataStruct\**" />
+    <None Remove="DataStruct\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DataStruct\" />
+    <PackageReference Include="AForge.Imaging" Version="2.2.5" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.3" />
   </ItemGroup>
 
 </Project>

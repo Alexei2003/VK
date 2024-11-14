@@ -57,7 +57,7 @@ namespace MyCustomClasses.Tags
         {
             ConcurrentStack<string> stack = new();
             LastTag = LastTag.ToUpper();
-            Parallel.ForEach(tagsList, tag =>
+            Parallel.ForEach(tagsList, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
             {
                 var upperTag = tag.ToUpper();
                 if (upperTag.Contains(LastTag))

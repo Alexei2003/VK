@@ -1,6 +1,7 @@
 ﻿using AForge.Imaging;
 using System.Drawing;
 using System.Drawing.Imaging;
+using Windows.ApplicationModel.Background;
 
 namespace DataSet
 {
@@ -86,21 +87,20 @@ namespace DataSet
             image.Save(path, ImageFormat.Jpeg);
         }
 
+        private const int WIDTH = 100;
+        private const int HEIGHT = 100;
+
         public static bool IsSimilarPhoto(Bitmap bmp1, Bitmap bmp2)
         {
             // Создаем экземпляр алгоритма сравнения шаблонов
-            var tm = new ExhaustiveTemplateMatching(0.85f);
+            var tm = new ExhaustiveTemplateMatching(0.90f);
 
             // Находим все совпадения с заданным порогом сходства
-            var matches = tm.ProcessImage(ImageTo24bpp(new Bitmap(bmp1, bmp2.Width, bmp2.Height)), ImageTo24bpp(bmp2));
+            var matches = tm.ProcessImage(ImageTo24bpp(new Bitmap(bmp1, WIDTH, HEIGHT)), ImageTo24bpp(new Bitmap(bmp2, WIDTH, HEIGHT)));
 
             if (matches.Length > 0)
             {
-                if (matches[0].Similarity > 0 && matches[0].Similarity < 1)
-                {
-                    return true;
-                }
-                return false;
+                return true;
             }
             else
             {

@@ -14,7 +14,7 @@ namespace DownloaderDataSetPhoto.Downloaders
             try
             {
 
-                Parallel.For(0, 10, i =>
+                Parallel.For(0, 10, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
                 {
                     var fileNameBuff = fileName + i.ToString();
 
