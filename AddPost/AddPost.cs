@@ -57,8 +57,7 @@ namespace AddPost
             dgvDictionary.Rows.Clear();
             var stack = tagList.FindLast(tbTag.Text);
 
-            int index = 1;
-            dgvDictionary.Rows.AddRange(stack.Select(elem => new DataGridViewRow { Cells = { new DataGridViewTextBoxCell { Value = index++ }, new DataGridViewTextBoxCell { Value = elem } } }).ToArray());
+            dgvDictionary.Rows.AddRange(stack.Select(elem => new DataGridViewRow { Cells = { new DataGridViewTextBoxCell { Value = 0 }, new DataGridViewTextBoxCell { Value = elem } } }).ToArray());
 
             dgvDictionary.Sort(dgvDictionary.Columns["tags"], ListSortDirection.Ascending);
 
@@ -77,6 +76,7 @@ namespace AddPost
                     break;
                 }
 
+                dgvDictionary.Rows[i].Cells["index"] = new DataGridViewTextBoxCell { Value = i+1 };
                 tmpGroupName = dgvDictionary.Rows[i].Cells["tags"].Value.ToString().Split('#', StringSplitOptions.RemoveEmptyEntries).First();
 
                 if (tmpGroupName != groupName)
