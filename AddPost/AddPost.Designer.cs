@@ -45,7 +45,6 @@
             textBox5 = new TextBox();
             tbGroupId = new TextBox();
             dgvDictionary = new DataGridView();
-            tags = new DataGridViewTextBoxColumn();
             bDataSet = new Button();
             tbPercentOriginalTag = new TextBox();
             cbPercentOriginalTag = new ComboBox();
@@ -56,6 +55,8 @@
             tbImageIndex = new TextBox();
             bImageDelete = new Button();
             bTbTagFix = new Button();
+            index = new DataGridViewTextBoxColumn();
+            tags = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)pbImage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             SuspendLayout();
@@ -215,7 +216,7 @@
             // dgvDictionary
             // 
             dgvDictionary.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvDictionary.Columns.AddRange(new DataGridViewColumn[] { tags });
+            dgvDictionary.Columns.AddRange(new DataGridViewColumn[] { index, tags });
             dgvDictionary.Location = new Point(748, 164);
             dgvDictionary.Name = "dgvDictionary";
             dgvDictionary.RowHeadersWidth = 45;
@@ -223,14 +224,6 @@
             dgvDictionary.TabIndex = 18;
             dgvDictionary.CellContentClick += dgvDictionary_CellContentClick;
             dgvDictionary.CellMouseClick += dgvDictionary_CellMouseClick;
-            // 
-            // tags
-            // 
-            tags.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            tags.HeaderText = "Теги";
-            tags.MinimumWidth = 6;
-            tags.Name = "tags";
-            tags.ReadOnly = true;
             // 
             // bDataSet
             // 
@@ -332,6 +325,22 @@
             bTbTagFix.UseVisualStyleBackColor = true;
             bTbTagFix.Click += bTbTagFix_Click;
             // 
+            // index
+            // 
+            index.HeaderText = "Номер";
+            index.MinimumWidth = 6;
+            index.Name = "index";
+            index.ReadOnly = true;
+            index.Width = 60;
+            // 
+            // tags
+            // 
+            tags.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            tags.HeaderText = "Теги";
+            tags.MinimumWidth = 6;
+            tags.Name = "tags";
+            tags.ReadOnly = true;
+            // 
             // AddPost
             // 
             AllowDrop = true;
@@ -396,7 +405,6 @@
         private TextBox tbGroupId;
         private DataGridView dgvDictionary;
         private Button bDataSet;
-        private DataGridViewTextBoxColumn tags;
         private TextBox tbPercentOriginalTag;
         private ComboBox cbPercentOriginalTag;
         private TextBox textBox7;
@@ -406,5 +414,7 @@
         private TextBox tbImageIndex;
         private Button bImageDelete;
         private Button bTbTagFix;
+        private DataGridViewTextBoxColumn index;
+        private DataGridViewTextBoxColumn tags;
     }
 }

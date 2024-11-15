@@ -57,7 +57,8 @@ namespace AddPost
             dgvDictionary.Rows.Clear();
             var stack = tagList.FindLast(tbTag.Text);
 
-            dgvDictionary.Rows.AddRange(stack.Select(elem => new DataGridViewRow { Cells = { new DataGridViewTextBoxCell { Value = elem } } }).ToArray());
+            int index = 1;
+            dgvDictionary.Rows.AddRange(stack.Select(elem => new DataGridViewRow { Cells = { new DataGridViewTextBoxCell { Value = index++ }, new DataGridViewTextBoxCell { Value = elem } } }).ToArray());
 
             dgvDictionary.Sort(dgvDictionary.Columns["tags"], ListSortDirection.Ascending);
 
@@ -71,12 +72,12 @@ namespace AddPost
 
             for (int i = 0; i < dgvDictionary.Rows.Count; i++)
             {
-                if (dgvDictionary.Rows[i].Cells[0].Value == null)
+                if (dgvDictionary.Rows[i].Cells["tags"].Value == null)
                 {
                     break;
                 }
 
-                tmpGroupName = dgvDictionary.Rows[i].Cells[0].Value.ToString().Split('#', StringSplitOptions.RemoveEmptyEntries).First();
+                tmpGroupName = dgvDictionary.Rows[i].Cells["tags"].Value.ToString().Split('#', StringSplitOptions.RemoveEmptyEntries).First();
 
                 if (tmpGroupName != groupName)
                 {
@@ -266,13 +267,13 @@ namespace AddPost
                 {
                     var date = new Date(api);
                     var post = new Post(api);
-                    try
+                    //try
                     {
                         post.Publish(imageList.Select(x => x.image).ToArray(), tags, tbUrl.Text, date.ChangeTimeNewPostUseLastPost(groupId, index), groupId, groupShortUrl);
                     }
-                    catch (Exception e)
+                    //catch (Exception e)
                     {
-                        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        //MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 });
 

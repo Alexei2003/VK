@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Classes\PhotoDataSet.cs~RF4073a2.TMP" />
+    <None Remove="mnveyt2x.ie4~" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />

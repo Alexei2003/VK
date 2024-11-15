@@ -1,4 +1,5 @@
 ﻿using MyCustomClasses.VK;
+using MyCustomClasses.VK.VKApiCustomClasses;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 
@@ -24,37 +25,49 @@ namespace AddPost.Classes
 
         private DateTime? GetTimeLastPost(long groupId)
         {
-            var post = api.Wall.Get(new WallGetParams()
+            var wall = api.Wall.Get(new WallGetParams()
             {
                 OwnerId = -1 * groupId,
                 Count = 100,
                 Filter = WallFilter.Postponed,
             });
 
-            if (post.WallPosts.Count < 1)
+            VkNet.Model.Post post;
+
+            if (wall.WallPosts.Count < 1)
             {
-                post = api.Wall.Get(new WallGetParams()
+                wall = api.Wall.Get(new WallGetParams()
                 {
                     OwnerId = -1 * groupId,
-                    Count = 1,
+                    Count = 2,
                     Filter = WallFilter.All,
                 });
+
+                if (wall.WallPosts[0].IsPinned.Value)
+                {
+                    post = wall.WallPosts[1];
+                }
+                else
+                {
+                    post = wall.WallPosts[0];
+                }
             }
             else
             {
-                if (post.TotalCount > 100)
+                if (wall.TotalCount > 100)
                 {
-                    post = api.Wall.Get(new WallGetParams()
+                    wall = api.Wall.Get(new WallGetParams()
                     {
                         OwnerId = -1 * groupId,
-                        Offset = post.TotalCount - 1,
+                        Offset = wall.TotalCount - 1,
                         Count = 1,
                         Filter = WallFilter.Postponed,
                     });
                 }
+                post = wall.WallPosts.First();
             }
 
-            return post.WallPosts.Last().Date;
+            return post.Date;
         }
     }
 }
