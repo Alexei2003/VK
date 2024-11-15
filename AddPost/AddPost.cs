@@ -267,13 +267,13 @@ namespace AddPost
                 {
                     var date = new Date(api);
                     var post = new Post(api);
-                    //try
+                    try
                     {
                         post.Publish(imageList.Select(x => x.image).ToArray(), tags, tbUrl.Text, date.ChangeTimeNewPostUseLastPost(groupId, index), groupId, groupShortUrl);
                     }
-                    //catch (Exception e)
+                    catch (Exception e)
                     {
-                        //MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 });
 
