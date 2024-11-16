@@ -201,7 +201,7 @@ namespace AddDataInDataSet
                 var worksheet = workbook.Worksheets.Add("Sheet1");
 
                 worksheet.Cell(1, 1).Value = "Тег";
-                worksheet.Cell(1, 2).Value = "Точность";
+                worksheet.Cell(1, 2).Value = "Точность (%)";
                 worksheet.Cell(1, 3).Value = "Количество объектов";
 
                 for (var i = 0; i < tagDirectories.Length; i++)
@@ -226,7 +226,7 @@ namespace AddDataInDataSet
                     }
 
                     worksheet.Cell(i + 2, 1).Value = tagOriginal;
-                    worksheet.Cell(i + 2, 2).Value = (float)countTrue / countTrue;
+                    worksheet.Cell(i + 2, 2).Value = (countTrue * 100f) / countAll;
                     worksheet.Cell(i + 2, 3).Value = countAll;
 
                     count[0]++;
