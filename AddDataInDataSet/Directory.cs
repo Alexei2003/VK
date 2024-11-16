@@ -62,9 +62,9 @@ namespace AddDataInDataSet
 
             Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
             {
-                count[0]++;
-
                 DirectoryMove(tag, MAIN_DIRECTORY + "\\" + ORIGINAL_PATH + "\\" + GetDirectoryName(tag), true, true);
+
+                count[0]++;
             });
         }
 
@@ -100,8 +100,6 @@ namespace AddDataInDataSet
 
             Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
             {
-                count[0]++;
-
                 var tagDirectoryFiles = Directory.GetFiles(tag);
                 foreach (var imagePath in tagDirectoryFiles)
                 {
@@ -136,6 +134,8 @@ namespace AddDataInDataSet
                         }
                     }
                 }
+
+                count[0]++;
             });
 
         }
@@ -148,8 +148,6 @@ namespace AddDataInDataSet
 
             Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
             {
-                count[0]++;
-
                 var name = GetDirectoryName(tag);
 
                 if (tagList.ContainTag(name))
@@ -188,6 +186,8 @@ namespace AddDataInDataSet
                         Directory.Delete(tag, true);
                     }
                 }
+
+                count[0]++;
             });
         }
 
@@ -228,6 +228,8 @@ namespace AddDataInDataSet
                     worksheet.Cell(i + 2, 1).Value = tagOriginal;
                     worksheet.Cell(i + 2, 2).Value = (float)countTrue / countTrue;
                     worksheet.Cell(i + 2, 3).Value = countAll;
+
+                    count[0]++;
                 }
 
                 workbook.SaveAs("result.xlsx");
