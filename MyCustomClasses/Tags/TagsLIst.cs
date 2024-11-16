@@ -32,7 +32,7 @@ namespace MyCustomClasses.Tags
                     tagsList = new List<string>();
                 }
             }
-            catch 
+            catch
             {
                 tagsList = new List<string>();
             }

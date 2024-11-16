@@ -31,7 +31,7 @@ namespace DownloaderDataSetPhoto
             {
                 if (resulTag != tbTag.Text)
                 {
-                    DataSetPhoto.Save(image, tags);
+                    DataSetImage.Save(image, tags);
                 }
             }
         }

@@ -17,8 +17,8 @@
         "Version": 1,
         "Type": "Trial",
         "TrainerName": "ImageClassificationMulti",
-        "Score": 0.55201109570041607,
-        "RuntimeInSeconds": 538.071,
+        "Score": 0.40892297200566508,
+        "RuntimeInSeconds": 951.281,
         "Parameter": {
           "_SCHEMA_": "e0 * e1 * e2",
           "e0": {
@@ -47,8 +47,8 @@
       "e2": "MapKeyToValue"
     },
     "Schema": "e0 * e1 * e2",
-    "MetricName": "MicroAccuracy",
-    "ModelFilePath": "E:\\WPS\\VK\\Project\\VK\\NeuralNetwork\\ComputerVision.mlnet"
+    "MetricName": "MacroAccuracy",
+    "ModelFilePath": "F:\\WPS\\VK\\Project\\VK\\NeuralNetwork\\ComputerVision.mlnet"
   },
   "Type": "TrainingConfig",
   "Version": 5,
@@ -57,10 +57,11 @@
     "Subsampling": false,
     "Type": "ClassificationTrainingOption",
     "TrainingTime": 2147483647,
+    "OptimizeMetric": "MacroAccuracy",
     "ValidationOption": {
       "Version": 0,
-      "Type": "TrainValidateSplitValidationOption",
-      "SplitRatio": 0.2
+      "Type": "CrossValidationValidationOption",
+      "NumberOfFolds": 5
     }
   }
 }

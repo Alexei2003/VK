@@ -6,7 +6,7 @@ namespace AddDataInDataSet
     {
         private HashSet<string> tagsList = null;
 
-        public TagsList() 
+        public TagsList()
         {
             Load();
         }
@@ -25,7 +25,7 @@ namespace AddDataInDataSet
                     tagsList = new HashSet<string>();
                 }
             }
-            catch 
+            catch
             {
                 tagsList = new HashSet<string>();
             }

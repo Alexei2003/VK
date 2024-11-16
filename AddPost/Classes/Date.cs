@@ -1,5 +1,4 @@
 ﻿using MyCustomClasses.VK;
-using MyCustomClasses.VK.VKApiCustomClasses;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 
@@ -64,7 +63,7 @@ namespace AddPost.Classes
                         Filter = WallFilter.Postponed,
                     });
                 }
-                post = wall.WallPosts.First();
+                post = wall.WallPosts.Last();
             }
 
             return post.Date;

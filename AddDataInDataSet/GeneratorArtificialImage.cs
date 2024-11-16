@@ -10,7 +10,7 @@ namespace AddDataInDataSet
         {
             var resultImages = new List<Bitmap>();
 
-            originalImage = DataSetPhoto.ImageTo24bpp(originalImage);
+            originalImage = DataSetImage.ImageTo24bpp(originalImage);
 
             for (var i = 0; i < settings.Length && i < maxImages; i++)
             {
@@ -45,7 +45,7 @@ namespace AddDataInDataSet
                     image = Resize(image, settings[i].Resize);
                 }
 
-                resultImages.Add(DataSetPhoto.ImageTo32bpp(image));
+                resultImages.Add(DataSetImage.ImageTo32bpp(image));
             }
 
             return resultImages;
@@ -84,7 +84,7 @@ namespace AddDataInDataSet
 
         private static Bitmap Resize(Bitmap originalImage, int maxSize)
         {
-            return DataSetPhoto.ChangeResolution(originalImage, maxSize);
+            return DataSetImage.ChangeResolution(originalImage, maxSize);
         }
 
         public class GeneratorArtificialImageSetting()

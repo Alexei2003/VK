@@ -1,11 +1,10 @@
 ﻿using AForge.Imaging;
 using System.Drawing;
 using System.Drawing.Imaging;
-using Windows.ApplicationModel.Background;
 
 namespace DataSet
 {
-    public static class DataSetPhoto
+    public static class DataSetImage
     {
         public static void Save(Bitmap image, string tags)
         {
@@ -90,7 +89,7 @@ namespace DataSet
         private const int WIDTH = 100;
         private const int HEIGHT = 100;
 
-        public static bool IsSimilarPhoto(Bitmap bmp1, Bitmap bmp2)
+        public static bool IsSimilarImage(Bitmap bmp1, Bitmap bmp2)
         {
             // Создаем экземпляр алгоритма сравнения шаблонов
             var tm = new ExhaustiveTemplateMatching(0.90f);

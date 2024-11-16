@@ -5,10 +5,10 @@ using System.Text;
 
 namespace AddPost.Classes
 {
-    public sealed class Photo
+    public sealed class Image
     {
         private readonly VkApiCustom api;
-        public Photo(VkApiCustom api)
+        public Image(VkApiCustom api)
         {
             this.api = api;
         }

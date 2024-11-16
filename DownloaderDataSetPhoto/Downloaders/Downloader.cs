@@ -20,7 +20,7 @@ namespace DownloaderDataSetPhoto.Downloaders
             }
 
 
-            DataSetPhoto.Save(image, currentTag);
+            DataSetImage.Save(image, currentTag);
         }
     }
 }

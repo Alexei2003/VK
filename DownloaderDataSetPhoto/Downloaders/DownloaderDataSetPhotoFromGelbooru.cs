@@ -23,7 +23,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                     httpClientHandler.CookieContainer = new CookieContainer();
                     using var httpClient = new HttpClient(httpClientHandler);
                     httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36");
-                    
+
                     var tmpurl = url + "&pid=" + i * 42;
                     var html = httpClient.GetStringAsync(tmpurl);
 

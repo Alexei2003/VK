@@ -13,6 +13,7 @@
                     "1.Переместить из New\n" +
                     "2.Генерация искуственных данных\n" +
                     "3.Исправление Original\n" +
+                    "4.Получить точность классовl\n" +
                     "Выход (напишите exit)\n");
 
                 var action = Console.ReadLine();
@@ -41,6 +42,14 @@
                         count[0] = 0;
                         thWrite.Start();
                         WorkWithDirectory.FixDataInOriginal(count);
+                        Thread.Sleep(100);
+                        count[0] = -1;
+                        thWrite.Join();
+                        break;
+                    case "4":
+                        count[0] = 0;
+                        thWrite.Start();
+                        WorkWithDirectory.GetAccuracyClassesOriginal(count);
                         Thread.Sleep(100);
                         count[0] = -1;
                         thWrite.Join();

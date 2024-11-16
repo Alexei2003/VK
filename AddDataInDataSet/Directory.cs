@@ -1,4 +1,5 @@
-﻿using DataSet;
+﻿using ClosedXML.Excel;
+using DataSet;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -13,12 +14,12 @@ namespace AddDataInDataSet
 
         private static void DirectoryMove(string source, string destination, bool checkSimilar, bool deleteOriginal = false)
         {
-            if (!Directory.Exists(destination)) 
+            if (!Directory.Exists(destination))
             {
                 Directory.CreateDirectory(destination);
             }
 
-            var sourceInfo = new DirectoryInfo(source);            
+            var sourceInfo = new DirectoryInfo(source);
             foreach (var src in sourceInfo.GetFiles())
             {
                 var similar = false;
@@ -29,7 +30,7 @@ namespace AddDataInDataSet
                     foreach (var dest in destinationInfo.GetFiles())
                     {
                         using var destBmp = new Bitmap(dest.FullName);
-                        if (DataSetPhoto.IsSimilarPhoto(srcBmp, destBmp))
+                        if (DataSetImage.IsSimilarImage(srcBmp, destBmp))
                         {
                             similar = true;
                             break;
@@ -105,7 +106,7 @@ namespace AddDataInDataSet
                 foreach (var imagePath in tagDirectoryFiles)
                 {
                     var originalImage = new Bitmap(imagePath);
-                    double countImageExtraDouble = double.Round(((max * 1.0) / tagDirectoryFiles.Count()) - 1);
+                    double countImageExtraDouble = double.Round(((max * 1.0) / tagDirectoryFiles.Length) - 1);
                     int countImageExtra = Convert.ToInt32(countImageExtraDouble);
 
                     if (countImageExtra > settings.Length)
@@ -188,6 +189,49 @@ namespace AddDataInDataSet
                     }
                 }
             });
+        }
+
+        private const float percentOriginalTag = 0.6f;
+        public static void GetAccuracyClassesOriginal(int[] count)
+        {
+            var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + ORIGINAL_PATH);
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Sheet1");
+
+                worksheet.Cell(1, 1).Value = "Тег";
+                worksheet.Cell(1, 2).Value = "Точность";
+                worksheet.Cell(1, 3).Value = "Количество объектов";
+
+                for (var i = 0; i < tagDirectories.Length; i++)
+                {
+                    var tagOriginal = GetDirectoryName(tagDirectories[i]);
+
+                    int countTrue = 0;
+                    int countAll = 0;
+                    var tagDirectoryInfo = new DirectoryInfo(tagDirectories[i]);
+                    foreach (var fileImage in tagDirectoryInfo.GetFiles())
+                    {
+                        var image = new Bitmap(fileImage.FullName);
+
+                        var tagPredict = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag);
+
+                        if (tagOriginal == tagPredict)
+                        {
+                            countTrue++;
+                        }
+
+                        countAll++;
+                    }
+
+                    worksheet.Cell(i + 2, 1).Value = tagOriginal;
+                    worksheet.Cell(i + 2, 2).Value = (float)countTrue / countTrue;
+                    worksheet.Cell(i + 2, 3).Value = countAll;
+                }
+
+                workbook.SaveAs("result.xlsx");
+            }
         }
     }
 }

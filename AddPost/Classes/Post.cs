@@ -7,12 +7,12 @@ namespace AddPost.Classes
     public sealed class Post
     {
         private readonly VkApiCustom api;
-        private readonly Photo photo;
+        private readonly Image photo;
 
         public Post(VkApiCustom api)
         {
             this.api = api;
-            photo = new Photo(api);
+            photo = new Image(api);
         }
 
         public void Publish(Bitmap[] images, string tag, string copyright, DateTime? postDate, long groupId, string groupShortUrl)

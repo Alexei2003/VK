@@ -76,7 +76,7 @@ namespace AddPost
                     break;
                 }
 
-                dgvDictionary.Rows[i].Cells["index"] = new DataGridViewTextBoxCell { Value = i+1 };
+                dgvDictionary.Rows[i].Cells["index"] = new DataGridViewTextBoxCell { Value = i + 1 };
                 tmpGroupName = dgvDictionary.Rows[i].Cells["tags"].Value.ToString().Split('#', StringSplitOptions.RemoveEmptyEntries).First();
 
                 if (tmpGroupName != groupName)
@@ -123,7 +123,7 @@ namespace AddPost
                 {
                     if (image.NeuralNetworkResultTag != tbTag.Text)
                     {
-                        DataSetPhoto.Save(image.image, tags);
+                        DataSetImage.Save(image.image, tags);
                     }
                 }
             }
