@@ -1,8 +1,8 @@
 ﻿namespace AddDataInDataSet
 {
-    internal class Program
+    internal static class Program
     {
-        static int[] count = [1];
+        private static int[] count = [1];
 
         private static void Main()
         {
@@ -13,7 +13,7 @@
                     "1.Переместить из New\n" +
                     "2.Генерация искуственных данных\n" +
                     "3.Исправление Original\n" +
-                    "4.Получить точность классовl\n" +
+                    "4.Получить точность классов\n" +
                     "Выход (напишите exit)\n");
 
                 var action = Console.ReadLine();
@@ -33,7 +33,7 @@
                     case "2":
                         count[0] = 0;
                         thWrite.Start();
-                        WorkWithDirectory.MoveDataToOutput(count);
+                        //WorkWithDirectory.MoveDataToOutput(count);
                         Thread.Sleep(100);
                         count[0] = -1;
                         thWrite.Join();

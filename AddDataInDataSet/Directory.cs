@@ -68,77 +68,77 @@ namespace AddDataInDataSet
             });
         }
 
-        public static void MoveDataToOutput(int[] count)
-        {
-            var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + ORIGINAL_PATH);
+        //public static void MoveDataToOutput(int[] count)
+        //{
+        //    var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + ORIGINAL_PATH);
 
-            int max = 0;
+        //    int max = 0;
 
-            Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
-            {
-                var tmpFiles = Directory.GetFiles(tag);
-                if (tmpFiles.Length > max)
-                {
-                    max = tmpFiles.Length;
-                }
-            });
+        //    Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
+        //    {
+        //        var tmpFiles = Directory.GetFiles(tag);
+        //        if (tmpFiles.Length > max)
+        //        {
+        //            max = tmpFiles.Length;
+        //        }
+        //    });
 
-            var settings = new GeneratorArtificialImage.GeneratorArtificialImageSetting[]
-            {
-                new(){RotateAngle = 180, ContrastCorrection = 20, AdditiveNoise = true, Resize = 168},
-                new(){RotateAngle = 90, Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ X = true }, ContrastCorrection = 10, GaussianBlur = true, Resize = 196},
-                new(){Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ Y = true}, ContrastCorrection = -50 },
-                new(){RotateAngle = 270, GaussianBlur = true, ContrastCorrection = -25 },
-            };
+        //    var settings = new GeneratorArtificialImage.GeneratorArtificialImageSetting[]
+        //    {
+        //        new(){RotateAngle = 180, ContrastCorrection = 20, AdditiveNoise = true, Resize = 168},
+        //        new(){RotateAngle = 90, Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ X = true }, ContrastCorrection = 10, GaussianBlur = true, Resize = 196},
+        //        new(){Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ Y = true}, ContrastCorrection = -50 },
+        //        new(){RotateAngle = 270, GaussianBlur = true, ContrastCorrection = -25 },
+        //    };
 
-            var settingAdds = new string[settings.Length];
+        //    var settingAdds = new string[settings.Length];
 
-            for (var i = 0; i < settingAdds.Length; i++)
-            {
-                settingAdds[i] = settings[i].GetCodeAction();
-            }
+        //    for (var i = 0; i < settingAdds.Length; i++)
+        //    {
+        //        settingAdds[i] = settings[i].GetCodeAction();
+        //    }
 
-            Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
-            {
-                var tagDirectoryFiles = Directory.GetFiles(tag);
-                foreach (var imagePath in tagDirectoryFiles)
-                {
-                    var originalImage = new Bitmap(imagePath);
-                    double countImageExtraDouble = double.Round(((max * 1.0) / tagDirectoryFiles.Length) - 1);
-                    int countImageExtra = Convert.ToInt32(countImageExtraDouble);
+        //    Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
+        //    {
+        //        var tagDirectoryFiles = Directory.GetFiles(tag);
+        //        foreach (var imagePath in tagDirectoryFiles)
+        //        {
+        //            var originalImage = new Bitmap(imagePath);
+        //            double countImageExtraDouble = double.Round(((max * 1.0) / tagDirectoryFiles.Length) - 1);
+        //            int countImageExtra = Convert.ToInt32(countImageExtraDouble);
 
-                    if (countImageExtra > settings.Length)
-                    {
-                        countImageExtra = settings.Length;
-                    }
+        //            if (countImageExtra > settings.Length)
+        //            {
+        //                countImageExtra = settings.Length;
+        //            }
 
-                    var directoryPath = MAIN_DIRECTORY + "\\" + OUTPUT_PATH + "\\" + GetDirectoryName(tag);
-                    var imageName = Path.GetFileNameWithoutExtension(imagePath);
+        //            var directoryPath = MAIN_DIRECTORY + "\\" + OUTPUT_PATH + "\\" + GetDirectoryName(tag);
+        //            var imageName = Path.GetFileNameWithoutExtension(imagePath);
 
-                    Directory.CreateDirectory(directoryPath);
+        //            Directory.CreateDirectory(directoryPath);
 
-                    var outputFilesReady = Directory.GetFiles(directoryPath);
+        //            var outputFilesReady = Directory.GetFiles(directoryPath);
 
-                    if (!outputFilesReady.Contains(directoryPath + "\\" + imageName + ".jpg"))
-                    {
-                        originalImage.Save(directoryPath + "\\" + imageName + ".jpg", ImageFormat.Jpeg);
-                    }
+        //            if (!outputFilesReady.Contains(directoryPath + "\\" + imageName + ".jpg"))
+        //            {
+        //                originalImage.Save(directoryPath + "\\" + imageName + ".jpg", ImageFormat.Jpeg);
+        //            }
 
-                    var outputImages = GeneratorArtificialImage.Generate(originalImage, settings, countImageExtra);
+        //            var outputImages = GeneratorArtificialImage.Generate(originalImage, settings, countImageExtra);
 
-                    for (int i = 0; i < outputImages.Count; i++)
-                    {
-                        if (!outputFilesReady.Contains(directoryPath + "\\" + imageName + settingAdds[i] + ".jpg"))
-                        {
-                            outputImages[i].Save(directoryPath + "\\" + imageName + settingAdds[i] + ".jpg", ImageFormat.Jpeg);
-                        }
-                    }
-                }
+        //            for (int i = 0; i < outputImages.Count; i++)
+        //            {
+        //                if (!outputFilesReady.Contains(directoryPath + "\\" + imageName + settingAdds[i] + ".jpg"))
+        //                {
+        //                    outputImages[i].Save(directoryPath + "\\" + imageName + settingAdds[i] + ".jpg", ImageFormat.Jpeg);
+        //                }
+        //            }
+        //        }
 
-                count[0]++;
-            });
+        //        count[0]++;
+        //    });
 
-        }
+        //}
 
         public static void FixDataInOriginal(int[] count)
         {
@@ -196,44 +196,42 @@ namespace AddDataInDataSet
         {
             var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + ORIGINAL_PATH);
 
-            using (var workbook = new XLWorkbook())
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Sheet1");
+
+            worksheet.Cell(1, 1).Value = "Тег";
+            worksheet.Cell(1, 2).Value = "Точность (%)";
+            worksheet.Cell(1, 3).Value = "Количество объектов";
+
+            for (var i = 0; i < tagDirectories.Length; i++)
             {
-                var worksheet = workbook.Worksheets.Add("Sheet1");
+                var tagOriginal = GetDirectoryName(tagDirectories[i]);
 
-                worksheet.Cell(1, 1).Value = "Тег";
-                worksheet.Cell(1, 2).Value = "Точность (%)";
-                worksheet.Cell(1, 3).Value = "Количество объектов";
-
-                for (var i = 0; i < tagDirectories.Length; i++)
+                int countTrue = 0;
+                int countAll = 0;
+                var tagDirectoryInfo = new DirectoryInfo(tagDirectories[i]);
+                foreach (var fileImage in tagDirectoryInfo.GetFiles())
                 {
-                    var tagOriginal = GetDirectoryName(tagDirectories[i]);
+                    var image = new Bitmap(fileImage.FullName);
 
-                    int countTrue = 0;
-                    int countAll = 0;
-                    var tagDirectoryInfo = new DirectoryInfo(tagDirectories[i]);
-                    foreach (var fileImage in tagDirectoryInfo.GetFiles())
+                    var tagPredict = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag);
+
+                    if (tagOriginal == tagPredict)
                     {
-                        var image = new Bitmap(fileImage.FullName);
-
-                        var tagPredict = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag);
-
-                        if (tagOriginal == tagPredict)
-                        {
-                            countTrue++;
-                        }
-
-                        countAll++;
+                        countTrue++;
                     }
 
-                    worksheet.Cell(i + 2, 1).Value = tagOriginal;
-                    worksheet.Cell(i + 2, 2).Value = (countTrue * 100f) / countAll;
-                    worksheet.Cell(i + 2, 3).Value = countAll;
-
-                    count[0]++;
+                    countAll++;
                 }
 
-                workbook.SaveAs("result.xlsx");
+                worksheet.Cell(i + 2, 1).Value = tagOriginal;
+                worksheet.Cell(i + 2, 2).Value = (countTrue * 100f) / countAll;
+                worksheet.Cell(i + 2, 3).Value = countAll;
+
+                count[0]++;
             }
+
+            workbook.SaveAs("result.xlsx");
         }
     }
 }

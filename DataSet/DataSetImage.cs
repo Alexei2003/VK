@@ -1,71 +1,56 @@
-﻿using AForge.Imaging;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
+using System.Numerics;
 
 namespace DataSet
 {
     public static class DataSetImage
     {
-        public static void Save(Bitmap image, string tags)
+        public static void Save(Bitmap bmp, string tags)
         {
-            image = ChangeResolution224224(image);
+            bmp = ChangeResolution224x224(bmp);
 
-            SaveFile(image, tags);
+            SaveFile(bmp, tags);
         }
 
-        public static Bitmap ChangeResolution224224(Bitmap image)
+        public static Bitmap ChangeResolution224x224(Bitmap bmp)
         {
-            return ChangeResolution(image, 224);
+            return ChangeResolution(bmp, 224);
         }
 
-        public static Bitmap ChangeResolution(Bitmap image, float maxSize)
+        public static Bitmap ChangeResolution(Bitmap bmp, float maxSize)
         {
-            if (image.Width > image.Height)
+            if (bmp.Width > bmp.Height)
             {
-                if (image.Width > maxSize)
+                if (bmp.Width > maxSize)
                 {
-                    var delta = image.Width / maxSize;
-                    return ImageTo24bpp(new Bitmap(image, Convert.ToInt32(image.Width / delta), Convert.ToInt32(image.Height / delta)));
+                    var delta = bmp.Width / maxSize;
+                    return ImageTo32bpp(new Bitmap(bmp, Convert.ToInt32(bmp.Width / delta), Convert.ToInt32(bmp.Height / delta)));
                 }
                 else
                 {
-                    return image;
+                    return ImageTo32bpp(bmp);
                 }
             }
             else
             {
-                if (image.Height > maxSize)
+                if (bmp.Height > maxSize)
                 {
-                    var delta = image.Height / maxSize;
-                    return ImageTo24bpp(new Bitmap(image, Convert.ToInt32(image.Width / delta), Convert.ToInt32(image.Height / delta)));
+                    var delta = bmp.Height / maxSize;
+                    return ImageTo32bpp(new Bitmap(bmp, Convert.ToInt32(bmp.Width / delta), Convert.ToInt32(bmp.Height / delta)));
                 }
                 else
                 {
-                    return image;
+                    return ImageTo32bpp(bmp);
                 }
             }
         }
-        public static Bitmap ImageTo24bpp(Bitmap img)
+        public static Bitmap ImageTo32bpp(Bitmap bmp)
         {
-            var bmp = new Bitmap(img.Width, img.Height, PixelFormat.Format24bppRgb);
-            using (var gr = Graphics.FromImage(bmp))
-            {
-                gr.DrawImage(img, new Rectangle(0, 0, img.Width, img.Height));
-            }
-            return bmp;
+            return bmp.Clone(new Rectangle { X = 0, Y = 0, Width = bmp.Width, Height = bmp.Height }, PixelFormat.Format32bppRgb);
         }
 
-        public static Bitmap ImageTo32bpp(Bitmap img)
-        {
-            var bmp = new Bitmap(img.Width, img.Height, PixelFormat.Format32bppArgb);
-            using (var gr = Graphics.FromImage(bmp))
-            {
-                gr.DrawImage(img, new Rectangle(0, 0, img.Width, img.Height));
-            }
-            return bmp;
-        }
-
-        private static void SaveFile(Bitmap image, string tags)
+        private static void SaveFile(Bitmap bmp, string tags)
         {
             var data = DateTime.Now;
             data.AddHours(3);
@@ -83,21 +68,15 @@ namespace DataSet
                 data.AddHours(3);
                 path = path + "\\" + data.ToString("yyyy.MM.dd.HH.mm.ss.fff") + ".jpg";
             }
-            image.Save(path, ImageFormat.Jpeg);
+            bmp.Save(path, ImageFormat.Jpeg);
         }
-
-        private const int WIDTH = 100;
-        private const int HEIGHT = 100;
 
         public static bool IsSimilarImage(Bitmap bmp1, Bitmap bmp2)
         {
-            // Создаем экземпляр алгоритма сравнения шаблонов
-            var tm = new ExhaustiveTemplateMatching(0.90f);
+            using var bmp11 = ChangeResolution224x224(bmp1);
+            using var bmp22 = ChangeResolution224x224(bmp2);
 
-            // Находим все совпадения с заданным порогом сходства
-            var matches = tm.ProcessImage(ImageTo24bpp(new Bitmap(bmp1, WIDTH, HEIGHT)), ImageTo24bpp(new Bitmap(bmp2, WIDTH, HEIGHT)));
-
-            if (matches.Length > 0)
+            if (Corral(bmp11, bmp22) > 0.75)
             {
                 return true;
             }
@@ -105,6 +84,79 @@ namespace DataSet
             {
                 return false;
             }
+        }
+
+        private unsafe static float Corral(Bitmap bmp1, Bitmap bmp2)
+        {
+            Bitmap bmpBig = null;
+            Bitmap bmpSmall = null;
+            int bmp1Size = bmp1.Width + bmp1.Height;
+            int bmp2Size = bmp2.Width + bmp2.Height;
+            if (bmp1Size > bmp2Size)
+            {
+                bmpBig = ImageTo32bpp(bmp1);
+                bmpSmall = ImageTo32bpp(bmp2);
+            }
+            else
+            {
+                bmpBig = ImageTo32bpp(bmp2);
+                bmpSmall = ImageTo32bpp(bmp1);
+            }
+
+            var bmpDataBig = bmpBig.LockBits(new Rectangle(0, 0, bmpBig.Width, bmpBig.Height), ImageLockMode.ReadWrite, bmpBig.PixelFormat);
+            var ptrBig = bmpDataBig.Scan0;
+            var rgbBitmapBig = (byte*)ptrBig;
+
+            var bmpDataSmall = bmpSmall.LockBits(new Rectangle(0, 0, bmpSmall.Width, bmpSmall.Height), ImageLockMode.ReadWrite, bmpSmall.PixelFormat);
+            var ptrSmall = bmpDataSmall.Scan0;
+            var rgbBitmapSmall = (byte*)ptrSmall;
+
+            ///////////
+
+            var op = Vector3.Zero;
+            var o1 = Vector3.Zero;
+            var p1 = Vector3.Zero;
+            var o2 = Vector3.Zero;
+            var p2 = Vector3.Zero;
+
+            int n = 0;
+            for (var y = 0; y < bmpBig.Height && y < bmpSmall.Height; y++)
+            {
+                for (var x = 0; x < bmpBig.Width && x < bmpSmall.Width; x++)
+                {
+
+                    byte* addrOriginal = (byte*)(rgbBitmapBig + y * bmpDataBig.Stride + x * 4);
+                    byte* addrPartical = (byte*)(rgbBitmapSmall + y * bmpDataSmall.Stride + x * 4);
+
+                    var o = new Vector3(addrOriginal[2], addrOriginal[1], addrOriginal[0]);
+                    var p = new Vector3(addrPartical[2], addrPartical[1], addrPartical[0]);
+
+                    op += o * p;
+                    o1 += o;
+                    p1 += p;
+                    o2 += o * o;
+                    p2 += p * p;
+
+                    n++;
+                }
+            }
+
+            ///////////
+
+            bmpBig.UnlockBits(bmpDataBig);
+            bmpSmall.UnlockBits(bmpDataSmall);
+
+            ///////////
+
+            var up = n * op - o1 * p1;
+            var dowm = (n * o2 - o1 * o1) * (n * p2 - p1 * p1);
+            dowm = Vector3.SquareRoot(dowm);
+
+            var resultVect = up / dowm;
+
+            var result = resultVect.X + resultVect.Y + resultVect.Z;
+
+            return result / 3.0f;
         }
     }
 }

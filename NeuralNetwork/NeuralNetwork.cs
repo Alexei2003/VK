@@ -11,7 +11,7 @@ namespace NeuralNetwork
         public static string NeuralNetworkResult(Bitmap image, float percentOriginalTag)
         {
             string resulTag;
-            image = DataSetImage.ChangeResolution224224(image);
+            image = DataSetImage.ChangeResolution224x224(image);
 
             // Преобразуйте изображение в байты
             byte[] imageBytes;
