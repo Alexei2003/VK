@@ -8,7 +8,7 @@ namespace DataSet
     {
         public static void Save(Bitmap bmp, string tags)
         {
-            bmp = ChangeResolution224x224(bmp);
+            bmp = ImageTo32bpp(ChangeResolution224x224(bmp));
 
             SaveFile(bmp, tags);
         }
@@ -25,11 +25,11 @@ namespace DataSet
                 if (bmp.Width > maxSize)
                 {
                     var delta = bmp.Width / maxSize;
-                    return ImageTo32bpp(new Bitmap(bmp, Convert.ToInt32(bmp.Width / delta), Convert.ToInt32(bmp.Height / delta)));
+                    return new Bitmap(bmp, Convert.ToInt32(bmp.Width / delta), Convert.ToInt32(bmp.Height / delta));
                 }
                 else
                 {
-                    return ImageTo32bpp(bmp);
+                    return bmp;
                 }
             }
             else
@@ -37,11 +37,11 @@ namespace DataSet
                 if (bmp.Height > maxSize)
                 {
                     var delta = bmp.Height / maxSize;
-                    return ImageTo32bpp(new Bitmap(bmp, Convert.ToInt32(bmp.Width / delta), Convert.ToInt32(bmp.Height / delta)));
+                    return new Bitmap(bmp, Convert.ToInt32(bmp.Width / delta), Convert.ToInt32(bmp.Height / delta));
                 }
                 else
                 {
-                    return ImageTo32bpp(bmp);
+                    return bmp;
                 }
             }
         }
@@ -71,12 +71,13 @@ namespace DataSet
             bmp.Save(path, ImageFormat.Jpeg);
         }
 
+        private const float maxSize = 100f;
         public static bool IsSimilarImage(Bitmap bmp1, Bitmap bmp2)
         {
-            using var bmp11 = ChangeResolution224x224(bmp1);
-            using var bmp22 = ChangeResolution224x224(bmp2);
+            using var bmp11 = ChangeResolution(bmp1, maxSize);
+            using var bmp22 = ChangeResolution(bmp2, maxSize);
 
-            if (Corral(bmp11, bmp22) > 0.75)
+            if (Corral(bmp11, bmp22) > 0.75f)
             {
                 return true;
             }
