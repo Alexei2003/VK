@@ -8,7 +8,7 @@ namespace DataSet
     {
         public static void Save(Bitmap bmp, string tags)
         {
-            bmp = ImageTo32bpp(ChangeResolution224x224(bmp));
+            bmp = ImageTo24bpp(ChangeResolution224x224(bmp));
 
             SaveFile(bmp, tags);
         }
@@ -45,9 +45,9 @@ namespace DataSet
                 }
             }
         }
-        public static Bitmap ImageTo32bpp(Bitmap bmp)
+        public static Bitmap ImageTo24bpp(Bitmap bmp)
         {
-            return bmp.Clone(new Rectangle { X = 0, Y = 0, Width = bmp.Width, Height = bmp.Height }, PixelFormat.Format32bppRgb);
+            return bmp.Clone(new Rectangle { X = 0, Y = 0, Width = bmp.Width, Height = bmp.Height }, PixelFormat.Format24bppRgb);
         }
 
         private static void SaveFile(Bitmap bmp, string tags)
@@ -95,13 +95,13 @@ namespace DataSet
             int bmp2Size = bmp2.Width + bmp2.Height;
             if (bmp1Size > bmp2Size)
             {
-                bmpBig = ImageTo32bpp(bmp1);
-                bmpSmall = ImageTo32bpp(bmp2);
+                bmpBig = ImageTo24bpp(bmp1);
+                bmpSmall = ImageTo24bpp(bmp2);
             }
             else
             {
-                bmpBig = ImageTo32bpp(bmp2);
-                bmpSmall = ImageTo32bpp(bmp1);
+                bmpBig = ImageTo24bpp(bmp2);
+                bmpSmall = ImageTo24bpp(bmp1);
             }
 
             var bmpDataBig = bmpBig.LockBits(new Rectangle(0, 0, bmpBig.Width, bmpBig.Height), ImageLockMode.ReadWrite, bmpBig.PixelFormat);
