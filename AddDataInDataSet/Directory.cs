@@ -6,10 +6,9 @@ namespace AddDataInDataSet
 {
     internal static class WorkWithDirectory
     {
-        private const string MAIN_DIRECTORY = "ARTS";
+        private const string MAIN_DIRECTORY = "D:\\NeuralNetwork\\DataSet\\ARTS";
         private const string NEW_PATH = $"New";
         private const string ORIGINAL_PATH = $"Original";
-        private const string OUTPUT_PATH = $"Output";
 
         private static void DirectoryMove(string source, string destination, bool checkSimilar, bool deleteOriginal = false)
         {
@@ -66,78 +65,6 @@ namespace AddDataInDataSet
                 count[0]++;
             });
         }
-
-        //public static void MoveDataToOutput(int[] count)
-        //{
-        //    var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + ORIGINAL_PATH);
-
-        //    int max = 0;
-
-        //    Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
-        //    {
-        //        var tmpFiles = Directory.GetFiles(tag);
-        //        if (tmpFiles.Length > max)
-        //        {
-        //            max = tmpFiles.Length;
-        //        }
-        //    });
-
-        //    var settings = new GeneratorArtificialImage.GeneratorArtificialImageSetting[]
-        //    {
-        //        new(){RotateAngle = 180, ContrastCorrection = 20, AdditiveNoise = true, Resize = 168},
-        //        new(){RotateAngle = 90, Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ X = true }, ContrastCorrection = 10, GaussianBlur = true, Resize = 196},
-        //        new(){Reflection = new GeneratorArtificialImage.GeneratorArtificialImageSetting.ReflectionStruct(){ Y = true}, ContrastCorrection = -50 },
-        //        new(){RotateAngle = 270, GaussianBlur = true, ContrastCorrection = -25 },
-        //    };
-
-        //    var settingAdds = new string[settings.Length];
-
-        //    for (var i = 0; i < settingAdds.Length; i++)
-        //    {
-        //        settingAdds[i] = settings[i].GetCodeAction();
-        //    }
-
-        //    Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
-        //    {
-        //        var tagDirectoryFiles = Directory.GetFiles(tag);
-        //        foreach (var imagePath in tagDirectoryFiles)
-        //        {
-        //            var originalImage = new Bitmap(imagePath);
-        //            double countImageExtraDouble = double.Round(((max * 1.0) / tagDirectoryFiles.Length) - 1);
-        //            int countImageExtra = Convert.ToInt32(countImageExtraDouble);
-
-        //            if (countImageExtra > settings.Length)
-        //            {
-        //                countImageExtra = settings.Length;
-        //            }
-
-        //            var directoryPath = MAIN_DIRECTORY + "\\" + OUTPUT_PATH + "\\" + GetDirectoryName(tag);
-        //            var imageName = Path.GetFileNameWithoutExtension(imagePath);
-
-        //            Directory.CreateDirectory(directoryPath);
-
-        //            var outputFilesReady = Directory.GetFiles(directoryPath);
-
-        //            if (!outputFilesReady.Contains(directoryPath + "\\" + imageName + ".jpg"))
-        //            {
-        //                originalImage.Save(directoryPath + "\\" + imageName + ".jpg", ImageFormat.Jpeg);
-        //            }
-
-        //            var outputImages = GeneratorArtificialImage.Generate(originalImage, settings, countImageExtra);
-
-        //            for (int i = 0; i < outputImages.Count; i++)
-        //            {
-        //                if (!outputFilesReady.Contains(directoryPath + "\\" + imageName + settingAdds[i] + ".jpg"))
-        //                {
-        //                    outputImages[i].Save(directoryPath + "\\" + imageName + settingAdds[i] + ".jpg", ImageFormat.Jpeg);
-        //                }
-        //            }
-        //        }
-
-        //        count[0]++;
-        //    });
-
-        //}
 
         public static void FixDataInOriginal(int[] count)
         {

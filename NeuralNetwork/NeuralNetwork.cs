@@ -100,7 +100,7 @@ namespace NeuralNetwork
                         {
                             var yi = y < bitmap.Height ? y : bitmap.Height;
                             var xi = x < bitmap.Width ? x : bitmap.Width;
-                            tensor[b, y, x, c] = rgbBitmap[yi * rgbBitmapData.Stride + xi * channels + c];
+                            tensor[b, y, x, c] = rgbBitmap[yi * rgbBitmapData.Stride + xi * channels + c] / 255f;
                         }
                     }
                 }

@@ -11,9 +11,8 @@
                 Console.WriteLine("" +
                     "Выбор действия\n" +
                     "1.Переместить из New\n" +
-                    "2.Генерация искуственных данных\n" +
-                    "3.Исправление Original\n" +
-                    "4.Получить точность классов\n" +
+                    "2.Исправление Original\n" +
+                    "3.Получить точность классов\n" +
                     "Выход (напишите exit)\n");
 
                 var action = Console.ReadLine();
@@ -33,20 +32,12 @@
                     case "2":
                         count[0] = 0;
                         thWrite.Start();
-                        //WorkWithDirectory.MoveDataToOutput(count);
-                        Thread.Sleep(100);
-                        count[0] = -1;
-                        thWrite.Join();
-                        break;
-                    case "3":
-                        count[0] = 0;
-                        thWrite.Start();
                         WorkWithDirectory.FixDataInOriginal(count);
                         Thread.Sleep(100);
                         count[0] = -1;
                         thWrite.Join();
                         break;
-                    case "4":
+                    case "3":
                         count[0] = 0;
                         thWrite.Start();
                         WorkWithDirectory.GetAccuracyClassesOriginal(count);
