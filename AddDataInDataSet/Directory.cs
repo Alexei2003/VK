@@ -1,7 +1,6 @@
 ﻿using ClosedXML.Excel;
 using DataSet;
 using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace AddDataInDataSet
 {
