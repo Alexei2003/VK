@@ -44,11 +44,7 @@ namespace NeuralNetwork
                 NamedOnnxValue.CreateFromTensor(_inputName, inputTensor)
             };
 
-            IDisposableReadOnlyCollection<DisposableNamedOnnxValue> results;
-            lock (_session)
-            {
-                results = _session.Run(input);
-            }
+            using var results = _session.Run(input);
 
             // Получаем результат
             var outputArr = results[0].AsEnumerable<Float16>().ToArray();
@@ -59,12 +55,7 @@ namespace NeuralNetwork
                 int maxIndex = Array.IndexOf(outputArr, outputArr.Max());
                 resulTag = _labels.Length > maxIndex ? _labels[maxIndex] : "#Unknown"; ; // Получаем имя класса по индексу
 
-                Int64 sum = 0;
-                foreach (var elem in outputArr)
-                {
-                    sum += elem.value;
-                }
-                var percentMaxTag = (outputArr[maxIndex].value * 1f) / sum;
+                var percentMaxTag = outputArr[maxIndex].ToFloat();
 
                 // Логика обработки метки
                 if (percentMaxTag < percentOriginalTag || resulTag.Contains("#Original_"))
@@ -78,7 +69,6 @@ namespace NeuralNetwork
                 }
             }
 
-            results.Dispose();
             return resulTag;
         }
 
@@ -101,10 +91,10 @@ namespace NeuralNetwork
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        for (int c = 0; c < channels; c++)
+                        for (int c = channels-1; c != -1; c--)
                         {
-                            var yi = y < bitmap.Height ? y : bitmap.Height;
-                            var xi = x < bitmap.Width ? x : bitmap.Width;
+                            var yi = y < bitmap.Height ? y : bitmap.Height-1;
+                            var xi = x < bitmap.Width ? x : bitmap.Width-1;
                             tensor[b, y, x, c] = rgbBitmap[yi * rgbBitmapData.Stride + xi * channels + c] / 255f;
                         }
                     }
