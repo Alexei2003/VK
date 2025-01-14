@@ -44,7 +44,11 @@ namespace NeuralNetwork
                 NamedOnnxValue.CreateFromTensor(_inputName, inputTensor)
             };
 
-            using var results = _session.Run(input);
+            IDisposableReadOnlyCollection<DisposableNamedOnnxValue> results;
+            lock (_session)
+            {
+                results = _session.Run(input);
+            }
 
             // Получаем результат
             var outputArr = results[0].AsEnumerable<Float16>().ToArray();
@@ -74,6 +78,7 @@ namespace NeuralNetwork
                 }
             }
 
+            results.Dispose();
             return resulTag;
         }
 
