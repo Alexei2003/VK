@@ -69,19 +69,32 @@ namespace AddDataInDataSet
 
             var tagList = new TagsList();
 
+            var tagSplitArr = new string[] { "#Original", "#NSFW" };
+
             Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
             {
                 var name = GetDirectoryName(tag);
 
+                int indexTagSplit = -1;
+
                 if (tagList.ContainTag(name))
                 {
-                    if (name == "#Original")
+
+                    for (var i = 0; i < tagSplitArr.Length; i++)
+                    {
+                        if (tagSplitArr[i] == name)
+                        {
+                            indexTagSplit = i;
+                        }
+                    }
+
+                    if (indexTagSplit != -1)
                     {
                         var tageInfo = new DirectoryInfo(tag);
 
                         var files = tageInfo.GetFiles();
 
-                        var pathBase = Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH, "#Original_");
+                        var pathBase = Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH, $"{tagSplitArr[indexTagSplit]}_");
                         while (files.Length >= 500)
                         {
                             var pathNewOriginal = pathBase + DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss.fff");
@@ -94,8 +107,10 @@ namespace AddDataInDataSet
                             Directory.CreateDirectory(pathNewOriginal);
                             for (int i = 0; i < 500; i++)
                             {
-                                files[i].MoveTo(Path.Combine(pathNewOriginal, files[i].Name));
+                                ref var file = ref files[i];
+                                file.MoveTo(Path.Combine(pathNewOriginal, file.Name));
                             }
+
 
                             files = tageInfo.GetFiles();
                         }
@@ -103,7 +118,15 @@ namespace AddDataInDataSet
                 }
                 else
                 {
-                    if (!name.Contains("#Original_"))
+                    for (var i = 0; i < tagSplitArr.Length; i++)
+                    {
+                        if (name.Contains(tagSplitArr[i]))
+                        {
+                            indexTagSplit = i;
+                        }
+                    }
+
+                    if (indexTagSplit == -1)
                     {
                         Directory.Delete(tag, true);
                     }
@@ -126,15 +149,16 @@ namespace AddDataInDataSet
 
             for (var i = 0; i < tagDirectories.Length; i++)
             {
-                var tagOriginal = GetDirectoryName(tagDirectories[i]);
+                var tagDirectory = tagDirectories[i];
+                var tagOriginal = GetDirectoryName(tagDirectory);
 
                 int countTrue = 0;
                 int countAll = 0;
-                var tagDirectoryInfo = new DirectoryInfo(tagDirectories[i]);
+                var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
+
                 foreach (var fileImage in tagDirectoryInfo.GetFiles())
                 {
-                    var image = new Bitmap(fileImage.FullName);
-
+                    using var image = new Bitmap(fileImage.FullName);
                     var tagPredict = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image);
 
                     if (tagOriginal == tagPredict)
@@ -145,12 +169,14 @@ namespace AddDataInDataSet
                     countAll++;
                 }
 
+                // Запись результатов в ячейки
                 worksheet.Cell(i + 2, 1).Value = tagOriginal;
                 worksheet.Cell(i + 2, 2).Value = (countTrue * 100f) / countAll;
                 worksheet.Cell(i + 2, 3).Value = countAll;
 
                 count[0]++;
             }
+
 
             workbook.SaveAs("result.xlsx");
         }

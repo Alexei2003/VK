@@ -17,8 +17,7 @@ namespace NeuralNetwork
         static NeuralNetwork()
         {
             // Загружаем модель 
-            var modelPath = "model.onnx";
-            _session = new InferenceSession(modelPath);
+            _session = new InferenceSession("model.onnx");
             _inputName = _session.InputMetadata.Keys.First();
 
             // Загружаем метки классов
