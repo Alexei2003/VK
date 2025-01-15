@@ -35,8 +35,6 @@ namespace NeuralNetwork
 
         public static string NeuralNetworkResult(Bitmap image)
         {
-            string resulTag = "#Error";
-
             var inputTensor = ImageToTensor(image);
 
             var input = new List<NamedOnnxValue>
@@ -51,7 +49,7 @@ namespace NeuralNetwork
 
             // Определяем метку с наибольшей вероятностью
             int maxIndex = Array.IndexOf(outputArr, outputArr.Max());
-            resulTag = _labels.Length > maxIndex ? _labels[maxIndex] : "#Unknown"; ; // Получаем имя класса по индексу
+            var resulTag = _labels.Length > maxIndex ? _labels[maxIndex] : "#Unknown"; ; // Получаем имя класса по индексу
 
             var sortedValues = outputArr
                 .OrderByDescending(value => value)

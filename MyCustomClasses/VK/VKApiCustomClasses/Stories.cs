@@ -17,19 +17,20 @@ namespace MyCustomClasses.VK.VKApiCustomClasses
             this.TIME_SLEEP = TIME_SLEEP;
         }
 
-        private string Save(string serverAnswer, string accessToken)
+        private void Save(string serverAnswer, string accessToken)
         {
             while (true)
             {
                 try
                 {
-                    return ApiOriginal.Invoke("stories.save",
+                    ApiOriginal.Invoke("stories.save",
                     new Dictionary<string, string>
                     {
                         {"access_token", accessToken},
                         {"upload_results", serverAnswer},
                         {"v","5.81"}
                     });
+                    return;
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {
