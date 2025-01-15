@@ -18,9 +18,9 @@ namespace RepetitionOfPostsBot.BotTask
                 mediaArr[i] = new InputMediaPhoto(InputFile.FromUri(imagesUrls[i]));
             }
 
-            mediaArr.First().Caption = caption;
+            mediaArr[0].Caption = caption;
 
-            var message = await botClient.SendMediaGroupAsync
+            await botClient.SendMediaGroupAsync
             (
                 chatId: CHAT_ID,
                 media: mediaArr

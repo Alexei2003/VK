@@ -1,6 +1,6 @@
 ﻿namespace MyCustomClasses.Tags
 {
-    public class TagsReplacer
+    public static class TagsReplacer
     {
         public static string ReplaceTagRemoveExcessFromVk(string tag)
         {
@@ -28,7 +28,7 @@
 
             for (var i = 0; i < tags.Length; i++)
             {
-                tag += '#' + tags[i].Split('@', StringSplitOptions.RemoveEmptyEntries).First() + '\n';
+                tag += '#' + tags[i].Split('@', StringSplitOptions.RemoveEmptyEntries)[0] + '\n';
             }
 
             return tag.Replace(TAG_REMOVE, "");

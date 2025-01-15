@@ -20,7 +20,7 @@ namespace AddPost.Classes
             var imageList = new List<VkNet.Model.Photo>(10);
             foreach (var image in images)
             {
-                imageList.Add(photo.AddOnVKServer(image).First());
+                imageList.Add(photo.AddOnVKServer(image)[0]);
             }
 
             var tags = tag.Split('#', StringSplitOptions.RemoveEmptyEntries);

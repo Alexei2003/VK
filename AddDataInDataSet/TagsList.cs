@@ -4,7 +4,7 @@ namespace AddDataInDataSet
 {
     internal class TagsList
     {
-        private HashSet<string> tagsList = null;
+        private HashSet<string>? tagsList = null;
 
         public TagsList()
         {

@@ -17,21 +17,6 @@ namespace MyCustomClasses.VK.VKApiCustomClasses
             this.TIME_SLEEP = TIME_SLEEP;
         }
 
-        private StoryServerUrl GetPhotoUploadServer(GetPhotoUploadServerParams @param)
-        {
-            while (true)
-            {
-                try
-                {
-                    return ApiOriginal.Stories.GetPhotoUploadServer(@param);
-                }
-                catch (VkNet.Exception.TooManyRequestsException)
-                {
-                    Thread.Sleep(TIME_SLEEP);
-                }
-            }
-        }
-
         private string Save(string serverAnswer, string accessToken)
         {
             while (true)
@@ -53,7 +38,7 @@ namespace MyCustomClasses.VK.VKApiCustomClasses
             }
         }
 
-        public void Post(GetPhotoUploadServerParams @param, string accessToken, string path)
+        public static void Post(GetPhotoUploadServerParams @param, string accessToken, string path)
         {
             var api = new VkApiCustom(accessToken);
 
@@ -65,7 +50,7 @@ namespace MyCustomClasses.VK.VKApiCustomClasses
             var json = JObject.Parse(responseFile);
             string uploadResult = json["response"]?["upload_result"]?.ToString();
 
-            var story = api.Stories.Save(uploadResult, accessToken);
+            api.Stories.Save(uploadResult, accessToken);
         }
     }
 }

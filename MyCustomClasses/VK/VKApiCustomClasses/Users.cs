@@ -18,7 +18,7 @@ namespace MyCustomClasses.VK.VKApiCustomClasses
             this.TIME_SLEEP = TIME_SLEEP;
         }
 
-        public VkCollection<Group> GetSubscriptions(long? userId = null, int? count = null, int? offset = null, GroupsFields fields = null)
+        public VkCollection<Group> GetSubscriptions(long? userId = null, int? count = null, int? offset = null, GroupsFields? fields = null)
         {
             while (true)
             {
@@ -37,7 +37,7 @@ namespace MyCustomClasses.VK.VKApiCustomClasses
             }
         }
 
-        public VkCollection<User> GetFollowers(long? userId = null, int? count = null, int? offset = null, ProfileFields fields = null, NameCase? nameCase = null)
+        public VkCollection<User> GetFollowers(long? userId = null, int? count = null, int? offset = null, ProfileFields? fields = null, NameCase? nameCase = null)
         {
             while (true)
             {

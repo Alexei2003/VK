@@ -89,8 +89,8 @@ namespace DataSet
 
         private unsafe static float Corral(Bitmap bmp1, Bitmap bmp2)
         {
-            Bitmap bmpBig = null;
-            Bitmap bmpSmall = null;
+            Bitmap? bmpBig = null;
+            Bitmap? bmpSmall = null;
             int bmp1Size = bmp1.Width + bmp1.Height;
             int bmp2Size = bmp2.Width + bmp2.Height;
             if (bmp1Size > bmp2Size)
@@ -126,8 +126,8 @@ namespace DataSet
                 for (var x = 0; x < bmpBig.Width && x < bmpSmall.Width; x++)
                 {
 
-                    byte* addrOriginal = (byte*)(rgbBitmapBig + y * bmpDataBig.Stride + x * 4);
-                    byte* addrPartical = (byte*)(rgbBitmapSmall + y * bmpDataSmall.Stride + x * 4);
+                    byte* addrOriginal = rgbBitmapBig + y * bmpDataBig.Stride + x * 4;
+                    byte* addrPartical = rgbBitmapSmall + y * bmpDataSmall.Stride + x * 4;
 
                     var o = new Vector3(addrOriginal[2], addrOriginal[1], addrOriginal[0]);
                     var p = new Vector3(addrPartical[2], addrPartical[1], addrPartical[0]);

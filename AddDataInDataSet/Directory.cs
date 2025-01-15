@@ -35,12 +35,9 @@ namespace AddDataInDataSet
                         }
                     }
                 }
-                if (!similar)
+                if (!similar && !File.Exists(Path.Combine(destination, src.Name)))
                 {
-                    if (!File.Exists(destination + "\\" + src.Name))
-                    {
-                        src.MoveTo(destination + "\\" + src.Name);
-                    }
+                    src.MoveTo(Path.Combine(destination, src.Name));
                 }
             }
             if (deleteOriginal)
@@ -51,16 +48,16 @@ namespace AddDataInDataSet
 
         private static string GetDirectoryName(string dir)
         {
-            return dir.Split('\\', StringSplitOptions.RemoveEmptyEntries).Last();
+            return dir.Split('\\', StringSplitOptions.RemoveEmptyEntries)[^1];
         }
 
         public static void MoveDataFromNewToOriginal(int[] count)
         {
-            var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + NEW_PATH);
+            var tagDirectories = Directory.GetDirectories(Path.Combine(MAIN_DIRECTORY, NEW_PATH));
 
             Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
             {
-                DirectoryMove(tag, MAIN_DIRECTORY + "\\" + ORIGINAL_PATH + "\\" + GetDirectoryName(tag), true, true);
+                DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH, GetDirectoryName(tag)), true, true);
 
                 count[0]++;
             });
@@ -68,7 +65,7 @@ namespace AddDataInDataSet
 
         public static void FixDataInOriginal(int[] count)
         {
-            var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + ORIGINAL_PATH);
+            var tagDirectories = Directory.GetDirectories(Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH));
 
             var tagList = new TagsList();
 
@@ -84,7 +81,7 @@ namespace AddDataInDataSet
 
                         var files = tageInfo.GetFiles();
 
-                        var pathBase = MAIN_DIRECTORY + "\\" + ORIGINAL_PATH + "\\" + "#Original_";
+                        var pathBase = Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH, "#Original_");
                         while (files.Length >= 500)
                         {
                             var pathNewOriginal = pathBase + DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss.fff");
@@ -95,10 +92,9 @@ namespace AddDataInDataSet
                             }
 
                             Directory.CreateDirectory(pathNewOriginal);
-                            string pathOld;
                             for (int i = 0; i < 500; i++)
                             {
-                                files[i].MoveTo(pathNewOriginal + "\\" + files[i].Name);
+                                files[i].MoveTo(Path.Combine(pathNewOriginal, files[i].Name));
                             }
 
                             files = tageInfo.GetFiles();
@@ -117,10 +113,9 @@ namespace AddDataInDataSet
             });
         }
 
-        private const float percentOriginalTag = 0.6f;
         public static void GetAccuracyClassesOriginal(int[] count)
         {
-            var tagDirectories = Directory.GetDirectories(MAIN_DIRECTORY + "\\" + ORIGINAL_PATH);
+            var tagDirectories = Directory.GetDirectories(Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH));
 
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Sheet1");
@@ -140,7 +135,7 @@ namespace AddDataInDataSet
                 {
                     var image = new Bitmap(fileImage.FullName);
 
-                    var tagPredict = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag);
+                    var tagPredict = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image);
 
                     if (tagOriginal == tagPredict)
                     {

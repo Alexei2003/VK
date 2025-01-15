@@ -63,7 +63,7 @@ namespace AddPost.Classes
                         Filter = WallFilter.Postponed,
                     });
                 }
-                post = wall.WallPosts.Last();
+                post = wall.WallPosts[^1];
             }
 
             return post.Date;

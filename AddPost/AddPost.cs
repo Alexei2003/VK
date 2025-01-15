@@ -13,7 +13,6 @@ namespace AddPost
 
         private Int64 groupId;
         private readonly TagsList tagList = new();
-        private float percentOriginalTag = 0.6f;
         private List<ImagesWithTag> imageList = [];
         private int imageIndex = -1;
         private readonly VkApiCustom api;
@@ -31,7 +30,6 @@ namespace AddPost
             api = new VkApiCustom(accessTokens.GetValueOrDefault(GosUslugi.VK));
             groupId = Convert.ToInt64(tbGroupId.Text);
             cbTimeBetweenPost.SelectedIndex = 1;
-            cbPercentOriginalTag.SelectedIndex = 5;
 
             WriteFindTag();
         }
@@ -101,7 +99,7 @@ namespace AddPost
             }
         }
 
-        private int ChangeRGB(int value)
+        private static int ChangeRGB(int value)
         {
             const int MIN_RGB = 150;
 
@@ -246,7 +244,7 @@ namespace AddPost
                 var image = new Bitmap(Clipboard.GetImage());
                 await Task.Run(() =>
                 {
-                    var tag = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, percentOriginalTag);
+                    var tag = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image);
 
                     AddImage(image, tag);
                 });
@@ -333,12 +331,6 @@ namespace AddPost
 
             var findTagStr = dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
 
-            var tagArr1 = tagStr.Split('#', StringSplitOptions.RemoveEmptyEntries);
-            var tagArr2 = findTagStr.Split('#', StringSplitOptions.RemoveEmptyEntries);
-
-            ///////////////////
-
-
             tbTag.Text = tagStr + findTagStr;
         }
 
@@ -365,11 +357,6 @@ namespace AddPost
 
                 WriteFindTag();
             }
-        }
-
-        private void cbPercentOriginalTag_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            percentOriginalTag = (cbPercentOriginalTag.SelectedIndex + 1) * 0.1f;
         }
 
         private void bImageLeft_Click(object sender, EventArgs e)

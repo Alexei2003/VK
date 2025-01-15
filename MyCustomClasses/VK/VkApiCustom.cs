@@ -20,7 +20,6 @@ namespace MyCustomClasses.VK
         public Newsfeed Newsfeed { get; }
         public Polls Polls { get; }
         public Stories Stories { get; }
-        public ShortVideo ShortVideo { get; }
 
         public VkApiCustom()
         {
@@ -38,7 +37,6 @@ namespace MyCustomClasses.VK
             Wall = new(ApiOriginal, TIME_SLEEP);
             Newsfeed = new(ApiOriginal, TIME_SLEEP);
             Stories = new(ApiOriginal, TIME_SLEEP);
-            ShortVideo = new(ApiOriginal, TIME_SLEEP);
         }
 
         public VkApiCustom(string accessToken) : this()

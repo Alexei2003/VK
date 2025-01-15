@@ -30,7 +30,7 @@ namespace MyCustomClasses.VK.VKApiCustomClasses
             }
         }
 
-        public ReadOnlyCollection<VkNet.Model.Photo> SaveWallPhoto(string response, ulong? userId, ulong? groupId = null, string caption = null)
+        public ReadOnlyCollection<VkNet.Model.Photo> SaveWallPhoto(string response, ulong? userId, ulong? groupId = null, string? caption = null)
         {
             while (true)
             {

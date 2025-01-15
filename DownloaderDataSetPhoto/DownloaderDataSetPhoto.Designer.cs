@@ -51,8 +51,6 @@
             bBackgroundImageCopy = new Button();
             bVK = new Button();
             bGelbooru = new Button();
-            cbPercentOriginalTag = new ComboBox();
-            tbPercentOriginalTag = new TextBox();
             pVK.SuspendLayout();
             pBackgroundImageCopy.SuspendLayout();
             pGelbooru.SuspendLayout();
@@ -265,35 +263,12 @@
             bGelbooru.UseVisualStyleBackColor = true;
             bGelbooru.Click += bGelbooru_Click;
             // 
-            // cbPercentOriginalTag
-            // 
-            cbPercentOriginalTag.FormattingEnabled = true;
-            cbPercentOriginalTag.Items.AddRange(new object[] { "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%" });
-            cbPercentOriginalTag.Location = new Point(241, 12);
-            cbPercentOriginalTag.Name = "cbPercentOriginalTag";
-            cbPercentOriginalTag.Size = new Size(107, 25);
-            cbPercentOriginalTag.TabIndex = 45;
-            cbPercentOriginalTag.SelectedIndexChanged += cbPercentOriginalTag_SelectedIndexChanged;
-            // 
-            // tbPercentOriginalTag
-            // 
-            tbPercentOriginalTag.Location = new Point(73, 12);
-            tbPercentOriginalTag.Multiline = true;
-            tbPercentOriginalTag.Name = "tbPercentOriginalTag";
-            tbPercentOriginalTag.Size = new Size(162, 25);
-            tbPercentOriginalTag.TabIndex = 44;
-            tbPercentOriginalTag.Text = "Сходство ниже #Original";
-            tbPercentOriginalTag.TextAlign = HorizontalAlignment.Center;
-            tbPercentOriginalTag.UseSystemPasswordChar = true;
-            // 
             // DownloaderDataSetPhoto
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlLightLight;
             ClientSize = new Size(360, 314);
-            Controls.Add(cbPercentOriginalTag);
-            Controls.Add(tbPercentOriginalTag);
             Controls.Add(bGelbooru);
             Controls.Add(bVK);
             Controls.Add(bBackgroundImageCopy);
@@ -338,7 +313,5 @@
         private Button bDownloadPhotosDanbooru;
         private TextBox textBox4;
         private TextBox tbGelbooruUrl;
-        private ComboBox cbPercentOriginalTag;
-        private TextBox tbPercentOriginalTag;
     }
 }

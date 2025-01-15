@@ -1,31 +1,34 @@
-﻿namespace MyCustomClasses.Tags.Editors
+﻿using System.Collections.Immutable;
+using System.Text;
+
+namespace MyCustomClasses.Tags.Editors
 {
     public static class BaseTagsEditor
     {
-        public static string[] BASE_TAGS =
+        private static readonly ImmutableArray<string> BASE_TAGS =
         [
             "Anime",
             "Arts",
             "Art"
         ];
 
-        public static string[] BASE_TAGS_DELETE =
+        private static readonly ImmutableArray<string> BASE_TAGS_DELETE =
         [
             "Anime",
             "Arts",
             "Art",
             "Art\n"
         ];
+
         public static string GetBaseTags()
         {
-            string tags = "";
-
+            StringBuilder bld = new StringBuilder();
             foreach (string tag in BASE_TAGS)
             {
-                tags += '#' + tag;
+                bld.Append($"#{tag}");
             }
 
-            return tags;
+            return bld.ToString();
         }
 
         public static string GetBaseTagsWithNextLine()
@@ -57,16 +60,16 @@
                 return sourceTag;
             }
 
-            var tagWithRemove = "";
+            StringBuilder bld = new StringBuilder();
             for (int i = 0; i < sourceTags.Length; i++)
             {
                 if (!listFindIndex.Contains(i))
                 {
-                    tagWithRemove += '#' + sourceTags[i];
+                    bld.Append($"#{sourceTags[i]}");
                 }
             }
 
-            return tagWithRemove;
+            return bld.ToString();
         }
     }
 }

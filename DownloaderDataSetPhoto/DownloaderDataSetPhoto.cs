@@ -10,7 +10,6 @@ namespace DownloaderDataSetPhoto
     {
         private Int64 groupId;
         private readonly TagsList tagList = new();
-        private float percentOriginalTag = 0.6f;
         private readonly VkApiCustom api;
 
         public DownloaderDataSetPhoto()
@@ -20,19 +19,14 @@ namespace DownloaderDataSetPhoto
             api = new VkApiCustom(accessTokens.GetValueOrDefault(GosUslugi.VK));
             groupId = 220199532;
             HidePanels(pGelbooru);
-
-            cbPercentOriginalTag.SelectedIndex = 5;
         }
 
 
         private void AddInDataSet(Bitmap image, string tags, string resulTag)
         {
-            if (!tagList.Add(tags) && tags.Split('#', StringSplitOptions.RemoveEmptyEntries).Length < 3)
+            if (!tagList.Add(tags) && tags.Split('#', StringSplitOptions.RemoveEmptyEntries).Length < 3 && resulTag != tbTag.Text)
             {
-                if (resulTag != tbTag.Text)
-                {
-                    DataSetImage.Save(image, tags);
-                }
+                DataSetImage.Save(image, tags);
             }
         }
 
@@ -42,7 +36,7 @@ namespace DownloaderDataSetPhoto
             {
                 var clipboardImage = new Bitmap(Clipboard.GetImage());
 
-                var resulTag = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(clipboardImage, percentOriginalTag);
+                var resulTag = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(clipboardImage);
 
                 AddInDataSet(clipboardImage, tbTag.Text.Replace(" ", ""), resulTag);
 
@@ -57,10 +51,6 @@ namespace DownloaderDataSetPhoto
             pGelbooru.Visible = false;
 
             panel.Visible = true;
-        }
-        private void cbPercentOriginalTag_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            percentOriginalTag = (cbPercentOriginalTag.SelectedIndex + 1) * 0.1f;
         }
 
         private void bBackgroundImageCopyOn_Click(object sender, EventArgs e)
@@ -141,7 +131,7 @@ namespace DownloaderDataSetPhoto
                         var tags = tbTag.Text.Split(separator, StringSplitOptions.RemoveEmptyEntries);
                         Parallel.For(0, tags.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
                         {
-                            downloaderVK.SavePhotosFromNewsfeed(tags[i], shift, count, groupId, percentOriginalTag, $"DataSet_{i}");
+                            downloaderVK.SavePhotosFromNewsfeed(tags[i], shift, count, groupId, $"DataSet_{i}");
                         });
                     }
                     catch (Exception e)
@@ -192,7 +182,7 @@ namespace DownloaderDataSetPhoto
                     {
                         var tag = tbTag.Text;
                         var url = tbGelbooruUrl.Text;
-                        DownloaderDataSetPhotoFromGelbooru.SavePhotos(url, tag, percentOriginalTag, "DataSet_");
+                        DownloaderDataSetPhotoFromGelbooru.SavePhotos(url, tag, "DataSet_");
                     }
                     catch (Exception e)
                     {

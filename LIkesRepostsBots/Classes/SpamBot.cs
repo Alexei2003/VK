@@ -71,7 +71,7 @@ namespace LikesRepostsBots.Classes
             }
 
             RepostResult repostResult;
-            for (int numbPost = countPosts - 1; numbPost > -1;)
+            for (int numbPost = countPosts - 1; numbPost > -1; numbPost--)
             {
                 // Лайк репост
                 if (RandomStatic.Rand.Next(CHANCE_REPOST) == 0 && !wall.WallPosts[numbPost].Text.Contains('!'))
@@ -117,8 +117,6 @@ namespace LikesRepostsBots.Classes
 
                 // Лайк комментов
                 AddCommentsLike(groupId, wall.WallPosts[numbPost].Id);
-
-                numbPost--;
             }
         }
 
@@ -213,7 +211,8 @@ namespace LikesRepostsBots.Classes
             SleepAfterAction();
 
             int index = 0;
-            for (int numbNewFriends = 0; numbNewFriends < addCountFriends; index++)
+            int numbNewFriends = 0;
+            while (numbNewFriends < addCountFriends)
             {
                 if (index >= suggestions.Count)
                 {
@@ -232,6 +231,8 @@ namespace LikesRepostsBots.Classes
                 {
                     numbNewFriends++;
                 }
+
+                index++;
             }
         }
 
@@ -245,7 +246,8 @@ namespace LikesRepostsBots.Classes
             SleepAfterAction();
 
             int index = RandomStatic.Rand.Next(30);
-            for (int numbNewFriends = 0; numbNewFriends < addCountFriends; index += (1 + RandomStatic.Rand.Next(30)))
+            int numbNewFriends = 0;
+            while (numbNewFriends < addCountFriends)
             {
                 if (index >= members.Count)
                 {
@@ -268,6 +270,8 @@ namespace LikesRepostsBots.Classes
                 {
                     numbNewFriends++;
                 }
+
+                index += (1 + RandomStatic.Rand.Next(30));
             }
         }
 
@@ -423,7 +427,7 @@ namespace LikesRepostsBots.Classes
                     switch (index)
                     {
                         case 0:
-                            if (botParams.MakeRepost == true && botParams.GroupIdForGood != null)
+                            if (botParams.MakeRepost && botParams.GroupIdForGood != null)
                             {
                                 WorkWithPosts(botParams.GroupIdForGood.Value);
                             }
@@ -453,7 +457,7 @@ namespace LikesRepostsBots.Classes
             }
         }
 
-        private int[] MixAction()
+        private static int[] MixAction()
         {
             var action = new int[] { 0, 1, 2, 3 };
             int n = action.Length;

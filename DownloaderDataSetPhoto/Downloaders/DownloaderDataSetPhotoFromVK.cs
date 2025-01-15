@@ -16,7 +16,7 @@ namespace DownloaderDataSetPhoto.Downloaders
             this.tagList = tagList;
         }
 
-        public void SavePhotosFromNewsfeed(string currentTag, int shiftPost, int countPhoto, long ignorGroupId, float percentOriginalTag, string fileName)
+        public void SavePhotosFromNewsfeed(string currentTag, int shiftPost, int countPhoto, long ignorGroupId, string fileName)
         {
             using var wc = new WebClient();
             NewsSearchResult newsfeedPosts;
@@ -43,12 +43,11 @@ namespace DownloaderDataSetPhoto.Downloaders
                         }
                         try
                         {
-                            SavePhotos(currentTag, post, ignorGroupId, percentOriginalTag, fileName, wc);
+                            SavePhotos(currentTag, post, ignorGroupId, fileName, wc);
                         }
                         catch (Exception e)
                         {
                             Logs.WriteExcemption(e);
-                            continue;
                         }
                     }
                     else
@@ -76,7 +75,7 @@ namespace DownloaderDataSetPhoto.Downloaders
         }
 
         private static readonly char[] separator = [' ', '@', ',', '\r', '\n'];
-        private void SavePhotos(string currentTag, NewsSearchItem post, long groupId, float percentOriginalTag, string fileName, WebClient wc)
+        private void SavePhotos(string currentTag, NewsSearchItem post, long groupId, string fileName, WebClient wc)
         {
             if (post.OwnerId == -1 * groupId)
             {
@@ -104,7 +103,7 @@ namespace DownloaderDataSetPhoto.Downloaders
             string tmpTag;
             foreach (var tag in tags)
             {
-                tmpTag = tag.Split(separator, StringSplitOptions.RemoveEmptyEntries).First();
+                tmpTag = tag.Split(separator, StringSplitOptions.RemoveEmptyEntries)[0];
                 if (!tagList.Find(tmpTag).IsEmpty)
                 {
                     countFindTag++;
@@ -116,7 +115,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                 return;
             }
 
-            Downloader.DownloadPhoto(wc, photo.Sizes[2].Url.ToString(), currentTag, percentOriginalTag, fileName);
+            Downloader.DownloadPhoto(wc, photo.Sizes[2].Url.ToString(), currentTag, fileName);
         }
     }
 }

@@ -45,9 +45,9 @@
             textBox5 = new TextBox();
             tbGroupId = new TextBox();
             dgvDictionary = new DataGridView();
+            index = new DataGridViewTextBoxColumn();
+            tags = new DataGridViewTextBoxColumn();
             bDataSet = new Button();
-            tbPercentOriginalTag = new TextBox();
-            cbPercentOriginalTag = new ComboBox();
             textBox7 = new TextBox();
             tbNeuralNetworkResult = new TextBox();
             bImageLeft = new Button();
@@ -55,8 +55,6 @@
             tbImageIndex = new TextBox();
             bImageDelete = new Button();
             bTbTagFix = new Button();
-            index = new DataGridViewTextBoxColumn();
-            tags = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)pbImage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             SuspendLayout();
@@ -225,6 +223,22 @@
             dgvDictionary.CellContentClick += dgvDictionary_CellContentClick;
             dgvDictionary.CellMouseClick += dgvDictionary_CellMouseClick;
             // 
+            // index
+            // 
+            index.HeaderText = "Номер";
+            index.MinimumWidth = 6;
+            index.Name = "index";
+            index.ReadOnly = true;
+            index.Width = 60;
+            // 
+            // tags
+            // 
+            tags.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            tags.HeaderText = "Теги";
+            tags.MinimumWidth = 6;
+            tags.Name = "tags";
+            tags.ReadOnly = true;
+            // 
             // bDataSet
             // 
             bDataSet.Location = new Point(623, 552);
@@ -234,27 +248,6 @@
             bDataSet.Text = "Отправить в дата сет";
             bDataSet.UseVisualStyleBackColor = true;
             bDataSet.Click += bDataSet_Click;
-            // 
-            // tbPercentOriginalTag
-            // 
-            tbPercentOriginalTag.Location = new Point(623, 293);
-            tbPercentOriginalTag.Multiline = true;
-            tbPercentOriginalTag.Name = "tbPercentOriginalTag";
-            tbPercentOriginalTag.Size = new Size(110, 39);
-            tbPercentOriginalTag.TabIndex = 22;
-            tbPercentOriginalTag.Text = "Сходство ниже #Original";
-            tbPercentOriginalTag.TextAlign = HorizontalAlignment.Center;
-            tbPercentOriginalTag.UseSystemPasswordChar = true;
-            // 
-            // cbPercentOriginalTag
-            // 
-            cbPercentOriginalTag.FormattingEnabled = true;
-            cbPercentOriginalTag.Items.AddRange(new object[] { "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%" });
-            cbPercentOriginalTag.Location = new Point(623, 338);
-            cbPercentOriginalTag.Name = "cbPercentOriginalTag";
-            cbPercentOriginalTag.Size = new Size(110, 25);
-            cbPercentOriginalTag.TabIndex = 23;
-            cbPercentOriginalTag.SelectedIndexChanged += cbPercentOriginalTag_SelectedIndexChanged;
             // 
             // textBox7
             // 
@@ -325,22 +318,6 @@
             bTbTagFix.UseVisualStyleBackColor = true;
             bTbTagFix.Click += bTbTagFix_Click;
             // 
-            // index
-            // 
-            index.HeaderText = "Номер";
-            index.MinimumWidth = 6;
-            index.Name = "index";
-            index.ReadOnly = true;
-            index.Width = 60;
-            // 
-            // tags
-            // 
-            tags.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            tags.HeaderText = "Теги";
-            tags.MinimumWidth = 6;
-            tags.Name = "tags";
-            tags.ReadOnly = true;
-            // 
             // AddPost
             // 
             AllowDrop = true;
@@ -355,8 +332,6 @@
             Controls.Add(bImageLeft);
             Controls.Add(tbNeuralNetworkResult);
             Controls.Add(textBox7);
-            Controls.Add(cbPercentOriginalTag);
-            Controls.Add(tbPercentOriginalTag);
             Controls.Add(bDataSet);
             Controls.Add(dgvDictionary);
             Controls.Add(tbGroupId);
@@ -405,8 +380,6 @@
         private TextBox tbGroupId;
         private DataGridView dgvDictionary;
         private Button bDataSet;
-        private TextBox tbPercentOriginalTag;
-        private ComboBox cbPercentOriginalTag;
         private TextBox textBox7;
         private TextBox tbNeuralNetworkResult;
         private Button bImageLeft;

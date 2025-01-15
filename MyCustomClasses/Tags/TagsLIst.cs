@@ -5,7 +5,7 @@ namespace MyCustomClasses.Tags
 {
     public sealed class TagsList
     {
-        private List<string> tagsList = null;
+        private List<string>? tagsList = null;
 
         public TagsList()
         {
@@ -29,12 +29,12 @@ namespace MyCustomClasses.Tags
                 }
                 else
                 {
-                    tagsList = new List<string>();
+                    tagsList = [];
                 }
             }
             catch
             {
-                tagsList = new List<string>();
+                tagsList = [];
             }
         }
 
@@ -44,7 +44,7 @@ namespace MyCustomClasses.Tags
             var tags = tagsGet.Split('#');
             if (tags.Length > 0)
             {
-                stack = Find(tags.Last());
+                stack = Find(tags[^1]);
             }
             else
             {

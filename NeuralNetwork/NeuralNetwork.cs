@@ -33,7 +33,7 @@ namespace NeuralNetwork
             }
         }
 
-        public static string NeuralNetworkResult(Bitmap image, float percentOriginalTag)
+        public static string NeuralNetworkResult(Bitmap image)
         {
             string resulTag = "#Error";
 
@@ -50,23 +50,28 @@ namespace NeuralNetwork
             var outputArr = results[0].AsEnumerable<Float16>().ToArray();
 
             // Определяем метку с наибольшей вероятностью
-            if (outputArr != null)
+            int maxIndex = Array.IndexOf(outputArr, outputArr.Max());
+            resulTag = _labels.Length > maxIndex ? _labels[maxIndex] : "#Unknown"; ; // Получаем имя класса по индексу
+
+            var sortedValues = outputArr
+                .OrderByDescending(value => value)
+                .ToArray();
+
+            // Получаем самую большую вероятность
+            float percentMaxTag = sortedValues[0].ToFloat();
+
+            // Вычисляем сумму 2-го, 3-го и 4-го самых больших значений
+            float percentOriginalTag = sortedValues.Skip(1).Take(3).Sum(value => value.ToFloat());
+
+            // Логика обработки метки
+            if (percentMaxTag < percentOriginalTag || resulTag.Contains("#Original_"))
             {
-                int maxIndex = Array.IndexOf(outputArr, outputArr.Max());
-                resulTag = _labels.Length > maxIndex ? _labels[maxIndex] : "#Unknown"; ; // Получаем имя класса по индексу
+                resulTag = "#Original";
+            }
 
-                var percentMaxTag = outputArr[maxIndex].ToFloat();
-
-                // Логика обработки метки
-                if (percentMaxTag < percentOriginalTag || resulTag.Contains("#Original_"))
-                {
-                    resulTag = "#Original";
-                }
-
-                if (resulTag.Contains("#NSFW_"))
-                {
-                    resulTag = "#NSFW";
-                }
+            if (resulTag.Contains("#NSFW_"))
+            {
+                resulTag = "#NSFW";
             }
 
             return resulTag;
@@ -74,10 +79,10 @@ namespace NeuralNetwork
 
         public unsafe static DenseTensor<float> ImageToTensor(Bitmap bitmap)
         {
-            int batchSize = 1;
-            int height = 224;
-            int width = 224;
-            int channels = 3;
+            const int batchSize = 1;
+            const int height = 224;
+            const int width = 224;
+            const int channels = 3;
 
             var tensor = new DenseTensor<float>([batchSize, height, width, channels]);
 
@@ -91,10 +96,10 @@ namespace NeuralNetwork
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        for (int c = channels-1; c != -1; c--)
+                        for (int c = channels - 1; c != -1; c--)
                         {
-                            var yi = y < bitmap.Height ? y : bitmap.Height-1;
-                            var xi = x < bitmap.Width ? x : bitmap.Width-1;
+                            var yi = y < bitmap.Height ? y : bitmap.Height - 1;
+                            var xi = x < bitmap.Width ? x : bitmap.Width - 1;
                             tensor[b, y, x, c] = rgbBitmap[yi * rgbBitmapData.Stride + xi * channels + c] / 255f;
                         }
                     }

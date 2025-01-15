@@ -1,8 +1,10 @@
-﻿using MyCustomClasses;
+﻿using Microsoft.Extensions.Primitives;
+using MyCustomClasses;
 using MyCustomClasses.Tags;
 using MyCustomClasses.Tags.Editors;
 using MyCustomClasses.VK;
 using System.Net;
+using System.Text;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 
@@ -47,7 +49,7 @@ namespace RepetitionOfPostsBot.BotTask
                         Filter = WallFilter.Postponed
                     });
 
-                    if (wall.WallPosts.Count < 1 || ((wall.WallPosts.First().Date.Value.Hour) > (DateTime.UtcNow.AddHours(1).Hour)))
+                    if (wall.WallPosts.Count < 1 || ((wall.WallPosts[0].Date.Value.Hour) > (DateTime.UtcNow.AddHours(1).Hour)))
                     {
                         // Получение самого свежего поста
                         wall = api.Wall.Get(new WallGetParams
@@ -73,8 +75,8 @@ namespace RepetitionOfPostsBot.BotTask
                         var notResendedCountPosts = totalCountPosts / 15;
                         var maxRandomOffsetRessendedPosts = totalCountPosts / 5;
 
-                        List<MediaAttachment> mediaAttachmentList = null;
-                        string postText = null;
+                        List<MediaAttachment>? mediaAttachmentList = null;
+                        string postText = "";
                         while (true)
                         {
                             var offsetNextPost = GetRandomID(maxRandomOffsetRessendedPosts);
@@ -96,7 +98,6 @@ namespace RepetitionOfPostsBot.BotTask
                             });
 
                             bool postFind = false;
-
                             foreach (var post in wall.WallPosts)
                             {
                                 mediaAttachmentList = [];
@@ -131,7 +132,10 @@ namespace RepetitionOfPostsBot.BotTask
 
                                 postText = string.Join("", tagsArr.Select(s => "#" + s + GROUP_SHORT_URL + "\n"));
 
-                                postText = BaseTagsEditor.GetBaseTagsWithNextLine() + postText;
+                                StringBuilder bld = new StringBuilder();
+                                bld.Append(BaseTagsEditor.GetBaseTagsWithNextLine());
+                                bld.Append(postText);
+                                postText = bld.ToString();
 
                                 // Достать картинки из поста
                                 foreach (var attachment in post.Attachments)
@@ -231,7 +235,6 @@ namespace RepetitionOfPostsBot.BotTask
                         if (postText.Contains(tag))
                         {
                             Thread.Sleep(TIME_SLEEP);
-                            continue;
                         }
                     }
 
@@ -243,7 +246,7 @@ namespace RepetitionOfPostsBot.BotTask
                         if (attachment.Type.Name == "Photo")
                         {
                             var photo = (Photo)attachment.Instance;
-                            imagesUrl.Add(photo.Sizes.Last().Url);
+                            imagesUrl.Add(photo.Sizes[^1].Url);
                         }
                     }
 
@@ -258,9 +261,9 @@ namespace RepetitionOfPostsBot.BotTask
                     // Истории
                     if (RandomStatic.Rand.Next(10) == 0)
                     {
-                        wc.DownloadFile(imagesUrl.First(), "Story.jpg");
+                        wc.DownloadFile(imagesUrl[0], "Story.jpg");
 
-                        vkApi.Stories.Post(new VkNet.Model.GetPhotoUploadServerParams()
+                        MyCustomClasses.VK.VKApiCustomClasses.Stories.Post(new VkNet.Model.GetPhotoUploadServerParams()
                         {
                             AddToNews = true,
                             GroupId = (ulong)GROUP_ID,
@@ -274,15 +277,11 @@ namespace RepetitionOfPostsBot.BotTask
                     // Отправка в другие сети
                     var caption = TagsReplacer.ReplaceTagRemoveExcessFromVk(postText);
                     TelegramTask.PushPost(accessTokens.GetValueOrDefault(GosUslugi.TELEGRAM), caption, imagesUrl.ToArray());
-
-                    //var discordCaption = BaseTagsEditor.RemoveBaseTags(caption);
-                    //DiscordTask.PushPost(accessTokens.GetValueOrDefault(GosUslugi.DISCORD), discordCaption, imagesUrl.ToArray());
                 }
                 catch (Exception e)
                 {
                     Logs.WriteExcemption(e);
                     Thread.Sleep(TIME_SLEEP);
-                    continue;
                 }
             }
         }
