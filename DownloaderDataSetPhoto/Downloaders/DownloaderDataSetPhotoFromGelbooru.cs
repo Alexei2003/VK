@@ -7,9 +7,7 @@ namespace DownloaderDataSetPhoto.Downloaders
     {
         public static void SavePhotos(string url, string currentTag, string fileName)
         {
-            url += "1girls+-completely_nude+-gangbang+-imminent_sex+-sex+-penis+-condom+-cum+-futa+-torn_clothing+-1boy+-rape+-overeating+-filled_condom+-big_belly+-bdsm+-gigantic_breasts" +
-                   "+-hyper_breasts+-hyper_thighs+-hyper_ass+-chubby+-anal+-2girls+-cosplay+-text+-hypnosis+-slave+-pussy+-nose_hook+-2boys+-penis_over_eyes+-multiple_penises+-anal_insertion+-dildo" +
-                   "+-object_insertion+-sex_toys+-bestiality+-licking_penis";
+            url += "1girls+-completely_nude+-gangbang+-imminent_sex+-sex+-penis+-condom+-cum+-futa+-torn_clothing+-1boy+-rape+-overeating+-filled_condom+-big_belly+-bdsm+-gigantic_breasts+-hyper_breasts+-hyper_thighs+-hyper_ass+-chubby+-anal+-2girls+-cosplay+-text+-hypnosis+-slave+-pussy+-nose_hook+-2boys+-penis_over_eyes+-multiple_penises+-anal_insertion+-dildo+-object_insertion+-sex_toys+-bestiality+-licking_penis+-areolae+-breasts+-backboob+-animated+-foot_focus+-english_text+-horror_(theme)+-multiple_boys+-3boys+-topless+-hatching_(texture)";
 
             try
             {
