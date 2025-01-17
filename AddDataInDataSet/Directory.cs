@@ -69,67 +69,13 @@ namespace AddDataInDataSet
 
             var tagList = new TagsList();
 
-            var tagSplitArr = new string[] { "#Original", "#NSFW" };
-
             Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
             {
                 var name = GetDirectoryName(tag);
 
-                int indexTagSplit = -1;
-
-                if (tagList.ContainTag(name))
+                if (!tagList.ContainTag(name))
                 {
-
-                    for (var i = 0; i < tagSplitArr.Length; i++)
-                    {
-                        if (tagSplitArr[i] == name)
-                        {
-                            indexTagSplit = i;
-                        }
-                    }
-
-                    if (indexTagSplit != -1)
-                    {
-                        var tageInfo = new DirectoryInfo(tag);
-
-                        var files = tageInfo.GetFiles();
-
-                        var pathBase = Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH, $"{tagSplitArr[indexTagSplit]}_");
-                        while (files.Length >= 500)
-                        {
-                            var pathNewOriginal = pathBase + DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss.fff");
-                            if (Directory.Exists(pathNewOriginal))
-                            {
-                                Thread.Sleep(100);
-                                continue;
-                            }
-
-                            Directory.CreateDirectory(pathNewOriginal);
-                            for (int i = 0; i < 500; i++)
-                            {
-                                ref var file = ref files[i];
-                                file.MoveTo(Path.Combine(pathNewOriginal, file.Name));
-                            }
-
-
-                            files = tageInfo.GetFiles();
-                        }
-                    }
-                }
-                else
-                {
-                    for (var i = 0; i < tagSplitArr.Length; i++)
-                    {
-                        if (name.Contains(tagSplitArr[i]))
-                        {
-                            indexTagSplit = i;
-                        }
-                    }
-
-                    if (indexTagSplit == -1)
-                    {
-                        Directory.Delete(tag, true);
-                    }
+                    Directory.Delete(tag, true);
                 }
 
                 count[0]++;

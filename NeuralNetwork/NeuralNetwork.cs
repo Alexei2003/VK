@@ -61,14 +61,9 @@ namespace NeuralNetwork
             float percentOriginalTag = sortedValues.Skip(1).Take(3).Sum(value => value.ToFloat());
 
             // Логика обработки метки
-            if (percentMaxTag < percentOriginalTag || resulTag.Contains("#Original_"))
+            if (percentMaxTag < percentOriginalTag)
             {
                 resulTag = "#Original";
-            }
-
-            if (resulTag.Contains("#NSFW_"))
-            {
-                resulTag = "#NSFW";
             }
 
             return resulTag;
