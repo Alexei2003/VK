@@ -126,8 +126,8 @@ namespace DataSet
                 for (var x = 0; x < bmpBig.Width && x < bmpSmall.Width; x++)
                 {
 
-                    byte* addrOriginal = rgbBitmapBig + y * bmpDataBig.Stride + x * 4;
-                    byte* addrPartical = rgbBitmapSmall + y * bmpDataSmall.Stride + x * 4;
+                    byte* addrOriginal = rgbBitmapBig + y * bmpDataBig.Stride + x * 3;
+                    byte* addrPartical = rgbBitmapSmall + y * bmpDataSmall.Stride + x * 3;
 
                     var o = new Vector3(addrOriginal[2], addrOriginal[1], addrOriginal[0]);
                     var p = new Vector3(addrPartical[2], addrPartical[1], addrPartical[0]);
