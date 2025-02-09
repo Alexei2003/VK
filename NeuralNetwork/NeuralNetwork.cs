@@ -2,6 +2,7 @@
 using Microsoft.ML.OnnxRuntime.Tensors;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 
 namespace NeuralNetwork
 {
@@ -32,7 +33,19 @@ namespace NeuralNetwork
             }
         }
 
-        public static string NeuralNetworkResult(Bitmap image)
+        private struct Label
+        {
+            public string Name;
+            public float Value;
+
+            public Label(string name, float value)
+            {
+                Name = name;
+                Value = value;
+            }
+        }
+
+        public static string[] NeuralNetworkResult(Bitmap image,  int kTop = 1)
         {
             var inputTensor = ImageToTensor(image);
 
@@ -46,27 +59,28 @@ namespace NeuralNetwork
             // Получаем результат
             var outputArr = results[0].AsEnumerable<float>().ToArray();
 
-            // Определяем метку с наибольшей вероятностью
-            int maxIndex = Array.IndexOf(outputArr, outputArr.Max());
-            var resulTag = _labels.Length > maxIndex ? _labels[maxIndex] : "#Unknown"; ; // Получаем имя класса по индексу
+            var labels = new Label[outputArr.Length];
 
-            var sortedValues = outputArr
-                .OrderByDescending(value => value)
-                .ToArray();
-
-            // Получаем самую большую вероятность
-            float percentMaxTag = sortedValues[0];
-
-            // Вычисляем сумму 2-го, 3-го и 4-го самых больших значений
-            float percentOriginalTag = sortedValues.Skip(1).Take(3).Sum();
-
-            // Логика обработки метки
-            if (percentMaxTag < percentOriginalTag)
+            for(var i = 0; i < outputArr.Length; i++)
             {
-                resulTag = "#Original";
+                labels[i] = new Label(_labels[i], outputArr[i]);
             }
 
-            return resulTag;
+            labels = labels.OrderByDescending(value => value.Value).ToArray();
+            var resulTagsArr = new string[kTop];
+
+            for (var i = 0; i < kTop; i++)
+            {
+                // предыдущих 3х
+                float percentOriginalTag = labels.Skip(i+1).Take(3).Sum(value => value.Value);
+
+                if (labels[i].Value < percentOriginalTag)
+                {
+                    resulTagsArr[i] = "#Original";
+                }
+            }
+
+            return resulTagsArr;
         }
 
         public unsafe static DenseTensor<float> ImageToTensor(Bitmap bitmap)

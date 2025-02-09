@@ -160,6 +160,8 @@ namespace RepetitionOfPostsBot.BotTask
                             }
                         }
 
+                        var publishDate = firstPostData.Value.AddHours(1);
+
                         // Повторый пост
                         api.Wall.Post(new WallPostParams()
                         {
@@ -167,7 +169,7 @@ namespace RepetitionOfPostsBot.BotTask
                             FromGroup = true,
                             Message = '.' + postText,
                             Attachments = mediaAttachmentList,
-                            PublishDate = firstPostData.Value.AddHours(1),
+                            PublishDate = publishDate < DateTime.UtcNow  ? publishDate.AddHours(DateTime.UtcNow.Hour - publishDate.Hour + 1) : publishDate,
 
                         });
                     }
@@ -285,5 +287,7 @@ namespace RepetitionOfPostsBot.BotTask
                 }
             }
         }
+
+
     }
 }
