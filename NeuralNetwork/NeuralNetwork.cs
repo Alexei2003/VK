@@ -44,7 +44,7 @@ namespace NeuralNetwork
             using var results = _session.Run(input);
 
             // Получаем результат
-            var outputArr = results[0].AsEnumerable<Float16>().ToArray();
+            var outputArr = results[0].AsEnumerable<float>().ToArray();
 
             // Определяем метку с наибольшей вероятностью
             int maxIndex = Array.IndexOf(outputArr, outputArr.Max());
@@ -55,10 +55,10 @@ namespace NeuralNetwork
                 .ToArray();
 
             // Получаем самую большую вероятность
-            float percentMaxTag = sortedValues[0].ToFloat();
+            float percentMaxTag = sortedValues[0];
 
             // Вычисляем сумму 2-го, 3-го и 4-го самых больших значений
-            float percentOriginalTag = sortedValues.Skip(1).Take(3).Sum(value => value.ToFloat());
+            float percentOriginalTag = sortedValues.Skip(1).Take(3).Sum();
 
             // Логика обработки метки
             if (percentMaxTag < percentOriginalTag)

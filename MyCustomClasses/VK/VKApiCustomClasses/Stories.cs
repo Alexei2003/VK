@@ -26,9 +26,9 @@ namespace MyCustomClasses.VK.VKApiCustomClasses
                     ApiOriginal.Invoke("stories.save",
                     new Dictionary<string, string>
                     {
+                        {"v","5.81"},
                         {"access_token", accessToken},
-                        {"upload_results", serverAnswer},
-                        {"v","5.81"}
+                        {"upload_results", serverAnswer}
                     });
                     return;
                 }
@@ -49,7 +49,7 @@ namespace MyCustomClasses.VK.VKApiCustomClasses
             var responseFile = Encoding.ASCII.GetString(wc.UploadFile(response.UploadUrl, path));
 
             var json = JObject.Parse(responseFile);
-            string uploadResult = json["response"]?["upload_result"]?.ToString();
+            string uploadResult = json["response"]["upload_result"].ToString();
 
             api.Stories.Save(uploadResult, accessToken);
         }
