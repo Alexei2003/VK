@@ -77,13 +77,16 @@ namespace AddDataInDataSet
 
                 if (!tagList.ContainTag(name))
                 {
+                    Console.WriteLine(tag);
                     Directory.Delete(tag, true);
                 }
-
-                var sourceInfo = new DirectoryInfo(tag);
-                if (sourceInfo.GetFiles().Length < 100)
+                else
                 {
-                    DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, SMALL_PATH, GetDirectoryName(tag)), false, true);
+                    var sourceInfo = new DirectoryInfo(tag);
+                    if (sourceInfo.GetFiles().Length < 100)
+                    {
+                        DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, SMALL_PATH, name), false, true);
+                    }
                 }
 
                 count[0]++;
