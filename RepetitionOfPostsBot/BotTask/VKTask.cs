@@ -359,7 +359,7 @@ namespace RepetitionOfPostsBot.BotTask
         {
             var href = nodeImage.GetAttributeValue("href", string.Empty);
 
-            wc.DownloadFile(href, $"Gelbooru.jpg");
+            //wc.DownloadFile(href, $"Gelbooru.jpg");
             using var image = new Bitmap($"Gelbooru.jpg");
 
             var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, 5);

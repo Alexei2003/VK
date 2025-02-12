@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using DataSet;
+using DocumentFormat.OpenXml.Bibliography;
 using System.Drawing;
 
 namespace AddDataInDataSet
@@ -9,6 +10,7 @@ namespace AddDataInDataSet
         private const string MAIN_DIRECTORY = "D:\\NeuralNetwork\\DataSet\\ARTS";
         private const string NEW_PATH = $"New";
         private const string ORIGINAL_PATH = $"Original";
+        private const string SMALL_PATH = $"Small";
 
         private static void DirectoryMove(string source, string destination, bool checkSimilar, bool deleteOriginal = false)
         {
@@ -76,6 +78,12 @@ namespace AddDataInDataSet
                 if (!tagList.ContainTag(name))
                 {
                     Directory.Delete(tag, true);
+                }
+
+                var sourceInfo = new DirectoryInfo(tag);
+                if (sourceInfo.GetFiles().Length < 100)
+                {
+                    DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, SMALL_PATH, GetDirectoryName(tag)), false, true);
                 }
 
                 count[0]++;

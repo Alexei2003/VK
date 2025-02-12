@@ -125,7 +125,7 @@ namespace NeuralNetwork
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        for (int c = channels - 1; c != -1; c--)
+                        for (int c = 0; c < channels; c++)
                         {
                             var yi = y < bitmap.Height ? y : bitmap.Height - 1;
                             var xi = x < bitmap.Width ? x : bitmap.Width - 1;
