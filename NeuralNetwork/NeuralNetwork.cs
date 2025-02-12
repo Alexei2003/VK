@@ -1,8 +1,8 @@
-﻿using Microsoft.ML.OnnxRuntime;
+﻿using DataSet;
+using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 
 namespace NeuralNetwork
 {
@@ -45,8 +45,10 @@ namespace NeuralNetwork
             }
         }
 
-        public static string[] NeuralNetworkResult(Bitmap image,  int kTop = 1)
+        public static string[] NeuralNetworkResult(Bitmap image, int kTop = 5)
         {
+            image = DataSetImage.ImageTo24bpp(DataSetImage.ChangeResolution224x224(image));
+
             var inputTensor = ImageToTensor(image);
 
             var input = new List<NamedOnnxValue>
@@ -61,7 +63,7 @@ namespace NeuralNetwork
 
             var labels = new Label[outputArr.Length];
 
-            for(var i = 0; i < outputArr.Length; i++)
+            for (var i = 0; i < outputArr.Length; i++)
             {
                 labels[i] = new Label(_labels[i], outputArr[i]);
             }
@@ -71,17 +73,38 @@ namespace NeuralNetwork
 
             for (var i = 0; i < kTop; i++)
             {
+                if (labels[i].Name == "#NSFW")
+                {
+                    for (var n = 0; n < kTop; n++)
+                    {
+                        resulTagsArr[n] = "#NSFW";
+                    }
+                    break;
+                }
+
                 // предыдущих 3х
-                float percentOriginalTag = labels.Skip(i+1).Take(3).Sum(value => value.Value);
+                float percentOriginalTag = labels.Skip(i + 1).Take(3).Sum(value => value.Value);
 
                 if (labels[i].Value < percentOriginalTag)
                 {
                     resulTagsArr[i] = "#Original";
                 }
+                else
+                {
+                    resulTagsArr[i] = labels[i].Name;
+                }
             }
 
             return resulTagsArr;
         }
+
+        public static string NeuralNetworkResult(Bitmap image)
+        {
+            var arr = NeuralNetworkResult(image, 1);
+
+            return arr[0];
+        }
+
 
         public unsafe static DenseTensor<float> ImageToTensor(Bitmap bitmap)
         {

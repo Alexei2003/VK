@@ -1,10 +1,7 @@
 ﻿using MyCustomClasses.VK;
 using Newtonsoft.Json.Linq;
-using System.ComponentModel;
-using System.IO;
 using System.Net;
 using System.Text;
-using VkNet.Utils;
 
 internal class Program
 {

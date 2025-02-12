@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.Primitives;
+﻿using HtmlAgilityPack;
 using MyCustomClasses;
 using MyCustomClasses.Tags;
 using MyCustomClasses.Tags.Editors;
 using MyCustomClasses.VK;
+using System.Drawing;
 using System.Net;
 using System.Text;
 using VkNet.Enums.StringEnums;
@@ -14,7 +15,7 @@ namespace RepetitionOfPostsBot.BotTask
     {
         private const string GROUP_SHORT_URL = "@anime_art_for_every_day";
         private const long GROUP_ID = 220199532;
-        private static readonly TimeSpan TIME_SLEEP = TimeSpan.FromMinutes(15);
+        private static readonly TimeSpan TIME_SLEEP_ERROR = TimeSpan.FromMinutes(15);
 
         private static readonly string[] tagsNotRepost = ["Угадайка"];
 
@@ -169,7 +170,7 @@ namespace RepetitionOfPostsBot.BotTask
                             FromGroup = true,
                             Message = '.' + postText,
                             Attachments = mediaAttachmentList,
-                            PublishDate = publishDate < DateTime.UtcNow  ? publishDate.AddHours(DateTime.UtcNow.Hour - publishDate.Hour + 1) : publishDate,
+                            PublishDate = publishDate < DateTime.UtcNow ? publishDate.AddHours(DateTime.UtcNow.Hour - publishDate.Hour + 1) : publishDate,
 
                         });
                     }
@@ -179,7 +180,7 @@ namespace RepetitionOfPostsBot.BotTask
                 catch (Exception e)
                 {
                     Logs.WriteExcemption(e);
-                    Thread.Sleep(TIME_SLEEP);
+                    Thread.Sleep(TIME_SLEEP_ERROR);
                     continue;
                 }
             }
@@ -218,7 +219,7 @@ namespace RepetitionOfPostsBot.BotTask
                     // Проверка на новые посты
                     if (lastSendPostId == post.Id)
                     {
-                        Thread.Sleep(TIME_SLEEP);
+                        Thread.Sleep(TIME_SLEEP_ERROR);
                         continue;
                     }
                     lastSendPostId = post.Id.Value;
@@ -228,7 +229,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                     if (postText.Contains('!'))
                     {
-                        Thread.Sleep(TIME_SLEEP);
+                        Thread.Sleep(TIME_SLEEP_ERROR);
                         continue;
                     }
 
@@ -236,7 +237,7 @@ namespace RepetitionOfPostsBot.BotTask
                     {
                         if (postText.Contains(tag))
                         {
-                            Thread.Sleep(TIME_SLEEP);
+                            Thread.Sleep(TIME_SLEEP_ERROR);
                         }
                     }
 
@@ -254,7 +255,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                     if (imagesUrl.Count == 0)
                     {
-                        Thread.Sleep(TIME_SLEEP);
+                        Thread.Sleep(TIME_SLEEP_ERROR);
                         continue;
                     }
 
@@ -283,11 +284,102 @@ namespace RepetitionOfPostsBot.BotTask
                 catch (Exception e)
                 {
                     Logs.WriteExcemption(e);
-                    Thread.Sleep(TIME_SLEEP);
+                    Thread.Sleep(TIME_SLEEP_ERROR);
                 }
             }
         }
 
+        public static void CreateVkPostFromGelbooru(object data)
+        {
+            var api = new VkApiCustom((string)data);
 
+            //var url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
+            var url = "https://gelbooru.com/index.php?page=post&s=list&tags=azur_lane";
+
+            using var wc = new WebClient();
+            var lastViewedUrl = "";
+            var tmpLastViewedUrl = "";
+            while (true)
+            {
+                try
+                {
+                    for (var i = 0; i < 10; i++)
+                    {
+                        var htmlDocument = Gelbooru.GetPageHTML(wc, url, i);
+
+                        var nodesArr = Gelbooru.GetObjectsNodes(htmlDocument, "//a[@id and @href]", ["https", "img3.gelbooru.com"]);
+
+                        if (i == 0)
+                        {
+                            tmpLastViewedUrl = nodesArr[0].GetAttributeValue("href", string.Empty);
+                        }
+
+                        if (!OpenArtsPage(wc, nodesArr, lastViewedUrl))
+                        {
+                            break;
+                        }
+                    }
+
+                    lastViewedUrl = tmpLastViewedUrl;
+                    Thread.Sleep(TimeSpan.FromMinutes(30));
+                }
+                catch (Exception e)
+                {
+                    lastViewedUrl = tmpLastViewedUrl;
+                    Logs.WriteExcemption(e);
+                    Thread.Sleep(TIME_SLEEP_ERROR);
+                }
+            }
+        }
+
+        private static bool OpenArtsPage(WebClient wc, HtmlNode[] nodesArr, string lastViewedUrl)
+        {
+            foreach (var node in nodesArr)
+            {
+                var href = node.GetAttributeValue("href", string.Empty);
+
+                if (href == lastViewedUrl)
+                {
+                    return false;
+                }
+
+                href = href.Replace("amp;", "");
+
+                var htmlDocument = Gelbooru.GetPageHTML(wc, href, addNoSearch: false);
+
+                var nodesImageArr = Gelbooru.GetObjectsNodes(htmlDocument, "//a[@href]", ["https", "img3.gelbooru.com", "Original image"]);
+                var nodeTagsArr = Gelbooru.GetObjectsNodes(htmlDocument, "//a[@href]", ["s=list", "tags="]);
+
+                SaveImage(wc, nodesImageArr[0], nodeTagsArr);
+            }
+            return true;
+        }
+
+        private static void SaveImage(WebClient wc, HtmlNode nodeImage, HtmlNode[] nodeTags)
+        {
+            var href = nodeImage.GetAttributeValue("href", string.Empty);
+
+            wc.DownloadFile(href, $"Gelbooru.jpg");
+            using var image = new Bitmap($"Gelbooru.jpg");
+
+            var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, 5);
+
+            foreach (var nodeTag in nodeTags)
+            {
+                var tag = nodeTag.InnerText.Trim();
+                foreach (var resultTag in resultTags)
+                {
+                    if (tag == resultTag)
+                    {
+                        var a = 1;
+                    }
+                }
+            }
+        }
+
+        private static void CreatePost()
+        {
+
+        }
     }
 }
