@@ -83,7 +83,13 @@ namespace NeuralNetwork
                 }
 
                 // предыдущих 3х
-                float percentOriginalTag = labels.Skip(i + 1).Take(3).Sum(value => value.Value);
+                var percentOriginalTag = 0f;
+                var coeff = 1f;
+                for (var n = i+1; n < i+4; n++)
+                {
+                    //percentOriginalTag += coeff * labels[n].Value;
+                    coeff /= 2;
+                }
 
                 if (labels[i].Value < percentOriginalTag)
                 {

@@ -293,8 +293,8 @@ namespace RepetitionOfPostsBot.BotTask
         {
             var api = new VkApiCustom((string)data);
 
-            //var url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
-            var url = "https://gelbooru.com/index.php?page=post&s=list&tags=azur_lane";
+            var url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
+            //var url = "https://gelbooru.com/index.php?page=post&s=list&tags=azur_lane";
 
             using var wc = new WebClient();
             var lastViewedUrl = "";
@@ -359,7 +359,7 @@ namespace RepetitionOfPostsBot.BotTask
         {
             var href = nodeImage.GetAttributeValue("href", string.Empty);
 
-            //wc.DownloadFile(href, $"Gelbooru.jpg");
+            wc.DownloadFile(href, $"Gelbooru.jpg");
             using var image = new Bitmap($"Gelbooru.jpg");
 
             var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, 5);
