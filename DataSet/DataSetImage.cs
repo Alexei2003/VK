@@ -18,33 +18,28 @@ namespace DataSet
             return ChangeResolution(bmp, 224);
         }
 
-        public static Bitmap ChangeResolution(Bitmap bmp, float maxSize)
+        private static Bitmap ChangeResolution(Bitmap bmp, int maxSize)
         {
-            if (bmp.Width > bmp.Height)
+            if (bmp.Width != maxSize || bmp.Height != maxSize)
             {
-                if (bmp.Width > maxSize)
+                float maxBmpSize = int.Max(bmp.Width, bmp.Height);
+                var delta = maxBmpSize / maxSize;
+                bmp = new Bitmap(bmp, Convert.ToInt32(bmp.Width / delta), Convert.ToInt32(bmp.Height / delta));
+
+                var resultBmp = new Bitmap(maxSize, maxSize);
+                using (Graphics g = Graphics.FromImage(resultBmp))
                 {
-                    var delta = bmp.Width / maxSize;
-                    return new Bitmap(bmp, Convert.ToInt32(bmp.Width / delta), Convert.ToInt32(bmp.Height / delta));
+                    g.Clear(Color.Black); // Заполняем чёрным цветом (нули)
+                    g.DrawImage(bmp, 0, 0);
                 }
-                else
-                {
-                    return bmp;
-                }
+
+                return resultBmp;
             }
-            else
-            {
-                if (bmp.Height > maxSize)
-                {
-                    var delta = bmp.Height / maxSize;
-                    return new Bitmap(bmp, Convert.ToInt32(bmp.Width / delta), Convert.ToInt32(bmp.Height / delta));
-                }
-                else
-                {
-                    return bmp;
-                }
-            }
+
+            return bmp;
         }
+
+
         public static Bitmap ImageTo24bpp(Bitmap bmp)
         {
             return bmp.Clone(new Rectangle { X = 0, Y = 0, Width = bmp.Width, Height = bmp.Height }, PixelFormat.Format24bppRgb);
@@ -71,7 +66,7 @@ namespace DataSet
             bmp.Save(path, ImageFormat.Jpeg);
         }
 
-        private const float maxSize = 100f;
+        private const int maxSize = 100;
         public static bool IsSimilarImage(Bitmap bmp1, Bitmap bmp2)
         {
             using var bmp11 = ChangeResolution(bmp1, maxSize);

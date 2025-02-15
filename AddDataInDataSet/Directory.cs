@@ -1,7 +1,8 @@
 ﻿using ClosedXML.Excel;
 using DataSet;
-using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Wordprocessing;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace AddDataInDataSet
 {
@@ -12,7 +13,7 @@ namespace AddDataInDataSet
         private const string ORIGINAL_PATH = $"Original";
         private const string SMALL_PATH = $"Small";
 
-        private static void DirectoryMove(string source, string destination, bool checkSimilar, bool deleteOriginal = false)
+        private static void DirectoryMove(string source, string destination, bool checkSimilar = false, bool deleteOriginal = false, bool changeResolution = false)
         {
             if (!Directory.Exists(destination))
             {
@@ -22,30 +23,42 @@ namespace AddDataInDataSet
             var sourceInfo = new DirectoryInfo(source);
             foreach (var src in sourceInfo.GetFiles())
             {
-                var similar = false;
-                if (checkSimilar)
-                {
-                    using var srcBmp = new Bitmap(src.FullName);
-                    var destinationInfo = new DirectoryInfo(destination);
-                    foreach (var dest in destinationInfo.GetFiles())
-                    {
-                        using var destBmp = new Bitmap(dest.FullName);
-                        if (DataSetImage.IsSimilarImage(srcBmp, destBmp))
-                        {
-                            similar = true;
-                            break;
-                        }
-                    }
-                }
+                var similar = checkSimilar && Similar(src, destination);
+
                 if (!similar && !File.Exists(Path.Combine(destination, src.Name)))
                 {
-                    src.MoveTo(Path.Combine(destination, src.Name));
+                    if (changeResolution)
+                    {
+                        using var bmpOriginal = new Bitmap(src.FullName);
+                        using var bmp = DataSetImage.ImageTo24bpp(DataSetImage.ChangeResolution224x224(bmpOriginal));
+                        bmp.Save(Path.Combine(destination, src.Name), ImageFormat.Jpeg);
+                    }
+                    else
+                    {
+                        src.MoveTo(Path.Combine(destination, src.Name));
+                    }
                 }
             }
             if (deleteOriginal)
             {
                 Directory.Delete(source, true);
             }
+        }
+
+        private static bool Similar(FileInfo src, string destination)
+        {
+            using var srcBmp = new Bitmap(src.FullName);
+            var destinationInfo = new DirectoryInfo(destination);
+            foreach (var dest in destinationInfo.GetFiles())
+            {
+                using var destBmp = new Bitmap(dest.FullName);
+                if (DataSetImage.IsSimilarImage(srcBmp, destBmp))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static string GetDirectoryName(string dir)
@@ -59,7 +72,7 @@ namespace AddDataInDataSet
 
             Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
             {
-                DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH, GetDirectoryName(tag)), true, true);
+                DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH, GetDirectoryName(tag)), checkSimilar : true, deleteOriginal : true, changeResolution : true);
 
                 count[0]++;
             });
@@ -85,7 +98,7 @@ namespace AddDataInDataSet
                     var sourceInfo = new DirectoryInfo(tag);
                     if (sourceInfo.GetFiles().Length < 100)
                     {
-                        DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, SMALL_PATH, name), false, true);
+                        DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, SMALL_PATH, name), deleteOriginal : true);
                     }
                 }
 

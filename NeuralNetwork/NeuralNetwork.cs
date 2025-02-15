@@ -127,9 +127,7 @@ namespace NeuralNetwork
                     {
                         for (int c = 0; c < channels; c++)
                         {
-                            var yi = y < bitmap.Height ? y : bitmap.Height - 1;
-                            var xi = x < bitmap.Width ? x : bitmap.Width - 1;
-                            tensor[b, y, x, c] = rgbBitmap[yi * rgbBitmapData.Stride + xi * channels + c] / 255f;
+                            tensor[b, y, x, c] = rgbBitmap[y * rgbBitmapData.Stride + x * channels + c] / 255f;
                         }
                     }
                 }
