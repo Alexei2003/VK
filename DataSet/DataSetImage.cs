@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Numerics;
 
 namespace DataSet
@@ -39,31 +40,33 @@ namespace DataSet
             return bmp;
         }
 
-
         public static Bitmap ImageTo24bpp(Bitmap bmp)
         {
             return bmp.Clone(new Rectangle { X = 0, Y = 0, Width = bmp.Width, Height = bmp.Height }, PixelFormat.Format24bppRgb);
         }
 
+        private static Object lockObject = new();
+
         private static void SaveFile(Bitmap bmp, string tags)
         {
-            var data = DateTime.Now;
-            data.AddHours(3);
+            var data = DateTime.UtcNow;
 
-            string path = "DATA_SET\\" + tags;
+            string pathDir = "DATA_SET\\" + tags;
 
-            Directory.CreateDirectory(path);
+            Directory.CreateDirectory(pathDir);
 
-            path = path + "\\" + data.ToString("yyyy.MM.dd.HH.mm.ss.fff") + ".jpg";
+            var path = pathDir + "\\" + data.ToString("yyyy.MM.dd.HH.mm.ss.fff") + ".jpg";
 
-            if (File.Exists(path))
+            lock (lockObject)
             {
-                Thread.Sleep(10);
-                data = DateTime.Now;
-                data.AddHours(3);
-                path = path + "\\" + data.ToString("yyyy.MM.dd.HH.mm.ss.fff") + ".jpg";
+                while (File.Exists(path))
+                {
+                    Thread.Sleep(10);
+                    data = DateTime.UtcNow;
+                    path = pathDir + "\\" + data.ToString("yyyy.MM.dd.HH.mm.ss.fff") + ".jpg";
+                }
+                bmp.Save(path, ImageFormat.Jpeg);
             }
-            bmp.Save(path, ImageFormat.Jpeg);
         }
 
         private const int maxSize = 100;

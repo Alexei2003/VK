@@ -21,7 +21,7 @@ namespace RepetitionOfPostsBot
 
             while (true)
             {
-                Console.WriteLine("RepetitionOfPostsBot work " + DateTime.Now.ToString());
+                Console.WriteLine("RepetitionOfPostsBot work " + DateTime.UtcNow.ToString());
                 Thread.Sleep(TimeSpan.FromHours(1));
             }
         }

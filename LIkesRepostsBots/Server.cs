@@ -13,7 +13,7 @@ namespace LikesRepostsBots
 
             while (true)
             {
-                Console.WriteLine("LikesRepostsBots work " + DateTime.Now.ToString());
+                Console.WriteLine("LikesRepostsBots work " + DateTime.UtcNow.ToString());
                 Thread.Sleep(TimeSpan.FromHours(1));
             }
         }

@@ -7,7 +7,7 @@
         public static void WriteExcemption(Exception e)
         {
             using var writer = File.AppendText(FILE_NAME);
-            writer.WriteLine("Date: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            writer.WriteLine("Date: " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"));
             writer.WriteLine();
             writer.WriteLine("Message");
             writer.WriteLine(e.Message);
