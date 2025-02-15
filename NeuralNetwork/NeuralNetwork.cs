@@ -87,7 +87,7 @@ namespace NeuralNetwork
                 var coeff = 1f;
                 for (var n = i+1; n < i+4; n++)
                 {
-                    //percentOriginalTag += coeff * labels[n].Value;
+                    percentOriginalTag += coeff * labels[n].Value;
                     coeff /= 2;
                 }
 

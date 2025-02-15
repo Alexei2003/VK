@@ -364,12 +364,17 @@ namespace RepetitionOfPostsBot.BotTask
 
             var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, 5);
 
-            foreach (var nodeTag in nodeTags)
+            var charsToRemove = new HashSet<char> { '\'', '_' };
+
+            foreach (var resultTag in resultTags)
             {
-                var tag = nodeTag.InnerText.Trim();
-                foreach (var resultTag in resultTags)
+                var tmpResultTag = new string(resultTag.Where(c => !charsToRemove.Contains(c)).ToArray()).ToUpper();
+                foreach (var nodeTag in nodeTags)
                 {
-                    if (tag == resultTag)
+                    var tag = nodeTag.InnerText.Trim();
+                    var tmpTag = new string(tag.Where(c => !charsToRemove.Contains(c)).ToArray()).ToUpper();
+
+                    if (tmpTag.Contains(tmpResultTag))
                     {
                         var a = 1;
                     }

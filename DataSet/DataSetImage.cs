@@ -75,7 +75,7 @@ namespace DataSet
             using var bmp11 = ChangeResolution(bmp1, maxSize);
             using var bmp22 = ChangeResolution(bmp2, maxSize);
 
-            if (Corral(bmp11, bmp22) > 0.75f)
+            if (Corral(bmp11, bmp22) > 0.85f)
             {
                 return true;
             }
