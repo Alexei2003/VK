@@ -3,6 +3,7 @@ using MyCustomClasses;
 using MyCustomClasses.Tags;
 using MyCustomClasses.Tags.Editors;
 using MyCustomClasses.VK;
+using MyCustomClasses.VK.VKApiCustomClasses;
 using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
@@ -61,17 +62,17 @@ namespace RepetitionOfPostsBot.BotTask
                             Filter = WallFilter.All
                         });
 
-                        Post firstPost;
+                        Post lastPost;
                         if (wall.WallPosts[0].IsPinned.Value)
                         {
-                            firstPost = wall.WallPosts[1];
+                            lastPost = wall.WallPosts[1];
                         }
                         else
                         {
-                            firstPost = wall.WallPosts[0];
+                            lastPost = wall.WallPosts[0];
                         }
 
-                        var firstPostData = firstPost.Date;
+                        var firstPostData = lastPost.Date;
 
                         var totalCountPosts = wall.TotalCount;
                         var notResendedCountPosts = totalCountPosts / 15;
@@ -164,6 +165,11 @@ namespace RepetitionOfPostsBot.BotTask
 
                         var publishDate = firstPostData.Value.AddHours(1);
 
+                        while(publishDate < DateTime.UtcNow)
+                        {
+                            publishDate.AddHours(1);
+                        }
+
                         // Повторый пост
                         api.Wall.Post(new WallPostParams()
                         {
@@ -171,7 +177,7 @@ namespace RepetitionOfPostsBot.BotTask
                             FromGroup = true,
                             Message = '.' + postText,
                             Attachments = mediaAttachmentList,
-                            PublishDate = publishDate < DateTime.UtcNow ? publishDate.AddHours(DateTime.UtcNow.Hour - publishDate.Hour + 1) : publishDate,
+                            PublishDate = publishDate,
 
                         });
                     }
@@ -249,7 +255,7 @@ namespace RepetitionOfPostsBot.BotTask
                     {
                         if (attachment.Type.Name == "Photo")
                         {
-                            var photo = (Photo)attachment.Instance;
+                            var photo = (VkNet.Model.Photo)attachment.Instance;
                             imagesUrl.Add(photo.Sizes[^1].Url);
                         }
                     }
@@ -295,7 +301,6 @@ namespace RepetitionOfPostsBot.BotTask
             var api = new VkApiCustom((string)data);
 
             var url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
-            //var url = "https://gelbooru.com/index.php?page=post&s=list&tags=azur_lane";
 
             using var wc = new WebClient();
             var lastViewedUrl = "";
@@ -317,7 +322,7 @@ namespace RepetitionOfPostsBot.BotTask
                             tmpLastViewedUrl = nodesArr[0].GetAttributeValue("href", string.Empty);
                         }
 
-                        if (!OpenArtsPage(wc, nodesArr, lastViewedUrl))
+                        if (!OpenArtsPage(api, wc, nodesArr, lastViewedUrl))
                         {
                             break;
                         }
@@ -335,7 +340,7 @@ namespace RepetitionOfPostsBot.BotTask
             }
         }
 
-        private static bool OpenArtsPage(WebClient wc, HtmlNode[] nodesArr, string lastViewedUrl)
+        private static bool OpenArtsPage(VkApiCustom api, WebClient wc, HtmlNode[] nodesArr, string lastViewedUrl)
         {
             foreach (var node in nodesArr)
             {
@@ -363,17 +368,19 @@ namespace RepetitionOfPostsBot.BotTask
                     continue;
                 }
 
-                SaveImage(wc, nodesImageArr[0], nodeTagsArr);
+                SaveImage(api, wc, nodesImageArr[0], nodeTagsArr);
             }
             return true;
         }
 
-        private static void SaveImage(WebClient wc, HtmlNode nodeImage, HtmlNode[] nodeTags)
+        private static void SaveImage(VkApiCustom api, WebClient wc, HtmlNode nodeImage, HtmlNode[] nodeTags)
         {
             var href = nodeImage.GetAttributeValue("href", string.Empty);
 
-            wc.DownloadFile(href, $"Gelbooru.jpg");
-            using var image = new Bitmap($"Gelbooru.jpg");
+            var path = "Gelbooru.jpg";
+
+            wc.DownloadFile(href, path);
+            using var image = new Bitmap(path);
 
             var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, 5);
 
@@ -394,7 +401,72 @@ namespace RepetitionOfPostsBot.BotTask
 
                     if (tmpTag.Contains(tmpResultTag.Split('#', StringSplitOptions.RemoveEmptyEntries)[^1]))
                     {
-                        var a = 1;
+                        // Получение первого отложеного поста
+                        var wall = api.Wall.Get(new WallGetParams
+                        {
+                            OwnerId = -1 * GROUP_ID,
+                            Count = 1,
+                            Filter = WallFilter.Postponed
+                        });
+
+                        Post lastPost;
+                        if (wall.WallPosts.Count == 0)
+                        {
+                            // Получение самого свежего поста
+                            wall = api.Wall.Get(new WallGetParams
+                            {
+                                OwnerId = -1 * GROUP_ID,
+                                Count = 2,
+                                Filter = WallFilter.All
+                            });
+
+                            if (wall.WallPosts[0].IsPinned.Value)
+                            {
+                                lastPost = wall.WallPosts[1];
+                            }
+                            else
+                            {
+                                lastPost = wall.WallPosts[0];
+                            }
+                        }
+                        else
+                        {
+                            // Получение последнего отложеного поста
+                            wall = api.Wall.Get(new WallGetParams
+                            {
+                                OwnerId = -1 * GROUP_ID,
+                                Count = 1,
+                                Filter = WallFilter.Postponed,
+                                Offset = (ulong)wall.WallPosts.Count - 1
+                            });
+
+                            lastPost = wall.WallPosts[0];
+                        }
+
+
+                        var publishDate = lastPost.Date.Value.AddHours(1);
+
+                        while (publishDate < DateTime.UtcNow)
+                        {
+                            publishDate.AddHours(1);
+                        }
+
+                        var tags = resultTag.Split('#', StringSplitOptions.RemoveEmptyEntries);
+
+                        tag = string.Join("", tags.Select(s => "#" + s + GROUP_SHORT_URL + "\n"));
+
+                        tag = BaseTagsEditor.GetBaseTagsWithNextLine() + tag;
+
+                        // Повторый пост
+                        api.Wall.Post(new WallPostParams()
+                        {
+                            OwnerId = -1 * GROUP_ID,
+                            FromGroup = true,
+                            Message = tag,
+                            Attachments = api.Photo.AddOnVKServer(wc, path),
+                            PublishDate = publishDate,
+                        });
+
                         return;
                     }
                 }

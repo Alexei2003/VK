@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
     <PackageReference Include="VkNet" Version="1.78.0" />
   </ItemGroup>
 </Project>

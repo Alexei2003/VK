@@ -7,12 +7,10 @@ namespace AddPost.Classes
     public sealed class Post
     {
         private readonly VkApiCustom api;
-        private readonly Image photo;
 
         public Post(VkApiCustom api)
         {
             this.api = api;
-            photo = new Image(api);
         }
 
         public void Publish(Bitmap[] images, string tag, string copyright, DateTime? postDate, long groupId, string groupShortUrl)
@@ -20,7 +18,7 @@ namespace AddPost.Classes
             var imageList = new List<VkNet.Model.Photo>(10);
             foreach (var image in images)
             {
-                imageList.Add(photo.AddOnVKServer(image)[0]);
+                imageList.Add(api.Photo.AddOnVKServer(image)[0]);
             }
 
             var tags = tag.Split('#', StringSplitOptions.RemoveEmptyEntries);
