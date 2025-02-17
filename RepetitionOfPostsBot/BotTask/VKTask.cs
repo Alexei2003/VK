@@ -5,6 +5,7 @@ using MyCustomClasses.Tags.Editors;
 using MyCustomClasses.VK;
 using System.Drawing;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
@@ -307,7 +308,9 @@ namespace RepetitionOfPostsBot.BotTask
                     {
                         var htmlDocument = Gelbooru.GetPageHTML(wc, url, i);
 
-                        var nodesArr = Gelbooru.GetObjectsNodes(htmlDocument, "//a[@id and @href]", ["https", "img3.gelbooru.com"]);
+                        var nodesArr = htmlDocument.DocumentNode
+                            .SelectNodes("//a[@id and contains(@href, 'https') and contains(@href, 'gelbooru.com')]")
+                            .ToArray();
 
                         if (i == 0)
                         {
@@ -347,8 +350,18 @@ namespace RepetitionOfPostsBot.BotTask
 
                 var htmlDocument = Gelbooru.GetPageHTML(wc, href, addNoSearch: false);
 
-                var nodesImageArr = Gelbooru.GetObjectsNodes(htmlDocument, "//a[@href]", ["https", "img3.gelbooru.com", "Original image"]);
-                var nodeTagsArr = Gelbooru.GetObjectsNodes(htmlDocument, "//a[@href]", ["s=list", "tags="]);
+                var nodesImageArr = htmlDocument.DocumentNode
+                    .SelectNodes("//a[contains(@href, 'https') and contains(@href, 'img3.gelbooru.com') and contains(text(), 'Original image')]")
+                    .ToArray();
+
+                var nodeTagsArr = htmlDocument.DocumentNode
+                    .SelectNodes("//li[contains(@class, 'tag-type-character')]/a[contains(@href, 's=list') and contains(@href, 'tags=')]")
+                    ?.ToArray();
+
+                if(nodeTagsArr == null)
+                {
+                    continue;
+                }
 
                 SaveImage(wc, nodesImageArr[0], nodeTagsArr);
             }
@@ -364,7 +377,7 @@ namespace RepetitionOfPostsBot.BotTask
 
             var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, 5);
 
-            var charsToRemove = new HashSet<char> { '\'', '_' };
+            var charsToRemove = new HashSet<char> { '\'', '_', '-', ' '};
 
             foreach (var resultTag in resultTags)
             {
@@ -374,9 +387,15 @@ namespace RepetitionOfPostsBot.BotTask
                     var tag = nodeTag.InnerText.Trim();
                     var tmpTag = new string(tag.Where(c => !charsToRemove.Contains(c)).ToArray()).ToUpper();
 
-                    if (tmpTag.Contains(tmpResultTag))
+                    if(tmpTag == "ORIGINAL")
+                    {
+                        return;
+                    }
+
+                    if (tmpTag.Contains(tmpResultTag.Split('#', StringSplitOptions.RemoveEmptyEntries)[^1]))
                     {
                         var a = 1;
+                        return;
                     }
                 }
             }
