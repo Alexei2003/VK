@@ -450,6 +450,8 @@ namespace RepetitionOfPostsBot.BotTask
             }
             else
             {
+                lastPost = wall.WallPosts[0];
+
                 // Получение последнего отложеного поста
                 wall = api.Wall.Get(new WallGetParams
                 {
@@ -459,9 +461,11 @@ namespace RepetitionOfPostsBot.BotTask
                     Offset = (ulong)wall.WallPosts.Count
                 });
 
-                lastPost = wall.WallPosts[0];
+                if(wall.WallPosts.Count != 0)
+                {
+                    lastPost = wall.WallPosts[0];
+                }
             }
-
 
             var publishDate = lastPost.Date.Value.AddHours(1);
 
