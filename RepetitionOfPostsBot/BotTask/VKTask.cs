@@ -11,6 +11,7 @@ using System.Net.Sockets;
 using System.Text;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
+using VkNet.Utils;
 
 namespace RepetitionOfPostsBot.BotTask
 {
@@ -168,7 +169,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                         while(publishDate < DateTime.UtcNow)
                         {
-                            publishDate.AddHours(1);
+                            publishDate = publishDate.AddHours(1);
                         }
 
                         // Повторый пост
@@ -354,14 +355,15 @@ namespace RepetitionOfPostsBot.BotTask
 
                 href = href.Replace("amp;", "");
 
-                var htmlDocument = Gelbooru.GetPageHTML(wc, href, addNoSearch: false);
+                var htmlDocument = Gelbooru.GetPageHTML(wc, href);
 
                 var nodesImageArr = htmlDocument.DocumentNode
-                    .SelectNodes("//a[contains(@href, 'https') and contains(@href, 'img3.gelbooru.com') and contains(text(), 'Original image')]")
+                    .SelectNodes("//a[contains(text(), 'Original image')]")
                     .ToArray();
 
+                // % знаки
                 var nodeTagsArr = htmlDocument.DocumentNode
-                    .SelectNodes("//li[contains(@class, 'tag-type-character')]/a[contains(@href, 's=list') and contains(@href, 'tags=')]")
+                    .SelectNodes("//li[contains(@class, 'tag-type-character')]/a[@href]")
                     ?.ToArray();
 
                 if(nodeTagsArr == null)
@@ -378,7 +380,11 @@ namespace RepetitionOfPostsBot.BotTask
         {
             var href = nodeImage.GetAttributeValue("href", string.Empty);
 
-            var path = "Gelbooru.jpg";
+            href = href.Replace("amp;", "");
+
+            href = Gelbooru.GetUrlAddMirrorServer(href);
+
+            var path = $"Gelbooru.{href.Split('.', StringSplitOptions.RemoveEmptyEntries)[^1]}";
 
             wc.DownloadFile(href, path);
             using var image = new Bitmap(path);
@@ -386,7 +392,6 @@ namespace RepetitionOfPostsBot.BotTask
             var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, 5);
 
             var charsToRemove = new HashSet<char> { '\'', '_', '-', ' '};
-
 
             foreach (var nodeTag in nodeTags)
             {
@@ -466,7 +471,7 @@ namespace RepetitionOfPostsBot.BotTask
 
             while (publishDate < DateTime.UtcNow)
             {
-                publishDate.AddHours(1);
+                publishDate = publishDate.AddHours(1);
             }
 
             var tags = resultTag.Split('#', StringSplitOptions.RemoveEmptyEntries);
