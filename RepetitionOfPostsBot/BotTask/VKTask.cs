@@ -383,9 +383,9 @@ namespace RepetitionOfPostsBot.BotTask
 
             var path = $"Gelbooru.{href.Split('.', StringSplitOptions.RemoveEmptyEntries)[^1]}";
             wc.DownloadFile(href, path);
-            using var bmp = SixLabors.ImageSharp.Image.Load<Rgb24>(path);
+            using var image = SixLabors.ImageSharp.Image.Load<Rgb24>(path);
 
-            var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(bmp, 5);
+            var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, 5);
 
             var charsToRemove = new HashSet<char> { '\'', '_', '-', ' ' };
 

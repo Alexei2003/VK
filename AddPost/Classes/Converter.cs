@@ -1,6 +1,5 @@
 ﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Bmp;
-using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Drawing.Imaging;
 
@@ -17,12 +16,12 @@ namespace AddPost.Classes
             return (Bitmap)System.Drawing.Bitmap.FromStream(ms);
         }
 
-        public static Image<Rgb24> ConvertToImageSharp(Bitmap bmp)
+        public static Image<Rgb24> ConvertToImageSharp(Bitmap image)
         {
-            bmp =  bmp.Clone(new System.Drawing.Rectangle { X = 0, Y = 0, Width = bmp.Width, Height = bmp.Height }, PixelFormat.Format24bppRgb);
+            image = image.Clone(new System.Drawing.Rectangle { X = 0, Y = 0, Width = image.Width, Height = image.Height }, PixelFormat.Format24bppRgb);
 
             using var ms = new MemoryStream();
-            bmp.Save(ms, ImageFormat.Bmp);
+            image.Save(ms, ImageFormat.Bmp);
 
             ms.Position = 0; // Сброс позиции после записи
 

@@ -28,9 +28,9 @@ namespace AddDataInDataSet
                 {
                     if (changeResolution)
                     {
-                        using var bmpOriginal = Image.Load<Rgb24>(src.FullName);
-                        using var bmp = DataSetImage.ChangeResolution224x224(bmpOriginal);
-                        bmp.SaveAsJpeg(Path.Combine(destination, src.Name));
+                        using var imageOriginal = Image.Load<Rgb24>(src.FullName);
+                        using var image = DataSetImage.ChangeResolution224x224(imageOriginal);
+                        image.SaveAsJpeg(Path.Combine(destination, src.Name));
                     }
                     else
                     {
@@ -46,12 +46,12 @@ namespace AddDataInDataSet
 
         private static bool Similar(FileInfo src, string destination)
         {
-            using var srcBmp = Image.Load<Rgb24>(src.FullName);
+            using var srcImage = Image.Load<Rgb24>(src.FullName);
             var destinationInfo = new DirectoryInfo(destination);
             foreach (var dest in destinationInfo.GetFiles())
             {
-                using var destBmp = Image.Load<Rgb24>(dest.FullName);
-                if (DataSetImage.IsSimilarImage(srcBmp, destBmp))
+                using var destImage = Image.Load<Rgb24>(dest.FullName);
+                if (DataSetImage.IsSimilarImage(srcImage, destImage))
                 {
                     return true;
                 }
@@ -127,8 +127,8 @@ namespace AddDataInDataSet
 
                 foreach (var fileImage in tagDirectoryInfo.GetFiles())
                 {
-                    using var bmp = Image.Load<Rgb24>(fileImage.FullName);
-                    var tagPredict = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(bmp);
+                    using var image = Image.Load<Rgb24>(fileImage.FullName);
+                    var tagPredict = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image);
 
                     if (tagOriginal == tagPredict)
                     {

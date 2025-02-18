@@ -21,7 +21,7 @@ namespace AddPost
 
         private struct ImageWithTag
         {
-            public Image<Rgb24> bmp;
+            public Image<Rgb24> image;
             public string? NeuralNetworkResultTag;
         }
 
@@ -115,15 +115,15 @@ namespace AddPost
             }
         }
 
-        private void AddInDataSet(List<ImageWithTag> bmpList, string tags)
+        private void AddInDataSet(List<ImageWithTag> imageList, string tags)
         {
             if (!tagList.Add(tags) && tags.Split('#', StringSplitOptions.RemoveEmptyEntries).Length < 3)
             {
-                foreach (var bmp in bmpList)
+                foreach (var image in imageList)
                 {
-                    if (bmp.NeuralNetworkResultTag != tbTag.Text)
+                    if (image.NeuralNetworkResultTag != tbTag.Text)
                     {
-                        DataSetImage.Save(bmp.bmp, tags);
+                        DataSetImage.Save(image.image, tags);
                     }
                 }
             }
@@ -143,7 +143,7 @@ namespace AddPost
             {
                 imageList.Add(new ImageWithTag()
                 {
-                    bmp = image,
+                    image = image,
                     NeuralNetworkResultTag = tag
                 });
 
@@ -171,14 +171,14 @@ namespace AddPost
                     {
                         pbImage.Invoke((MethodInvoker)delegate
                         {
-                            pbImage.Image = Converter.ConvertToBitmap(imageList[index].bmp);
+                            pbImage.Image = Converter.ConvertToBitmap(imageList[index].image);
                             tbNeuralNetworkResult.Text = imageList[index].NeuralNetworkResultTag;
                             tbImageIndex.Text = (index + 1).ToString();
                         });
                     }
                     else
                     {
-                        pbImage.Image = Converter.ConvertToBitmap(imageList[index].bmp);
+                        pbImage.Image = Converter.ConvertToBitmap(imageList[index].image);
                         tbNeuralNetworkResult.Text = imageList[index].NeuralNetworkResultTag;
                         tbImageIndex.Text = (index + 1).ToString();
                     }
@@ -269,7 +269,7 @@ namespace AddPost
                     var post = new Post(api);
                     try
                     {
-                        post.Publish(imageList.Select(x => x.bmp).ToArray(), tags, tbUrl.Text, date.ChangeTimeNewPostUseLastPost(groupId, index), groupId, groupShortUrl);
+                        post.Publish(imageList.Select(x => x.image).ToArray(), tags, tbUrl.Text, date.ChangeTimeNewPostUseLastPost(groupId, index), groupId, groupShortUrl);
                     }
                     catch (Exception e)
                     {

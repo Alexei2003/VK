@@ -15,12 +15,12 @@ namespace AddPost.Classes
             this.api = api;
         }
 
-        public void Publish(Image<Rgb24>[] bmps, string tag, string copyright, DateTime? postDate, long groupId, string groupShortUrl)
+        public void Publish(Image<Rgb24>[] images, string tag, string copyright, DateTime? postDate, long groupId, string groupShortUrl)
         {
             var imageList = new List<VkNet.Model.Photo>(10);
-            foreach (var bmp in bmps)
+            foreach (var image in images)
             {
-                imageList.Add(api.Photo.AddOnVKServer(bmp)[0]);
+                imageList.Add(api.Photo.AddOnVKServer(image)[0]);
             }
 
             var tags = tag.Split('#', StringSplitOptions.RemoveEmptyEntries);
