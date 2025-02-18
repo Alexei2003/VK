@@ -1,134 +1,87 @@
-﻿using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using System.Numerics;
 
 namespace DataSet
 {
     public static class DataSetImage
     {
-        public static void Save(Bitmap bmp, string tags)
+        public static void Save(Image<Rgb24> image, string tags)
         {
-            bmp = ImageTo24bpp(ChangeResolution224x224(bmp));
-
-            SaveFile(bmp, tags);
+            image = ChangeResolution224x224(image);
+            SaveFile(image, tags);
         }
 
-        public static Bitmap ChangeResolution224x224(Bitmap bmp)
+        public static Image<Rgb24> ChangeResolution224x224(Image<Rgb24> image)
         {
-            return ChangeResolution(bmp, 224);
+            return ChangeResolution(image, 224);
         }
 
-        private static Bitmap ChangeResolution(Bitmap bmp, int maxSize)
+        private static Image<Rgb24> ChangeResolution(Image<Rgb24> imageOriginal, int maxSize)
         {
-            if (bmp.Width != maxSize || bmp.Height != maxSize)
+            var image = imageOriginal.Clone();
+            if (image.Width != maxSize || image.Height != maxSize)
             {
-                float maxBmpSize = int.Max(bmp.Width, bmp.Height);
-                var delta = maxBmpSize / maxSize;
-                bmp = new Bitmap(bmp, Convert.ToInt32(bmp.Width / delta), Convert.ToInt32(bmp.Height / delta));
+                float maxImageSize = Math.Max(image.Width, image.Height);
+                var scaleFactor = maxImageSize / maxSize;
+                int newWidth = (int)(image.Width / scaleFactor);
+                int newHeight = (int)(image.Height / scaleFactor);
 
-                var resultBmp = new Bitmap(maxSize, maxSize);
-                using (Graphics g = Graphics.FromImage(resultBmp))
-                {
-                    g.Clear(Color.Black); // Заполняем чёрным цветом (нули)
-                    g.DrawImage(bmp, 0, 0);
-                }
+                image.Mutate(x => x.Resize(newWidth, newHeight));
 
-                return resultBmp;
+                var resultImage = new Image<Rgb24>(maxSize, maxSize, new Rgb24(0, 0, 0));
+                resultImage.Mutate(x => x.DrawImage(image, new Point(0, 0), 1f));
+
+                return resultImage;
             }
-
-            return bmp;
+            return image;
         }
 
-        public static Bitmap ImageTo24bpp(Bitmap bmp)
+        private static readonly object lockObject = new();
+
+        private static void SaveFile(Image<Rgb24> image, string tags)
         {
-            return bmp.Clone(new Rectangle { X = 0, Y = 0, Width = bmp.Width, Height = bmp.Height }, PixelFormat.Format24bppRgb);
-        }
-
-        private static Object lockObject = new();
-
-        private static void SaveFile(Bitmap bmp, string tags)
-        {
-            var data = DateTime.UtcNow;
-
-            string pathDir = "DATA_SET\\" + tags;
-
+            var timestamp = DateTime.UtcNow;
+            string pathDir = Path.Combine("DATA_SET", tags);
             Directory.CreateDirectory(pathDir);
 
-            var path = pathDir + "\\" + data.ToString("yyyy.MM.dd.HH.mm.ss.fff") + ".jpg";
+            string path = Path.Combine(pathDir, timestamp.ToString("yyyy.MM.dd.HH.mm.ss.fff") + ".jpg");
 
             lock (lockObject)
             {
                 while (File.Exists(path))
                 {
                     Thread.Sleep(10);
-                    data = DateTime.UtcNow;
-                    path = pathDir + "\\" + data.ToString("yyyy.MM.dd.HH.mm.ss.fff") + ".jpg";
+                    timestamp = DateTime.UtcNow;
+                    path = Path.Combine(pathDir, timestamp.ToString("yyyy.MM.dd.HH.mm.ss.fff") + ".jpg");
                 }
-                bmp.Save(path, ImageFormat.Jpeg);
+                image.SaveAsJpeg(path);
             }
         }
 
         private const int maxSize = 100;
-        public static bool IsSimilarImage(Bitmap bmp1, Bitmap bmp2)
+        public static bool IsSimilarImage(Image<Rgb24> img1, Image<Rgb24> img2)
         {
-            using var bmp11 = ChangeResolution(bmp1, maxSize);
-            using var bmp22 = ChangeResolution(bmp2, maxSize);
-
-            if (Corral(bmp11, bmp22) > 0.85f)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            using var resizedImg1 = ChangeResolution(img1, maxSize);
+            using var resizedImg2 = ChangeResolution(img2, maxSize);
+            return Corral(resizedImg1, resizedImg2) > 0.85f;
         }
 
-        private unsafe static float Corral(Bitmap bmp1, Bitmap bmp2)
+        private static float Corral(Image<Rgb24> img1, Image<Rgb24> img2)
         {
-            Bitmap? bmpBig = null;
-            Bitmap? bmpSmall = null;
-            int bmp1Size = bmp1.Width + bmp1.Height;
-            int bmp2Size = bmp2.Width + bmp2.Height;
-            if (bmp1Size > bmp2Size)
-            {
-                bmpBig = ImageTo24bpp(bmp1);
-                bmpSmall = ImageTo24bpp(bmp2);
-            }
-            else
-            {
-                bmpBig = ImageTo24bpp(bmp2);
-                bmpSmall = ImageTo24bpp(bmp1);
-            }
-
-            var bmpDataBig = bmpBig.LockBits(new Rectangle(0, 0, bmpBig.Width, bmpBig.Height), ImageLockMode.ReadWrite, bmpBig.PixelFormat);
-            var ptrBig = bmpDataBig.Scan0;
-            var rgbBitmapBig = (byte*)ptrBig;
-
-            var bmpDataSmall = bmpSmall.LockBits(new Rectangle(0, 0, bmpSmall.Width, bmpSmall.Height), ImageLockMode.ReadWrite, bmpSmall.PixelFormat);
-            var ptrSmall = bmpDataSmall.Scan0;
-            var rgbBitmapSmall = (byte*)ptrSmall;
-
-            ///////////
-
-            var op = Vector3.Zero;
-            var o1 = Vector3.Zero;
-            var p1 = Vector3.Zero;
-            var o2 = Vector3.Zero;
-            var p2 = Vector3.Zero;
-
+            Vector3 op = Vector3.Zero, o1 = Vector3.Zero, p1 = Vector3.Zero, o2 = Vector3.Zero, p2 = Vector3.Zero;
             int n = 0;
-            for (var y = 0; y < bmpBig.Height && y < bmpSmall.Height; y++)
+
+            for (int y = 0; y < Math.Min(img1.Height, img2.Height); y++)
             {
-                for (var x = 0; x < bmpBig.Width && x < bmpSmall.Width; x++)
+                for (int x = 0; x < Math.Min(img1.Width, img2.Width); x++)
                 {
+                    var pixel1 = img1[x, y];
+                    var pixel2 = img2[x, y];
 
-                    byte* addrOriginal = rgbBitmapBig + y * bmpDataBig.Stride + x * 3;
-                    byte* addrPartical = rgbBitmapSmall + y * bmpDataSmall.Stride + x * 3;
-
-                    var o = new Vector3(addrOriginal[2], addrOriginal[1], addrOriginal[0]);
-                    var p = new Vector3(addrPartical[2], addrPartical[1], addrPartical[0]);
+                    var o = new Vector3(pixel1.R, pixel1.G, pixel1.B);
+                    var p = new Vector3(pixel2.R, pixel2.G, pixel2.B);
 
                     op += o * p;
                     o1 += o;
@@ -140,22 +93,10 @@ namespace DataSet
                 }
             }
 
-            ///////////
-
-            bmpBig.UnlockBits(bmpDataBig);
-            bmpSmall.UnlockBits(bmpDataSmall);
-
-            ///////////
-
             var up = n * op - o1 * p1;
-            var dowm = (n * o2 - o1 * o1) * (n * p2 - p1 * p1);
-            dowm = Vector3.SquareRoot(dowm);
-
-            var resultVect = up / dowm;
-
-            var result = resultVect.X + resultVect.Y + resultVect.Z;
-
-            return result / 3.0f;
+            var down = Vector3.SquareRoot((n * o2 - o1 * o1) * (n * p2 - p1 * p1));
+            var resultVect = up / down;
+            return (resultVect.X + resultVect.Y + resultVect.Z) / 3.0f;
         }
     }
 }

@@ -3,15 +3,12 @@ using MyCustomClasses;
 using MyCustomClasses.Tags;
 using MyCustomClasses.Tags.Editors;
 using MyCustomClasses.VK;
-using MyCustomClasses.VK.VKApiCustomClasses;
-using System.Drawing;
-using System.IO;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
-using VkNet.Utils;
 
 namespace RepetitionOfPostsBot.BotTask
 {
@@ -167,7 +164,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                         var publishDate = firstPostData.Value.AddHours(1);
 
-                        while(publishDate < DateTime.UtcNow)
+                        while (publishDate < DateTime.UtcNow)
                         {
                             publishDate = publishDate.AddHours(1);
                         }
@@ -366,7 +363,7 @@ namespace RepetitionOfPostsBot.BotTask
                     .SelectNodes("//li[contains(@class, 'tag-type-character')]/a[@href]")
                     ?.ToArray();
 
-                if(nodeTagsArr == null)
+                if (nodeTagsArr == null)
                 {
                     continue;
                 }
@@ -385,13 +382,12 @@ namespace RepetitionOfPostsBot.BotTask
             href = Gelbooru.GetUrlAddMirrorServer(href);
 
             var path = $"Gelbooru.{href.Split('.', StringSplitOptions.RemoveEmptyEntries)[^1]}";
-
             wc.DownloadFile(href, path);
-            using var image = new Bitmap(path);
+            using var bmp = SixLabors.ImageSharp.Image.Load<Rgb24>(path);
 
-            var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, 5);
+            var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(bmp, 5);
 
-            var charsToRemove = new HashSet<char> { '\'', '_', '-', ' '};
+            var charsToRemove = new HashSet<char> { '\'', '_', '-', ' ' };
 
             foreach (var nodeTag in nodeTags)
             {
@@ -418,11 +414,11 @@ namespace RepetitionOfPostsBot.BotTask
                         CreatePost(api, wc, path, resultTag);
                         return;
                     }
-                }               
+                }
             }
         }
 
-        private static void CreatePost(VkApiCustom api, WebClient wc, string path,string resultTag)
+        private static void CreatePost(VkApiCustom api, WebClient wc, string path, string resultTag)
         {
             // Получение первого отложеного поста
             var wall = api.Wall.Get(new WallGetParams

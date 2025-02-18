@@ -1,6 +1,5 @@
 ﻿using HtmlAgilityPack;
 using System.Net;
-using VkNet.Utils;
 
 namespace MyCustomClasses
 {

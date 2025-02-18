@@ -11,10 +11,10 @@ namespace RepetitionOfPostsBot
             var accessTokens = GosUslugi.GetAccessTokens();
 
             var threadRepeatVKPosts = new Thread(new ParameterizedThreadStart(VKTask.RepeatVKPosts));
-            threadRepeatVKPosts.Start(accessTokens.GetValueOrDefault(GosUslugi.VK));
+            //threadRepeatVKPosts.Start(accessTokens.GetValueOrDefault(GosUslugi.VK));
 
             var threadSendVkPostToOther = new Thread(new ParameterizedThreadStart(VKTask.SendVkPostToOther));
-            threadSendVkPostToOther.Start(accessTokens);
+            //threadSendVkPostToOther.Start(accessTokens);
 
             var threadCreateVkPostFromGelbooru = new Thread(new ParameterizedThreadStart(VKTask.CreateVkPostFromGelbooru));
             threadCreateVkPostFromGelbooru.Start(accessTokens.GetValueOrDefault(GosUslugi.VK));

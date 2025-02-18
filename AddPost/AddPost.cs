@@ -3,6 +3,8 @@ using DataSet;
 using MyCustomClasses;
 using MyCustomClasses.Tags;
 using MyCustomClasses.VK;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using System.ComponentModel;
 
 namespace AddPost
@@ -13,13 +15,13 @@ namespace AddPost
 
         private Int64 groupId;
         private readonly TagsList tagList = new();
-        private List<ImagesWithTag> imageList = [];
+        private List<ImageWithTag> imageList = [];
         private int imageIndex = -1;
         private readonly VkApiCustom api;
 
-        private struct ImagesWithTag
+        private struct ImageWithTag
         {
-            public Bitmap image;
+            public Image<Rgb24> bmp;
             public string? NeuralNetworkResultTag;
         }
 
@@ -95,7 +97,7 @@ namespace AddPost
                     groupIndex++;
                 }
 
-                dgvDictionary.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(red, green, blue);
+                dgvDictionary.Rows[i].DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(red, green, blue);
             }
         }
 
@@ -113,15 +115,15 @@ namespace AddPost
             }
         }
 
-        private void AddInDataSet(List<ImagesWithTag> imageList, string tags)
+        private void AddInDataSet(List<ImageWithTag> bmpList, string tags)
         {
             if (!tagList.Add(tags) && tags.Split('#', StringSplitOptions.RemoveEmptyEntries).Length < 3)
             {
-                foreach (var image in imageList)
+                foreach (var bmp in bmpList)
                 {
-                    if (image.NeuralNetworkResultTag != tbTag.Text)
+                    if (bmp.NeuralNetworkResultTag != tbTag.Text)
                     {
-                        DataSetImage.Save(image.image, tags);
+                        DataSetImage.Save(bmp.bmp, tags);
                     }
                 }
             }
@@ -135,13 +137,13 @@ namespace AddPost
             tbDate.Text = postDate.ToString();
         }
 
-        private void AddImage(Bitmap image, string tag)
+        private void AddImage(Image<Rgb24> image, string tag)
         {
             if (imageList.Count < 10)
             {
-                imageList.Add(new ImagesWithTag()
+                imageList.Add(new ImageWithTag()
                 {
-                    image = image,
+                    bmp = image,
                     NeuralNetworkResultTag = tag
                 });
 
@@ -169,14 +171,14 @@ namespace AddPost
                     {
                         pbImage.Invoke((MethodInvoker)delegate
                         {
-                            pbImage.Image = imageList[index].image;
+                            pbImage.Image = Converter.ConvertToBitmap(imageList[index].bmp);
                             tbNeuralNetworkResult.Text = imageList[index].NeuralNetworkResultTag;
                             tbImageIndex.Text = (index + 1).ToString();
                         });
                     }
                     else
                     {
-                        pbImage.Image = imageList[index].image;
+                        pbImage.Image = Converter.ConvertToBitmap(imageList[index].bmp);
                         tbNeuralNetworkResult.Text = imageList[index].NeuralNetworkResultTag;
                         tbImageIndex.Text = (index + 1).ToString();
                     }
@@ -241,7 +243,7 @@ namespace AddPost
         {
             if (Clipboard.ContainsImage())
             {
-                var image = new Bitmap(Clipboard.GetImage());
+                var image = Converter.ConvertToImageSharp((Bitmap)Clipboard.GetImage());
                 await Task.Run(() =>
                 {
                     var tag = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image);
@@ -267,7 +269,7 @@ namespace AddPost
                     var post = new Post(api);
                     try
                     {
-                        post.Publish(imageList.Select(x => x.image).ToArray(), tags, tbUrl.Text, date.ChangeTimeNewPostUseLastPost(groupId, index), groupId, groupShortUrl);
+                        post.Publish(imageList.Select(x => x.bmp).ToArray(), tags, tbUrl.Text, date.ChangeTimeNewPostUseLastPost(groupId, index), groupId, groupShortUrl);
                     }
                     catch (Exception e)
                     {

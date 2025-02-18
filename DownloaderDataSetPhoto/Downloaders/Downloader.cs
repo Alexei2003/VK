@@ -1,4 +1,5 @@
 ﻿using DataSet;
+using SixLabors.ImageSharp.PixelFormats;
 using System.Net;
 
 namespace DownloaderDataSetPhoto.Downloaders
@@ -9,18 +10,21 @@ namespace DownloaderDataSetPhoto.Downloaders
         {
             Directory.CreateDirectory("DATA_SET");
             wc.DownloadFile(url, $"DATA_SET\\{fileName}.jpg");
-            using var image = new Bitmap($"DATA_SET\\{fileName}.jpg");
+            using var bmp = SixLabors.ImageSharp.Image.Load<Rgb24>($"DATA_SET\\{fileName}.jpg");
 
-            Directory.CreateDirectory("DATA_SET\\" + currentTag);
+            var pathDir = "DATA_SET\\" + currentTag;
+            if (!Directory.Exists(pathDir))
+            {
+                Directory.CreateDirectory(pathDir);
+            }
 
-
-            if (NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image) == currentTag)
+            if (NeuralNetwork.NeuralNetwork.NeuralNetworkResult(bmp) == currentTag)
             {
                 return;
             }
 
 
-            DataSetImage.Save(image, currentTag);
+            DataSetImage.Save(bmp, currentTag);
         }
     }
 }

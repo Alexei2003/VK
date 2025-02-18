@@ -3,6 +3,8 @@ using DownloaderDataSetPhoto.Downloaders;
 using MyCustomClasses;
 using MyCustomClasses.Tags;
 using MyCustomClasses.VK;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace DownloaderDataSetPhoto
 {
@@ -22,7 +24,7 @@ namespace DownloaderDataSetPhoto
         }
 
 
-        private void AddInDataSet(Bitmap image, string tags, string resulTag)
+        private void AddInDataSet(Image<Rgb24> image, string tags, string resulTag)
         {
             if (!tagList.Add(tags) && tags.Split('#', StringSplitOptions.RemoveEmptyEntries).Length < 3 && resulTag != tbTag.Text)
             {
@@ -34,7 +36,7 @@ namespace DownloaderDataSetPhoto
         {
             if (Clipboard.ContainsImage())
             {
-                var clipboardImage = new Bitmap(Clipboard.GetImage());
+                var clipboardImage = Converter.ConvertToImageSharp((Bitmap)Clipboard.GetImage());
 
                 var resulTag = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(clipboardImage);
 

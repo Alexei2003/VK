@@ -1,8 +1,7 @@
 ﻿using ClosedXML.Excel;
 using DataSet;
-using DocumentFormat.OpenXml.Wordprocessing;
-using System.Drawing;
-using System.Drawing.Imaging;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace AddDataInDataSet
 {
@@ -29,9 +28,9 @@ namespace AddDataInDataSet
                 {
                     if (changeResolution)
                     {
-                        using var bmpOriginal = new Bitmap(src.FullName);
-                        using var bmp = DataSetImage.ImageTo24bpp(DataSetImage.ChangeResolution224x224(bmpOriginal));
-                        bmp.Save(Path.Combine(destination, src.Name), ImageFormat.Jpeg);
+                        using var bmpOriginal = Image.Load<Rgb24>(src.FullName);
+                        using var bmp = DataSetImage.ChangeResolution224x224(bmpOriginal);
+                        bmp.SaveAsJpeg(Path.Combine(destination, src.Name));
                     }
                     else
                     {
@@ -47,11 +46,11 @@ namespace AddDataInDataSet
 
         private static bool Similar(FileInfo src, string destination)
         {
-            using var srcBmp = new Bitmap(src.FullName);
+            using var srcBmp = Image.Load<Rgb24>(src.FullName);
             var destinationInfo = new DirectoryInfo(destination);
             foreach (var dest in destinationInfo.GetFiles())
             {
-                using var destBmp = new Bitmap(dest.FullName);
+                using var destBmp = Image.Load<Rgb24>(dest.FullName);
                 if (DataSetImage.IsSimilarImage(srcBmp, destBmp))
                 {
                     return true;
@@ -72,7 +71,7 @@ namespace AddDataInDataSet
 
             Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
             {
-                DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH, GetDirectoryName(tag)), checkSimilar : true, deleteOriginal : true, changeResolution : true);
+                DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH, GetDirectoryName(tag)), checkSimilar: true, deleteOriginal: true, changeResolution: true);
 
                 count[0]++;
             });
@@ -98,7 +97,7 @@ namespace AddDataInDataSet
                     var sourceInfo = new DirectoryInfo(tag);
                     if (sourceInfo.GetFiles().Length < 100)
                     {
-                        DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, SMALL_PATH, name), deleteOriginal : true);
+                        DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, SMALL_PATH, name), deleteOriginal: true);
                     }
                 }
 
@@ -128,8 +127,8 @@ namespace AddDataInDataSet
 
                 foreach (var fileImage in tagDirectoryInfo.GetFiles())
                 {
-                    using var image = new Bitmap(fileImage.FullName);
-                    var tagPredict = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image);
+                    using var bmp = Image.Load<Rgb24>(fileImage.FullName);
+                    var tagPredict = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(bmp);
 
                     if (tagOriginal == tagPredict)
                     {

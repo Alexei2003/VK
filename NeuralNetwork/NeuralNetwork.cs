@@ -1,8 +1,8 @@
 ﻿using DataSet;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
-using System.Drawing;
-using System.Drawing.Imaging;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace NeuralNetwork
 {
@@ -45,9 +45,9 @@ namespace NeuralNetwork
             }
         }
 
-        public static string[] NeuralNetworkResult(Bitmap image, int kTop = 5)
+        public static string[] NeuralNetworkResult(Image<Rgb24> image, int kTop = 5)
         {
-            image = DataSetImage.ImageTo24bpp(DataSetImage.ChangeResolution224x224(image));
+            image = DataSetImage.ChangeResolution224x224(image);
 
             var inputTensor = ImageToTensor(image);
 
@@ -85,7 +85,7 @@ namespace NeuralNetwork
                 // предыдущих 3х
                 var percentOriginalTag = 0f;
                 var coeff = 1f;
-                for (var n = i+1; n < i+4; n++)
+                for (var n = i + 1; n < i + 4; n++)
                 {
                     percentOriginalTag += coeff * labels[n].Value;
                     coeff /= 2;
@@ -104,7 +104,7 @@ namespace NeuralNetwork
             return resulTagsArr;
         }
 
-        public static string NeuralNetworkResult(Bitmap image)
+        public static string NeuralNetworkResult(Image<Rgb24> image)
         {
             var arr = NeuralNetworkResult(image, 1);
 
@@ -112,7 +112,7 @@ namespace NeuralNetwork
         }
 
 
-        public unsafe static DenseTensor<float> ImageToTensor(Bitmap bitmap)
+        public static DenseTensor<float> ImageToTensor(Image<Rgb24> bitmap)
         {
             const int batchSize = 1;
             const int height = 224;
@@ -121,25 +121,18 @@ namespace NeuralNetwork
 
             var tensor = new DenseTensor<float>([batchSize, height, width, channels]);
 
-            var rgbBitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, bitmap.PixelFormat);
-            var ptr = rgbBitmapData.Scan0;
-            var rgbBitmap = (byte*)ptr;
-
             for (int b = 0; b < batchSize; b++)
             {
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        for (int c = 0; c < channels; c++)
-                        {
-                            tensor[b, y, x, c] = rgbBitmap[y * rgbBitmapData.Stride + x * channels + c] / 255f;
-                        }
+                        tensor[b, y, x, 0] = bitmap[x, y].B / 255f;
+                        tensor[b, y, x, 1] = bitmap[x, y].G / 255f;
+                        tensor[b, y, x, 2] = bitmap[x, y].R / 255f;
                     }
                 }
             }
-
-            bitmap.UnlockBits(rgbBitmapData);
 
             return tensor;
         }
