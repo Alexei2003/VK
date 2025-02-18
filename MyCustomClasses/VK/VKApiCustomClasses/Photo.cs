@@ -62,7 +62,7 @@ namespace MyCustomClasses.VK.VKApiCustomClasses
         public ReadOnlyCollection<VkNet.Model.Photo> AddOnVKServer(WebClient wc, string name)
         {
             var uploadServer = GetWallUploadServer();
-            var responseFile = Encoding.ASCII.GetString(wc.UploadFile(uploadServer.UploadUrl, "Post.jpg"));
+            var responseFile = Encoding.ASCII.GetString(wc.UploadFile(uploadServer.UploadUrl, name));
 
             return SaveWallPhoto(responseFile, null);
         }

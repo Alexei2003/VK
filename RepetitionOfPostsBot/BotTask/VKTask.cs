@@ -387,6 +387,7 @@ namespace RepetitionOfPostsBot.BotTask
 
             var charsToRemove = new HashSet<char> { '\'', '_', '-', ' '};
 
+
             foreach (var nodeTag in nodeTags)
             {
                 var tag = nodeTag.InnerText.Trim();
@@ -407,7 +408,7 @@ namespace RepetitionOfPostsBot.BotTask
                 {
                     var tmpResultTag = new string(resultTag.Where(c => !charsToRemove.Contains(c)).ToArray()).ToUpper();
 
-                    if (tmpTag.Contains(tmpResultTag.Split('#', StringSplitOptions.RemoveEmptyEntries)[^1]))
+                    if (tmpTag == tmpResultTag.Split('#', StringSplitOptions.RemoveEmptyEntries)[^1])
                     {
                         CreatePost(api, wc, path, resultTag);
                         return;
