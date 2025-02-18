@@ -381,7 +381,7 @@ namespace RepetitionOfPostsBot.BotTask
 
             href = Gelbooru.GetUrlAddMirrorServer(href);
 
-            var path = $"Gelbooru.{href.Split('.', StringSplitOptions.RemoveEmptyEntries)[^1]}";
+            var path = $"Gelbooru.jpg";
             wc.DownloadFile(href, path);
             using var image = SixLabors.ImageSharp.Image.Load<Rgb24>(path);
 
@@ -456,7 +456,7 @@ namespace RepetitionOfPostsBot.BotTask
                     OwnerId = -1 * GROUP_ID,
                     Count = 1,
                     Filter = WallFilter.Postponed,
-                    Offset = (ulong)wall.WallPosts.Count - 1
+                    Offset = (ulong)wall.WallPosts.Count
                 });
 
                 lastPost = wall.WallPosts[0];
