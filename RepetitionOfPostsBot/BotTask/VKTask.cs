@@ -5,6 +5,7 @@ using MyCustomClasses.Tags.Editors;
 using MyCustomClasses.VK;
 using MyCustomClasses.VK.VKApiCustomClasses;
 using System.Drawing;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -386,96 +387,102 @@ namespace RepetitionOfPostsBot.BotTask
 
             var charsToRemove = new HashSet<char> { '\'', '_', '-', ' '};
 
-            foreach (var resultTag in resultTags)
+            foreach (var nodeTag in nodeTags)
             {
-                var tmpResultTag = new string(resultTag.Where(c => !charsToRemove.Contains(c)).ToArray()).ToUpper();
-                foreach (var nodeTag in nodeTags)
-                {
-                    var tag = nodeTag.InnerText.Trim();
-                    var tmpTag = new string(tag.Where(c => !charsToRemove.Contains(c)).ToArray()).ToUpper();
+                var tag = nodeTag.InnerText.Trim();
+                var tmpTag = new string(tag.Where(c => !charsToRemove.Contains(c)).ToArray()).ToUpper();
 
-                    if(tmpTag == "ORIGINAL")
-                    {
-                        return;
-                    }
+                var indexChar = tmpTag.IndexOf('(');
+                if (indexChar != -1)
+                {
+                    tmpTag = tmpTag.Remove(indexChar);
+                }
+
+                if (tmpTag == "ORIGINAL")
+                {
+                    return;
+                }
+
+                foreach (var resultTag in resultTags)
+                {
+                    var tmpResultTag = new string(resultTag.Where(c => !charsToRemove.Contains(c)).ToArray()).ToUpper();
 
                     if (tmpTag.Contains(tmpResultTag.Split('#', StringSplitOptions.RemoveEmptyEntries)[^1]))
                     {
-                        // Получение первого отложеного поста
-                        var wall = api.Wall.Get(new WallGetParams
-                        {
-                            OwnerId = -1 * GROUP_ID,
-                            Count = 1,
-                            Filter = WallFilter.Postponed
-                        });
-
-                        Post lastPost;
-                        if (wall.WallPosts.Count == 0)
-                        {
-                            // Получение самого свежего поста
-                            wall = api.Wall.Get(new WallGetParams
-                            {
-                                OwnerId = -1 * GROUP_ID,
-                                Count = 2,
-                                Filter = WallFilter.All
-                            });
-
-                            if (wall.WallPosts[0].IsPinned.Value)
-                            {
-                                lastPost = wall.WallPosts[1];
-                            }
-                            else
-                            {
-                                lastPost = wall.WallPosts[0];
-                            }
-                        }
-                        else
-                        {
-                            // Получение последнего отложеного поста
-                            wall = api.Wall.Get(new WallGetParams
-                            {
-                                OwnerId = -1 * GROUP_ID,
-                                Count = 1,
-                                Filter = WallFilter.Postponed,
-                                Offset = (ulong)wall.WallPosts.Count - 1
-                            });
-
-                            lastPost = wall.WallPosts[0];
-                        }
-
-
-                        var publishDate = lastPost.Date.Value.AddHours(1);
-
-                        while (publishDate < DateTime.UtcNow)
-                        {
-                            publishDate.AddHours(1);
-                        }
-
-                        var tags = resultTag.Split('#', StringSplitOptions.RemoveEmptyEntries);
-
-                        tag = string.Join("", tags.Select(s => "#" + s + GROUP_SHORT_URL + "\n"));
-
-                        tag = BaseTagsEditor.GetBaseTagsWithNextLine() + tag;
-
-                        // Повторый пост
-                        api.Wall.Post(new WallPostParams()
-                        {
-                            OwnerId = -1 * GROUP_ID,
-                            FromGroup = true,
-                            Message = tag,
-                            Attachments = api.Photo.AddOnVKServer(wc, path),
-                            PublishDate = publishDate,
-                        });
-
+                        CreatePost(api, wc, path, resultTag);
                         return;
                     }
-                }
+                }               
             }
         }
 
-        private static void CreatePost()
+        private static void CreatePost(VkApiCustom api, WebClient wc, string path,string resultTag)
         {
+            // Получение первого отложеного поста
+            var wall = api.Wall.Get(new WallGetParams
+            {
+                OwnerId = -1 * GROUP_ID,
+                Count = 1,
+                Filter = WallFilter.Postponed
+            });
 
+            Post lastPost;
+            if (wall.WallPosts.Count == 0)
+            {
+                // Получение самого свежего поста
+                wall = api.Wall.Get(new WallGetParams
+                {
+                    OwnerId = -1 * GROUP_ID,
+                    Count = 2,
+                    Filter = WallFilter.All
+                });
+
+                if (wall.WallPosts[0].IsPinned.Value)
+                {
+                    lastPost = wall.WallPosts[1];
+                }
+                else
+                {
+                    lastPost = wall.WallPosts[0];
+                }
+            }
+            else
+            {
+                // Получение последнего отложеного поста
+                wall = api.Wall.Get(new WallGetParams
+                {
+                    OwnerId = -1 * GROUP_ID,
+                    Count = 1,
+                    Filter = WallFilter.Postponed,
+                    Offset = (ulong)wall.WallPosts.Count - 1
+                });
+
+                lastPost = wall.WallPosts[0];
+            }
+
+
+            var publishDate = lastPost.Date.Value.AddHours(1);
+
+            while (publishDate < DateTime.UtcNow)
+            {
+                publishDate.AddHours(1);
+            }
+
+            var tags = resultTag.Split('#', StringSplitOptions.RemoveEmptyEntries);
+
+            var tag = string.Join("", tags.Select(s => "#" + s + GROUP_SHORT_URL + "\n"));
+
+            tag = BaseTagsEditor.GetBaseTagsWithNextLine() + tag;
+
+            // Повторый пост
+            api.Wall.Post(new WallPostParams()
+            {
+                OwnerId = -1 * GROUP_ID,
+                FromGroup = true,
+                Message = tag,
+                Attachments = api.Photo.AddOnVKServer(wc, path),
+                PublishDate = publishDate,
+            });
         }
     }
 }
