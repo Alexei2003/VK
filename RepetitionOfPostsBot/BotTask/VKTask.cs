@@ -310,7 +310,7 @@ namespace RepetitionOfPostsBot.BotTask
                 {
                     for (var i = 0; i < 10; i++)
                     {
-                        var htmlDocument = Gelbooru.GetPageHTML(wc, url, i);
+                        var htmlDocument = Gelbooru.GetPageHTML(wc, url, i, useProxy: true);
 
                         var nodesArr = htmlDocument.DocumentNode
                             .SelectNodes("//a[@id and contains(@href, 'https') and contains(@href, 'gelbooru.com')]")
@@ -352,7 +352,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                 href = href.Replace("amp;", "");
 
-                var htmlDocument = Gelbooru.GetPageHTML(wc, href);
+                var htmlDocument = Gelbooru.GetPageHTML(wc, href, useProxy: true);
 
                 var nodesImageArr = htmlDocument.DocumentNode
                     .SelectNodes("//a[contains(text(), 'Original image')]")
