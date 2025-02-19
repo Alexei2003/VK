@@ -16,7 +16,7 @@ namespace MyCustomClasses
 
                 if (useProxy)
                 {
-                    url += $"&t={DateTimeOffset.UtcNow.ToUnixTimeSeconds()}_{new Random().Next(0, 9999)}";
+                    url += $"&t1={DateTimeOffset.UtcNow.ToUnixTimeSeconds()}_{new Random().Next(0, 9999)}";
                     url = GetUrlUseMirror(url);
                 }
             }
