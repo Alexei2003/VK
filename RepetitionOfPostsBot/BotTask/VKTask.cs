@@ -134,7 +134,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                                 postText = string.Join("", tagsArr.Select(s => "#" + s + GROUP_SHORT_URL + "\n"));
 
-                                StringBuilder bld = new StringBuilder();
+                                var bld = new StringBuilder();
                                 bld.Append(BaseTagsEditor.GetBaseTagsWithNextLine());
                                 bld.Append(postText);
                                 postText = bld.ToString();
@@ -299,7 +299,7 @@ namespace RepetitionOfPostsBot.BotTask
         {
             var api = new VkApiCustom((string)data);
 
-            var url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
+            const string? url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
 
             using var wc = new WebClient();
             var lastViewedUrl = "";
@@ -385,7 +385,7 @@ namespace RepetitionOfPostsBot.BotTask
             wc.DownloadFile(href, path);
             using var image = SixLabors.ImageSharp.Image.Load<Rgb24>(path);
 
-            var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image, 5);
+            var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResultKTop(image);
 
             var charsToRemove = new HashSet<char> { '\'', '_', '-', ' ' };
 

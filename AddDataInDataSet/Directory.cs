@@ -95,7 +95,7 @@ namespace AddDataInDataSet
                 else
                 {
                     var sourceInfo = new DirectoryInfo(tag);
-                    if (sourceInfo.GetFiles().Length < 100)
+                    if (sourceInfo.GetFiles().Length < 10)
                     {
                         DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, SMALL_PATH, name), deleteOriginal: true);
                     }
@@ -113,26 +113,50 @@ namespace AddDataInDataSet
             var worksheet = workbook.Worksheets.Add("Sheet1");
 
             worksheet.Cell(1, 1).Value = "Тег";
-            worksheet.Cell(1, 2).Value = "Точность (%)";
-            worksheet.Cell(1, 3).Value = "Количество объектов";
+            worksheet.Cell(1, 2).Value = "Количество объектов";
+            worksheet.Cell(1, 3).Value = "Точность k=1  (%)";
+            worksheet.Cell(1, 4).Value = "Точность k=5  (%)";
+            worksheet.Cell(1, 5).Value = "Точность k=10 (%)";
+            worksheet.Cell(1, 6).Value = "Точность k=15 (%)";
 
             for (var i = 0; i < tagDirectories.Length; i++)
             {
                 var tagDirectory = tagDirectories[i];
                 var tagOriginal = GetDirectoryName(tagDirectory);
 
-                int countTrue = 0;
-                int countAll = 0;
+                var countTrueK1 = 0;
+                var countTrueK5 = 0;
+                var countTrueK10 = 0;
+                var countTrueK15 = 0;
+                var countAll = 0;
                 var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
 
                 foreach (var fileImage in tagDirectoryInfo.GetFiles())
                 {
                     using var image = Image.Load<Rgb24>(fileImage.FullName);
-                    var tagPredict = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image);
+                    var tagPredictArr = NeuralNetwork.NeuralNetwork.NeuralNetworkResultKTop(image);
 
-                    if (tagOriginal == tagPredict)
+                    for(var k = 0; k< tagPredictArr.Length; k++)
                     {
-                        countTrue++;
+                        if (tagOriginal == tagPredictArr[k])
+                        {
+                            if (k < 15)
+                            {
+                                countTrueK15++;
+                                if (k < 10)
+                                {
+                                    countTrueK10++;
+                                    if (k < 5)
+                                    {
+                                        countTrueK5++; 
+                                        if (k < 1)
+                                        {
+                                            countTrueK1++;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     countAll++;
@@ -140,8 +164,11 @@ namespace AddDataInDataSet
 
                 // Запись результатов в ячейки
                 worksheet.Cell(i + 2, 1).Value = tagOriginal;
-                worksheet.Cell(i + 2, 2).Value = (countTrue * 100f) / countAll;
-                worksheet.Cell(i + 2, 3).Value = countAll;
+                worksheet.Cell(i + 2, 2).Value = countAll;
+                worksheet.Cell(i + 2, 3).Value = (countTrueK1  * 100f) / countAll;
+                worksheet.Cell(i + 2, 4).Value = (countTrueK5  * 100f) / countAll;
+                worksheet.Cell(i + 2, 5).Value = (countTrueK10 * 100f) / countAll;
+                worksheet.Cell(i + 2, 6).Value = (countTrueK15 * 100f) / countAll;
 
                 count[0]++;
             }

@@ -45,7 +45,7 @@ namespace NeuralNetwork
             }
         }
 
-        public static string[] NeuralNetworkResult(Image<Rgb24> image, int kTop = 5)
+        public static string[] NeuralNetworkResultKTop(Image<Rgb24> image, int kTop = 15)
         {
             image = DataSetImage.ChangeResolution224x224(image);
 
@@ -84,11 +84,11 @@ namespace NeuralNetwork
 
                 // предыдущих 3х
                 var percentOriginalTag = 0f;
-                var coeff = 1f;
+                var coeff = 0.9f;
                 for (var n = i + 1; n < i + 4; n++)
                 {
                     percentOriginalTag += coeff * labels[n].Value;
-                    coeff /= 2;
+                    coeff /= 3;
                 }
 
                 if (labels[i].Value < percentOriginalTag)
@@ -106,7 +106,7 @@ namespace NeuralNetwork
 
         public static string NeuralNetworkResult(Image<Rgb24> image)
         {
-            var arr = NeuralNetworkResult(image, 1);
+            var arr = NeuralNetworkResultKTop(image, 1);
 
             return arr[0];
         }
