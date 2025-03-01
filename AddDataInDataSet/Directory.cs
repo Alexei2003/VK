@@ -95,7 +95,7 @@ namespace AddDataInDataSet
                 else
                 {
                     var sourceInfo = new DirectoryInfo(tag);
-                    if (sourceInfo.GetFiles().Length < 10)
+                    if (sourceInfo.GetFiles().Length < 50)
                     {
                         DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, SMALL_PATH, name), deleteOriginal: true);
                     }
