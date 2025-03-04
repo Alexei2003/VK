@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
+using System.Text.Json;
 
 namespace MyCustomClasses.Tags
 {
@@ -14,7 +14,7 @@ namespace MyCustomClasses.Tags
 
         public void Save()
         {
-            string json = JsonConvert.SerializeObject(tagsList);
+            string json = JsonSerializer.Serialize(tagsList);
             File.WriteAllText("TagsDictionary.txt", json);
         }
 
@@ -25,7 +25,7 @@ namespace MyCustomClasses.Tags
                 string json = File.ReadAllText("TagsDictionary.txt");
                 if (json?.Length != 0)
                 {
-                    tagsList = JsonConvert.DeserializeObject<List<string>>(json);
+                    tagsList = JsonSerializer.Deserialize<List<string>>(json);
                 }
                 else
                 {

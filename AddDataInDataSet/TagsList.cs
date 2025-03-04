@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 
 namespace AddDataInDataSet
 {
@@ -18,7 +18,7 @@ namespace AddDataInDataSet
                 string json = File.ReadAllText("TagsDictionary.txt");
                 if (json?.Length != 0)
                 {
-                    tagsList = JsonConvert.DeserializeObject<HashSet<string>>(json);
+                    tagsList = JsonSerializer.Deserialize<HashSet<string>>(json);
                 }
                 else
                 {

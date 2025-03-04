@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 
 namespace MyCustomClasses
 {
@@ -13,7 +13,7 @@ namespace MyCustomClasses
         public static Dictionary<string, string> GetAccessTokens()
         {
             var json = File.ReadAllText("MyAccessTokens.txt");
-            return JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            return JsonSerializer.Deserialize<Dictionary<string, string>>(json);
         }
     }
 }

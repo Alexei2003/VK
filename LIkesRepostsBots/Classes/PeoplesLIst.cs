@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 
 namespace LikesRepostsBots.Classes
 {
@@ -15,14 +15,14 @@ namespace LikesRepostsBots.Classes
                 string json = File.ReadAllText(filePath);
                 if (json?.Length != 0)
                 {
-                    people = JsonConvert.DeserializeObject<HashSet<long>>(json);
+                    people = JsonSerializer.Deserialize<HashSet<long>>(json);
                 }
             }
         }
 
         public void Write()
         {
-            string json = JsonConvert.SerializeObject(people);
+            string json = JsonSerializer.Serialize(people);
             File.WriteAllText(Path.Combine("PeopleDictionary.txt"), json);
         }
 

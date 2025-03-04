@@ -16,9 +16,6 @@
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="9.0.0" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\DataSet\DataSet.csproj" />
     <ProjectReference Include="..\MyCustomClasses\MyCustomClasses.csproj" />
     <ProjectReference Include="..\NeuralNetwork\NeuralNetwork.csproj" />

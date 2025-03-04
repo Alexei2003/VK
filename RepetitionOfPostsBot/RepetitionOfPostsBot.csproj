@@ -8,8 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Net.Security" Version="4.3.2" />
-    <PackageReference Include="System.Text.Json" Version="9.0.0" />
     <PackageReference Include="Telegram.Bot" Version="22.3.0" />
   </ItemGroup>
 
