@@ -73,7 +73,8 @@ namespace NeuralNetwork
 
             for (var i = 0; i < kTop; i++)
             {
-                if (labels[i].Name == "#NSFW")
+                ref var label = ref labels[i];
+                if (label.Name == "#NSFW")
                 {
                     for (var n = 0; n < kTop; n++)
                     {
@@ -85,19 +86,19 @@ namespace NeuralNetwork
                 // предыдущих 3х
                 var percentOriginalTag = 0f;
                 var coeff = 0.9f;
-                for (var n = i + 1; n < i + 4; n++)
+                for (var n = i + 1; n < Math.Min(i + 4, kTop); n++)
                 {
                     percentOriginalTag += coeff * labels[n].Value;
                     coeff /= 3;
                 }
 
-                if (labels[i].Value < percentOriginalTag)
+                if (label.Value < percentOriginalTag)
                 {
                     resulTagsArr[i] = "#Original";
                 }
                 else
                 {
-                    resulTagsArr[i] = labels[i].Name;
+                    resulTagsArr[i] = label.Name;
                 }
             }
 

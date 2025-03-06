@@ -75,7 +75,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                         var totalCountPosts = wall.TotalCount;
                         var notResendedCountPosts = totalCountPosts / 15;
-                        var maxRandomOffsetRessendedPosts = totalCountPosts / 5;
+                        var maxRandomOffsetRessendedPosts = totalCountPosts / 100;
 
                         List<MediaAttachment>? mediaAttachmentList = null;
                         string postText = "";
@@ -99,16 +99,16 @@ namespace RepetitionOfPostsBot.BotTask
                                 Filter = WallFilter.All
                             });
 
+                            // Выход если поста несуществует
+                            if (wall.WallPosts.Count == 0)
+                            {
+                                continue;
+                            }
+
                             bool postFind = false;
                             foreach (var post in wall.WallPosts)
                             {
                                 mediaAttachmentList = [];
-
-                                // Выход если поста несуществует
-                                if (wall.WallPosts.Count == 0)
-                                {
-                                    continue;
-                                }
 
                                 postText = post.Text;
 

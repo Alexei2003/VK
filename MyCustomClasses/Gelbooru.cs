@@ -16,7 +16,7 @@ namespace MyCustomClasses
 
                 if (useProxy)
                 {
-                    url += $"&t1={DateTimeOffset.UtcNow.ToUnixTimeSeconds()}_{new Random().Next(0, 9999)}";
+                    url += $"&temp={DateTimeOffset.UtcNow.ToUnixTimeSeconds()}_{new Random().Next(0, 9999)}";
                     url = GetUrlUseMirror(url);
                 }
             }
@@ -26,8 +26,10 @@ namespace MyCustomClasses
                 url = GetUrlAddMirrorServer(url);
             }
 
-            var httpClientHandler = new HttpClientHandler();
-            httpClientHandler.CookieContainer = new CookieContainer();
+            var httpClientHandler = new HttpClientHandler
+            {
+                CookieContainer = new CookieContainer()
+            };
             using var httpClient = new HttpClient(httpClientHandler);
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36");
 
