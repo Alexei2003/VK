@@ -17,7 +17,7 @@ namespace RepetitionOfPostsBot.BotTask
         private const string GROUP_SHORT_URL = "@anime_art_for_every_day";
         private const long GROUP_ID = 220199532;
         private static readonly TimeSpan TIME_SLEEP_ERROR = TimeSpan.FromMinutes(15);
-
+        private const ulong COUNT_GET_POSTS = 100; 
         private static readonly string[] tagsNotRepost = ["Угадайка"];
 
         public static ulong GetRandomID(ulong max)
@@ -34,11 +34,11 @@ namespace RepetitionOfPostsBot.BotTask
             {
                 OwnerId = -1 * GROUP_ID,
                 Count = 1,
-                Filter = WallFilter.Postponed
+                Filter = WallFilter.All
             });
 
-            ulong offsetPost = GetRandomID(wall.TotalCount);
-
+            var offsetPost = GetRandomID(wall.TotalCount);
+            var sendPostIdQueue = new Queue<long>();
             while (true)
             {
                 try
@@ -81,7 +81,7 @@ namespace RepetitionOfPostsBot.BotTask
                         string postText = "";
                         while (true)
                         {
-                            var offsetNextPost = GetRandomID(maxRandomOffsetRessendedPosts);
+                            var offsetNextPost = GetRandomID(maxRandomOffsetRessendedPosts) + COUNT_GET_POSTS;
                             offsetPost += offsetNextPost;
                             offsetPost %= totalCountPosts;
 
@@ -90,12 +90,12 @@ namespace RepetitionOfPostsBot.BotTask
                                 offsetPost += notResendedCountPosts;
                             }
 
-                            // Получение поста по id 
+                            // Получение поста c offset 
                             wall = api.Wall.Get(new WallGetParams
                             {
                                 OwnerId = -1 * GROUP_ID,
                                 Offset = offsetPost,
-                                Count = 100,
+                                Count = COUNT_GET_POSTS,
                                 Filter = WallFilter.All
                             });
 
@@ -105,7 +105,7 @@ namespace RepetitionOfPostsBot.BotTask
                                 continue;
                             }
 
-                            bool postFind = false;
+                            bool postIsFinded = false;
                             foreach (var post in wall.WallPosts)
                             {
                                 mediaAttachmentList = [];
@@ -153,10 +153,29 @@ namespace RepetitionOfPostsBot.BotTask
                                     continue;
                                 }
 
-                                postFind = true;
+                                var idIsSended = false;
+                                foreach (var id in sendPostIdQueue)
+                                {
+                                    if (id == post.Id)
+                                    {
+                                        idIsSended = true;
+                                    }
+                                }
+
+                                if (idIsSended)
+                                {
+                                    continue;
+                                }
+
+                                if (sendPostIdQueue.Count > 700)
+                                {
+                                    sendPostIdQueue.Dequeue();
+                                }
+                                sendPostIdQueue.Enqueue(post.Id ?? -1);
+                                postIsFinded = true;
                                 break;
                             }
-                            if (postFind)
+                            if (postIsFinded)
                             {
                                 break;
                             }

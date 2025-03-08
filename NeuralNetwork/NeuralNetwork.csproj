@@ -6,7 +6,7 @@
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.20.1" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.21.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataSet\DataSet.csproj" />
