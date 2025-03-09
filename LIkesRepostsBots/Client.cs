@@ -58,11 +58,7 @@ namespace LikesRepostsBots
 
             var accessTokensAndNames = File.ReadAllLines(Path.Combine("AccessTokens.txt"));
 
-            PeoplesLIst people = new();
-
-            var bots = new BotsList(accessTokensAndNames, people);
-
-            people.Read();
+            var bots = new BotsList(accessTokensAndNames);
 
             botParams.GroupIdForGood = 220199532;
             for (int i = 0; i < bots.Count; i++)
@@ -80,8 +76,6 @@ namespace LikesRepostsBots
 
                 Thread.Sleep(10 * RandomStatic._1SECOND + RandomStatic.Rand.Next(20 * RandomStatic._1SECOND));
             }
-
-            people.Write();
 
             Console.WriteLine("\n------------------------------------------Финал------------------------------------------\n");
 

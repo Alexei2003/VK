@@ -28,11 +28,7 @@ namespace LikesRepostsBots
 
             var accessTokensAndNames = File.ReadAllLines(Path.Combine("AccessTokens.txt"));
 
-            PeoplesLIst people = new();
-            people.Read();
-
-            var bots = new BotsList(accessTokensAndNames, people);
-
+            var bots = new BotsList(accessTokensAndNames);
 
             const int TIME_WORK = 3 * RandomStatic._1HOUR;
             const int TIME_WORK_RANDOM = 3 * RandomStatic._1HOUR;
@@ -47,7 +43,7 @@ namespace LikesRepostsBots
                 {
                     if (bots.Count == 0)
                     {
-                        bots = new BotsList(accessTokensAndNames, people);
+                        bots = new BotsList(accessTokensAndNames);
                     }
 
                     bots.Mix();
@@ -97,8 +93,6 @@ namespace LikesRepostsBots
                     }
 
                     botParams.ClearFriends = ClearFriendsType.None;
-
-                    people.Write();
 
                     count++;
                 }

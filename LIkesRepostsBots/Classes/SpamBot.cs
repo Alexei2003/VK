@@ -9,26 +9,24 @@ namespace LikesRepostsBots.Classes
 {
     internal sealed class SpamBot
     {
-        private readonly VkApiCustom api;
+        private readonly VkApiCustom _api;
         private const int CHANCE_LIKE_COMMENTS = 5;
         private const int CHANCE_REPOST = 5;
         private const int MAX_COUNT_POST = 24;
-        private readonly PeoplesLIst people;
-        private readonly string accessToken;
+        private readonly string _accessToken;
 
         public string BotName { get; set; }
 
-        public SpamBot(string botName, string accessToken, PeoplesLIst people)
+        public SpamBot(string botName, string accessToken)
         {
-            api = new();
-            this.people = people;
+            _api = new();
             BotName = botName;
-            this.accessToken = accessToken;
+            this._accessToken = accessToken;
         }
 
         private void Authorize()
         {
-            api.AuthorizeAndTrackAndOnline(accessToken);
+            _api.AuthorizeAndTrackAndOnline(_accessToken);
             SleepAfterAction();
         }
 
@@ -39,14 +37,14 @@ namespace LikesRepostsBots.Classes
 
         private void WorkWithPosts(long groupId)
         {
-            var botWall = api.Wall.Get(new WallGetParams
+            var botWall = _api.Wall.Get(new WallGetParams
             {
                 Count = 1,
                 Filter = WallFilter.All
             });
             SleepAfterAction();
 
-            var wall = api.Wall.Get(new WallGetParams
+            var wall = _api.Wall.Get(new WallGetParams
             {
                 OwnerId = -1 * groupId,
                 Count = MAX_COUNT_POST,
@@ -76,9 +74,9 @@ namespace LikesRepostsBots.Classes
                 // Лайк репост
                 if (RandomStatic.Rand.Next(CHANCE_REPOST) == 0 && !wall.WallPosts[numbPost].Text.Contains('!'))
                 {
-                    repostResult = api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", null, false);
+                    repostResult = _api.Wall.Repost("wall" + wall.WallPosts[numbPost].OwnerId + "_" + wall.WallPosts[numbPost].Id, "", null, false);
                     SleepAfterAction();
-                    api.Likes.Add(new LikesAddParams
+                    _api.Likes.Add(new LikesAddParams
                     {
                         Type = LikeObjectType.Post,
                         ItemId = Convert.ToInt64(repostResult.PostId),
@@ -88,7 +86,7 @@ namespace LikesRepostsBots.Classes
                 else
                 {
                     // Лайк оригинала
-                    api.Likes.Add(new LikesAddParams
+                    _api.Likes.Add(new LikesAddParams
                     {
                         Type = LikeObjectType.Post,
                         OwnerId = wall.WallPosts[numbPost].OwnerId,
@@ -105,7 +103,7 @@ namespace LikesRepostsBots.Classes
                         var poll = (Poll)attachment.Instance;
                         var index = RandomStatic.Rand.Next(poll.Answers.Count - 1);
 
-                        api.Polls.AddVote(new PollsAddVoteParams
+                        _api.Polls.AddVote(new PollsAddVoteParams
                         {
                             OwnerId = poll.OwnerId,
                             PollId = poll.Id.Value,
@@ -122,7 +120,7 @@ namespace LikesRepostsBots.Classes
 
         private void AddCommentsLike(long groupId, long? postId)
         {
-            var comments = api.Wall.GetComments(new WallGetCommentsParams
+            var comments = _api.Wall.GetComments(new WallGetCommentsParams
             {
                 OwnerId = -1 * groupId,
                 PostId = Convert.ToInt64(postId),
@@ -135,7 +133,7 @@ namespace LikesRepostsBots.Classes
                 int randNumb = RandomStatic.Rand.Next(CHANCE_LIKE_COMMENTS);
                 if (randNumb == 0)
                 {
-                    api.Likes.Add(new LikesAddParams
+                    _api.Likes.Add(new LikesAddParams
                     {
                         Type = LikeObjectType.Comment,
                         ItemId = comment.Id,
@@ -152,7 +150,7 @@ namespace LikesRepostsBots.Classes
 
             ClearSpaceForFriends(addCountFriends);
 
-            var friends = api.Friends.Get(new FriendsGetParams
+            var friends = _api.Friends.Get(new FriendsGetParams
             {
                 Order = FriendsOrder.Random
             });
@@ -169,13 +167,13 @@ namespace LikesRepostsBots.Classes
 
         private void ClearSpaceForFriends(int addCountFriends)
         {
-            var friends = api.Friends.Get(new FriendsGetParams
+            var friends = _api.Friends.Get(new FriendsGetParams
             {
                 Order = FriendsOrder.Random
             });
             SleepAfterAction();
 
-            var sendRequests = api.Friends.GetRequests(new FriendsGetRequestsParams
+            var sendRequests = _api.Friends.GetRequests(new FriendsGetRequestsParams
             {
                 Out = true
             });
@@ -189,7 +187,7 @@ namespace LikesRepostsBots.Classes
                 {
                     for (int i = 0; i < addCountFriends; i++)
                     {
-                        api.Account.Ban(sendRequests.Items[i]);
+                        _api.Account.Ban(sendRequests.Items[i]);
                         SleepAfterAction();
                     }
                 }
@@ -197,7 +195,7 @@ namespace LikesRepostsBots.Classes
                 {
                     for (int i = 0; i < addCountFriends; i++)
                     {
-                        api.Account.Ban(friends[i].Id);
+                        _api.Account.Ban(friends[i].Id);
                         SleepAfterAction();
                     }
                 }
@@ -207,7 +205,7 @@ namespace LikesRepostsBots.Classes
         private void AddToFriendsFromRecomendedList(int addCountFriends)
         {
             int offset = 0;
-            var suggestions = api.Friends.GetSuggestions(offset: offset);
+            var suggestions = _api.Friends.GetSuggestions(offset: offset);
             SleepAfterAction();
 
             int index = 0;
@@ -217,7 +215,7 @@ namespace LikesRepostsBots.Classes
                 if (index >= suggestions.Count)
                 {
                     offset += suggestions.Count;
-                    suggestions = api.Friends.GetSuggestions(offset: offset);
+                    suggestions = _api.Friends.GetSuggestions(offset: offset);
                     SleepAfterAction();
                     index = 0;
 
@@ -239,7 +237,7 @@ namespace LikesRepostsBots.Classes
         private void AddToFriendsFromGoodGroup(int addCountFriends, long groupId)
         {
             int offset = 0;
-            var members = api.Groups.GetMembers(new GroupsGetMembersParams
+            var members = _api.Groups.GetMembers(new GroupsGetMembersParams
             {
                 GroupId = groupId.ToString()
             });
@@ -252,7 +250,7 @@ namespace LikesRepostsBots.Classes
                 if (index >= members.Count)
                 {
                     offset += members.Count;
-                    members = api.Groups.GetMembers(new GroupsGetMembersParams
+                    members = _api.Groups.GetMembers(new GroupsGetMembersParams
                     {
                         GroupId = groupId.ToString()
                     });
@@ -277,22 +275,22 @@ namespace LikesRepostsBots.Classes
 
         private bool AddToFriends(long userId, bool skipPeopleCheck = false)
         {
-            if (people.Add(userId) || skipPeopleCheck)
+            if (PeoplesList.Add(userId) || skipPeopleCheck)
             {
-                if (!IsMassAccountSleep(userId) && api.Friends.Add(userId) != null)
+                if (!IsMassAccountSleep(userId) && _api.Friends.Add(userId) != null)
                 {
                     SleepAfterAction();
                     return true;
                 }
                 else
                 {
-                    api.Account.Ban(userId);
+                    _api.Account.Ban(userId);
                     SleepAfterAction();
                 }
             }
             else
             {
-                api.Account.Ban(userId);
+                _api.Account.Ban(userId);
                 SleepAfterAction();
             }
 
@@ -313,14 +311,14 @@ namespace LikesRepostsBots.Classes
             const int COUNT_FOLLOWING = 300;
             const int COUNT_FOLOWERS = 300;
 
-            var user = api.Users.Get(new long[] { personId });
+            var user = _api.Users.Get(new long[] { personId });
             if (user[0].IsClosed == true)
             {
 
                 return true;
             }
 
-            var friends = api.Friends.Get(new FriendsGetParams
+            var friends = _api.Friends.Get(new FriendsGetParams
             {
                 UserId = personId,
             });
@@ -329,13 +327,13 @@ namespace LikesRepostsBots.Classes
                 return true;
             }
 
-            var following = api.Users.GetSubscriptions(personId);
+            var following = _api.Users.GetSubscriptions(personId);
             if (following != null && following.TotalCount > COUNT_FOLLOWING)
             {
                 return true;
             }
 
-            var followers = api.Users.GetFollowers(personId);
+            var followers = _api.Users.GetFollowers(personId);
             if (followers != null && followers.TotalCount > COUNT_FOLOWERS)
             {
                 return true;
@@ -356,14 +354,14 @@ namespace LikesRepostsBots.Classes
             const int COUNT_USER = 5000;
             do
             {
-                friends = api.Friends.Get(new FriendsGetParams
+                friends = _api.Friends.Get(new FriendsGetParams
                 {
                     Count = COUNT_USER,
                     Offset = offset,
                 });
                 offset += friends.Count;
 
-                var users = api.Users.Get(friends.Select(user => user.Id).ToArray());
+                var users = _api.Users.Get(friends.Select(user => user.Id).ToArray());
                 SleepAfterAction();
                 foreach (var user in users)
                 {
@@ -374,14 +372,14 @@ namespace LikesRepostsBots.Classes
 
                     if (user.Deactivated != Deactivated.Activated)
                     {
-                        api.Account.Ban(user.Id);
+                        _api.Account.Ban(user.Id);
                         SleepAfterAction();
                     }
                     else
                     {
                         if (clearFriends == ClearFriendsType.BanAndMathAccount && IsMassAccount(user.Id))
                         {
-                            api.Account.Ban(user.Id);
+                            _api.Account.Ban(user.Id);
                             SleepAfterAction();
                         }
                     }
@@ -397,7 +395,7 @@ namespace LikesRepostsBots.Classes
             const int COUNT_USER = 1000;
             do
             {
-                members = api.Groups.GetMembers(new GroupsGetMembersParams
+                members = _api.Groups.GetMembers(new GroupsGetMembersParams
                 {
                     GroupId = groupId.ToString(),
                     Offset = offset,
@@ -408,7 +406,7 @@ namespace LikesRepostsBots.Classes
 
                 foreach (var member in members)
                 {
-                    people.Add(member.Id);
+                    PeoplesList.Add(member.Id);
                 }
             }
             while (members.Count == COUNT_USER);

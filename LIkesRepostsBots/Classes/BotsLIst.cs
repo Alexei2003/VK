@@ -7,11 +7,11 @@ namespace LikesRepostsBots.Classes
         private readonly List<SpamBot> bots = [];
         public int Count { get; private set; }
 
-        public BotsList(string[] accessTokensAndNames, PeoplesLIst people)
+        public BotsList(string[] accessTokensAndNames)
         {
             for (int i = 1; i < accessTokensAndNames.Length; i += 2)
             {
-                bots.Add(new SpamBot(accessTokensAndNames[i - 1], accessTokensAndNames[i], people));
+                bots.Add(new SpamBot(accessTokensAndNames[i - 1], accessTokensAndNames[i]));
             }
             Count = bots.Count;
         }
