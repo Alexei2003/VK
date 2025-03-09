@@ -5,7 +5,33 @@ namespace MyCustomClasses
 {
     public static class Gelbooru
     {
-        private const string NO_SEARCH = "1girls+-nipples+-completely_nude+-gangbang+-imminent_sex+-sex+-penis+-condom+-cum+-futa+-torn_clothing+-1boy+-rape+-overeating+-filled_condom+-big_belly+-bdsm+-gigantic_breasts+-hyper_breasts+-hyper_thighs+-hyper_ass+-chubby+-anal+-2girls+-cosplay+-text+-hypnosis+-slave+-pussy+-nose_hook+-2boys+-penis_over_eyes+-multiple_penises+-anal_insertion+-dildo+-object_insertion+-sex_toys+-bestiality+-licking_penis+-areolae+-backboob+-animated+-foot_focus+-english_text+-horror_(theme)+-multiple_boys+-3boys+-topless+-hatching_(texture)+-crotch_focus+-head_out_of_frame+-foot_worship+-no_bra+-no_panties+-censored+-peeing+-masturbation+-ass_focus+-nude+-feet_only+-lower_body";
+        private const string NO_SEARCH =
+            // Сексуальный контент и анатомия
+            "+-nipples+-completely_nude+-gangbang+-imminent_sex+-sex+-penis+-condom+-cum+-futa+-rape" +
+            "+-filled_condom+-anal+-pussy+-multiple_penises+-anal_insertion+-dildo+-object_insertion" +
+            "+-sex_toys+-bestiality+-licking_penis+-areolae+-backboob+-masturbation+-peeing+-nude" +
+
+            // Гипертрофированные/преувеличенные части тела
+            "+-gigantic_breasts+-hyper_breasts+-hyper_thighs+-hyper_ass+-chubby+-big_belly+-overeating" +
+
+            // Фетиш и BDSM
+            "+-bdsm+-hypnosis+-slave+-nose_hook+-penis_over_eyes+-foot_worship" +
+
+            // Текст, графика и тематика
+            "+-cosplay+-text+-english_text+-horror_(theme)+-hatching_(texture)+-animated" +
+
+            // Фокус на определенных частях тела
+            "+-lower_body+-crotch_focus+-head_out_of_frame+-ass_focus+-feet_only+-foot_focus" +
+
+            // Одежда и нижнее белье
+            "+-torn_clothing+-topless+-no_bra+-no_panties+-censored" +
+
+            // Количество девушек
+            "+1girl+-2girls+-3girls+-4girls+-5girls+-6+girls" +
+
+            // Количество мальчиков
+            "+-1boy+-2boys+-3boys+-multiple_boys";
+
 
         public static HtmlDocument GetPageHTML(WebClient wc, string url, int indexPage = -1, bool useProxy = false)
         {
