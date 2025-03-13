@@ -27,10 +27,10 @@ namespace MyCustomClasses
             "+-torn_clothing+-topless+-no_bra+-no_panties+-censored" +
 
             // Количество девушек
-            "+1girl+-2girls+-3girls+-4girls+-5girls+-6+girls" +
+            "+1girl+-2girls+-3girls+-4girls+-5girls+-6%2Bgirls+-multiple_girls" +
 
             // Количество мальчиков
-            "+-1boy+-2boys+-3boys+-multiple_boys";
+            "+-1boy+-2boys+-3boys+-4boys+-5boys+-6%2Bboys+-multiple_boys";
 
 
         public static HtmlDocument GetPageHTML(WebClient wc, string url, int indexPage = -1, bool useProxy = false)
