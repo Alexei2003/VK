@@ -406,7 +406,7 @@ namespace RepetitionOfPostsBot.BotTask
 
             var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResultKTop(image);
 
-            var charsToRemove = new HashSet<char> { '\'', '_', '-', ' ' };
+            var charsToRemove = new HashSet<char> { '\'', '_', '-', ' ', '.' };
 
             foreach (var nodeTag in nodeTags)
             {
@@ -417,11 +417,6 @@ namespace RepetitionOfPostsBot.BotTask
                 if (indexChar != -1)
                 {
                     tmpTag = tmpTag.Remove(indexChar);
-                }
-
-                if (tmpTag == "ORIGINAL")
-                {
-                    return;
                 }
 
                 foreach (var resultTag in resultTags)
