@@ -291,7 +291,7 @@ namespace RepetitionOfPostsBot.BotTask
                     {
                         wc.DownloadFile(imagesUrl[0], "Story.jpg");
 
-                        MyCustomClasses.VK.VKApiCustomClasses.Stories.Post(new VkNet.Model.GetPhotoUploadServerParams()
+                        MyCustomClasses.VK.VKApiCustomClasses.Stories.Post(new GetPhotoUploadServerParams()
                         {
                             AddToNews = true,
                             GroupId = (ulong)GROUP_ID,
@@ -411,7 +411,7 @@ namespace RepetitionOfPostsBot.BotTask
             foreach (var nodeTag in nodeTags)
             {
                 var tag = nodeTag.InnerText.Trim();
-                var tmpTag = new string(tag.Where(c => !charsToRemove.Contains(c)).ToArray()).ToUpper();
+                var tmpTag = new string(tag.Where(c => !charsToRemove.Contains(c)).ToArray()).ToLower();
 
                 var indexChar = tmpTag.IndexOf('(');
                 if (indexChar != -1)
@@ -421,7 +421,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                 foreach (var resultTag in resultTags)
                 {
-                    var tmpResultTag = new string(resultTag.Where(c => !charsToRemove.Contains(c)).ToArray()).ToUpper();
+                    var tmpResultTag = new string(resultTag.Where(c => !charsToRemove.Contains(c)).ToArray()).ToLower();
 
                     if (tmpTag == tmpResultTag.Split('#', StringSplitOptions.RemoveEmptyEntries)[^1])
                     {

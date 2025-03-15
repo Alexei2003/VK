@@ -56,11 +56,11 @@ namespace MyCustomClasses.Tags
         public ConcurrentStack<string> Find(string LastTag)
         {
             ConcurrentStack<string> stack = new();
-            LastTag = LastTag.ToUpper();
+            LastTag = LastTag.ToLower();
             Parallel.ForEach(tagsList, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
-            {
-                var upperTag = tag.ToUpper();
-                if (upperTag.Contains(LastTag))
+            {   
+                var lowerTag = tag.ToLower();
+                if (lowerTag.Contains(LastTag))
                 {
                     stack.Push(tag);
                 }
