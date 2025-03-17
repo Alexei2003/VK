@@ -82,24 +82,6 @@ namespace NeuralNetwork
                     }
                     break;
                 }
-
-                // предыдущих 3х
-                var percentOriginalTag = 0f;
-                var coeff = 0.75f;
-                for (var n = i + 1; n < Math.Min(i + 4, kTop); n++)
-                {
-                    percentOriginalTag += coeff * labels[n].Value;
-                    coeff /= 3;
-                }
-
-                if (label.Value < percentOriginalTag)
-                {
-                    resulTagsArr[i] = "#original";
-                }
-                else
-                {
-                    resulTagsArr[i] = label.Name;
-                }
             }
 
             return resulTagsArr;
