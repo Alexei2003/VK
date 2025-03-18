@@ -29,7 +29,7 @@ namespace NeuralNetwork
             }
             else
             {
-                _labels = ["#Unknown"]; // На случай, если файл отсутствует
+                _labels = ["#unknown"]; // На случай, если файл отсутствует
             }
         }
 
@@ -82,6 +82,7 @@ namespace NeuralNetwork
                     }
                     break;
                 }
+                resulTagsArr[i] = label.Name;
             }
 
             return resulTagsArr;

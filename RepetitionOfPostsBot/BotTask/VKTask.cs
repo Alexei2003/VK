@@ -400,7 +400,7 @@ namespace RepetitionOfPostsBot.BotTask
 
             href = Gelbooru.GetUrlAddMirrorServer(href);
 
-            var path = $"Gelbooru.jpg";
+            const string? path = $"Gelbooru.jpg";
             wc.DownloadFile(href, path);
             using var image = SixLabors.ImageSharp.Image.Load<Rgb24>(path);
 
@@ -411,7 +411,7 @@ namespace RepetitionOfPostsBot.BotTask
             foreach (var nodeTag in nodeTags)
             {
                 var tag = nodeTag.InnerText.Trim();
-                var tmpTag = new string(tag.Where(c => !charsToRemove.Contains(c)).ToArray()).ToLower();
+                var tmpTag = new string([.. tag.Where(c => !charsToRemove.Contains(c))]).ToLower();
 
                 var indexChar = tmpTag.IndexOf('(');
                 if (indexChar != -1)
@@ -421,7 +421,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                 foreach (var resultTag in resultTags)
                 {
-                    var tmpResultTag = new string(resultTag.Where(c => !charsToRemove.Contains(c)).ToArray()).ToLower();
+                    var tmpResultTag = new string([.. resultTag.Where(c => !charsToRemove.Contains(c))]).ToLower();
 
                     if (tmpTag == tmpResultTag.Split('#', StringSplitOptions.RemoveEmptyEntries)[^1])
                     {
