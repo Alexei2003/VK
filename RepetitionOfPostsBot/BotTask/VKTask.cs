@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using DataSet;
+using HtmlAgilityPack;
 using MyCustomClasses;
 using MyCustomClasses.Tags;
 using MyCustomClasses.Tags.Editors;
@@ -323,6 +324,7 @@ namespace RepetitionOfPostsBot.BotTask
             using var wc = new WebClient();
             var lastViewedUrl = "";
             var tmpLastViewedUrl = "";
+            var imageQueue = new Queue<Image<Rgb24>>();
             while (true)
             {
                 try
@@ -340,7 +342,7 @@ namespace RepetitionOfPostsBot.BotTask
                             tmpLastViewedUrl = nodesArr[0].GetAttributeValue("href", string.Empty);
                         }
 
-                        if (!OpenArtsPage(api, wc, nodesArr, lastViewedUrl))
+                        if (!OpenArtsPage(api, wc, nodesArr, lastViewedUrl, imageQueue))
                         {
                             break;
                         }
@@ -358,7 +360,7 @@ namespace RepetitionOfPostsBot.BotTask
             }
         }
 
-        private static bool OpenArtsPage(VkApiCustom api, WebClient wc, HtmlNode[] nodesArr, string lastViewedUrl)
+        private static bool OpenArtsPage(VkApiCustom api, WebClient wc, HtmlNode[] nodesArr, string lastViewedUrl, Queue<Image<Rgb24>> imageQueue)
         {
             foreach (var node in nodesArr)
             {
@@ -387,12 +389,12 @@ namespace RepetitionOfPostsBot.BotTask
                     continue;
                 }
 
-                SaveImage(api, wc, nodesImageArr[0], nodeTagsArr);
+                SaveImage(api, wc, nodesImageArr[0], nodeTagsArr, imageQueue);
             }
             return true;
         }
 
-        private static void SaveImage(VkApiCustom api, WebClient wc, HtmlNode nodeImage, HtmlNode[] nodeTags)
+        private static void SaveImage(VkApiCustom api, WebClient wc, HtmlNode nodeImage, HtmlNode[] nodeTags, Queue<Image<Rgb24>> imageQueue)
         {
             var href = nodeImage.GetAttributeValue("href", string.Empty);
 
@@ -425,7 +427,21 @@ namespace RepetitionOfPostsBot.BotTask
 
                     if (tmpTag == tmpResultTag.Split('#', StringSplitOptions.RemoveEmptyEntries)[^1])
                     {
+                        foreach(var sendImage in imageQueue)
+                        {
+                            if (!DataSetImage.IsSimilarImage(sendImage, image)) 
+                            {
+                                return;
+                            }
+                        }
+
+                        if (imageQueue.Count>10)
+                        {
+                            imageQueue.Dequeue();
+                        }
+
                         CreatePost(api, wc, path, resultTag);
+                        imageQueue.Enqueue(image);
                         return;
                     }
                 }
@@ -438,7 +454,7 @@ namespace RepetitionOfPostsBot.BotTask
             var wall = api.Wall.Get(new WallGetParams
             {
                 OwnerId = -1 * GROUP_ID,
-                Count = 1,
+                Count = 100,
                 Filter = WallFilter.Postponed
             });
 
@@ -464,21 +480,7 @@ namespace RepetitionOfPostsBot.BotTask
             }
             else
             {
-                lastPost = wall.WallPosts[0];
-
-                // Получение последнего отложеного поста
-                wall = api.Wall.Get(new WallGetParams
-                {
-                    OwnerId = -1 * GROUP_ID,
-                    Count = 1,
-                    Filter = WallFilter.Postponed,
-                    Offset = (ulong)wall.WallPosts.Count
-                });
-
-                if(wall.WallPosts.Count != 0)
-                {
-                    lastPost = wall.WallPosts[0];
-                }
+                lastPost = wall.WallPosts[^1];
             }
 
             var publishDate = lastPost.Date.Value.AddHours(1);
