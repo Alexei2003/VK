@@ -429,7 +429,7 @@ namespace RepetitionOfPostsBot.BotTask
                     {
                         foreach(var sendImage in imageQueue)
                         {
-                            if (!DataSetImage.IsSimilarImage(sendImage, image)) 
+                            if (DataSetImage.IsSimilarImage(sendImage, image)) 
                             {
                                 return;
                             }
@@ -496,7 +496,7 @@ namespace RepetitionOfPostsBot.BotTask
 
             tag = BaseTagsEditor.GetBaseTagsWithNextLine() + tag;
 
-            // Повторый пост
+            // Новвый пост
             api.Wall.Post(new WallPostParams()
             {
                 OwnerId = -1 * GROUP_ID,
