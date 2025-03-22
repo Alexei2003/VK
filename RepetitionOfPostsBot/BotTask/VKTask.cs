@@ -1,13 +1,18 @@
-﻿using DataSet;
+﻿using System.Net;
+using System.Text;
+
+using DataSet;
+
 using HtmlAgilityPack;
+
 using MyCustomClasses;
 using MyCustomClasses.Tags;
 using MyCustomClasses.Tags.Editors;
 using MyCustomClasses.VK;
+
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using System.Net;
-using System.Text;
+
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 
@@ -18,7 +23,7 @@ namespace RepetitionOfPostsBot.BotTask
         private const string GROUP_SHORT_URL = "@anime_art_for_every_day";
         private const long GROUP_ID = 220199532;
         private static readonly TimeSpan TIME_SLEEP_ERROR = TimeSpan.FromMinutes(15);
-        private const ulong COUNT_GET_POSTS = 100; 
+        private const ulong COUNT_GET_POSTS = 100;
         private static readonly string[] tagsNotRepost = ["Угадайка"];
 
         public static ulong GetRandomID(ulong max)
@@ -404,7 +409,7 @@ namespace RepetitionOfPostsBot.BotTask
 
             const string? path = $"Gelbooru.jpg";
             wc.DownloadFile(href, path);
-            using var image = SixLabors.ImageSharp.Image.Load<Rgb24>(path);
+            var image = SixLabors.ImageSharp.Image.Load<Rgb24>(path);
 
             var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResultKTop(image);
 
@@ -427,17 +432,18 @@ namespace RepetitionOfPostsBot.BotTask
 
                     if (tmpTag == tmpResultTag.Split('#', StringSplitOptions.RemoveEmptyEntries)[^1])
                     {
-                        foreach(var sendImage in imageQueue)
+                        foreach (var sendImage in imageQueue)
                         {
-                            if (DataSetImage.IsSimilarImage(sendImage, image)) 
+                            if (DataSetImage.IsSimilarImage(sendImage, image))
                             {
+                                image.Dispose();
                                 return;
                             }
                         }
 
-                        if (imageQueue.Count>10)
+                        if (imageQueue.Count > 10)
                         {
-                            imageQueue.Dequeue();
+                            using var imageDel = imageQueue.Dequeue();
                         }
 
                         CreatePost(api, wc, path, resultTag);

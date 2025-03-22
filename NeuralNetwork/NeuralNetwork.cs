@@ -45,9 +45,9 @@ namespace NeuralNetwork
             }
         }
 
-        public static string[] NeuralNetworkResultKTop(Image<Rgb24> image, int kTop = 15)
+        public static string[] NeuralNetworkResultKTop(Image<Rgb24> imageOriginal, int kTop = 15)
         {
-            image = DataSetImage.ChangeResolution224x224(image);
+            using var image = DataSetImage.ChangeResolution224x224(imageOriginal);
 
             var inputTensor = ImageToTensor(image);
 

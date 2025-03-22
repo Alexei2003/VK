@@ -36,7 +36,8 @@ namespace DownloaderDataSetPhoto
         {
             if (Clipboard.ContainsImage())
             {
-                var clipboardImage = Converter.ConvertToImageSharp((Bitmap)Clipboard.GetImage());
+                using var imageBmp = (Bitmap)Clipboard.GetImage();
+                using var clipboardImage = Converter.ConvertToImageSharp(imageBmp);
 
                 var resulTag = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(clipboardImage);
 

@@ -9,8 +9,8 @@ namespace DataSet
     {
         public static void Save(Image<Rgb24> image, string tags)
         {
-            image = ChangeResolution224x224(image);
-            SaveFile(image, tags);
+            using var imageNew = ChangeResolution224x224(image);
+            SaveFile(imageNew, tags);
         }
 
         public static Image<Rgb24> ChangeResolution224x224(Image<Rgb24> image)
@@ -33,6 +33,7 @@ namespace DataSet
                 var resultImage = new Image<Rgb24>(maxSize, maxSize, new Rgb24(0, 0, 0));
                 resultImage.Mutate(x => x.DrawImage(image, new Point(0, 0), 1f));
 
+                image.Dispose();
                 return resultImage;
             }
             return image;

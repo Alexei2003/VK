@@ -155,6 +155,7 @@ namespace AddPost
         {
             if (imageList.Count > 0)
             {
+                using var image = imageList[index].image;
                 imageList.RemoveAt(index);
 
                 ShowImage(imageIndex - 1);
@@ -243,7 +244,8 @@ namespace AddPost
         {
             if (Clipboard.ContainsImage())
             {
-                var image = Converter.ConvertToImageSharp((Bitmap)Clipboard.GetImage());
+                using var imageBmp = (Bitmap)Clipboard.GetImage();
+                var image = Converter.ConvertToImageSharp(imageBmp);
                 await Task.Run(() =>
                 {
                     var tag = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(image);
