@@ -9,6 +9,7 @@ using MyCustomClasses;
 using MyCustomClasses.Tags;
 using MyCustomClasses.Tags.Editors;
 using MyCustomClasses.VK;
+using MyCustomClasses.VK.VKApiCustomClasses;
 
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -18,354 +19,340 @@ using VkNet.Model;
 
 namespace RepetitionOfPostsBot.BotTask
 {
-    internal static class VKTask
+    internal class VKTask
     {
-        private const string GROUP_SHORT_URL = "@anime_art_for_every_day";
-        private const long GROUP_ID = 220199532;
-        private static readonly TimeSpan TIME_SLEEP_ERROR = TimeSpan.FromMinutes(15);
-        private const ulong COUNT_GET_POSTS = 100;
-        private static readonly string[] tagsNotRepost = ["Угадайка"];
+        private string _groupShortUrl;
+        private long _groupId;
+        private readonly string[] _tagsNotRepost;
+        private readonly Dictionary<string, string> _accessTokens;
+        private readonly VkApiCustom _vkApi;
+        private readonly long _chatId;
+        private readonly WebClient _wc = new WebClient();
+
+        public VKTask(string groupShortUr, long groupId, long chatId, string[] tagsNotRepost, Dictionary<string, string> accessTokens)
+        {
+            _groupShortUrl = groupShortUr;
+            _groupId = groupId;
+            _tagsNotRepost = tagsNotRepost;
+            _accessTokens = accessTokens;
+            _chatId = chatId;
+
+            _vkApi = new VkApiCustom(_accessTokens[GosUslugi.VK]);
+
+            // Получение первого отложеного поста
+            var wall = _vkApi.Wall.Get(new WallGetParams
+            {
+                OwnerId = -1 * _groupId,
+                Count = 1,
+                Filter = WallFilter.All
+            });
+
+            _offsetPost = GetRandomID(wall.TotalCount);
+        }
+
+        public void RunAll()
+        {
+#if !DEBUG
+            Task.Run(() =>
+            {
+                RepeatVKPosts();
+            });
+            Task.Run(() =>
+            {
+                SendVkPostToOther();
+            });
+#endif
+            Task.Run(() =>
+            {
+                CreateVkPostFromGelbooru();
+            });
+        }
 
         public static ulong GetRandomID(ulong max)
         {
             return Convert.ToUInt64(1 + RandomStatic.Rand.NextInt64(Convert.ToInt64(max)));
         }
 
-        public static void RepeatVKPosts(object data)
+        private readonly Queue<long> _sendPostIdQueue = [];
+        private ulong _offsetPost;
+
+        public void RepeatVKPosts()
         {
-            var api = new VkApiCustom((string)data);
+            const ulong COUNT_NOT_RESENDED_POST = 15;
+            const ulong MAX_OFFSET_RESENDED_POST = 100;
+            const ulong COUNT_GET_POSTS = 100;
 
-            // Получение первого отложеного поста
-            var wall = api.Wall.Get(new WallGetParams
+            try
             {
-                OwnerId = -1 * GROUP_ID,
-                Count = 1,
-                Filter = WallFilter.All
-            });
-
-            var offsetPost = GetRandomID(wall.TotalCount);
-            var sendPostIdQueue = new Queue<long>();
-            while (true)
-            {
-                try
+                var wall = _vkApi.Wall.Get(new WallGetParams
                 {
-                    // Получение первого отложеного поста
-                    wall = api.Wall.Get(new WallGetParams
-                    {
-                        OwnerId = -1 * GROUP_ID,
-                        Count = 1,
-                        Filter = WallFilter.Postponed
-                    });
+                    OwnerId = -1 * _groupId,
+                    Count = 1,
+                    Filter = WallFilter.Postponed
+                });
 
-                    if (wall.WallPosts.Count < 1 || ((wall.WallPosts[0].Date.Value.Hour) > (DateTime.UtcNow.AddHours(1).Hour)))
-                    {
-                        // Получение самого свежего поста
-                        wall = api.Wall.Get(new WallGetParams
-                        {
-                            OwnerId = -1 * GROUP_ID,
-                            Count = 2,
-                            Filter = WallFilter.All
-                        });
-
-                        Post lastPost;
-                        if (wall.WallPosts[0].IsPinned.Value)
-                        {
-                            lastPost = wall.WallPosts[1];
-                        }
-                        else
-                        {
-                            lastPost = wall.WallPosts[0];
-                        }
-
-                        var firstPostData = lastPost.Date;
-
-                        var totalCountPosts = wall.TotalCount;
-                        var notResendedCountPosts = totalCountPosts / 15;
-                        var maxRandomOffsetRessendedPosts = totalCountPosts / 100;
-
-                        List<MediaAttachment>? mediaAttachmentList = null;
-                        string postText = "";
-                        while (true)
-                        {
-                            var offsetNextPost = GetRandomID(maxRandomOffsetRessendedPosts) + COUNT_GET_POSTS;
-                            offsetPost += offsetNextPost;
-                            offsetPost %= totalCountPosts;
-
-                            if (offsetPost < notResendedCountPosts)
-                            {
-                                offsetPost += notResendedCountPosts;
-                            }
-
-                            // Получение поста c offset 
-                            wall = api.Wall.Get(new WallGetParams
-                            {
-                                OwnerId = -1 * GROUP_ID,
-                                Offset = offsetPost,
-                                Count = COUNT_GET_POSTS,
-                                Filter = WallFilter.All
-                            });
-
-                            // Выход если поста несуществует
-                            if (wall.WallPosts.Count == 0)
-                            {
-                                continue;
-                            }
-
-                            bool postIsFinded = false;
-                            foreach (var post in wall.WallPosts)
-                            {
-                                mediaAttachmentList = [];
-
-                                postText = post.Text;
-
-                                // Проверка тега
-                                postText = BaseTagsEditor.RemoveBaseTags(postText);
-                                postText = TagsReplacer.RemoveGroupLinkFromTag(postText);
-                                postText = postText.Replace("\n", "");
-
-                                var tagsArr = postText.Split('#', StringSplitOptions.RemoveEmptyEntries);
-
-                                if (tagsArr.Length == 0 || postText.Contains('.') || postText.Contains(' ') || postText.Contains('!'))
-                                {
-                                    continue;
-                                }
-
-                                foreach (var tag in tagsNotRepost)
-                                {
-                                    if (postText.Contains(tag))
-                                    {
-                                        continue;
-                                    }
-                                }
-
-                                postText = string.Join("", tagsArr.Select(s => "#" + s + GROUP_SHORT_URL + "\n"));
-
-                                var bld = new StringBuilder();
-                                bld.Append(BaseTagsEditor.GetBaseTagsWithNextLine());
-                                bld.Append(postText);
-                                postText = bld.ToString();
-
-                                // Достать картинки из поста
-                                foreach (var attachment in post.Attachments)
-                                {
-                                    if (attachment.Type.Name == "Photo")
-                                    {
-                                        mediaAttachmentList.Add(new PhotoMy { OwnerId = attachment.Instance.OwnerId, Id = attachment.Instance.Id, AccessKey = attachment.Instance.AccessKey });
-                                    }
-                                }
-
-                                if (mediaAttachmentList.Count == 0)
-                                {
-                                    continue;
-                                }
-
-                                var idIsSended = false;
-                                foreach (var id in sendPostIdQueue)
-                                {
-                                    if (id == post.Id)
-                                    {
-                                        idIsSended = true;
-                                    }
-                                }
-
-                                if (idIsSended)
-                                {
-                                    continue;
-                                }
-
-                                if (sendPostIdQueue.Count > 700)
-                                {
-                                    sendPostIdQueue.Dequeue();
-                                }
-                                sendPostIdQueue.Enqueue(post.Id ?? -1);
-                                postIsFinded = true;
-                                break;
-                            }
-                            if (postIsFinded)
-                            {
-                                break;
-                            }
-                        }
-
-                        var publishDate = firstPostData.Value.AddHours(1);
-
-                        while (publishDate < DateTime.UtcNow)
-                        {
-                            publishDate = publishDate.AddHours(1);
-                        }
-
-                        // Повторый пост
-                        api.Wall.Post(new WallPostParams()
-                        {
-                            OwnerId = -1 * GROUP_ID,
-                            FromGroup = true,
-                            Message = '.' + postText,
-                            Attachments = mediaAttachmentList,
-                            PublishDate = publishDate,
-
-                        });
-                    }
-
-                    Thread.Sleep(TimeSpan.FromMinutes(30));
-                }
-                catch (Exception e)
-                {
-                    Logs.WriteExcemption(e);
-                    Thread.Sleep(TIME_SLEEP_ERROR);
-                    continue;
-                }
-            }
-        }
-
-        public static void SendVkPostToOther(object data)
-        {
-            var accessTokens = (Dictionary<string, string>)data;
-
-            var vkApi = new VkApiCustom(accessTokens.GetValueOrDefault(GosUslugi.VK));
-
-            long lastSendPostId = -1;
-
-            while (true)
-            {
-                try
+                if (wall.WallPosts.Count < 1 || ((wall.WallPosts[0].Date.Value.Hour) > (DateTime.UtcNow.AddHours(1).Hour)))
                 {
                     // Получение самого свежего поста
-                    var wall = vkApi.Wall.Get(new WallGetParams
+                    wall = _vkApi.Wall.Get(new WallGetParams
                     {
-                        OwnerId = -1 * GROUP_ID,
+                        OwnerId = -1 * _groupId,
                         Count = 2,
                         Filter = WallFilter.All
                     });
 
-                    Post post;
-                    if (wall.WallPosts[0].IsPinned.Value)
-                    {
-                        post = wall.WallPosts[1];
-                    }
-                    else
-                    {
-                        post = wall.WallPosts[0];
-                    }
+                    var lastPost = wall.WallPosts[0].IsPinned.Value ? wall.WallPosts[1] : wall.WallPosts[0];
 
-                    // Проверка на новые посты
-                    if (lastSendPostId == post.Id)
-                    {
-                        Thread.Sleep(TIME_SLEEP_ERROR);
-                        continue;
-                    }
-                    lastSendPostId = post.Id.Value;
+                    var firstPostData = lastPost.Date;
 
-                    // Проверка текста поста
-                    var postText = post.Text;
+                    var totalCountPosts = wall.TotalCount;
+                    var notResendedPostCount = totalCountPosts / COUNT_NOT_RESENDED_POST;
+                    var maxOffsetRessendedPost = totalCountPosts / MAX_OFFSET_RESENDED_POST;
 
-                    if (postText.Contains('!'))
+                    List<MediaAttachment>? mediaAttachmentList = null;
+                    string postText = "";
+                    while (true)
                     {
-                        Thread.Sleep(TIME_SLEEP_ERROR);
-                        continue;
-                    }
+                        var offsetNextPost = GetRandomID(maxOffsetRessendedPost) + COUNT_GET_POSTS;
+                        _offsetPost += offsetNextPost;
+                        _offsetPost %= totalCountPosts;
 
-                    foreach (var tag in tagsNotRepost)
-                    {
-                        if (postText.Contains(tag))
+                        if (_offsetPost < notResendedPostCount)
                         {
-                            Thread.Sleep(TIME_SLEEP_ERROR);
+                            _offsetPost += notResendedPostCount;
+                        }
+
+                        // Получение поста c offset 
+                        wall = _vkApi.Wall.Get(new WallGetParams
+                        {
+                            OwnerId = -1 * _groupId,
+                            Offset = _offsetPost,
+                            Count = COUNT_GET_POSTS,
+                            Filter = WallFilter.All
+                        });
+
+                        // Выход если поста несуществует
+                        if (wall.WallPosts.Count == 0)
+                        {
+                            continue;
+                        }
+
+                        foreach (var post in wall.WallPosts)
+                        {
+                            mediaAttachmentList = [];
+
+                            postText = post.Text;
+
+                            // Проверка тега
+                            postText = BaseTagsEditor.RemoveBaseTags(postText);
+                            postText = TagsReplacer.RemoveGroupLinkFromTag(postText);
+                            postText = postText.Replace("\n", "");
+
+                            var tagsArr = postText.Split('#', StringSplitOptions.RemoveEmptyEntries);
+
+                            if (tagsArr.Length == 0 || postText.Contains('.') || postText.Contains(' ') || postText.Contains('!'))
+                            {
+                                continue;
+                            }
+
+                            foreach (var tag in _tagsNotRepost)
+                            {
+                                if (postText.Contains(tag))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            postText = string.Join("", tagsArr.Select(s => "#" + s + _groupShortUrl + "\n"));
+
+                            var bld = new StringBuilder();
+                            bld.Append(BaseTagsEditor.GetBaseTagsWithNextLine());
+                            bld.Append(postText);
+                            postText = bld.ToString();
+
+                            // Достать картинки из поста
+                            foreach (var attachment in post.Attachments)
+                            {
+                                if (attachment.Type.Name == "Photo")
+                                {
+                                    mediaAttachmentList.Add(new PhotoMy { OwnerId = attachment.Instance.OwnerId, Id = attachment.Instance.Id, AccessKey = attachment.Instance.AccessKey });
+                                }
+                            }
+
+                            if (mediaAttachmentList.Count == 0)
+                            {
+                                continue;
+                            }
+
+                            if (_sendPostIdQueue.Contains(post.Id.Value))
+                            {
+                                continue;
+                            }
+
+                            if (_sendPostIdQueue.Count > 1000)
+                            {
+                                _sendPostIdQueue.Dequeue();
+                            }
+                            _sendPostIdQueue.Enqueue(post.Id.Value);
+
+
+
+                            var publishDate = firstPostData.Value.AddHours(1);
+                            while (publishDate < DateTime.UtcNow)
+                            {
+                                publishDate = publishDate.AddHours(1);
+                            }
+
+                            // Повторый пост
+                            _vkApi.Wall.Post(new WallPostParams()
+                            {
+                                OwnerId = -1 * _groupId,
+                                FromGroup = true,
+                                Message = '.' + postText,
+                                Attachments = mediaAttachmentList,
+                                PublishDate = publishDate,
+
+                            });
+
+                            return;
                         }
                     }
-
-                    var imagesUrl = new List<Uri>();
-
-                    // Достать картинки из поста
-                    foreach (var attachment in post.Attachments)
-                    {
-                        if (attachment.Type.Name == "Photo")
-                        {
-                            var photo = (VkNet.Model.Photo)attachment.Instance;
-                            imagesUrl.Add(photo.Sizes[^1].Url);
-                        }
-                    }
-
-                    if (imagesUrl.Count == 0)
-                    {
-                        Thread.Sleep(TIME_SLEEP_ERROR);
-                        continue;
-                    }
-
-                    using var wc = new WebClient();
-
-                    // Истории
-                    if (RandomStatic.Rand.Next(10) == 0)
-                    {
-                        wc.DownloadFile(imagesUrl[0], "Story.jpg");
-
-                        MyCustomClasses.VK.VKApiCustomClasses.Stories.Post(new GetPhotoUploadServerParams()
-                        {
-                            AddToNews = true,
-                            GroupId = (ulong)GROUP_ID,
-                            LinkText = StoryLinkText.Open,
-                            LinkUrl = "https://vk.com/" + post.ToString().Replace("post", "wall")
-                        }, accessTokens.GetValueOrDefault(GosUslugi.VK), "Story.jpg");
-                    }
-
-                    // Клипы
-
-                    // Отправка в другие сети
-                    var caption = TagsReplacer.ReplaceTagRemoveExcessFromVk(postText);
-                    TelegramTask.PushPost(accessTokens.GetValueOrDefault(GosUslugi.TELEGRAM), caption, imagesUrl.ToArray());
-                }
-                catch (Exception e)
-                {
-                    Logs.WriteExcemption(e);
-                    Thread.Sleep(TIME_SLEEP_ERROR);
                 }
             }
-        }
-
-        public static void CreateVkPostFromGelbooru(object data)
-        {
-            var api = new VkApiCustom((string)data);
-
-            const string? url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
-
-            using var wc = new WebClient();
-            var lastViewedUrl = "";
-            var tmpLastViewedUrl = "";
-            var imageQueue = new Queue<Image<Rgb24>>();
-            while (true)
+            catch (Exception e)
             {
-                try
-                {
-                    for (var i = 0; i < 10; i++)
-                    {
-                        var htmlDocument = Gelbooru.GetPageHTML(wc, url, i, useProxy: true);
-
-                        var nodesArr = htmlDocument.DocumentNode
-                            .SelectNodes("//a[@id and contains(@href, 'https') and contains(@href, 'gelbooru.com')]")
-                            .ToArray();
-
-                        if (i == 0)
-                        {
-                            tmpLastViewedUrl = nodesArr[0].GetAttributeValue("href", string.Empty);
-                        }
-
-                        if (!OpenArtsPage(api, wc, nodesArr, lastViewedUrl, imageQueue))
-                        {
-                            break;
-                        }
-                    }
-
-                    lastViewedUrl = tmpLastViewedUrl;
-                    Thread.Sleep(TimeSpan.FromMinutes(30));
-                }
-                catch (Exception e)
-                {
-                    lastViewedUrl = tmpLastViewedUrl;
-                    Logs.WriteExcemption(e);
-                    Thread.Sleep(TIME_SLEEP_ERROR);
-                }
+                Logs.WriteExcemption(e);
             }
         }
 
-        private static bool OpenArtsPage(VkApiCustom api, WebClient wc, HtmlNode[] nodesArr, string lastViewedUrl, Queue<Image<Rgb24>> imageQueue)
+        private long _lastSendPostId = -1;
+        public void SendVkPostToOther()
+        {
+            try
+            {
+                // Получение самого свежего поста
+                var wall = _vkApi.Wall.Get(new WallGetParams
+                {
+                    OwnerId = -1 * _groupId,
+                    Count = 2,
+                    Filter = WallFilter.All
+                });
+
+                Post post;
+                if (wall.WallPosts[0].IsPinned.Value)
+                {
+                    post = wall.WallPosts[1];
+                }
+                else
+                {
+                    post = wall.WallPosts[0];
+                }
+
+                // Проверка на новые посты
+                if (_lastSendPostId == post.Id)
+                {
+                    return;
+                }
+                _lastSendPostId = post.Id.Value;
+
+                // Проверка текста поста
+                var postText = post.Text;
+
+                if (postText.Contains('!'))
+                {
+                    return;
+                }
+
+                foreach (var tag in _tagsNotRepost)
+                {
+                    if (postText.Contains(tag))
+                    {
+                        return;
+                    }
+                }
+
+                var imagesUrl = new List<Uri>();
+
+                // Достать картинки из поста
+                foreach (var attachment in post.Attachments)
+                {
+                    if (attachment.Type.Name == "Photo")
+                    {
+                        var photo = (VkNet.Model.Photo)attachment.Instance;
+                        imagesUrl.Add(photo.Sizes[^1].Url);
+                    }
+                }
+
+                if (imagesUrl.Count == 0)
+                {
+                    return;
+                }
+
+                // Истории
+                if (RandomStatic.Rand.Next(10) == 0)
+                {
+                    _wc.DownloadFile(imagesUrl[0], "Story.jpg");
+
+                    Stories.Post(new GetPhotoUploadServerParams()
+                    {
+                        AddToNews = true,
+                        GroupId = (ulong)_groupId,
+                        LinkText = StoryLinkText.Open,
+                        LinkUrl = "https://vk.com/" + post.ToString().Replace("post", "wall")
+                    }, _accessTokens[GosUslugi.VK], "Story.jpg");
+                }
+
+                // Клипы
+
+                // Отправка в другие сети
+                var caption = TagsReplacer.ReplaceTagRemoveExcessFromVk(postText);
+                TelegramTask.PushPost(_chatId, _accessTokens[GosUslugi.TELEGRAM], caption, imagesUrl.ToArray());
+            }
+            catch (Exception e)
+            {
+                Logs.WriteExcemption(e);
+            }
+        }
+
+        private string _lastViewedUrl = "";
+        public void CreateVkPostFromGelbooru()
+        {
+            const string url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
+
+            var tmpLastViewedUrl = "";
+
+            try
+            {
+                for (var i = 0; i < 10; i++)
+                {
+                    var htmlDocument = Gelbooru.GetPageHTML(_wc, url, i, useProxy: true);
+
+                    var nodesArr = htmlDocument.DocumentNode
+                        .SelectNodes("//a[@id and contains(@href, 'https') and contains(@href, 'gelbooru.com')]")
+                        .ToArray();
+
+                    if (i == 0)
+                    {
+                        tmpLastViewedUrl = nodesArr[0].GetAttributeValue("href", string.Empty);
+                    }
+
+                    if (!OpenArtsPage(nodesArr, _lastViewedUrl))
+                    {
+                        break;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logs.WriteExcemption(e);
+            }
+
+            CreatePost();
+            _lastViewedUrl = tmpLastViewedUrl;
+
+        }
+
+        private bool OpenArtsPage(HtmlNode[] nodesArr, string lastViewedUrl)
         {
             foreach (var node in nodesArr)
             {
@@ -378,7 +365,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                 href = href.Replace("amp;", "");
 
-                var htmlDocument = Gelbooru.GetPageHTML(wc, href, useProxy: true);
+                var htmlDocument = Gelbooru.GetPageHTML(_wc, href, useProxy: true);
 
                 var nodesImageArr = htmlDocument.DocumentNode
                     .SelectNodes("//a[contains(text(), 'Original image')]")
@@ -394,123 +381,162 @@ namespace RepetitionOfPostsBot.BotTask
                     continue;
                 }
 
-                SaveImage(api, wc, nodesImageArr[0], nodeTagsArr, imageQueue);
+                SaveImage(nodesImageArr[0], nodeTagsArr);
             }
             return true;
         }
 
-        private static void SaveImage(VkApiCustom api, WebClient wc, HtmlNode nodeImage, HtmlNode[] nodeTags, Queue<Image<Rgb24>> imageQueue)
+        private readonly Queue<Image<Rgb24>> _imageCheckedQueue = [];
+        private readonly Queue<PhotoWithTag> _urlImageNotPostQueue = [];
+
+        private sealed class PhotoWithTag
         {
+            public string Tag { get; set; }
+
+            public VkNet.Model.Photo Photo { get; set; }
+
+            public PhotoWithTag(string tag, VkNet.Model.Photo photo)
+            {
+                Tag = tag;
+                Photo = photo;
+            }
+        }
+
+        private void SaveImage(HtmlNode nodeImage, HtmlNode[] nodeTags)
+        {
+            const string PATH_IMAGE = $"Gelbooru.jpg";
+            const int COUNT_CHECKED_IMAGES = 10;
+            const int COUNT_NOT_POST_IMAGES = 30;
+
             var href = nodeImage.GetAttributeValue("href", string.Empty);
-
             href = href.Replace("amp;", "");
-
             href = Gelbooru.GetUrlAddMirrorServer(href);
 
-            const string? path = $"Gelbooru.jpg";
-            wc.DownloadFile(href, path);
-            var image = SixLabors.ImageSharp.Image.Load<Rgb24>(path);
+            _wc.DownloadFile(href, PATH_IMAGE);
+            var image = SixLabors.ImageSharp.Image.Load<Rgb24>(PATH_IMAGE);
 
             var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResultKTop(image);
-
-            var charsToRemove = new HashSet<char> { '\'', '_', '-', ' ', '.' };
 
             foreach (var nodeTag in nodeTags)
             {
                 var tag = nodeTag.InnerText.Trim();
-                var tmpTag = new string([.. tag.Where(c => !charsToRemove.Contains(c))]).ToLower();
-
-                var indexChar = tmpTag.IndexOf('(');
+                var indexChar = tag.IndexOf('(');
                 if (indexChar != -1)
                 {
-                    tmpTag = tmpTag.Remove(indexChar);
+                    tag = tag.Remove(indexChar);
                 }
+                var tmpTag = new string([.. tag.Where(c => char.IsLetterOrDigit(c))]).ToLower();
 
                 foreach (var resultTag in resultTags)
                 {
-                    var tmpResultTag = new string([.. resultTag.Where(c => !charsToRemove.Contains(c))]).ToLower();
+                    var tmpResultTag = resultTag.Split('#', StringSplitOptions.RemoveEmptyEntries)[^1];
+                    tmpResultTag = new string([.. tmpResultTag.Where(c => char.IsLetterOrDigit(c))]).ToLower();
 
-                    if (tmpTag == tmpResultTag.Split('#', StringSplitOptions.RemoveEmptyEntries)[^1])
+                    if (tmpTag == tmpResultTag)
                     {
-                        foreach (var sendImage in imageQueue)
+                        foreach (var checkedImage in _imageCheckedQueue)
                         {
-                            if (DataSetImage.IsSimilarImage(sendImage, image))
+                            if (DataSetImage.IsSimilarImage(checkedImage, image))
                             {
                                 image.Dispose();
                                 return;
                             }
                         }
 
-                        if (imageQueue.Count > 10)
+                        if (_imageCheckedQueue.Count > COUNT_CHECKED_IMAGES)
                         {
-                            using var imageDel = imageQueue.Dequeue();
+                            using var imageDel = _imageCheckedQueue.Dequeue();
                         }
 
-                        CreatePost(api, wc, path, resultTag);
-                        imageQueue.Enqueue(image);
+                        _imageCheckedQueue.Enqueue(image);
+
+
+
+
+                        if (_urlImageNotPostQueue.Count > COUNT_NOT_POST_IMAGES)
+                        {
+                            _urlImageNotPostQueue.Dequeue();
+                        }
+                        _urlImageNotPostQueue.Enqueue(new PhotoWithTag(resultTag, _vkApi.Photo.AddOnVKServer(_wc, image)[0]));
+
                         return;
                     }
                 }
             }
         }
 
-        private static void CreatePost(VkApiCustom api, WebClient wc, string path, string resultTag)
+        private void CreatePost()
         {
-            // Получение первого отложеного поста
-            var wall = api.Wall.Get(new WallGetParams
+            var imagesForSend = new List<PhotoWithTag>();
+            var count = _urlImageNotPostQueue.Count;
+            for (var i = 0; i < 10 && i < count; i++)
             {
-                OwnerId = -1 * GROUP_ID,
-                Count = 100,
-                Filter = WallFilter.Postponed
-            });
-
-            Post lastPost;
-            if (wall.WallPosts.Count == 0)
+                imagesForSend.Add(_urlImageNotPostQueue.Dequeue());
+            }
+            if (imagesForSend.Count > 0)
             {
-                // Получение самого свежего поста
-                wall = api.Wall.Get(new WallGetParams
+                // Получение первого отложеного поста
+                var wall = _vkApi.Wall.Get(new WallGetParams
                 {
-                    OwnerId = -1 * GROUP_ID,
-                    Count = 2,
-                    Filter = WallFilter.All
+                    OwnerId = -1 * _groupId,
+                    Count = 100,
+                    Filter = WallFilter.Postponed
                 });
 
-                if (wall.WallPosts[0].IsPinned.Value)
+                Post lastPost;
+                if (wall.WallPosts.Count == 0)
                 {
-                    lastPost = wall.WallPosts[1];
+                    // Получение самого свежего поста
+                    wall = _vkApi.Wall.Get(new WallGetParams
+                    {
+                        OwnerId = -1 * _groupId,
+                        Count = 2,
+                        Filter = WallFilter.All
+                    });
+
+                    if (wall.WallPosts[0].IsPinned.Value)
+                    {
+                        lastPost = wall.WallPosts[1];
+                    }
+                    else
+                    {
+                        lastPost = wall.WallPosts[0];
+                    }
                 }
                 else
                 {
-                    lastPost = wall.WallPosts[0];
+                    lastPost = wall.WallPosts[^1];
                 }
+
+                var publishDate = lastPost.Date.Value.AddHours(1);
+
+                while (publishDate < DateTime.UtcNow)
+                {
+                    publishDate = publishDate.AddHours(1);
+                }
+
+                var groups = imagesForSend
+                    .Select(s => s.Tag.Split('#', StringSplitOptions.RemoveEmptyEntries)) // Разбиваем по #
+                    .Where(parts => parts.Length == 2) // Убираем некорректные строки
+                    .GroupBy(parts => parts[0], parts => parts[1]); // Группируем по Тайтлу
+
+                var tags = groups.Select(g =>
+                    $"#{g.Key}\n" + string.Join("\n", g.Distinct().Select(p => $"#{p}")) + "\n"
+                );
+
+                var resultTag = BaseTagsEditor.GetBaseTagsWithNextLine() + "\n" + string.Join("\n", tags);
+
+                var imageList = imagesForSend.Select(s => s.Photo);
+                // Новвый пост
+                _vkApi.Wall.Post(new WallPostParams()
+                {
+                    OwnerId = -1 * _groupId,
+                    FromGroup = true,
+                    Message = resultTag,
+                    Attachments = imageList,
+                    PublishDate = publishDate,
+                });
             }
-            else
-            {
-                lastPost = wall.WallPosts[^1];
-            }
-
-            var publishDate = lastPost.Date.Value.AddHours(1);
-
-            while (publishDate < DateTime.UtcNow)
-            {
-                publishDate = publishDate.AddHours(1);
-            }
-
-            var tags = resultTag.Split('#', StringSplitOptions.RemoveEmptyEntries);
-
-            var tag = string.Join("", tags.Select(s => "#" + s + GROUP_SHORT_URL + "\n"));
-
-            tag = BaseTagsEditor.GetBaseTagsWithNextLine() + tag;
-
-            // Новвый пост
-            api.Wall.Post(new WallPostParams()
-            {
-                OwnerId = -1 * GROUP_ID,
-                FromGroup = true,
-                Message = tag,
-                Attachments = api.Photo.AddOnVKServer(wc, path),
-                PublishDate = publishDate,
-            });
         }
     }
 }

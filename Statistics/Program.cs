@@ -48,8 +48,8 @@ namespace Statistics
 
                     postText = BaseTagsEditor.RemoveBaseTags(postText);
 
-                    postText = postText.Replace("!", "");
-                    postText = postText.Replace(".", "");
+                    var repeatPost = postText.Contains('.') ? true : false;
+                    postText = TagsReplacer.ReplaceTagRemoveExcessFromVk(postText);
 
                     var tagsArr = postText.Split('#', StringSplitOptions.RemoveEmptyEntries);
 
@@ -58,7 +58,6 @@ namespace Statistics
                         continue;
                     }
 
-                    postText = TagsReplacer.RemoveGroupLinkFromTag(postText);
                     postText = postText.Replace("\n", "");
 
                     var viewsCount = post.Views.Count;
@@ -73,23 +72,28 @@ namespace Statistics
                         tagInfo = dictTag[postText];
 
                         tagInfo.Count++;
-                        tagInfo.ViewsCount += viewsCount;
-                        tagInfo.LikesCount += likesCount;
-                        tagInfo.CommentsCount += commentsCount;
-                        tagInfo.RepostsCount += repostsCount;
-
+                        if (!repeatPost)
+                        {
+                            tagInfo.ViewsCount += viewsCount;
+                            tagInfo.LikesCount += likesCount;
+                            tagInfo.CommentsCount += commentsCount;
+                            tagInfo.RepostsCount += repostsCount;
+                        }
                         dictTag[postText] = tagInfo;
                     }
                     catch
                     {
-                        tagInfo = new TagInfo()
+                        tagInfo = new TagInfo();
+
+                        tagInfo.Count = 1;
+                        if (!repeatPost)
                         {
-                            Count = 1,
-                            ViewsCount = viewsCount,
-                            LikesCount = likesCount,
-                            CommentsCount = commentsCount,
-                            RepostsCount = repostsCount,
-                        };
+                            tagInfo.ViewsCount += viewsCount;
+                            tagInfo.LikesCount += likesCount;
+                            tagInfo.CommentsCount += commentsCount;
+                            tagInfo.RepostsCount += repostsCount;
+                        }
+
                         dictTag.Add(postText, tagInfo);
 
                     }

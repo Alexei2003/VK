@@ -49,10 +49,8 @@ namespace MyCustomClasses.VK.VKApiCustomClasses
             }
         }
 
-        public ReadOnlyCollection<VkNet.Model.Photo> AddOnVKServer(Image<Rgb24> image, string fileName = "Post.jpg")
+        public ReadOnlyCollection<VkNet.Model.Photo> AddOnVKServer(WebClient wc, Image<Rgb24> image, string fileName = "Post.jpg")
         {
-            using var wc = new WebClient();
-
             image.SaveAsJpeg(fileName);
 
             return AddOnVKServer(wc, fileName);

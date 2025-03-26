@@ -10,18 +10,11 @@ namespace RepetitionOfPostsBot
         private static void Main()
         {
             var accessTokens = GosUslugi.GetAccessTokens();
-#if !DEBUG
-            var threadRepeatVKPosts = new Thread(new ParameterizedThreadStart(VKTask.RepeatVKPosts));
-            threadRepeatVKPosts.Start(accessTokens.GetValueOrDefault(GosUslugi.VK));
-
-            var threadSendVkPostToOther = new Thread(new ParameterizedThreadStart(VKTask.SendVkPostToOther));
-            threadSendVkPostToOther.Start(accessTokens);
-#endif
-            var threadCreateVkPostFromGelbooru = new Thread(new ParameterizedThreadStart(VKTask.CreateVkPostFromGelbooru));
-            threadCreateVkPostFromGelbooru.Start(accessTokens.GetValueOrDefault(GosUslugi.VK));
-
+            var task = new VKTask("@anime_art_for_every_day", 220199532, -1002066495859, ["Угадайка"], accessTokens);
             while (true)
             {
+                task.RunAll();
+
                 Thread.Sleep(TimeSpan.FromHours(1));
             }
         }

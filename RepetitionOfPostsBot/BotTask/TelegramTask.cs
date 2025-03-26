@@ -5,9 +5,7 @@ namespace RepetitionOfPostsBot.BotTask
 {
     internal static class TelegramTask
     {
-        private const long CHAT_ID = -1002066495859;
-
-        public static async Task PushPost(string accessToken, string caption, Uri[] imagesUrls)
+        public static async Task PushPost(long chatId, string accessToken, string caption, Uri[] imagesUrls)
         {
             var botClient = new TelegramBotClient(accessToken);
 
@@ -20,9 +18,9 @@ namespace RepetitionOfPostsBot.BotTask
 
             mediaArr[0].Caption = caption;
 
-            await botClient.SendMediaGroupAsync
+            await botClient.SendMediaGroup
             (
-                chatId: CHAT_ID,
+                chatId: chatId,
                 media: mediaArr
             );
         }
