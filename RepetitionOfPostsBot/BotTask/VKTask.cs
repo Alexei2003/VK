@@ -467,8 +467,8 @@ namespace RepetitionOfPostsBot.BotTask
 
         private void CreatePost()
         {
-            var countImages = _urlImageNotPostQueue.Count;
-            if (countImages > 0)
+            var countImagesPerPostLimit = int.Min(_urlImageNotPostQueue.Count / 2, 10);
+            if (countImagesPerPostLimit > 0)
             {
                 // Получение первого отложеного поста
                 var wall = _vkApi.Wall.Get(new WallGetParams
@@ -510,11 +510,9 @@ namespace RepetitionOfPostsBot.BotTask
                     publishDate = publishDate.AddHours(1);
                 }
 
-                var countImagesPerPostLimit = countImages > 10 || wall.WallPosts.Count > 10 ? 10 : 1;
-
                 var imagesForSend = new List<PhotoWithTag>();
 
-                for (var i = 0; i < countImagesPerPostLimit && i < countImages; i++)
+                for (var i = 0; i < countImagesPerPostLimit ; i++)
                 {
                     imagesForSend.Add(_urlImageNotPostQueue.Dequeue());
                 }
