@@ -525,7 +525,7 @@ namespace RepetitionOfPostsBot.BotTask
                     .GroupBy(parts => parts[0], parts => parts[1]); // Группируем по Тайтлу
 
                 var tags = groups.Select(g =>
-                    $"#{g.Key}\n" + string.Join("\n", g.Distinct().Select(p => $"#{p}")) + "\n"
+                    $"#{g.Key}\n" + string.Join("\n", g.Distinct().Select(p => $"#{p}{_groupShortUrl}")) + "\n"
                 );
 
                 var resultTag = BaseTagsEditor.GetBaseTagsWithNextLine() + "\n" + string.Join("\n", tags);

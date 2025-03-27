@@ -28,7 +28,15 @@
 
             for (var i = 0; i < tags.Length; i++)
             {
-                tag += '#' + tags[i].Split('@', StringSplitOptions.RemoveEmptyEntries)[0] + '\n';
+                var tmpTag = tags[i].Split('@', StringSplitOptions.RemoveEmptyEntries)[0];
+                if (tmpTag[^1] == '\n')
+                {
+                    tag += '#' + tmpTag;
+                }
+                else
+                {
+                    tag += '#' + tmpTag + '\n';
+                }
             }
 
             return tag.Replace(TAG_REMOVE, "");
