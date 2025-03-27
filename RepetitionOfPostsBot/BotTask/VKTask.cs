@@ -315,6 +315,7 @@ namespace RepetitionOfPostsBot.BotTask
         }
 
         private string _lastViewedUrl = "";
+        private List<Task> _taskList =[];
         public void CreateVkPostFromGelbooru()
         {
             const string url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
@@ -341,12 +342,14 @@ namespace RepetitionOfPostsBot.BotTask
                         break;
                     }
                 }
+
+                Task.WaitAll(_taskList);
+                _taskList.Clear();
             }
             catch (Exception e)
             {
                 Logs.WriteExcemption(e);
             }
-
             CreatePost();
             _lastViewedUrl = tmpLastViewedUrl;
 
@@ -381,7 +384,11 @@ namespace RepetitionOfPostsBot.BotTask
                     continue;
                 }
 
-                SaveImage(nodesImageArr[0], nodeTagsArr);
+                var task = Task.Run(() => 
+                {
+                    SaveImage(nodesImageArr[0], nodeTagsArr, _taskList.Count);
+                });
+                _taskList.Add(task);
             }
             return true;
         }
@@ -402,18 +409,24 @@ namespace RepetitionOfPostsBot.BotTask
             }
         }
 
-        private void SaveImage(HtmlNode nodeImage, HtmlNode[] nodeTags)
+        private void SaveImage(HtmlNode nodeImage, HtmlNode[] nodeTags, int taskIndex)
         {
-            const string PATH_IMAGE = $"Gelbooru.jpg";
             const int COUNT_CHECKED_IMAGES = 10;
             const int COUNT_NOT_POST_IMAGES = 30;
+
+            if (!Directory.Exists("Download"))
+            {
+                Directory.CreateDirectory("Download");
+            }
+            string path_image = $"Download\\Gelbooru-{taskIndex}.jpg";
 
             var href = nodeImage.GetAttributeValue("href", string.Empty);
             href = href.Replace("amp;", "");
             href = Gelbooru.GetUrlAddMirrorServer(href);
 
-            _wc.DownloadFile(href, PATH_IMAGE);
-            var image = SixLabors.ImageSharp.Image.Load<Rgb24>(PATH_IMAGE);
+            var wc = new WebClient();
+            wc.DownloadFile(href, path_image);
+            var image = SixLabors.ImageSharp.Image.Load<Rgb24>(path_image);
 
             var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResultKTop(image);
 
@@ -457,7 +470,7 @@ namespace RepetitionOfPostsBot.BotTask
                         {
                             _urlImageNotPostQueue.Dequeue();
                         }
-                        _urlImageNotPostQueue.Enqueue(new PhotoWithTag(resultTag, _vkApi.Photo.AddOnVKServer(_wc, image)[0]));
+                        _urlImageNotPostQueue.Enqueue(new PhotoWithTag(resultTag, _vkApi.Photo.AddOnVKServer(wc, image)[0]));
 
                         return;
                     }
