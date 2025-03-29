@@ -1,5 +1,7 @@
 ﻿using ClosedXML.Excel;
+
 using DataSet;
+
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -114,10 +116,9 @@ namespace AddDataInDataSet
 
             worksheet.Cell(1, 1).Value = "Тег";
             worksheet.Cell(1, 2).Value = "Количество объектов";
-            worksheet.Cell(1, 3).Value = "Точность k=1  (%)";
-            worksheet.Cell(1, 4).Value = "Точность k=5  (%)";
-            worksheet.Cell(1, 5).Value = "Точность k=10 (%)";
-            worksheet.Cell(1, 6).Value = "Точность k=15 (%)";
+            worksheet.Cell(1, 3).Value = "Точность k=1";
+            worksheet.Cell(1, 4).Value = "Точность 5%";
+            worksheet.Cell(1, 5).Value = "Точность 10%";
 
             for (var i = 0; i < tagDirectories.Length; i++)
             {
@@ -125,34 +126,29 @@ namespace AddDataInDataSet
                 var tagOriginal = GetDirectoryName(tagDirectory);
 
                 var countTrueK1 = 0;
-                var countTrueK5 = 0;
-                var countTrueK10 = 0;
-                var countTrueK15 = 0;
+                var countTrueP5 = 0;
+                var countTrueP10 = 0;
                 var countAll = 0;
                 var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
 
                 foreach (var fileImage in tagDirectoryInfo.GetFiles())
                 {
                     using var image = Image.Load<Rgb24>(fileImage.FullName);
-                    var tagPredictArr = NeuralNetwork.NeuralNetwork.NeuralNetworkResultKTop(image);
+                    var tagPredictArr = NeuralNetwork.NeuralNetwork.NeuralNetworkResultKTopPercent(image);
 
-                    for(var k = 0; k< tagPredictArr.Length; k++)
+                    for (var k = 0; k < tagPredictArr.Length; k++)
                     {
                         if (tagOriginal == tagPredictArr[k])
                         {
-                            if (k < 15)
+                            if (k < tagPredictArr.Length * 0.1)
                             {
-                                countTrueK15++;
-                                if (k < 10)
+                                countTrueP10++;
+                                if (k < tagPredictArr.Length * 0.05)
                                 {
-                                    countTrueK10++;
-                                    if (k < 5)
+                                    countTrueP5++;
+                                    if (k < 1)
                                     {
-                                        countTrueK5++; 
-                                        if (k < 1)
-                                        {
-                                            countTrueK1++;
-                                        }
+                                        countTrueK1++;
                                     }
                                 }
                             }
@@ -165,10 +161,9 @@ namespace AddDataInDataSet
                 // Запись результатов в ячейки
                 worksheet.Cell(i + 2, 1).Value = tagOriginal;
                 worksheet.Cell(i + 2, 2).Value = countAll;
-                worksheet.Cell(i + 2, 3).Value = (countTrueK1  * 100f) / countAll;
-                worksheet.Cell(i + 2, 4).Value = (countTrueK5  * 100f) / countAll;
-                worksheet.Cell(i + 2, 5).Value = (countTrueK10 * 100f) / countAll;
-                worksheet.Cell(i + 2, 6).Value = (countTrueK15 * 100f) / countAll;
+                worksheet.Cell(i + 2, 3).Value = (countTrueK1 * 100f) / countAll;
+                worksheet.Cell(i + 2, 4).Value = (countTrueP5 * 100f) / countAll;
+                worksheet.Cell(i + 2, 5).Value = (countTrueP10 * 100f) / countAll;
 
                 count[0]++;
             }

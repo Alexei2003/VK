@@ -1,11 +1,15 @@
+using System.ComponentModel;
+
 using AddPost.Classes;
+
 using DataSet;
+
 using MyCustomClasses;
 using MyCustomClasses.Tags;
 using MyCustomClasses.VK;
+
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using System.ComponentModel;
 
 namespace AddPost
 {
@@ -217,24 +221,16 @@ namespace AddPost
 
             // Замена пробелов на _
             var tagsArr = tagsStr.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            tagsStr = tagsArr[0];
-            for (var i = 1; i < tagsArr.Length; i++)
+            for(var i =0; i<tagsArr.Length; i++)
             {
-                if (!string.IsNullOrEmpty(tagsArr[i]))
-                {
-                    tagsStr += '_' + tagsArr[i];
-                }
+                tagsArr[i] = new string([.. tagsArr[i].Where(c => char.IsLetterOrDigit(c) || c == '#' || c == '_')]).ToLower();
             }
+            tagsStr = string.Join("_", tagsArr);
 
-            // Удаление без # тегов
-            tagsArr = tagsStr.Split('#');
-            tagsStr = "";
-            for (var i = 0; i < tagsArr.Length; i++)
+            // Проверка первого # 
+            if (tagsStr[0] != '#')
             {
-                if (!string.IsNullOrEmpty(tagsArr[i]))
-                {
-                    tagsStr += '#' + tagsArr[i];
-                }
+                tagsStr = "#" + tagsStr;
             }
 
             return tagsStr;

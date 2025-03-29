@@ -1,6 +1,8 @@
 ﻿using DataSet;
+
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
+
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -13,6 +15,8 @@ namespace NeuralNetwork
 
         // Статическая модель и метки классов
         private static readonly string[] _labels;
+
+        public static int LabelCount { get; private set; }
 
         // Статический конструктор для инициализации
         static NeuralNetwork()
@@ -31,6 +35,8 @@ namespace NeuralNetwork
             {
                 _labels = ["#unknown"]; // На случай, если файл отсутствует
             }
+
+            LabelCount = _labels.Length;
         }
 
         private struct Label
@@ -45,7 +51,22 @@ namespace NeuralNetwork
             }
         }
 
-        public static string[] NeuralNetworkResultKTop(Image<Rgb24> imageOriginal, int kTop = 15)
+        public static string NeuralNetworkResult(Image<Rgb24> imageOriginal)
+        {
+            var arr = NeuralNetworkResultKTopCount(imageOriginal, 1);
+
+            return arr[0];
+        }
+
+        public static string[] NeuralNetworkResultKTopPercent(Image<Rgb24> imageOriginal, double percent = 0.10)
+        {
+            var kTop = int.Max((int)(_labels.Length * percent), 1);
+
+            var arr = NeuralNetworkResultKTopCount(imageOriginal, kTop);
+            return arr;
+        }
+
+        public static string[] NeuralNetworkResultKTopCount(Image<Rgb24> imageOriginal, int kTop = 15)
         {
             using var image = DataSetImage.ChangeResolution224x224(imageOriginal);
 
@@ -68,32 +89,17 @@ namespace NeuralNetwork
                 labels[i] = new Label(_labels[i], outputArr[i]);
             }
 
-            labels = labels.OrderByDescending(value => value.Value).ToArray();
-            var resulTagsArr = new string[kTop];
+            var resulTagsArr = labels.OrderByDescending(l => l.Value).Take(kTop).Select(l => l.Name);
 
-            for (var i = 0; i < kTop; i++)
+            if (resulTagsArr.Contains("#nsfw"))
             {
-                ref var label = ref labels[i];
-                if (label.Name == "#nsfw")
-                {
-                    for (var n = 0; n < kTop; n++)
-                    {
-                        resulTagsArr[n] = "#nsfw";
-                    }
-                    break;
-                }
-                resulTagsArr[i] = label.Name;
+                resulTagsArr = ["#nsfw"];
             }
 
-            return resulTagsArr;
+            return [.. resulTagsArr];
         }
 
-        public static string NeuralNetworkResult(Image<Rgb24> image)
-        {
-            var arr = NeuralNetworkResultKTop(image, 1);
 
-            return arr[0];
-        }
 
 
         public static DenseTensor<float> ImageToTensor(Image<Rgb24> bitmap)
