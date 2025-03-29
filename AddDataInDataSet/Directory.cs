@@ -202,13 +202,14 @@ namespace AddDataInDataSet
             var worksheet = workbook.Worksheets.Add("Sheet1");
             var table = new object[NeuralNetworkWorker.Labels.Length, NeuralNetworkWorker.Labels.Length];
 
-            worksheet.Cell(1, 1).Value = "исходный \\ предсказаный";
+            table[0, 0] = "исходный \\ предсказаный";
 
             var predictInfoDict = new Dictionary<string, PredictInfo>();
             for (var i = 0; i < NeuralNetworkWorker.Labels.Length; i++)
             {
-                worksheet.Cell(2 + i, 1).Value = NeuralNetworkWorker.Labels[i];
-                worksheet.Cell(1, 2 + i).Value = NeuralNetworkWorker.Labels[i];
+                var index = i + 1;
+                table[index, 0] = NeuralNetworkWorker.Labels[i];
+                table[0, index] = NeuralNetworkWorker.Labels[i];
                 predictInfoDict.Add(NeuralNetworkWorker.Labels[i], new PredictInfo(i, NeuralNetworkWorker.Labels.Length));
             }
 
@@ -242,15 +243,18 @@ namespace AddDataInDataSet
                 {
                     var vect = new Vector4(resultArr[j], resultArr[j + 1], resultArr[j + 2], resultArr[j + 3]);
                     vect /= vectSum;
-                    worksheet.Cell(2 + j + 0, 2 + i).Value = vect[0];
-                    worksheet.Cell(2 + j + 1, 2 + i).Value = vect[1];
-                    worksheet.Cell(2 + j + 2, 2 + i).Value = vect[2];
-                    worksheet.Cell(2 + j + 3, 2 + i).Value = vect[3];
+
+                    var indexJ = 1 + j;
+                    var indexI = 1 + i;
+                    table[indexJ++, indexI] = vect[0];
+                    table[indexJ++, indexI] = vect[1];
+                    table[indexJ++, indexI] = vect[2];
+                    table[indexJ++, indexI] = vect[3];
                 }
 
                 for (; j < NeuralNetworkWorker.Labels.Length; j++)
                 {
-                    worksheet.Cell(2 + j, 2 + i).Value = resultArr[j] / sum;
+                    table[j + 1, i + 1] = resultArr[j] / sum;
                 }
             });
 
