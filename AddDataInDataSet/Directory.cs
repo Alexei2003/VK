@@ -2,6 +2,10 @@
 
 using DataSet;
 
+using DocumentFormat.OpenXml.Wordprocessing;
+
+using NeuralNetwork;
+
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -109,65 +113,78 @@ namespace AddDataInDataSet
 
         public static void GetAccuracyClassesOriginal(int[] count)
         {
-            var tagDirectories = Directory.GetDirectories(Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH));
-
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Sheet1");
+
+            var countP5 = int.Max((int)(NeuralNetworkWorker.Labels.Length * 0.05), 1);
+            var countP10 = int.Max((int)(NeuralNetworkWorker.Labels.Length * 0.10), 1);
 
             worksheet.Cell(1, 1).Value = "Тег";
             worksheet.Cell(1, 2).Value = "Количество объектов";
             worksheet.Cell(1, 3).Value = "Точность k=1";
-            worksheet.Cell(1, 4).Value = "Точность 5%";
-            worksheet.Cell(1, 5).Value = "Точность 10%";
+            worksheet.Cell(1, 4).Value = $"Точность 5% k={countP5}";
+            worksheet.Cell(1, 5).Value = $"Точность 10% k={countP10}";
 
-            for (var i = 0; i < tagDirectories.Length; i++)
+            var tagsDirectory = Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH);
+
+            for (var i = 0; i <NeuralNetworkWorker.Labels.Length; i++)
             {
-                var tagDirectory = tagDirectories[i];
-                var tagOriginal = GetDirectoryName(tagDirectory);
-
-                var countTrueK1 = 0;
-                var countTrueP5 = 0;
-                var countTrueP10 = 0;
-                var countAll = 0;
-                var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
-
-                foreach (var fileImage in tagDirectoryInfo.GetFiles())
+                var tagOriginal = NeuralNetworkWorker.Labels[i];
+                try
                 {
-                    using var image = Image.Load<Rgb24>(fileImage.FullName);
-                    var tagPredictArr = NeuralNetwork.NeuralNetwork.NeuralNetworkResultKTopPercent(image);
+                    var tagDirectory = Path.Combine(tagsDirectory, tagOriginal);
 
-                    for (var k = 0; k < tagPredictArr.Length; k++)
+                    var countTrueK1 = 0;
+                    var countTrueP5 = 0;
+                    var countTrueP10 = 0;
+                    var countAll = 0;
+                    var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
+
+                    foreach (var fileImage in tagDirectoryInfo.GetFiles())
                     {
-                        if (tagOriginal == tagPredictArr[k])
+                        using var image = Image.Load<Rgb24>(fileImage.FullName);
+                        var tagPredictArr = NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
+
+                        for (var k = 0; k < tagPredictArr.Length; k++)
                         {
-                            if (k < tagPredictArr.Length * 0.1)
+                            if (tagOriginal == tagPredictArr[k])
                             {
-                                countTrueP10++;
-                                if (k < tagPredictArr.Length * 0.05)
+                                if (k < countP10)
                                 {
-                                    countTrueP5++;
-                                    if (k < 1)
+                                    countTrueP10++;
+                                    if (k < countP5)
                                     {
-                                        countTrueK1++;
+                                        countTrueP5++;
+                                        if (k < 1)
+                                        {
+                                            countTrueK1++;
+                                        }
                                     }
                                 }
+                                break;
                             }
                         }
+
+                        countAll++;
                     }
 
-                    countAll++;
+                    worksheet.Cell(i + 2, 1).Value = tagOriginal;
+                    worksheet.Cell(i + 2, 2).Value = countAll;
+                    worksheet.Cell(i + 2, 3).Value = (countTrueK1 * 100f) / countAll;
+                    worksheet.Cell(i + 2, 4).Value = (countTrueP5 * 100f) / countAll;
+                    worksheet.Cell(i + 2, 5).Value = (countTrueP10 * 100f) / countAll;
                 }
-
-                // Запись результатов в ячейки
-                worksheet.Cell(i + 2, 1).Value = tagOriginal;
-                worksheet.Cell(i + 2, 2).Value = countAll;
-                worksheet.Cell(i + 2, 3).Value = (countTrueK1 * 100f) / countAll;
-                worksheet.Cell(i + 2, 4).Value = (countTrueP5 * 100f) / countAll;
-                worksheet.Cell(i + 2, 5).Value = (countTrueP10 * 100f) / countAll;
+                catch 
+                {
+                    worksheet.Cell(i + 2, 1).Value = tagOriginal;
+                    worksheet.Cell(i + 2, 2).Value = 0;
+                    worksheet.Cell(i + 2, 3).Value = 0;
+                    worksheet.Cell(i + 2, 4).Value = 0;
+                    worksheet.Cell(i + 2, 5).Value = 0;
+                }
 
                 count[0]++;
             }
-
 
             workbook.SaveAs("result.xlsx");
         }

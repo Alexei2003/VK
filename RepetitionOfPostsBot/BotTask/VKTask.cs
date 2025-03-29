@@ -428,7 +428,7 @@ namespace RepetitionOfPostsBot.BotTask
             wc.DownloadFile(href, path_image);
             var image = SixLabors.ImageSharp.Image.Load<Rgb24>(path_image);
 
-            var resultTags = NeuralNetwork.NeuralNetwork.NeuralNetworkResultKTopPercent(image);
+            var resultTags = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
 
             foreach (var nodeTag in nodeTags)
             {

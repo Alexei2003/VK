@@ -39,7 +39,7 @@ namespace DownloaderDataSetPhoto
                 using var imageBmp = (Bitmap)Clipboard.GetImage();
                 using var clipboardImage = Converter.ConvertToImageSharp(imageBmp);
 
-                var resulTag = NeuralNetwork.NeuralNetwork.NeuralNetworkResult(clipboardImage);
+                var resulTag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(clipboardImage);
 
                 AddInDataSet(clipboardImage, tbTag.Text.Replace(" ", ""), resulTag);
 

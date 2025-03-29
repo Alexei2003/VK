@@ -8,18 +8,17 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace NeuralNetwork
 {
-    public static class NeuralNetwork
+    public static class NeuralNetworkWorker
     {
         private static readonly InferenceSession _session;
         private static readonly string _inputName;
 
         // Статическая модель и метки классов
-        private static readonly string[] _labels;
+        public static string[] Labels { get; private set; }
 
-        public static int LabelCount { get; private set; }
 
         // Статический конструктор для инициализации
-        static NeuralNetwork()
+        static NeuralNetworkWorker()
         {
             // Загружаем модель 
             _session = new InferenceSession("model.onnx");
@@ -29,14 +28,12 @@ namespace NeuralNetwork
             string labelFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "labels.txt");
             if (File.Exists(labelFilePath))
             {
-                _labels = File.ReadAllLines(labelFilePath);
+                Labels = File.ReadAllLines(labelFilePath);
             }
             else
             {
-                _labels = ["#unknown"]; // На случай, если файл отсутствует
+                Labels = ["#unknown"]; // На случай, если файл отсутствует
             }
-
-            LabelCount = _labels.Length;
         }
 
         private struct Label
@@ -60,7 +57,7 @@ namespace NeuralNetwork
 
         public static string[] NeuralNetworkResultKTopPercent(Image<Rgb24> imageOriginal, double percent = 0.10)
         {
-            var kTop = int.Max((int)(_labels.Length * percent), 1);
+            var kTop = int.Max((int)(Labels.Length * percent), 1);
 
             var arr = NeuralNetworkResultKTopCount(imageOriginal, kTop);
             return arr;
@@ -86,7 +83,7 @@ namespace NeuralNetwork
 
             for (var i = 0; i < outputArr.Length; i++)
             {
-                labels[i] = new Label(_labels[i], outputArr[i]);
+                labels[i] = new Label(Labels[i], outputArr[i]);
             }
 
             var resulTagsArr = labels.OrderByDescending(l => l.Value).Take(kTop).Select(l => l.Name);
