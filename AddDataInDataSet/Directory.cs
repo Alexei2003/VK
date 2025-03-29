@@ -1,8 +1,8 @@
-﻿using ClosedXML.Excel;
+﻿using System.Numerics;
+
+using ClosedXML.Excel;
 
 using DataSet;
-
-using DocumentFormat.OpenXml.Wordprocessing;
 
 using NeuralNetwork;
 
@@ -96,7 +96,6 @@ namespace AddDataInDataSet
                 if (!tagList.ContainTag(name))
                 {
                     Console.WriteLine(tag);
-                    Directory.Delete(tag, true);
                 }
                 else
                 {
@@ -111,82 +110,153 @@ namespace AddDataInDataSet
             });
         }
 
-        public static void GetAccuracyClassesOriginal(int[] count)
+        public static void GetAccuracyKTopClassesOriginal(int[] count)
         {
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Sheet1");
+            var table = new object[NeuralNetworkWorker.Labels.Length, 5];
 
             var countP5 = int.Max((int)(NeuralNetworkWorker.Labels.Length * 0.05), 1);
             var countP10 = int.Max((int)(NeuralNetworkWorker.Labels.Length * 0.10), 1);
-
-            worksheet.Cell(1, 1).Value = "Тег";
-            worksheet.Cell(1, 2).Value = "Количество объектов";
-            worksheet.Cell(1, 3).Value = "Точность k=1";
-            worksheet.Cell(1, 4).Value = $"Точность 5% k={countP5}";
-            worksheet.Cell(1, 5).Value = $"Точность 10% k={countP10}";
-
             var tagsDirectory = Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH);
 
-            for (var i = 0; i <NeuralNetworkWorker.Labels.Length; i++)
+            table[0, 0] = "Тег";
+            table[0, 1] = "Количество объектов";
+            table[0, 2] = "Точность k=1";
+            table[0, 3] = $"Точность 5% k={countP5}";
+            table[0, 4] = $"Точность 10% k={countP10}";
+
+            for (var i = 0; i < NeuralNetworkWorker.Labels.Length; i++)
             {
                 var tagOriginal = NeuralNetworkWorker.Labels[i];
-                try
+
+                var tagDirectory = Path.Combine(tagsDirectory, tagOriginal);
+
+                var countTrueK1 = 0;
+                var countTrueP5 = 0;
+                var countTrueP10 = 0;
+                var countAll = 0;
+                var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
+
+                foreach (var fileImage in tagDirectoryInfo.GetFiles())
                 {
-                    var tagDirectory = Path.Combine(tagsDirectory, tagOriginal);
+                    using var image = Image.Load<Rgb24>(fileImage.FullName);
+                    var tagPredictArr = NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
 
-                    var countTrueK1 = 0;
-                    var countTrueP5 = 0;
-                    var countTrueP10 = 0;
-                    var countAll = 0;
-                    var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
-
-                    foreach (var fileImage in tagDirectoryInfo.GetFiles())
+                    for (var k = 0; k < tagPredictArr.Length; k++)
                     {
-                        using var image = Image.Load<Rgb24>(fileImage.FullName);
-                        var tagPredictArr = NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
-
-                        for (var k = 0; k < tagPredictArr.Length; k++)
+                        if (tagOriginal == tagPredictArr[k])
                         {
-                            if (tagOriginal == tagPredictArr[k])
+                            if (k < countP10)
                             {
-                                if (k < countP10)
+                                countTrueP10++;
+                                if (k < countP5)
                                 {
-                                    countTrueP10++;
-                                    if (k < countP5)
+                                    countTrueP5++;
+                                    if (k < 1)
                                     {
-                                        countTrueP5++;
-                                        if (k < 1)
-                                        {
-                                            countTrueK1++;
-                                        }
+                                        countTrueK1++;
                                     }
                                 }
-                                break;
                             }
+                            break;
                         }
-
-                        countAll++;
                     }
 
-                    worksheet.Cell(i + 2, 1).Value = tagOriginal;
-                    worksheet.Cell(i + 2, 2).Value = countAll;
-                    worksheet.Cell(i + 2, 3).Value = (countTrueK1 * 100f) / countAll;
-                    worksheet.Cell(i + 2, 4).Value = (countTrueP5 * 100f) / countAll;
-                    worksheet.Cell(i + 2, 5).Value = (countTrueP10 * 100f) / countAll;
+                    countAll++;
                 }
-                catch 
-                {
-                    worksheet.Cell(i + 2, 1).Value = tagOriginal;
-                    worksheet.Cell(i + 2, 2).Value = 0;
-                    worksheet.Cell(i + 2, 3).Value = 0;
-                    worksheet.Cell(i + 2, 4).Value = 0;
-                    worksheet.Cell(i + 2, 5).Value = 0;
-                }
+
+                //
+                var vectAll = new Vector3(countAll / 100f);
+                var vectK = new Vector3(countTrueK1, countTrueP5, countTrueP10);
+                vectK = vectK / vectAll;
+
+                var index = i + 1;
+                table[index, 0] = tagOriginal;
+                table[index, 1] = countAll;
+                table[index, 2] = vectK[0];
+                table[index, 3] = vectK[1];
+                table[index, 4] = vectK[2];
 
                 count[0]++;
             }
 
-            workbook.SaveAs("result.xlsx");
+            worksheet.Cell(1, 1).InsertData(table);
+            workbook.SaveAs("resultKTop.xlsx");
+        }
+
+        public sealed class PredictInfo
+        {
+            public int Id { get; set; }
+            public int[] ResultArr { get; set; }
+
+            public PredictInfo(int id, int size)
+            {
+                Id = id;
+                ResultArr = new int[size];
+            }
+        }
+        public static void GetAccuracyPredictClassesOriginal(int[] count)
+        {
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Sheet1");
+            var table = new object[NeuralNetworkWorker.Labels.Length, NeuralNetworkWorker.Labels.Length];
+
+            worksheet.Cell(1, 1).Value = "исходный \\ предсказаный";
+
+            var predictInfoDict = new Dictionary<string, PredictInfo>();
+            for (var i = 0; i < NeuralNetworkWorker.Labels.Length; i++)
+            {
+                worksheet.Cell(2 + i, 1).Value = NeuralNetworkWorker.Labels[i];
+                worksheet.Cell(1, 2 + i).Value = NeuralNetworkWorker.Labels[i];
+                predictInfoDict.Add(NeuralNetworkWorker.Labels[i], new PredictInfo(i, NeuralNetworkWorker.Labels.Length));
+            }
+
+            var tagsDirectory = Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH);
+            for (var i = 0; i < NeuralNetworkWorker.Labels.Length; i++)
+            {
+                var tagOriginal = NeuralNetworkWorker.Labels[i];
+
+                var tagDirectory = Path.Combine(tagsDirectory, tagOriginal);
+
+                var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
+
+                foreach (var fileImage in tagDirectoryInfo.GetFiles())
+                {
+                    using var image = Image.Load<Rgb24>(fileImage.FullName);
+                    var tagPredict = NeuralNetworkWorker.NeuralNetworkResult(image);
+
+                    predictInfoDict[tagPredict].ResultArr[predictInfoDict[tagOriginal].Id]++;
+                }
+                count[0]++;
+            }
+
+            Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
+            {
+                var tagPredict = NeuralNetworkWorker.Labels[i];
+                var resultArr = predictInfoDict[tagPredict].ResultArr;
+                var sum = resultArr.Sum() / 100f;
+                var j = 0;
+                var vectSum = new Vector4(sum);
+                for (; j < NeuralNetworkWorker.Labels.Length; j += 4)
+                {
+                    var vect = new Vector4(resultArr[j], resultArr[j + 1], resultArr[j + 2], resultArr[j + 3]);
+                    vect /= vectSum;
+                    worksheet.Cell(2 + j + 0, 2 + i).Value = vect[0];
+                    worksheet.Cell(2 + j + 1, 2 + i).Value = vect[1];
+                    worksheet.Cell(2 + j + 2, 2 + i).Value = vect[2];
+                    worksheet.Cell(2 + j + 3, 2 + i).Value = vect[3];
+                }
+
+                for (; j < NeuralNetworkWorker.Labels.Length; j++)
+                {
+                    worksheet.Cell(2 + j, 2 + i).Value = resultArr[j] / sum;
+                }
+            });
+
+
+            worksheet.Cell(1, 1).InsertData(table);
+            workbook.SaveAs("resultPredict.xlsx");
         }
     }
 }

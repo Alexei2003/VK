@@ -12,44 +12,40 @@
                     "Выбор действия\n" +
                     "1.Переместить из New\n" +
                     "2.Исправление Original\n" +
-                    "3.Получить точность классов\n" +
+                    "3.Получить точность kTop классов\n" +
+                    "4.Получить точность предсказаных классов\n" +
                     "Выход (напишите exit)\n");
 
                 var action = Console.ReadLine();
 
                 var thWrite = new Thread(WriteCountMake);
 
+                count[0] = 0;
+                thWrite.Start();
+
                 switch (action)
                 {
                     case "1":
-                        count[0] = 0;
-                        thWrite.Start();
                         WorkWithDirectory.MoveDataFromNewToOriginal(count);
-                        Thread.Sleep(100);
-                        count[0] = -1;
-                        thWrite.Join();
                         break;
                     case "2":
-                        count[0] = 0;
-                        thWrite.Start();
                         WorkWithDirectory.FixDataInOriginal(count);
-                        Thread.Sleep(100);
-                        count[0] = -1;
-                        thWrite.Join();
                         break;
                     case "3":
-                        count[0] = 0;
-                        thWrite.Start();
-                        WorkWithDirectory.GetAccuracyClassesOriginal(count);
-                        Thread.Sleep(100);
-                        count[0] = -1;
-                        thWrite.Join();
+                        WorkWithDirectory.GetAccuracyKTopClassesOriginal(count);
+                        break;
+                    case "4":
+                        WorkWithDirectory.GetAccuracyPredictClassesOriginal(count);
                         break;
                     case "exit":
                         return;
                     default:
                         break;
                 }
+                Thread.Sleep(100);
+                count[0] = -1;
+                thWrite.Join();
+
                 Console.WriteLine();
             }
         }
