@@ -10,8 +10,8 @@ namespace NeuralNetwork
 {
     public static class NeuralNetworkWorker
     {
-        private static readonly InferenceSession _session;
-        private static readonly string _inputName;
+        private static InferenceSession _session;
+        private static string _inputName;
 
         // Статическая модель и метки классов
         public static string[] Labels { get; private set; }
@@ -21,7 +21,18 @@ namespace NeuralNetwork
         static NeuralNetworkWorker()
         {
             // Загружаем модель 
-            _session = new InferenceSession("model.onnx");
+            SessionOptions options = new();
+            try
+            {
+                // Пытаемся использовать DirectML (работает через DirectX 12)
+                options.AppendExecutionProvider_DML();
+                _session = new InferenceSession("model.onnx", options);
+            }
+            catch
+            {
+                // Fallback на CPU
+                _session = new InferenceSession("model.onnx");
+            }
             _inputName = _session.InputMetadata.Keys.First();
 
             // Загружаем метки классов

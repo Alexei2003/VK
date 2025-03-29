@@ -200,7 +200,7 @@ namespace AddDataInDataSet
         {
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Sheet1");
-            var table = new object[NeuralNetworkWorker.Labels.Length, NeuralNetworkWorker.Labels.Length];
+            var table = new object[NeuralNetworkWorker.Labels.Length + 1, NeuralNetworkWorker.Labels.Length + 1];
 
             table[0, 0] = "исходный \\ предсказаный";
 
@@ -234,12 +234,14 @@ namespace AddDataInDataSet
 
             Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
             {
+
                 var tagPredict = NeuralNetworkWorker.Labels[i];
                 var resultArr = predictInfoDict[tagPredict].ResultArr;
                 var sum = resultArr.Sum() / 100f;
                 var j = 0;
                 var vectSum = new Vector4(sum);
-                for (; j < NeuralNetworkWorker.Labels.Length; j += 4)
+                var countVectors = (NeuralNetworkWorker.Labels.Length / 4) * 4;
+                for (; j < countVectors; j += 4)
                 {
                     var vect = new Vector4(resultArr[j], resultArr[j + 1], resultArr[j + 2], resultArr[j + 3]);
                     vect /= vectSum;
