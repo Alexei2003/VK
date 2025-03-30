@@ -126,7 +126,7 @@ namespace AddDataInDataSet
             table[0, 3] = $"Точность 5% k={countP5}";
             table[0, 4] = $"Точность 10% k={countP10}";
 
-            for (var i = 0; i < NeuralNetworkWorker.Labels.Length; i++)
+            Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
             {
                 var tagOriginal = NeuralNetworkWorker.Labels[i];
 
@@ -138,7 +138,7 @@ namespace AddDataInDataSet
                 var countAll = 0;
                 var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
 
-                Parallel.ForEach(tagDirectoryInfo.GetFiles(), fileImage =>
+                foreach (var fileImage in tagDirectoryInfo.GetFiles())
                 {
                     using var image = Image.Load<Rgb24>(fileImage.FullName);
                     var tagPredictArr = NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
@@ -164,7 +164,7 @@ namespace AddDataInDataSet
                     }
 
                     countAll++;
-                });
+                }
 
                 //
                 var vectAll = new Vector3(countAll / 100f);
@@ -179,7 +179,7 @@ namespace AddDataInDataSet
                 table[index, 4] = vectK[2];
 
                 count[0]++;
-            }
+            });
 
             worksheet.Cell(1, 1).InsertData(table);
             workbook.SaveAs("resultKTop.xlsx");
@@ -214,7 +214,7 @@ namespace AddDataInDataSet
             }
 
             var tagsDirectory = Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH);
-            for (var i = 0; i < NeuralNetworkWorker.Labels.Length; i++)
+            Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
             {
                 var tagOriginal = NeuralNetworkWorker.Labels[i];
 
@@ -222,15 +222,15 @@ namespace AddDataInDataSet
 
                 var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
 
-                Parallel.ForEach(tagDirectoryInfo.GetFiles(), fileImage =>
+                foreach (var fileImage in tagDirectoryInfo.GetFiles())
                 {
                     using var image = Image.Load<Rgb24>(fileImage.FullName);
                     var tagPredict = NeuralNetworkWorker.NeuralNetworkResult(image);
 
                     predictInfoDict[tagPredict].ResultArr[predictInfoDict[tagOriginal].Id]++;
-                });
+                }
                 count[0]++;
-            }
+            });
 
             Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
             {
@@ -238,25 +238,28 @@ namespace AddDataInDataSet
                 var tagPredict = NeuralNetworkWorker.Labels[i];
                 var resultArr = predictInfoDict[tagPredict].ResultArr;
                 var sum = resultArr.Sum() / 100f;
-                var j = 0;
-                var vectSum = new Vector4(sum);
-                var countVectors = (NeuralNetworkWorker.Labels.Length / 4) * 4;
-                for (; j < countVectors; j += 4)
+                if(sum != 0)
                 {
-                    var vect = new Vector4(resultArr[j], resultArr[j + 1], resultArr[j + 2], resultArr[j + 3]);
-                    vect /= vectSum;
+                    var j = 0;
+                    var vectSum = new Vector4(sum);
+                    var countVectors = (NeuralNetworkWorker.Labels.Length / 4) * 4;
+                    for (; j < countVectors; j += 4)
+                    {
+                        var vect = new Vector4(resultArr[j], resultArr[j + 1], resultArr[j + 2], resultArr[j + 3]);
+                        vect /= vectSum;
 
-                    var indexJ = 1 + j;
-                    var indexI = 1 + i;
-                    table[indexJ++, indexI] = vect[0];
-                    table[indexJ++, indexI] = vect[1];
-                    table[indexJ++, indexI] = vect[2];
-                    table[indexJ++, indexI] = vect[3];
-                }
+                        var indexJ = 1 + j;
+                        var indexI = 1 + i;
+                        table[indexJ++, indexI] = vect[0];
+                        table[indexJ++, indexI] = vect[1];
+                        table[indexJ++, indexI] = vect[2];
+                        table[indexJ++, indexI] = vect[3];
+                    }
 
-                for (; j < NeuralNetworkWorker.Labels.Length; j++)
-                {
-                    table[j + 1, i + 1] = resultArr[j] / sum;
+                    for (; j < NeuralNetworkWorker.Labels.Length; j++)
+                    {
+                        table[j + 1, i + 1] = resultArr[j] / sum;
+                    }
                 }
             });
 
