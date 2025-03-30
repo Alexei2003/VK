@@ -1,4 +1,6 @@
-﻿using DataSet;
+﻿using System.Numerics;
+
+using DataSet;
 
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
@@ -119,16 +121,17 @@ namespace NeuralNetwork
 
             var tensor = new DenseTensor<float>([batchSize, height, width, channels]);
 
-            for (int b = 0; b < batchSize; b++)
+            var constVect = new Vector3(255f);
+            for (int y = 0; y < height; y++)
             {
-                for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
                 {
-                    for (int x = 0; x < width; x++)
-                    {
-                        tensor[b, y, x, 0] = bitmap[x, y].B / 255f;
-                        tensor[b, y, x, 1] = bitmap[x, y].G / 255f;
-                        tensor[b, y, x, 2] = bitmap[x, y].R / 255f;
-                    }
+                    var pixel = bitmap[x, y];
+                    var vect = new Vector3(pixel.B, pixel.G, pixel.R);
+                    vect = vect / constVect;
+                    tensor[0, y, x, 0] = vect[0];
+                    tensor[0, y, x, 1] = vect[1];
+                    tensor[0, y, x, 2] = vect[2];
                 }
             }
 
