@@ -138,7 +138,7 @@ namespace AddDataInDataSet
                 var countAll = 0;
                 var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
 
-                foreach (var fileImage in tagDirectoryInfo.GetFiles())
+                Parallel.ForEach(tagDirectoryInfo.GetFiles(), fileImage =>
                 {
                     using var image = Image.Load<Rgb24>(fileImage.FullName);
                     var tagPredictArr = NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
@@ -164,7 +164,7 @@ namespace AddDataInDataSet
                     }
 
                     countAll++;
-                }
+                });
 
                 //
                 var vectAll = new Vector3(countAll / 100f);
@@ -222,13 +222,13 @@ namespace AddDataInDataSet
 
                 var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
 
-                foreach (var fileImage in tagDirectoryInfo.GetFiles())
+                Parallel.ForEach(tagDirectoryInfo.GetFiles(), fileImage =>
                 {
                     using var image = Image.Load<Rgb24>(fileImage.FullName);
                     var tagPredict = NeuralNetworkWorker.NeuralNetworkResult(image);
 
                     predictInfoDict[tagPredict].ResultArr[predictInfoDict[tagOriginal].Id]++;
-                }
+                });
                 count[0]++;
             }
 
