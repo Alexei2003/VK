@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Data;
+using System.Numerics;
 
 using ClosedXML.Excel;
 
@@ -114,17 +115,17 @@ namespace AddDataInDataSet
         {
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Sheet1");
-            var table = new object[NeuralNetworkWorker.Labels.Length, 5];
+            var dataTable = new DataTable();
 
             var countP5 = int.Max((int)(NeuralNetworkWorker.Labels.Length * 0.05), 1);
             var countP10 = int.Max((int)(NeuralNetworkWorker.Labels.Length * 0.10), 1);
             var tagsDirectory = Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH);
 
-            table[0, 0] = "Тег";
-            table[0, 1] = "Количество объектов";
-            table[0, 2] = "Точность k=1";
-            table[0, 3] = $"Точность 5% k={countP5}";
-            table[0, 4] = $"Точность 10% k={countP10}";
+            dataTable.Columns.Add("Тег", typeof(string));
+            dataTable.Columns.Add("Количество объектов", typeof(int));
+            dataTable.Columns.Add("Точность k=1", typeof(float));
+            dataTable.Columns.Add($"Точность 5% k={countP5}", typeof(float));
+            dataTable.Columns.Add($"Точность 10% k={countP10}", typeof(float));
 
             Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
             {
@@ -171,17 +172,12 @@ namespace AddDataInDataSet
                 var vectK = new Vector3(countTrueK1, countTrueP5, countTrueP10);
                 vectK = vectK / vectAll;
 
-                var index = i + 1;
-                table[index, 0] = tagOriginal;
-                table[index, 1] = countAll;
-                table[index, 2] = vectK[0];
-                table[index, 3] = vectK[1];
-                table[index, 4] = vectK[2];
+                dataTable.Rows.Add(tagOriginal, countAll, vectK[0], vectK[1], vectK[2]);
 
                 count[0]++;
             });
 
-            worksheet.Cell(1, 1).InsertData(table);
+            worksheet.Cell(1, 1).InsertTable(dataTable);
             workbook.SaveAs("resultKTop.xlsx");
         }
 
@@ -200,18 +196,24 @@ namespace AddDataInDataSet
         {
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Sheet1");
-            var table = new object[NeuralNetworkWorker.Labels.Length + 1, NeuralNetworkWorker.Labels.Length + 1];
+            var dataTable = new DataTable();
 
-            table[0, 0] = "исходный \\ предсказаный";
+            dataTable.Columns.Add("исходный \\ предсказаный", typeof(string));
 
             var predictInfoDict = new Dictionary<string, PredictInfo>();
-            for (var i = 0; i < NeuralNetworkWorker.Labels.Length; i++)
+            foreach (var label in NeuralNetworkWorker.Labels)
             {
-                var index = i + 1;
-                table[index, 0] = NeuralNetworkWorker.Labels[i];
-                table[0, index] = NeuralNetworkWorker.Labels[i];
-                predictInfoDict.Add(NeuralNetworkWorker.Labels[i], new PredictInfo(i, NeuralNetworkWorker.Labels.Length));
+                dataTable.Columns.Add(label, typeof(float));
+                predictInfoDict.Add(label, new PredictInfo(dataTable.Columns.Count - 2, NeuralNetworkWorker.Labels.Length));
             }
+
+            foreach (var label in NeuralNetworkWorker.Labels)
+            {
+                var row = dataTable.NewRow();
+                row[0] = label;
+                dataTable.Rows.Add(row);
+            }
+
 
             var tagsDirectory = Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH);
             Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
@@ -232,7 +234,7 @@ namespace AddDataInDataSet
                 count[0]++;
             });
 
-            Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
+            for (var i = 0; i < NeuralNetworkWorker.Labels.Length; i++)
             {
 
                 var tagPredict = NeuralNetworkWorker.Labels[i];
@@ -248,23 +250,22 @@ namespace AddDataInDataSet
                         var vect = new Vector4(resultArr[j], resultArr[j + 1], resultArr[j + 2], resultArr[j + 3]);
                         vect /= vectSum;
 
-                        var indexJ = 1 + j;
-                        var indexI = 1 + i;
-                        table[indexJ++, indexI] = vect[0];
-                        table[indexJ++, indexI] = vect[1];
-                        table[indexJ++, indexI] = vect[2];
-                        table[indexJ++, indexI] = vect[3];
+                        var indexI = i + 1;
+                        dataTable.Rows[j + 0][indexI] = vect[0];
+                        dataTable.Rows[j + 1][indexI] = vect[1];
+                        dataTable.Rows[j + 2][indexI] = vect[2];
+                        dataTable.Rows[j + 3][indexI] = vect[3];
                     }
 
                     for (; j < NeuralNetworkWorker.Labels.Length; j++)
                     {
-                        table[j + 1, i + 1] = resultArr[j] / sum;
+                        dataTable.Rows[j][i + 1] = resultArr[j] / sum;
                     }
                 }
-            });
+            }
 
 
-            worksheet.Cell(1, 1).InsertData(table);
+            worksheet.Cell(1, 1).InsertTable(dataTable);
             workbook.SaveAs("resultPredict.xlsx");
         }
     }
