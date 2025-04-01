@@ -343,6 +343,7 @@ namespace RepetitionOfPostsBot.BotTask
                     }
                 }
 
+                _lastViewedUrl = tmpLastViewedUrl;
                 Task.WaitAll(_taskList);
             }
             catch (Exception e)
@@ -353,9 +354,14 @@ namespace RepetitionOfPostsBot.BotTask
             {
                 _taskList.Clear();
             }
-            CreatePost();
-            _lastViewedUrl = tmpLastViewedUrl;
-
+            try
+            {
+                CreatePost();
+            }
+            catch (Exception e)
+            {
+                Logs.WriteException(e);
+            }
         }
 
         private bool OpenArtsPage(HtmlNode[] nodesArr, string lastViewedUrl)
