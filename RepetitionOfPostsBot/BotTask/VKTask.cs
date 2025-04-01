@@ -5,14 +5,16 @@ using DataSet;
 
 using HtmlAgilityPack;
 
-using MyCustomClasses;
-using MyCustomClasses.Tags;
-using MyCustomClasses.Tags.Editors;
-using MyCustomClasses.VK;
-using MyCustomClasses.VK.VKApiCustomClasses;
+using Other;
 
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+
+using VKClasses;
+using VKClasses.Tags;
+using VKClasses.Tags.Editors;
+using VKClasses.VK;
+using VKClasses.VK.VKApiCustomClasses;
 
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
@@ -315,7 +317,7 @@ namespace RepetitionOfPostsBot.BotTask
         }
 
         private string _lastViewedUrl = "";
-        private List<Task> _taskList =[];
+        private List<Task> _taskList = [];
         public void CreateVkPostFromGelbooru()
         {
             const string url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
@@ -393,7 +395,7 @@ namespace RepetitionOfPostsBot.BotTask
                     continue;
                 }
 
-                var task = Task.Run(() => 
+                var task = Task.Run(() =>
                 {
                     SaveImage(nodesImageArr[0], nodeTagsArr, _taskList.Count);
                 });
@@ -427,7 +429,7 @@ namespace RepetitionOfPostsBot.BotTask
             {
                 Directory.CreateDirectory("Download");
             }
-            string path_image = Path.Combine("Download",$"Gelbooru-{taskIndex}.jpg");
+            string path_image = Path.Combine("Download", $"Gelbooru-{taskIndex}.jpg");
 
             var href = nodeImage.GetAttributeValue("href", string.Empty);
             href = href.Replace("amp;", "");
@@ -530,7 +532,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                 var imagesForSend = new List<PhotoWithTag>();
 
-                for (var i = 0; i < countImagesPerPostLimit ; i++)
+                for (var i = 0; i < countImagesPerPostLimit; i++)
                 {
                     imagesForSend.Add(_urlImageNotPostQueue.Dequeue());
                 }

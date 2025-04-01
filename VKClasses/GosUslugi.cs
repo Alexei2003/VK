@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace MyCustomClasses
+namespace VKClasses
 {
     public static class GosUslugi
     {

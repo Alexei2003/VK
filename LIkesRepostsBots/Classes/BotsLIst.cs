@@ -1,4 +1,4 @@
-﻿using MyCustomClasses;
+﻿using Other;
 
 namespace LikesRepostsBots.Classes
 {

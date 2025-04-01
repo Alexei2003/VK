@@ -1,4 +1,5 @@
-﻿using MyCustomClasses.VK;
+﻿using VKClasses.VK;
+
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 

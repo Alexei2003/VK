@@ -1,11 +1,12 @@
 ﻿using System.Collections.ObjectModel;
+
 using VkNet;
 using VkNet.Enums.Filters;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 using VkNet.Utils;
 
-namespace MyCustomClasses.VK.VKApiCustomClasses
+namespace VKClasses.VK.VKApiCustomClasses
 {
     public class Users
     {

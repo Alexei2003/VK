@@ -1,25 +1,26 @@
 ﻿using VkNet;
+using VkNet.Model;
 
-namespace MyCustomClasses.VK.VKApiCustomClasses
+namespace VKClasses.VK.VKApiCustomClasses
 {
-    public class Stats
+    public class Polls
     {
         private readonly TimeSpan TIME_SLEEP;
         public VkApi ApiOriginal { get; }
 
-        public Stats(VkApi ApiOriginal, TimeSpan TIME_SLEEP)
+        public Polls(VkApi ApiOriginal, TimeSpan TIME_SLEEP)
         {
             this.ApiOriginal = ApiOriginal;
             this.TIME_SLEEP = TIME_SLEEP;
         }
 
-        public bool TrackVisitor()
+        public bool AddVote(PollsAddVoteParams @params)
         {
             while (true)
             {
                 try
                 {
-                    return ApiOriginal.Stats.TrackVisitor();
+                    return ApiOriginal.PollsCategory.AddVote(@params);
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {

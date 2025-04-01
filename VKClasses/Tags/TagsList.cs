@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Text.Json;
 
-namespace MyCustomClasses.Tags
+namespace VKClasses.Tags
 {
     public sealed class TagsList
     {
@@ -58,7 +58,7 @@ namespace MyCustomClasses.Tags
             ConcurrentStack<string> stack = new();
             LastTag = LastTag.ToLower();
             Parallel.ForEach(tagsList, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
-            {   
+            {
                 var lowerTag = tag.ToLower();
                 if (lowerTag.Contains(LastTag))
                 {

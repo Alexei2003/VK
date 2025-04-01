@@ -1,7 +1,10 @@
-﻿using MyCustomClasses;
-using MyCustomClasses.Tags;
-using MyCustomClasses.VK;
-using System.Net;
+﻿using System.Net;
+
+using Other;
+
+using VKClasses.Tags;
+using VKClasses.VK;
+
 using VkNet.Model;
 
 namespace DownloaderDataSetPhoto.Downloaders

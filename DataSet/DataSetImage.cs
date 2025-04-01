@@ -1,7 +1,8 @@
-﻿using SixLabors.ImageSharp;
+﻿using System.Numerics;
+
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using System.Numerics;
 
 namespace DataSet
 {

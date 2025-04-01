@@ -1,4 +1,4 @@
-﻿namespace MyCustomClasses.Tags
+﻿namespace VKClasses.Tags
 {
     public static class TagsReplacer
     {

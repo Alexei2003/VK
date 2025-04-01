@@ -1,8 +1,10 @@
 ﻿using ClosedXML.Excel;
-using MyCustomClasses;
-using MyCustomClasses.Tags;
-using MyCustomClasses.Tags.Editors;
-using MyCustomClasses.VK;
+
+using VKClasses;
+using VKClasses.Tags;
+using VKClasses.Tags.Editors;
+using VKClasses.VK;
+
 using VkNet.Enums.StringEnums;
 
 namespace Statistics

@@ -1,6 +1,6 @@
-﻿using MyCustomClasses;
+﻿using RepetitionOfPostsBot.BotTask;
 
-using RepetitionOfPostsBot.BotTask;
+using VKClasses;
 
 namespace RepetitionOfPostsBot
 {

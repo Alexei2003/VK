@@ -1,7 +1,10 @@
-﻿using HtmlAgilityPack;
-using System.Net;
+﻿using System.Net;
 
-namespace MyCustomClasses
+using HtmlAgilityPack;
+
+using Other;
+
+namespace VKClasses
 {
     public static class Gelbooru
     {
@@ -44,7 +47,7 @@ namespace MyCustomClasses
 
                 if (useProxy)
                 {
-                    url += $"&temp={DateTimeOffset.UtcNow.ToUnixTimeSeconds()}_{new Random().Next(0, 9999)}";
+                    url += $"&temp={DateTimeOffset.UtcNow.ToUnixTimeSeconds()}_{RandomStatic.Rand.Next(0, 9999)}";
                     url = GetUrlUseMirror(url);
                 }
             }

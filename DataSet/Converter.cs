@@ -1,8 +1,9 @@
-﻿using SixLabors.ImageSharp;
+﻿using System.Drawing;
+using System.Drawing.Imaging;
+
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Bmp;
 using SixLabors.ImageSharp.PixelFormats;
-using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace DataSet
 {

@@ -1,5 +1,7 @@
 ﻿using LikesRepostsBots.Classes;
-using MyCustomClasses;
+
+using Other;
+
 using static LikesRepostsBots.Classes.BotsWorksParams;
 
 namespace LikesRepostsBots

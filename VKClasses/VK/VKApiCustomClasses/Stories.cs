@@ -1,10 +1,12 @@
-﻿using Newtonsoft.Json.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Text;
+
+using Newtonsoft.Json.Linq;
+
 using VkNet;
 using VkNet.Model;
 
-namespace MyCustomClasses.VK.VKApiCustomClasses
+namespace VKClasses.VK.VKApiCustomClasses
 {
     public class Stories
     {

@@ -5,7 +5,7 @@ using VkNet.Enums.StringEnums;
 using VkNet.Model;
 using VkNet.Utils;
 
-namespace MyCustomClasses.VK.VKApiCustomClasses
+namespace VKClasses.VK.VKApiCustomClasses
 {
     public class Friends
     {

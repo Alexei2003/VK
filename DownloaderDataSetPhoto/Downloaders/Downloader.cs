@@ -1,6 +1,8 @@
-﻿using DataSet;
+﻿using System.Net;
+
+using DataSet;
+
 using SixLabors.ImageSharp.PixelFormats;
-using System.Net;
 
 namespace DownloaderDataSetPhoto.Downloaders
 {

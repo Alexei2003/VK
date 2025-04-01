@@ -5,6 +5,8 @@ using DataSet;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
 
+using Other;
+
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -14,14 +16,14 @@ namespace NeuralNetwork
     {
         private const int MAX_SESSIONS_GPU = 4;
 
-        private static Session[] _sessionArr;
+        private static readonly Session[] _sessionArr;
 
         private static readonly string _inputName;
 
         // Статическая модель и метки классов
         public static string[] Labels { get; private set; }
 
-        private class Session
+        private sealed class Session
         {
             public bool IsBusy { get; set; } = false;
             public bool IsFirst { get; set; } = true;
@@ -62,10 +64,17 @@ namespace NeuralNetwork
             catch { }
 #endif
 
-            //CPU 
-            if (sessionList.Count == 0)
+            try
             {
-                sessionList.Add(new Session(new InferenceSession("model.onnx")));
+                //CPU 
+                if (sessionList.Count == 0)
+                {
+                    sessionList.Add(new Session(new InferenceSession("model.onnx")));
+                }
+            }
+            catch (Exception e)
+            {
+                Logs.WriteException(e);
             }
 
             _sessionArr = [.. sessionList];

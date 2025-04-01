@@ -1,4 +1,4 @@
-﻿namespace MyCustomClasses
+﻿namespace Other
 {
     public static class RandomStatic
     {

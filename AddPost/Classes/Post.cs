@@ -1,9 +1,11 @@
 ﻿using System.Net;
 
-using MyCustomClasses.Tags.Editors;
-using MyCustomClasses.VK;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+
+using VKClasses.Tags.Editors;
+using VKClasses.VK;
+
 using VkNet.Model;
 
 namespace AddPost.Classes

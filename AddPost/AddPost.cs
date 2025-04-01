@@ -4,12 +4,14 @@ using AddPost.Classes;
 
 using DataSet;
 
-using MyCustomClasses;
-using MyCustomClasses.Tags;
-using MyCustomClasses.VK;
+using Other;
 
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+
+using VKClasses;
+using VKClasses.Tags;
+using VKClasses.VK;
 
 namespace AddPost
 {
@@ -221,7 +223,7 @@ namespace AddPost
 
             // Замена пробелов на _
             var tagsArr = tagsStr.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            for(var i =0; i<tagsArr.Length; i++)
+            for (var i = 0; i < tagsArr.Length; i++)
             {
                 tagsArr[i] = new string([.. tagsArr[i].Where(c => char.IsLetterOrDigit(c) || c == '#' || c == '_')]).ToLower();
             }

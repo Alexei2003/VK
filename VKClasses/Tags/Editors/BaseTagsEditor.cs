@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Text;
 
-namespace MyCustomClasses.Tags.Editors
+namespace VKClasses.Tags.Editors
 {
     public static class BaseTagsEditor
     {

@@ -1,5 +1,8 @@
-﻿using MyCustomClasses;
-using System.Net;
+﻿using System.Net;
+
+using Other;
+
+using VKClasses;
 
 namespace DownloaderDataSetPhoto.Downloaders
 {

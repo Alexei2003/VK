@@ -240,7 +240,7 @@ namespace AddDataInDataSet
                 var tagPredict = NeuralNetworkWorker.Labels[i];
                 var resultArr = predictInfoDict[tagPredict].ResultArr;
                 var sum = resultArr.Sum() / 100f;
-                if(sum != 0)
+                if (sum != 0)
                 {
                     var j = 0;
                     var vectSum = new Vector4(sum);

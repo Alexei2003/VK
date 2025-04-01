@@ -1,8 +1,11 @@
-﻿using MyCustomClasses;
-using MyCustomClasses.VK;
+﻿using Other;
+
+using VKClasses.VK;
+
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 using VkNet.Utils;
+
 using static LikesRepostsBots.Classes.BotsWorksParams;
 
 namespace LikesRepostsBots.Classes

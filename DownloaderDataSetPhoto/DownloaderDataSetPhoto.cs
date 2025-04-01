@@ -1,10 +1,13 @@
 using DataSet;
+
 using DownloaderDataSetPhoto.Downloaders;
-using MyCustomClasses;
-using MyCustomClasses.Tags;
-using MyCustomClasses.VK;
+
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+
+using VKClasses;
+using VKClasses.Tags;
+using VKClasses.VK;
 
 namespace DownloaderDataSetPhoto
 {

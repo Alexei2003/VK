@@ -11,8 +11,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataSet\DataSet.csproj" />
-    <ProjectReference Include="..\MyCustomClasses\MyCustomClasses.csproj" />
     <ProjectReference Include="..\NeuralNetwork\NeuralNetwork.csproj" />
+    <ProjectReference Include="..\VKClasses\VKClasses.csproj" />
   </ItemGroup>
 
 </Project>
