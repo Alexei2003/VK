@@ -12,18 +12,14 @@ namespace NeuralNetwork
 {
     public static class NeuralNetworkWorker
     {
-        private const int MAX_SESSIONS_NVIDIA = 4;
-        private const int MAX_GPU_INTEL = 3;
-        private const int MAX_CPU = 0;
-        private const int MAX_SESSIONS = MAX_SESSIONS_NVIDIA + MAX_GPU_INTEL + MAX_CPU;
+        private const int MAX_SESSIONS_GPU = 4;
 
-        private static Session[] _sessionArr = new Session[MAX_SESSIONS];
+        private static Session[] _sessionArr;
 
         private static readonly string _inputName;
 
         // Статическая модель и метки классов
         public static string[] Labels { get; private set; }
-
 
         private class Session
         {
@@ -38,46 +34,37 @@ namespace NeuralNetwork
             }
         }
 
+
+
         // Статический конструктор для инициализации
         static NeuralNetworkWorker()
         {
+            var sessionList = new List<Session>();
             // Загружаем модель 
-            var i = 0;
             try
             {
-                // GPU Nvidia
-                // Пытаемся использовать DirectML (работает через DirectX 12)
-                var options = new SessionOptions();
-                options.AppendExecutionProvider_DML(0);
-                for (; i < MAX_SESSIONS_NVIDIA; i++)
+                var id = 0;
+                while (true)
                 {
-                    _sessionArr[i] = new Session(new InferenceSession("model.onnx", options));
-                }
-
-                // GPU Intel
-                // Пытаемся использовать DirectML (работает через DirectX 12)
-                options = new();
-                options.AppendExecutionProvider_DML(1);
-                for (; i < MAX_SESSIONS_NVIDIA + MAX_GPU_INTEL; i++)
-                {
-                    _sessionArr[i] = new Session(new InferenceSession("model.onnx", options));
-                }
-
-                //CPU Intel
-                for (; i < MAX_SESSIONS_NVIDIA + MAX_GPU_INTEL + MAX_CPU; i++)
-                {
-                    _sessionArr[i] = new Session(new InferenceSession("model.onnx"));
+                    // GPU
+                    // Пытаемся использовать DirectML (работает через DirectX 12)
+                    var options = new SessionOptions();
+                    options.AppendExecutionProvider_DML(id);
+                    for (var i = 0; i < MAX_SESSIONS_GPU; i++)
+                    {
+                        sessionList.Add(new Session(new InferenceSession("model.onnx", options)));
+                    }
+                    id++;
                 }
             }
-            catch
+            catch { }
+            //CPU 
+            if (sessionList.Count == 0)
             {
-                // Fallback на CPU
-                for (; i < MAX_SESSIONS; i++)
-                {
-                    _sessionArr[i] = new Session(new InferenceSession("model.onnx"));
-                }
+                sessionList.Add(new Session(new InferenceSession("model.onnx")));
             }
 
+            _sessionArr = [.. sessionList];
             _inputName = _sessionArr[0].Inference.InputMetadata.Keys.First();
 
             // Загружаем метки классов
@@ -93,15 +80,15 @@ namespace NeuralNetwork
         }
 
         private struct Label
-    {
-        public string Name;
-        public float Value;
-
-        public Label(string name, float value)
         {
-            Name = name;
-            Value = value;
-        }
+            public string Name;
+            public float Value;
+
+            public Label(string name, float value)
+            {
+                Name = name;
+                Value = value;
+            }
         }
 
         public static string NeuralNetworkResult(Image<Rgb24> imageOriginal)
@@ -130,48 +117,59 @@ namespace NeuralNetwork
                 NamedOnnxValue.CreateFromTensor(_inputName, inputTensor)
             };
 
+            Session? session;
+
             while (true)
             {
-                var session = _sessionArr.FirstOrDefault(s => s.IsBusy == false);
+                session = _sessionArr.FirstOrDefault(s => s.IsBusy == false);
 
-                if (session == null)
+                if (session != null)
+                {
+                    session.IsBusy = true;
+                    break;
+                }
+                else
                 {
                     Thread.Sleep(100);
-                    continue;
                 }
+            }
 
-                session.IsBusy = true;
-                float[] outputArr;
-                lock (session)
+
+            float[] outputArr;
+            if (session.IsFirst == true)
+            {
+                lock (_sessionArr)
                 {
-                    if(session.IsFirst == true)
-                    {
-                        var rand = new Random();
-                        Thread.Sleep(rand.Next(MAX_SESSIONS * 100));
-
-                        session.IsFirst = false;
-                    }
                     using var results = session.Inference.Run(input);
                     outputArr = [.. results[0].AsEnumerable<float>()];
                 }
-                session.IsBusy = false;
-
-                var labels = new Label[outputArr.Length];
-
-                for (var i = 0; i < outputArr.Length; i++)
-                {
-                    labels[i] = new Label(Labels[i], outputArr[i]);
-                }
-
-                var resulTagsArr = labels.OrderByDescending(l => l.Value).Take(kTop).Select(l => l.Name);
-
-                if (resulTagsArr.Contains("#nsfw"))
-                {
-                    resulTagsArr = ["#nsfw"];
-                }
-
-                return [.. resulTagsArr];
+                session.IsFirst = false;
             }
+            else
+            {
+                lock (session)
+                {
+                    using var results = session.Inference.Run(input);
+                    outputArr = [.. results[0].AsEnumerable<float>()];
+                }
+            }
+            session.IsBusy = false;
+
+            var labels = new Label[outputArr.Length];
+
+            for (var i = 0; i < outputArr.Length; i++)
+            {
+                labels[i] = new Label(Labels[i], outputArr[i]);
+            }
+
+            var resulTagsArr = labels.OrderByDescending(l => l.Value).Take(kTop).Select(l => l.Name);
+
+            if (resulTagsArr.Contains("#nsfw"))
+            {
+                resulTagsArr = ["#nsfw"];
+            }
+
+            return [.. resulTagsArr];
         }
 
 

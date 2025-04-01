@@ -98,7 +98,7 @@ namespace LikesRepostsBots
                 }
                 catch (Exception e)
                 {
-                    Logs.WriteExcemption(e);
+                    Logs.WriteException(e);
                     Thread.Sleep(10);
                     continue;
                 }

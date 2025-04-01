@@ -127,7 +127,7 @@ namespace AddDataInDataSet
             dataTable.Columns.Add($"Точность 5% k={countP5}", typeof(float));
             dataTable.Columns.Add($"Точность 10% k={countP10}", typeof(float));
 
-            Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
+            Parallel.For(0, NeuralNetworkWorker.Labels.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
             {
                 var tagOriginal = NeuralNetworkWorker.Labels[i];
 
@@ -216,7 +216,7 @@ namespace AddDataInDataSet
 
 
             var tagsDirectory = Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH);
-            Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
+            Parallel.For(0, NeuralNetworkWorker.Labels.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
             {
                 var tagOriginal = NeuralNetworkWorker.Labels[i];
 

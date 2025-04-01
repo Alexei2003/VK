@@ -221,7 +221,7 @@ namespace RepetitionOfPostsBot.BotTask
             }
             catch (Exception e)
             {
-                Logs.WriteExcemption(e);
+                Logs.WriteException(e);
             }
         }
 
@@ -310,7 +310,7 @@ namespace RepetitionOfPostsBot.BotTask
             }
             catch (Exception e)
             {
-                Logs.WriteExcemption(e);
+                Logs.WriteException(e);
             }
         }
 
@@ -344,11 +344,14 @@ namespace RepetitionOfPostsBot.BotTask
                 }
 
                 Task.WaitAll(_taskList);
-                _taskList.Clear();
             }
             catch (Exception e)
             {
-                Logs.WriteExcemption(e);
+                Logs.WriteException(e);
+            }
+            finally
+            {
+                _taskList.Clear();
             }
             CreatePost();
             _lastViewedUrl = tmpLastViewedUrl;
@@ -418,7 +421,7 @@ namespace RepetitionOfPostsBot.BotTask
             {
                 Directory.CreateDirectory("Download");
             }
-            string path_image = $"Download\\Gelbooru-{taskIndex}.jpg";
+            string path_image = Path.Combine("Download",$"Gelbooru-{taskIndex}.jpg");
 
             var href = nodeImage.GetAttributeValue("href", string.Empty);
             href = href.Replace("amp;", "");
@@ -460,11 +463,7 @@ namespace RepetitionOfPostsBot.BotTask
                         {
                             using var imageDel = _imageCheckedQueue.Dequeue();
                         }
-
                         _imageCheckedQueue.Enqueue(image);
-
-
-
 
                         if (_urlImageNotPostQueue.Count > COUNT_NOT_POST_IMAGES)
                         {

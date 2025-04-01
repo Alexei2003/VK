@@ -47,7 +47,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                         }
                         catch (Exception e)
                         {
-                            Logs.WriteExcemption(e);
+                            Logs.WriteException(e);
                         }
                     }
                     else

@@ -4,7 +4,7 @@
     {
         const string FILE_NAME = "log.txt";
 
-        public static void WriteExcemption(Exception e)
+        public static void WriteException(Exception e)
         {
             using var writer = File.AppendText(FILE_NAME);
             writer.WriteLine("Date: " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"));
