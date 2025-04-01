@@ -40,7 +40,9 @@ namespace NeuralNetwork
         static NeuralNetworkWorker()
         {
             var sessionList = new List<Session>();
-            // Загружаем модель 
+
+            // Загружаем модель
+#if WINDOWS
             try
             {
                 var id = 0;
@@ -58,6 +60,8 @@ namespace NeuralNetwork
                 }
             }
             catch { }
+#endif
+
             //CPU 
             if (sessionList.Count == 0)
             {
