@@ -487,7 +487,7 @@ namespace RepetitionOfPostsBot.BotTask
 
         private void CreatePost()
         {
-            var countImagesPerPostLimit = int.Min((int)double.Ceiling(_urlImageNotPostQueue.Count / 2.0), 10);
+            var countImagesPerPostLimit = int.Min((int)double.Ceiling(_urlImageNotPostQueue.Count / 2.0), 9);
             if (countImagesPerPostLimit > 0)
             {
                 // Получение первого отложеного поста
