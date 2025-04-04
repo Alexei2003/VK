@@ -19,7 +19,7 @@ namespace DataSet
             return ChangeResolution(image, 224);
         }
 
-        private static Image<Rgb24> ChangeResolution(Image<Rgb24> imageOriginal, int maxSize)
+        public static Image<Rgb24> ChangeResolution(Image<Rgb24> imageOriginal, int maxSize)
         {
             var image = imageOriginal.Clone();
             if (image.Width != maxSize || image.Height != maxSize)

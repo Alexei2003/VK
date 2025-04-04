@@ -182,6 +182,11 @@ namespace NeuralNetwork
                 resulTagsArr = ["#nsfw"];
             }
 
+            if (resulTagsArr.Contains("#bad_drawing"))
+            {
+                resulTagsArr = ["#bad_drawing"];
+            }
+
             return [.. resulTagsArr];
         }
 
