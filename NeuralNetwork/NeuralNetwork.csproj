@@ -5,21 +5,24 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
+	  
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" >
+	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'" />
 	
 	<!-- Условия для Windows -->
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' OR '$(RuntimeIdentifier)' == 'win-x64'">
+	<PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
 		<DefineConstants>WINDOWS</DefineConstants>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' OR '$(RuntimeIdentifier)' == 'win-x64'">
+	<ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
 		<PackageReference Include="Microsoft.ML.OnnxRuntime.DirectML" Version="1.21.0" />
 	</ItemGroup>
 
 	<!-- Условия для Linux/macOS -->
-	<ItemGroup Condition="'$(Configuration)|$(Platform)'!='Debug|AnyCPU' AND '$(RuntimeIdentifier)' != 'win-x64'">
+	<ItemGroup Condition="'$(RuntimeIdentifier)' != 'win-x64'">
 		<PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.21.0" />
 	</ItemGroup>
 	
