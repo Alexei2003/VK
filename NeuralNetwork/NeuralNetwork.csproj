@@ -7,22 +7,20 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
 	  
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" >
-	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'" />
 	
 	<!-- Условия для Windows -->
-	<PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+	<PropertyGroup Condition="'$(RuntimeIdentifier)' != 'linux-x64'">
 		<DefineConstants>WINDOWS</DefineConstants>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+	<ItemGroup Condition="'$(RuntimeIdentifier)' != 'linux-x64'">
 		<PackageReference Include="Microsoft.ML.OnnxRuntime.DirectML" Version="1.21.0" />
 	</ItemGroup>
 
 	<!-- Условия для Linux/macOS -->
-	<ItemGroup Condition="'$(RuntimeIdentifier)' != 'win-x64'">
+	<ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
 		<PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.21.0" />
 	</ItemGroup>
 	

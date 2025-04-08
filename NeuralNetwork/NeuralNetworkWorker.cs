@@ -121,6 +121,18 @@ namespace NeuralNetwork
 
         public static string[] NeuralNetworkResultKTopCount(Image<Rgb24> imageOriginal, int kTop = 15)
         {
+            try
+            {
+                return NeuralNetworkResults(imageOriginal, kTop);
+            }
+            catch
+            {
+                return ["#error"];
+            }
+        }
+
+        private static string[] NeuralNetworkResults(Image<Rgb24> imageOriginal, int kTop = 15)
+        {
             using var image = DataSetImage.ChangeResolution224x224(imageOriginal);
 
             var inputTensor = ImageToTensor(image);
@@ -189,9 +201,6 @@ namespace NeuralNetwork
 
             return [.. resulTagsArr];
         }
-
-
-
 
         public static DenseTensor<float> ImageToTensor(Image<Rgb24> bitmap)
         {
