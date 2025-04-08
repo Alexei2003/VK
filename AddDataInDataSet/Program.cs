@@ -27,25 +27,33 @@
                 {
                     case "1":
                         WorkWithDirectory.MoveDataFromNewToOriginal(count);
+                        Thread.Sleep(100);
+                        count[0] = -1;
+                        thWrite.Join();
                         break;
                     case "2":
                         WorkWithDirectory.FixDataInOriginal(count);
+                        Thread.Sleep(100);
+                        count[0] = -1;
+                        thWrite.Join();
                         break;
                     case "3":
                         WorkWithDirectory.GetAccuracyKTopClassesOriginal(count);
+                        Thread.Sleep(100);
+                        count[0] = -1;
+                        thWrite.Join();
                         break;
                     case "4":
                         WorkWithDirectory.GetAccuracyPredictClassesOriginal(count);
+                        Thread.Sleep(100);
+                        count[0] = -1;
+                        thWrite.Join();
                         break;
                     case "exit":
                         return;
                     default:
                         break;
                 }
-                Thread.Sleep(100);
-                count[0] = -1;
-                thWrite.Join();
-
                 Console.WriteLine();
             }
         }

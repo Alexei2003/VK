@@ -149,18 +149,18 @@ namespace NeuralNetwork
 
 
             float[] outputArr;
-            if (session.IsFirst == true)
+            lock (session)
             {
-                lock (_sessionArr)
+                if (session.IsFirst == true)
                 {
-                    using var results = session.Inference.Run(input);
-                    outputArr = [.. results[0].AsEnumerable<float>()];
+                    lock (_sessionArr)
+                    {
+                        using var results = session.Inference.Run(input);
+                        outputArr = [.. results[0].AsEnumerable<float>()];
+                    }
+                    session.IsFirst = false;
                 }
-                session.IsFirst = false;
-            }
-            else
-            {
-                lock (session)
+                else
                 {
                     using var results = session.Inference.Run(input);
                     outputArr = [.. results[0].AsEnumerable<float>()];
@@ -200,7 +200,7 @@ namespace NeuralNetwork
             const int width = 224;
             const int channels = 3;
 
-            var tensor = new DenseTensor<float>([batchSize, height, width, channels]);
+            var tensor = new DenseTensor<float>([batchSize, channels, height, width]);
 
             var constVect = new Vector3(255f);
             for (int y = 0; y < height; y++)
@@ -208,11 +208,12 @@ namespace NeuralNetwork
                 for (int x = 0; x < width; x++)
                 {
                     var pixel = bitmap[x, y];
-                    var vect = new Vector3(pixel.B, pixel.G, pixel.R);
+                    var vect = new Vector3(pixel.R, pixel.G, pixel.B);
+                    //var vect = new Vector3(pixel.B, pixel.G, pixel.R);
                     vect = vect / constVect;
-                    tensor[0, y, x, 0] = vect[0];
-                    tensor[0, y, x, 1] = vect[1];
-                    tensor[0, y, x, 2] = vect[2];
+                    tensor[0, 0, y, x] = vect[0];
+                    tensor[0, 1, y, x] = vect[1];
+                    tensor[0, 2, y, x] = vect[2];
                 }
             }
 
