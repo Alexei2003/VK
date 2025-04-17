@@ -1,7 +1,4 @@
-﻿using System.Net;
-using System.Text;
-
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 
 using VkNet;
 using VkNet.Model;
@@ -47,8 +44,8 @@ namespace VKClasses.VK.VKApiCustomClasses
 
             var response = api.ApiOriginal.Stories.GetPhotoUploadServer(@param);
 
-            using var wc = new WebClient();
-            var responseFile = Encoding.ASCII.GetString(wc.UploadFile(response.UploadUrl, path));
+            using var httpClient = new HttpClient();
+            var responseFile = ImageTransfer.UploadImageAsync(httpClient, response.UploadUrl, path).Result;
 
             var json = JObject.Parse(responseFile);
             string uploadResult = json["response"]["upload_result"].ToString();

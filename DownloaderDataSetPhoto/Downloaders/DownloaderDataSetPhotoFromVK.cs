@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-using Other;
+﻿using Other;
 
 using VKClasses.Tags;
 using VKClasses.VK;
@@ -21,7 +19,7 @@ namespace DownloaderDataSetPhoto.Downloaders
 
         public void SavePhotosFromNewsfeed(string currentTag, int shiftPost, int countPhoto, long ignorGroupId, string fileName)
         {
-            using var wc = new WebClient();
+            using var httpClient = new HttpClient();
             NewsSearchResult newsfeedPosts;
             int indexPage = 0;
             newsfeedPosts = api.Newsfeed.Search(new NewsFeedSearchParams()
@@ -46,7 +44,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                         }
                         try
                         {
-                            SavePhotos(currentTag, post, ignorGroupId, fileName, wc);
+                            SavePhotos(currentTag, post, ignorGroupId, fileName, httpClient);
                         }
                         catch (Exception e)
                         {
@@ -78,7 +76,7 @@ namespace DownloaderDataSetPhoto.Downloaders
         }
 
         private static readonly char[] separator = [' ', '@', ',', '\r', '\n'];
-        private void SavePhotos(string currentTag, NewsSearchItem post, long groupId, string fileName, WebClient wc)
+        private void SavePhotos(string currentTag, NewsSearchItem post, long groupId, string fileName, HttpClient httpClient)
         {
             if (post.OwnerId == -1 * groupId)
             {
@@ -118,7 +116,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                 return;
             }
 
-            Downloader.DownloadPhoto(wc, photo.Sizes[2].Url.ToString(), currentTag, fileName);
+            Downloader.DownloadPhoto(httpClient, new Uri(photo.Sizes[2].Url.ToString()), currentTag, fileName);
         }
     }
 }

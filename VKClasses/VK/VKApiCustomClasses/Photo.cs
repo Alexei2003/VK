@@ -1,6 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Net;
-using System.Text;
 
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -51,17 +49,17 @@ namespace VKClasses.VK.VKApiCustomClasses
             }
         }
 
-        public ReadOnlyCollection<VkNet.Model.Photo> AddOnVKServer(WebClient wc, Image<Rgb24> image, string fileName = "Post.jpg")
+        public ReadOnlyCollection<VkNet.Model.Photo> AddOnVKServer(HttpClient httpClient, Image<Rgb24> image, string fileName = "Post.jpg")
         {
             image.SaveAsJpeg(fileName);
 
-            return AddOnVKServer(wc, fileName);
+            return AddOnVKServer(httpClient, fileName);
         }
 
-        public ReadOnlyCollection<VkNet.Model.Photo> AddOnVKServer(WebClient wc, string fileName)
+        public ReadOnlyCollection<VkNet.Model.Photo> AddOnVKServer(HttpClient httpClient, string fileName)
         {
             var uploadServer = GetWallUploadServer();
-            var responseFile = Encoding.ASCII.GetString(wc.UploadFile(uploadServer.UploadUrl, fileName));
+            var responseFile = ImageTransfer.UploadImageAsync(httpClient, new Uri(uploadServer.UploadUrl), fileName).Result;
 
             return SaveWallPhoto(responseFile, null);
         }

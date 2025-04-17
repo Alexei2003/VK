@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
 using VKClasses.Tags.Editors;
@@ -22,10 +20,10 @@ namespace AddPost.Classes
         public void Publish(Image<Rgb24>[] images, string tag, string copyright, DateTime? postDate, long groupId, string groupShortUrl)
         {
             var imageList = new List<Photo>(10);
-            var wc = new WebClient();
+            var httpClient = new HttpClient();
             foreach (var image in images)
             {
-                imageList.Add(api.Photo.AddOnVKServer(wc, image)[0]);
+                imageList.Add(api.Photo.AddOnVKServer(httpClient, image)[0]);
             }
 
             var tags = tag.Split('#', StringSplitOptions.RemoveEmptyEntries);

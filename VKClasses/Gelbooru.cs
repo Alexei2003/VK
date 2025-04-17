@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 
 using Other;
 
@@ -38,7 +36,7 @@ namespace VKClasses
             // Существа
             "+-bestiality+-tentacles";
 
-        public static HtmlDocument GetPageHTML(WebClient wc, string url, int indexPage = -1, bool useProxy = false)
+        public static HtmlDocument GetPageHTML(HttpClient httpClient, string url, int indexPage = -1, bool useProxy = false)
         {
             if (indexPage > -1)
             {
@@ -56,13 +54,6 @@ namespace VKClasses
             {
                 url = GetUrlAddMirrorServer(url);
             }
-
-            var httpClientHandler = new HttpClientHandler
-            {
-                CookieContainer = new CookieContainer()
-            };
-            using var httpClient = new HttpClient(httpClientHandler);
-            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36");
 
             var html = httpClient.GetStringAsync(url);
             var htmlDocument = new HtmlDocument();

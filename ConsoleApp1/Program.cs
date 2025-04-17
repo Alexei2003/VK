@@ -1,8 +1,6 @@
-﻿using System.Net;
-using System.Text;
+﻿using Newtonsoft.Json.Linq;
 
-using Newtonsoft.Json.Linq;
-
+using VKClasses;
 using VKClasses.VK;
 
 internal class Program
@@ -28,8 +26,8 @@ internal class Program
         var json = JObject.Parse(str);
 
         var url = json["response"]["upload_url"].ToString();
-        using var wc = new WebClient();
-        var responseFile = Encoding.ASCII.GetString(wc.UploadFile(url, path));
+        using var httpClient = new HttpClient();
+        var responseFile = ImageTransfer.UploadImageAsync(httpClient, new Uri(url), path).Result;
 
         json = JObject.Parse(responseFile);
 

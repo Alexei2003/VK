@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-using Other;
+﻿using Other;
 
 using VKClasses;
 
@@ -16,16 +14,16 @@ namespace DownloaderDataSetPhoto.Downloaders
 
                 Parallel.For(0, 10, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
                 {
-                    using var wc = new WebClient();
+                    using var httpClient = new HttpClient();
 
-                    var htmlDocument = Gelbooru.GetPageHTML(wc, url, i);
+                    var htmlDocument = Gelbooru.GetPageHTML(httpClient, url, i);
 
                     var nodesArr = htmlDocument.DocumentNode.SelectNodes("//img[contains(@src,'https') and contains(@src,'img3.gelbooru.com')]").ToArray();
 
                     foreach (var node in nodesArr)
                     {
                         var src = node.GetAttributeValue("src", string.Empty);
-                        Downloader.DownloadPhoto(wc, src, currentTag, fileName + i.ToString());
+                        Downloader.DownloadPhoto(httpClient, new Uri(src), currentTag, fileName + i.ToString());
                     }
                 });
             }

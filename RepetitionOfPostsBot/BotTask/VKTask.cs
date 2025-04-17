@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Text;
+﻿using System.Text;
 
 using DataSet;
 
@@ -29,7 +28,7 @@ namespace RepetitionOfPostsBot.BotTask
         private readonly Dictionary<string, string> _accessTokens;
         private readonly VkApiCustom _vkApi;
         private readonly long _chatId;
-        private readonly WebClient _wc = new WebClient();
+        private readonly HttpClient _httpClient = new HttpClient();
 
         public VKTask(string groupShortUr, long groupId, long chatId, string[] tagsNotRepost, Dictionary<string, string> accessTokens)
         {
@@ -293,7 +292,7 @@ namespace RepetitionOfPostsBot.BotTask
                 // Истории
                 if (RandomStatic.Rand.Next(10) == 0)
                 {
-                    _wc.DownloadFile(imagesUrl[0], "Story.jpg");
+                    _ = ImageTransfer.DownloadImageAsync(new HttpClient(), imagesUrl[0], "Story.jpg").Result;
 
                     Stories.Post(new GetPhotoUploadServerParams()
                     {
@@ -328,7 +327,7 @@ namespace RepetitionOfPostsBot.BotTask
             {
                 for (var i = 0; i < 10; i++)
                 {
-                    var htmlDocument = Gelbooru.GetPageHTML(_wc, url, i, useProxy: true);
+                    var htmlDocument = Gelbooru.GetPageHTML(_httpClient, url, i, useProxy: true);
 
                     var nodesArr = htmlDocument.DocumentNode
                         .SelectNodes("//a[@id and contains(@href, 'https') and contains(@href, 'gelbooru.com')]")
@@ -356,6 +355,7 @@ namespace RepetitionOfPostsBot.BotTask
             {
                 _taskList.Clear();
             }
+
             try
             {
                 CreatePost();
@@ -379,7 +379,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                 href = href.Replace("amp;", "");
 
-                var htmlDocument = Gelbooru.GetPageHTML(_wc, href, useProxy: true);
+                var htmlDocument = Gelbooru.GetPageHTML(_httpClient, href, useProxy: true);
 
                 var nodesImageArr = htmlDocument.DocumentNode
                     .SelectNodes("//a[contains(text(), 'Original image')]")
@@ -397,7 +397,14 @@ namespace RepetitionOfPostsBot.BotTask
 
                 var task = Task.Run(() =>
                 {
-                    SaveImage(nodesImageArr[0], nodeTagsArr, _taskList.Count);
+                    try
+                    {
+                        SaveImage(nodesImageArr[0], nodeTagsArr, _taskList.Count);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logs.WriteException(ex);
+                    }
                 });
                 _taskList.Add(task);
             }
@@ -405,7 +412,7 @@ namespace RepetitionOfPostsBot.BotTask
         }
 
         private readonly Queue<Image<Rgb24>> _imageCheckedQueue = [];
-        private readonly Queue<PhotoWithTag> _urlImageNotPostQueue = [];
+        private readonly Queue<PhotoWithTag> _urlImageNotPostedQueue = [];
 
         private sealed class PhotoWithTag
         {
@@ -435,8 +442,11 @@ namespace RepetitionOfPostsBot.BotTask
             href = href.Replace("amp;", "");
             href = Gelbooru.GetUrlAddMirrorServer(href);
 
-            var wc = new WebClient();
-            wc.DownloadFile(href, path_image);
+            var httpClient = new HttpClient();
+            if (!ImageTransfer.DownloadImageAsync(httpClient, new Uri(href), path_image).Result)
+            {
+                return;
+            }
             var image = SixLabors.ImageSharp.Image.Load<Rgb24>(path_image);
 
             var resultTags = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
@@ -456,28 +466,31 @@ namespace RepetitionOfPostsBot.BotTask
                     var tmpResultTag = resultTag.Split('#', StringSplitOptions.RemoveEmptyEntries)[^1];
                     tmpResultTag = new string([.. tmpResultTag.Where(c => char.IsLetterOrDigit(c))]).ToLower();
 
-                    if (tmpTag == tmpResultTag)
+                    if (tmpTag.Contains(tmpResultTag) || tmpResultTag.Contains(tmpTag))
                     {
-                        foreach (var checkedImage in _imageCheckedQueue)
+                        lock (_imageCheckedQueue)
                         {
-                            if (DataSetImage.IsSimilarImage(checkedImage, image))
+                            foreach (var checkedImage in _imageCheckedQueue)
                             {
-                                image.Dispose();
-                                return;
+                                if (DataSetImage.IsSimilarImage(checkedImage, image))
+                                {
+                                    image.Dispose();
+                                    return;
+                                }
                             }
                         }
 
-                        if (_imageCheckedQueue.Count > COUNT_CHECKED_IMAGES)
+                        while (_imageCheckedQueue.Count > COUNT_CHECKED_IMAGES)
                         {
                             using var imageDel = _imageCheckedQueue.Dequeue();
                         }
                         _imageCheckedQueue.Enqueue(image);
 
-                        if (_urlImageNotPostQueue.Count > COUNT_NOT_POST_IMAGES)
+                        while (_urlImageNotPostedQueue.Count > COUNT_NOT_POST_IMAGES)
                         {
-                            _urlImageNotPostQueue.Dequeue();
+                            _urlImageNotPostedQueue.Dequeue();
                         }
-                        _urlImageNotPostQueue.Enqueue(new PhotoWithTag(resultTag, _vkApi.Photo.AddOnVKServer(wc, image)[0]));
+                        _urlImageNotPostedQueue.Enqueue(new PhotoWithTag(resultTag, _vkApi.Photo.AddOnVKServer(httpClient, path_image)[0]));
 
                         return;
                     }
@@ -487,7 +500,7 @@ namespace RepetitionOfPostsBot.BotTask
 
         private void CreatePost()
         {
-            var countImagesPerPostLimit = int.Min((int)double.Ceiling(_urlImageNotPostQueue.Count / 2.0), 9);
+            var countImagesPerPostLimit = int.Min((int)double.Ceiling(_urlImageNotPostedQueue.Count / 2.0), 9);
             if (countImagesPerPostLimit > 0)
             {
                 // Получение первого отложеного поста
@@ -534,7 +547,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                 for (var i = 0; i < countImagesPerPostLimit; i++)
                 {
-                    imagesForSend.Add(_urlImageNotPostQueue.Dequeue());
+                    imagesForSend.Add(_urlImageNotPostedQueue.Dequeue());
                 }
 
                 var groups = imagesForSend

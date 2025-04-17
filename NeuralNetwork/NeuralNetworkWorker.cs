@@ -218,7 +218,6 @@ namespace NeuralNetwork
                 {
                     var pixel = bitmap[x, y];
                     var vect = new Vector3(pixel.R, pixel.G, pixel.B);
-                    //var vect = new Vector3(pixel.B, pixel.G, pixel.R);
                     vect = vect / constVect;
                     tensor[0, 0, y, x] = vect[0];
                     tensor[0, 1, y, x] = vect[1];
