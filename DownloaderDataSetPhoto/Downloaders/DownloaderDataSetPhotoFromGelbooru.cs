@@ -18,8 +18,7 @@ namespace DownloaderDataSetPhoto.Downloaders
 
                     var htmlDocument = Gelbooru.GetPageHTML(httpClient, url, i);
 
-                    var nodesArr = htmlDocument.DocumentNode.SelectNodes("//img[contains(@src,'https') and contains(@src,'img3.gelbooru.com')]").ToArray();
-
+                    var nodesArr = htmlDocument.DocumentNode.SelectNodes("//img[contains(@src,'https') and contains(@src,'img4.gelbooru.com')]").ToArray();
                     foreach (var node in nodesArr)
                     {
                         var src = node.GetAttributeValue("src", string.Empty);

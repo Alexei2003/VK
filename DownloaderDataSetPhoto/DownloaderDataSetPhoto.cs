@@ -166,27 +166,27 @@ namespace DownloaderDataSetPhoto
             }
         }
 
-        private async void bDownloadPhotosDanbooru_Click(object sender, EventArgs e)
+        private async void bDownloadPhotosGelbooru_Click(object sender, EventArgs e)
         {
             if (tbTag.Text.Length > 0)
             {
                 await Task.Run(() =>
                 {
-                    if (bDownloadPhotosDanbooru.InvokeRequired)
+                    if (bDownloadPhotosGelbooru.InvokeRequired)
                     {
-                        bDownloadPhotosDanbooru.Invoke((MethodInvoker)delegate
+                        bDownloadPhotosGelbooru.Invoke((MethodInvoker)delegate
                         {
-                            bDownloadPhotosDanbooru.Enabled = false;
+                            bDownloadPhotosGelbooru.Enabled = false;
                         });
                     }
                     else
                     {
-                        bDownloadPhotosDanbooru.Enabled = false;
+                        bDownloadPhotosGelbooru.Enabled = false;
                     }
 
                     try
                     {
-                        var tag = tbTag.Text;
+                        var tag = tbTag.Text.Trim();
                         var url = tbGelbooruUrl.Text;
                         DownloaderDataSetPhotoFromGelbooru.SavePhotos(url, tag, "DataSet_");
                     }
@@ -195,18 +195,18 @@ namespace DownloaderDataSetPhoto
                         MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
 
-                    if (bDownloadPhotosDanbooru.InvokeRequired)
+                    if (bDownloadPhotosGelbooru.InvokeRequired)
                     {
-                        bDownloadPhotosDanbooru.Invoke((MethodInvoker)delegate
+                        bDownloadPhotosGelbooru.Invoke((MethodInvoker)delegate
                         {
-                            bDownloadPhotosDanbooru.Enabled = true;
+                            bDownloadPhotosGelbooru.Enabled = true;
                             tbTag.Text = "";
                             tbGelbooruUrl.Text = "";
                         });
                     }
                     else
                     {
-                        bDownloadPhotosDanbooru.Enabled = true;
+                        bDownloadPhotosGelbooru.Enabled = true;
                         tbTag.Text = "";
                         tbGelbooruUrl.Text = "";
                     }

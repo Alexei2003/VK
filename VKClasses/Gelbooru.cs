@@ -36,6 +36,8 @@ namespace VKClasses
             // Существа
             "+-bestiality+-tentacles";
 
+        //private const string NO_SEARCH = "";
+
         public static HtmlDocument GetPageHTML(HttpClient httpClient, string url, int indexPage = -1, bool useProxy = false)
         {
             if (indexPage > -1)

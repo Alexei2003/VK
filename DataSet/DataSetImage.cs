@@ -72,7 +72,11 @@ namespace DataSet
 
         private static float Corral(Image<Rgb24> img1, Image<Rgb24> img2)
         {
-            Vector3 op = Vector3.Zero, o1 = Vector3.Zero, p1 = Vector3.Zero, o2 = Vector3.Zero, p2 = Vector3.Zero;
+            var op = Vector3.Zero;
+            var o1 = Vector3.Zero;
+            var p1 = Vector3.Zero;
+            var o2 = Vector3.Zero;
+            var p2 = Vector3.Zero;
             int n = 0;
 
             for (int y = 0; y < Math.Min(img1.Height, img2.Height); y++)

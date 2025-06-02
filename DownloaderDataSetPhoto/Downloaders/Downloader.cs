@@ -24,7 +24,8 @@ namespace DownloaderDataSetPhoto.Downloaders
                 Directory.CreateDirectory(pathDir);
             }
 
-            if (NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(image) == currentTag)
+            var getTag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(image);
+            if (getTag == currentTag)
             {
                 return;
             }

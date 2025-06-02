@@ -125,7 +125,7 @@ namespace NeuralNetwork
             {
                 return NeuralNetworkResults(imageOriginal, kTop);
             }
-            catch
+            catch (Exception ex) 
             {
                 return ["#error"];
             }
@@ -209,7 +209,7 @@ namespace NeuralNetwork
             const int width = 224;
             const int channels = 3;
 
-            var tensor = new DenseTensor<float>([batchSize, channels, height, width]);
+            var tensor = new DenseTensor<float>([batchSize, height, width , channels]);
 
             var constVect = new Vector3(255f);
             for (int y = 0; y < height; y++)
@@ -219,9 +219,9 @@ namespace NeuralNetwork
                     var pixel = bitmap[x, y];
                     var vect = new Vector3(pixel.R, pixel.G, pixel.B);
                     vect = vect / constVect;
-                    tensor[0, 0, y, x] = vect[0];
-                    tensor[0, 1, y, x] = vect[1];
-                    tensor[0, 2, y, x] = vect[2];
+                    tensor[0, y, x, 0] = vect[0];
+                    tensor[0, y, x, 1] = vect[1];
+                    tensor[0, y, x, 2] = vect[2];
                 }
             }
 

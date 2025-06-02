@@ -15,35 +15,39 @@ using VKClasses.Tags.Editors;
 using VKClasses.VK;
 using VKClasses.VK.VKApiCustomClasses;
 
+using VkNet.Enums.Filters;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
+using VkNet.Utils;
+
+using User = VkNet.Model.User;
 
 namespace RepetitionOfPostsBot.BotTask
 {
     internal class VKTask
     {
-        private string _groupShortUrl;
-        private long _groupId;
+        private string _vkGroupShortUr;
+        private long _vkGroupId;
         private readonly string[] _tagsNotRepost;
         private readonly Dictionary<string, string> _accessTokens;
         private readonly VkApiCustom _vkApi;
-        private readonly long _chatId;
+        private readonly long _tgChatId;
         private readonly HttpClient _httpClient = new HttpClient();
 
-        public VKTask(string groupShortUr, long groupId, long chatId, string[] tagsNotRepost, Dictionary<string, string> accessTokens)
+        public VKTask(string vkGroupShortUr, long vkGroupId, long tgChatId, string[] tagsNotRepost, Dictionary<string, string> accessTokens)
         {
-            _groupShortUrl = groupShortUr;
-            _groupId = groupId;
+            _vkGroupShortUr = vkGroupShortUr;
+            _vkGroupId = vkGroupId;
             _tagsNotRepost = tagsNotRepost;
             _accessTokens = accessTokens;
-            _chatId = chatId;
+            _tgChatId = tgChatId;
 
             _vkApi = new VkApiCustom(_accessTokens[GosUslugi.VK]);
 
             // Получение первого отложеного поста
             var wall = _vkApi.Wall.Get(new WallGetParams
             {
-                OwnerId = -1 * _groupId,
+                OwnerId = -1 * _vkGroupId,
                 Count = 1,
                 Filter = WallFilter.All
             });
@@ -62,10 +66,15 @@ namespace RepetitionOfPostsBot.BotTask
             {
                 SendVkPostToOther();
             });
-#endif
+
             Task.Run(() =>
             {
                 CreateVkPostFromGelbooru();
+            });
+#endif
+            Task.Run(() =>
+            {
+                ClearPeople();
             });
         }
 
@@ -87,7 +96,7 @@ namespace RepetitionOfPostsBot.BotTask
             {
                 var wall = _vkApi.Wall.Get(new WallGetParams
                 {
-                    OwnerId = -1 * _groupId,
+                    OwnerId = -1 * _vkGroupId,
                     Count = 1,
                     Filter = WallFilter.Postponed
                 });
@@ -97,7 +106,7 @@ namespace RepetitionOfPostsBot.BotTask
                     // Получение самого свежего поста
                     wall = _vkApi.Wall.Get(new WallGetParams
                     {
-                        OwnerId = -1 * _groupId,
+                        OwnerId = -1 * _vkGroupId,
                         Count = 2,
                         Filter = WallFilter.All
                     });
@@ -126,7 +135,7 @@ namespace RepetitionOfPostsBot.BotTask
                         // Получение поста c offset 
                         wall = _vkApi.Wall.Get(new WallGetParams
                         {
-                            OwnerId = -1 * _groupId,
+                            OwnerId = -1 * _vkGroupId,
                             Offset = _offsetPost,
                             Count = COUNT_GET_POSTS,
                             Filter = WallFilter.All
@@ -164,7 +173,7 @@ namespace RepetitionOfPostsBot.BotTask
                                 }
                             }
 
-                            postText = string.Join("", tagsArr.Select(s => "#" + s + _groupShortUrl + "\n"));
+                            postText = string.Join("", tagsArr.Select(s => "#" + s + _vkGroupShortUr + "\n"));
 
                             var bld = new StringBuilder();
                             bld.Append(BaseTagsEditor.GetBaseTagsWithNextLine());
@@ -207,12 +216,11 @@ namespace RepetitionOfPostsBot.BotTask
                             // Повторый пост
                             _vkApi.Wall.Post(new WallPostParams()
                             {
-                                OwnerId = -1 * _groupId,
+                                OwnerId = -1 * _vkGroupId,
                                 FromGroup = true,
                                 Message = '.' + postText,
                                 Attachments = mediaAttachmentList,
                                 PublishDate = publishDate,
-
                             });
 
                             return;
@@ -234,7 +242,7 @@ namespace RepetitionOfPostsBot.BotTask
                 // Получение самого свежего поста
                 var wall = _vkApi.Wall.Get(new WallGetParams
                 {
-                    OwnerId = -1 * _groupId,
+                    OwnerId = -1 * _vkGroupId,
                     Count = 2,
                     Filter = WallFilter.All
                 });
@@ -297,7 +305,7 @@ namespace RepetitionOfPostsBot.BotTask
                     Stories.Post(new GetPhotoUploadServerParams()
                     {
                         AddToNews = true,
-                        GroupId = (ulong)_groupId,
+                        GroupId = (ulong)_vkGroupId,
                         LinkText = StoryLinkText.Open,
                         LinkUrl = "https://vk.com/" + post.ToString().Replace("post", "wall")
                     }, _accessTokens[GosUslugi.VK], "Story.jpg");
@@ -307,7 +315,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                 // Отправка в другие сети
                 var caption = TagsReplacer.ReplaceTagRemoveExcessFromVk(postText);
-                TelegramTask.PushPost(_chatId, _accessTokens[GosUslugi.TELEGRAM], caption, imagesUrl.ToArray());
+                TelegramTask.PushPost(_tgChatId, _accessTokens[GosUslugi.TELEGRAM], caption, imagesUrl.ToArray());
             }
             catch (Exception e)
             {
@@ -439,7 +447,7 @@ namespace RepetitionOfPostsBot.BotTask
             string path_image = Path.Combine("Download", $"Gelbooru-{taskIndex}.jpg");
 
             var href = nodeImage.GetAttributeValue("href", string.Empty);
-            href = href.Replace("amp;", "");
+            href = href.Replace("amp;", newValue: "");
             href = Gelbooru.GetUrlAddMirrorServer(href);
 
             var httpClient = new HttpClient();
@@ -506,7 +514,7 @@ namespace RepetitionOfPostsBot.BotTask
                 // Получение первого отложеного поста
                 var wall = _vkApi.Wall.Get(new WallGetParams
                 {
-                    OwnerId = -1 * _groupId,
+                    OwnerId = -1 * _vkGroupId,
                     Count = 100,
                     Filter = WallFilter.Postponed
                 });
@@ -517,7 +525,7 @@ namespace RepetitionOfPostsBot.BotTask
                     // Получение самого свежего поста
                     wall = _vkApi.Wall.Get(new WallGetParams
                     {
-                        OwnerId = -1 * _groupId,
+                        OwnerId = -1 * _vkGroupId,
                         Count = 2,
                         Filter = WallFilter.All
                     });
@@ -556,7 +564,7 @@ namespace RepetitionOfPostsBot.BotTask
                     .GroupBy(parts => parts[0], parts => parts[1]); // Группируем по Тайтлу
 
                 var tags = groups.Select(g =>
-                    $"#{g.Key}{_groupShortUrl}\n" + string.Join("\n", g.Distinct().Select(p => $"#{p}{_groupShortUrl}")) + "\n"
+                    $"#{g.Key}{_vkGroupShortUr}\n" + string.Join("\n", g.Distinct().Select(p => $"#{p}{_vkGroupShortUr}")) + "\n"
                 );
 
                 var resultTag = BaseTagsEditor.GetBaseTagsWithNextLine() + "\n" + string.Join("\n", tags);
@@ -565,13 +573,49 @@ namespace RepetitionOfPostsBot.BotTask
                 // Новвый пост
                 _vkApi.Wall.Post(new WallPostParams()
                 {
-                    OwnerId = -1 * _groupId,
+                    OwnerId = -1 * _vkGroupId,
                     FromGroup = true,
                     Message = resultTag,
                     Attachments = imageList,
                     PublishDate = publishDate,
                 });
             }
+        }
+
+        public void ClearPeople()
+        {
+            VkCollection<User> members;
+            int offset = 0;
+            const int COUNT_USER = 1000;
+#if DEBUG
+            var count = 0;
+#endif
+            do
+            {
+                members = _vkApi.Groups.GetMembers(new GroupsGetMembersParams
+                {
+                    GroupId = _vkGroupId.ToString(),
+                    Offset = offset,
+                    Count = COUNT_USER,
+                    Fields = UsersFields.All
+                });
+                offset += members.Count;
+
+                foreach (var member in members)
+                {
+                    if (member.Deactivated != Deactivated.Activated || (member.LastSeen != null && member.LastSeen.Time < DateTime.Now.AddMonths(-1)))
+                    {
+                        _vkApi.Groups.RemoveUser(_vkGroupId, member.Id);
+#if DEBUG
+                        count++;
+#endif
+                    }
+                }
+            }
+            while (members.Count == COUNT_USER);
+#if DEBUG
+            Console.WriteLine(count.ToString());
+#endif
         }
     }
 }

@@ -29,5 +29,20 @@ namespace VKClasses.VK.VKApiCustomClasses
                 }
             }
         }
+
+        public bool RemoveUser(long groupId, long userId)
+        {
+            while (true)
+            {
+                try
+                {
+                    return ApiOriginal.Groups.RemoveUser(groupId, userId);
+                }
+                catch (VkNet.Exception.TooManyRequestsException)
+                {
+                    Thread.Sleep(TIME_SLEEP);
+                }
+            }
+        }
     }
 }
