@@ -16,7 +16,7 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(RuntimeIdentifier)' != 'linux-x64'">
-		<PackageReference Include="Microsoft.ML.OnnxRuntime.DirectML" Version="1.21.0" />
+		<PackageReference Include="Microsoft.ML.OnnxRuntime.DirectML" Version="1.22.0" />
 	</ItemGroup>
 
 	<!-- Условия для Linux/macOS -->

@@ -12,7 +12,7 @@ namespace DownloaderDataSetPhoto.Downloaders
             try
             {
 
-                Parallel.For(0, 10, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
+                Parallel.For(0, 10, i =>
                 {
                     using var httpClient = new HttpClient();
 

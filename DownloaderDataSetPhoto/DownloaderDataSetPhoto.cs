@@ -135,7 +135,7 @@ namespace DownloaderDataSetPhoto
                     try
                     {
                         var tags = tbTag.Text.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-                        Parallel.For(0, tags.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
+                        Parallel.For(0, tags.Length, i =>
                         {
                             downloaderVK.SavePhotosFromNewsfeed(tags[i], shift, count, groupId, $"DataSet_{i}");
                         });

@@ -14,7 +14,11 @@ namespace AddDataInDataSet
 {
     internal static class WorkWithDirectory
     {
+#if DEBUG
+        private const string MAIN_DIRECTORY = "E:\\WPS\\VK\\AddDataInDataSet\\bin\\Debug\\net9.0-windows10.0.22621.0\\DATA_SET";
+#else
         private const string MAIN_DIRECTORY = "D:\\NeuralNetwork\\DataSet\\ARTS";
+#endif
         private const string NEW_PATH = $"New";
         private const string ORIGINAL_PATH = $"Original";
         private const string SMALL_PATH = $"Small";
@@ -44,6 +48,11 @@ namespace AddDataInDataSet
                         src.MoveTo(Path.Combine(destination, src.Name));
                     }
                 }
+                else
+                {
+                    src.Delete();
+                }
+
             }
             if (deleteOriginal)
             {
@@ -51,13 +60,26 @@ namespace AddDataInDataSet
             }
         }
 
+        private static readonly Dictionary<string, Image<Rgb24>> _cacheImages = [];
         private static bool Similar(FileInfo src, string destination)
         {
             using var srcImage = Image.Load<Rgb24>(src.FullName);
+            var srcImageCache = DataSetImage.ChangeResolution(srcImage, 100);
+            _cacheImages.Add(src.Name, srcImageCache);
+
             var destinationInfo = new DirectoryInfo(destination);
             foreach (var dest in destinationInfo.GetFiles())
             {
-                using var destImage = Image.Load<Rgb24>(dest.FullName);
+                var destImage = _cacheImages.GetValueOrDefault(dest.Name);
+                if (destImage == null)
+                {
+                    using var destImageTmp = Image.Load<Rgb24>(dest.FullName);
+                    var destImageCache = DataSetImage.ChangeResolution(destImageTmp, 100);
+                    _cacheImages.Add(dest.Name, destImageCache);
+                    destImage = destImageCache;
+                }
+
+
                 if (DataSetImage.IsSimilarImage(srcImage, destImage))
                 {
                     return true;
@@ -76,9 +98,9 @@ namespace AddDataInDataSet
         {
             var tagDirectories = Directory.GetDirectories(Path.Combine(MAIN_DIRECTORY, NEW_PATH));
 
-            Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
+            Parallel.ForEach(tagDirectories, tag =>
             {
-                DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH, GetDirectoryName(tag)), checkSimilar: true, deleteOriginal: true, changeResolution: true);
+                DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH, GetDirectoryName(tag)), checkSimilar: true, deleteOriginal: true, changeResolution: false);
 
                 count[0]++;
             });
@@ -90,7 +112,7 @@ namespace AddDataInDataSet
 
             var tagList = new TagsList();
 
-            Parallel.ForEach(tagDirectories, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
+            Parallel.ForEach(tagDirectories, tag =>
             {
                 var name = GetDirectoryName(tag);
 
@@ -127,7 +149,7 @@ namespace AddDataInDataSet
             dataTable.Columns.Add($"Точность 5% k={countP5}", typeof(float));
             dataTable.Columns.Add($"Точность 10% k={countP10}", typeof(float));
 
-            Parallel.For(0, NeuralNetworkWorker.Labels.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
+            Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
             {
                 var tagOriginal = NeuralNetworkWorker.Labels[i];
 
@@ -216,7 +238,7 @@ namespace AddDataInDataSet
 
 
             var tagsDirectory = Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH);
-            Parallel.For(0, NeuralNetworkWorker.Labels.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
+            Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
             {
                 var tagOriginal = NeuralNetworkWorker.Labels[i];
 

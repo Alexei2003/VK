@@ -57,7 +57,7 @@ namespace VKClasses.Tags
         {
             ConcurrentStack<string> stack = new();
             LastTag = LastTag.ToLower();
-            Parallel.ForEach(tagsList, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, tag =>
+            Parallel.ForEach(tagsList, tag =>
             {
                 var lowerTag = tag.ToLower();
                 if (lowerTag.Contains(LastTag))

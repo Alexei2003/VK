@@ -209,7 +209,7 @@ namespace NeuralNetwork
             const int width = 224;
             const int channels = 3;
 
-            var tensor = new DenseTensor<float>([batchSize, height, width , channels]);
+            var tensor = new DenseTensor<float>([batchSize, height, width, channels]);
 
             var constVect = new Vector3(255f);
             for (int y = 0; y < height; y++)
