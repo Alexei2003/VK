@@ -156,48 +156,51 @@ namespace AddDataInDataSet
 
                 var tagDirectory = Path.Combine(tagsDirectory, tagOriginal);
 
-                var countTrueK1 = 0;
-                var countTrueP5 = 0;
-                var countTrueP10 = 0;
-                var countAll = 0;
-                var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
-
-                foreach (var fileImage in tagDirectoryInfo.GetFiles())
+                if (Directory.Exists(tagDirectory))
                 {
-                    using var image = Image.Load<Rgb24>(fileImage.FullName);
-                    var tagPredictArr = NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
+                    var countTrueK1 = 0;
+                    var countTrueP5 = 0;
+                    var countTrueP10 = 0;
+                    var countAll = 0;
+                    var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
 
-                    for (var k = 0; k < tagPredictArr.Length; k++)
+                    foreach (var fileImage in tagDirectoryInfo.GetFiles())
                     {
-                        if (tagOriginal == tagPredictArr[k])
+                        using var image = Image.Load<Rgb24>(fileImage.FullName);
+                        var tagPredictArr = NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
+
+                        for (var k = 0; k < tagPredictArr.Length; k++)
                         {
-                            if (k < countP10)
+                            if (tagOriginal == tagPredictArr[k])
                             {
-                                countTrueP10++;
-                                if (k < countP5)
+                                if (k < countP10)
                                 {
-                                    countTrueP5++;
-                                    if (k < 1)
+                                    countTrueP10++;
+                                    if (k < countP5)
                                     {
-                                        countTrueK1++;
+                                        countTrueP5++;
+                                        if (k < 1)
+                                        {
+                                            countTrueK1++;
+                                        }
                                     }
                                 }
+                                break;
                             }
-                            break;
                         }
+
+                        countAll++;
                     }
 
-                    countAll++;
+                    //
+                    var vectAll = new Vector3(countAll / 100f);
+                    var vectK = new Vector3(countTrueK1, countTrueP5, countTrueP10);
+                    vectK = vectK / vectAll;
+
+                    dataTable.Rows.Add(tagOriginal, countAll, vectK[0], vectK[1], vectK[2]);
+
+                    count[0]++;
                 }
-
-                //
-                var vectAll = new Vector3(countAll / 100f);
-                var vectK = new Vector3(countTrueK1, countTrueP5, countTrueP10);
-                vectK = vectK / vectAll;
-
-                dataTable.Rows.Add(tagOriginal, countAll, vectK[0], vectK[1], vectK[2]);
-
-                count[0]++;
             });
 
             worksheet.Cell(1, 1).InsertTable(dataTable);
