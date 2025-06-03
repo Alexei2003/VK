@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Collections.Concurrent;
+using System.Data;
 using System.Numerics;
 
 using ClosedXML.Excel;
@@ -14,7 +15,7 @@ namespace AddDataInDataSet
 {
     internal static class WorkWithDirectory
     {
-#if DEBUG
+#if !DEBUG
         private const string MAIN_DIRECTORY = "E:\\WPS\\VK\\AddDataInDataSet\\bin\\Debug\\net9.0-windows10.0.22621.0\\DATA_SET";
 #else
         private const string MAIN_DIRECTORY = "D:\\NeuralNetwork\\DataSet\\ARTS";
@@ -60,12 +61,12 @@ namespace AddDataInDataSet
             }
         }
 
-        private static readonly Dictionary<string, Image<Rgb24>> _cacheImages = [];
+        private static readonly ConcurrentDictionary<string, Image<Rgb24>> _cacheImages = [];
         private static bool Similar(FileInfo src, string destination)
         {
             using var srcImage = Image.Load<Rgb24>(src.FullName);
             var srcImageCache = DataSetImage.ChangeResolution(srcImage, 100);
-            _cacheImages.Add(src.Name, srcImageCache);
+            _cacheImages.TryAdd(src.Name, srcImageCache);
 
             var destinationInfo = new DirectoryInfo(destination);
             foreach (var dest in destinationInfo.GetFiles())
@@ -75,7 +76,7 @@ namespace AddDataInDataSet
                 {
                     using var destImageTmp = Image.Load<Rgb24>(dest.FullName);
                     var destImageCache = DataSetImage.ChangeResolution(destImageTmp, 100);
-                    _cacheImages.Add(dest.Name, destImageCache);
+                    _cacheImages.TryAdd(dest.Name, destImageCache);
                     destImage = destImageCache;
                 }
 
