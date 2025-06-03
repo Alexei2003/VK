@@ -14,7 +14,7 @@ namespace NeuralNetwork
 {
     public static class NeuralNetworkWorker
     {
-        private const int MAX_SESSIONS_GPU = 4;
+        public const int MAX_SESSIONS_GPU = 4;
 
         private static readonly Session[] _sessionArr;
 
@@ -44,38 +44,33 @@ namespace NeuralNetwork
             var sessionList = new List<Session>();
 
             // Загружаем модель
-#if WINDOWS
-            try
+            var id = 0;
+            while (true)
             {
-                var id = 0;
-                while (true)
+                for (var i = 0; i < MAX_SESSIONS_GPU; i++)
                 {
-                    // GPU
-                    // Пытаемся использовать DirectML (работает через DirectX 12)
-                    var options = new SessionOptions();
-                    options.AppendExecutionProvider_DML(id);
-                    for (var i = 0; i < MAX_SESSIONS_GPU; i++)
+                    var (inferenceSession, isCPU) = CreateInferenceSession(id);
+                    if (isCPU)
                     {
-                        sessionList.Add(new Session(new InferenceSession("model.onnx", options)));
+                        if(sessionList.Count == 0)
+                        {
+                            sessionList.Add(new Session(inferenceSession));
+                        }
+                        id = -1;
+                        break;
                     }
-                    id++;
+                    else
+                    {
+                        sessionList.Add(new Session(inferenceSession));
+                    }
                 }
-            }
-            catch { }
-#endif
-
-            try
-            {
-                //CPU 
-                if (sessionList.Count == 0)
+                if(id == -1)
                 {
-                    sessionList.Add(new Session(new InferenceSession("model.onnx")));
+                    break;
                 }
+                id++;
             }
-            catch (Exception e)
-            {
-                Logs.WriteException(e);
-            }
+
 
             _sessionArr = [.. sessionList];
             _inputName = _sessionArr[0].Inference.InputMetadata.Keys.First();
@@ -90,6 +85,26 @@ namespace NeuralNetwork
             {
                 Labels = ["#unknown"]; // На случай, если файл отсутствует
             }
+        }
+
+
+        private static (InferenceSession, bool) CreateInferenceSession(int id = -1)
+        {
+            var options = new SessionOptions();
+            var isCPU = true;
+#if WINDOWS
+            if (id != -1)
+            {
+                // Пытаемся использовать DirectML (работает через DirectX 12)
+                try
+                {
+                    options.AppendExecutionProvider_DML(id);
+                    isCPU = false;
+                }
+                catch { }
+            }
+#endif
+            return (new InferenceSession("model.onnx", options), isCPU);
         }
 
         private struct Label
@@ -119,19 +134,7 @@ namespace NeuralNetwork
             return arr;
         }
 
-        public static string[] NeuralNetworkResultKTopCount(Image<Rgb24> imageOriginal, int kTop = 15)
-        {
-            try
-            {
-                return NeuralNetworkResults(imageOriginal, kTop);
-            }
-            catch (Exception ex) 
-            {
-               return ["#error"];
-            }
-        }
-
-        private static string[] NeuralNetworkResults(Image<Rgb24> imageOriginal, int kTop = 15)
+        private static string[] NeuralNetworkResultKTopCount(Image<Rgb24> imageOriginal, int kTop = 15)
         {
             using var image = DataSetImage.ChangeResolution224x224(imageOriginal);
 
@@ -163,19 +166,40 @@ namespace NeuralNetwork
             float[] outputArr;
             lock (session)
             {
-                if (session.IsFirst == true)
+                try
                 {
-                    lock (_sessionArr)
+                    if (session.IsFirst == true)
+                    {
+                        lock (_sessionArr)
+                        {
+                            using var results = session.Inference.Run(input);
+                            outputArr = [.. results[0].AsEnumerable<float>()];
+                        }
+                        session.IsFirst = false;
+                    }
+                    else
                     {
                         using var results = session.Inference.Run(input);
                         outputArr = [.. results[0].AsEnumerable<float>()];
                     }
-                    session.IsFirst = false;
                 }
-                else
+                catch (Exception ex)
                 {
-                    using var results = session.Inference.Run(input);
-                    outputArr = [.. results[0].AsEnumerable<float>()];
+                    Logs.WriteException(ex);
+
+                    var id = -1;
+                    if (_sessionArr.Length > 1)
+                    {
+                        int index = Array.IndexOf(_sessionArr, session);
+                        id = index / MAX_SESSIONS_GPU;
+                    }
+                    session.Inference.Dispose();
+                    session.IsFirst = true;
+                    var (inferenceSession, isCPU) = CreateInferenceSession(id);
+                    session.Inference = inferenceSession;
+                    session.IsBusy = false;
+
+                    return ["#error"];
                 }
             }
             session.IsBusy = false;
