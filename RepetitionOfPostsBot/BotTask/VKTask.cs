@@ -419,8 +419,8 @@ namespace RepetitionOfPostsBot.BotTask
             return true;
         }
 
-        private readonly Queue<Image<Rgb24>> _imageCheckedQueue = [];
-        private readonly Queue<PhotoWithTag> _urlImageNotPostedQueue = [];
+        private readonly Queue<Image<Rgb24>> _checkedImageQueue = [];
+        private readonly Queue<PhotoWithTag> _imageToPostQueue = [];
 
         private sealed class PhotoWithTag
         {
@@ -435,10 +435,10 @@ namespace RepetitionOfPostsBot.BotTask
             }
         }
 
+        private const int CountCheckedImage = 10;
+        private const int CountImageToPost = 30;
         private void SaveImage(HtmlNode nodeImage, HtmlNode[] nodeTags, int taskIndex)
         {
-            const int COUNT_CHECKED_IMAGES = 10;
-            const int COUNT_NOT_POST_IMAGES = 30;
 
             if (!Directory.Exists("Download"))
             {
@@ -476,9 +476,9 @@ namespace RepetitionOfPostsBot.BotTask
 
                     if (tmpTag.Contains(tmpResultTag) || tmpResultTag.Contains(tmpTag))
                     {
-                        lock (_imageCheckedQueue)
+                        lock (_checkedImageQueue)
                         {
-                            foreach (var checkedImage in _imageCheckedQueue)
+                            foreach (var checkedImage in _checkedImageQueue)
                             {
                                 if (DataSetImage.IsSimilarImage(checkedImage, image))
                                 {
@@ -486,19 +486,19 @@ namespace RepetitionOfPostsBot.BotTask
                                     return;
                                 }
                             }
+
+                            while (_checkedImageQueue.Count > CountCheckedImage)
+                            {
+                                using var imageDel = _checkedImageQueue.Dequeue();
+                            }
+                            _checkedImageQueue.Enqueue(image);
                         }
 
-                        while (_imageCheckedQueue.Count > COUNT_CHECKED_IMAGES)
+                        while (_imageToPostQueue.Count > CountImageToPost)
                         {
-                            using var imageDel = _imageCheckedQueue.Dequeue();
+                            _imageToPostQueue.Dequeue();
                         }
-                        _imageCheckedQueue.Enqueue(image);
-
-                        while (_urlImageNotPostedQueue.Count > COUNT_NOT_POST_IMAGES)
-                        {
-                            _urlImageNotPostedQueue.Dequeue();
-                        }
-                        _urlImageNotPostedQueue.Enqueue(new PhotoWithTag(resultTag, _vkApi.Photo.AddOnVKServer(httpClient, path_image)[0]));
+                        _imageToPostQueue.Enqueue(new PhotoWithTag(resultTag, _vkApi.Photo.AddOnVKServer(httpClient, path_image)[0]));
 
                         return;
                     }
@@ -508,7 +508,7 @@ namespace RepetitionOfPostsBot.BotTask
 
         private void CreatePost()
         {
-            var countImagesPerPostLimit = int.Min((int)double.Ceiling(_urlImageNotPostedQueue.Count / 2.0), 9);
+            var countImagesPerPostLimit = int.Min(_imageToPostQueue.Count / 2, 9);
             if (countImagesPerPostLimit > 0)
             {
                 // Получение первого отложеного поста
@@ -555,7 +555,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                 for (var i = 0; i < countImagesPerPostLimit; i++)
                 {
-                    imagesForSend.Add(_urlImageNotPostedQueue.Dequeue());
+                    imagesForSend.Add(_imageToPostQueue.Dequeue());
                 }
 
                 var groups = imagesForSend
