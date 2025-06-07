@@ -1,4 +1,9 @@
-﻿using VkNet;
+﻿using System.Collections.ObjectModel;
+using System.Text.Json;
+
+using Newtonsoft.Json;
+
+using VkNet;
 using VkNet.Model;
 
 namespace VKClasses.VK.VKApiCustomClasses
@@ -14,13 +19,34 @@ namespace VKClasses.VK.VKApiCustomClasses
             this.TIME_SLEEP = TIME_SLEEP;
         }
 
+        private class ResponseClass
+        {
+            public WallGetObject Response { get; set; } = new();
+        }
+
         public WallGetObject Get(WallGetParams @params, bool skipAuthorization = false)
         {
             while (true)
             {
                 try
                 {
-                    return ApiOriginal.Wall.Get(@params, skipAuthorization);
+                    //return ApiOriginal.Wall.Get(@params, skipAuthorization);
+
+                    var response = ApiOriginal.Invoke("wall.get",
+                    new Dictionary<string, string>
+                    {
+                        {"v","5.199"},
+                        {"access_token", ApiOriginal.Token},
+                        {"domain",  @params.OwnerId?.ToString() ?? ""},
+                        {"offset", @params.Offset.ToString()},
+                        {"count", @params.Count.ToString()},
+                        {"filter", @params.Filter?.ToString() ?? ""},
+                        {"extended", @params.Extended.ToString()},
+                        {"fields", @params.Fields?.ToString() ?? ""},
+                    });
+                    response = response.Replace("base", "z");
+                    var responseClass = JsonConvert.DeserializeObject<ResponseClass>(response);
+                    return responseClass.Response;
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {

@@ -55,9 +55,10 @@ namespace RepetitionOfPostsBot.BotTask
             _offsetPost = GetRandomID(wall.TotalCount);
         }
 
+        private int time = 0;
         public void RunAll()
         {
-#if !DEBUG
+#if DEBUG
             Task.Run(() =>
             {
                 RepeatVKPosts();
@@ -72,10 +73,18 @@ namespace RepetitionOfPostsBot.BotTask
                 CreateVkPostFromGelbooru();
             });
 #endif
-            Task.Run(() =>
+            if(time > 24)
             {
-                ClearPeople();
-            });
+                Task.Run(() =>
+                {
+                    ClearPeople();
+                });
+                time = 0;
+            }
+            else
+            {
+                time++;
+            }
         }
 
         public static ulong GetRandomID(ulong max)
@@ -302,13 +311,13 @@ namespace RepetitionOfPostsBot.BotTask
                 {
                     _ = ImageTransfer.DownloadImageAsync(new HttpClient(), imagesUrl[0], "Story.jpg").Result;
 
-                    Stories.Post(new GetPhotoUploadServerParams()
+                    _vkApi.Stories.Post(new GetPhotoUploadServerParams()
                     {
                         AddToNews = true,
                         GroupId = (ulong)_vkGroupId,
                         LinkText = StoryLinkText.Open,
                         LinkUrl = "https://vk.com/" + post.ToString().Replace("post", "wall")
-                    }, _accessTokens[GosUslugi.VK], "Story.jpg");
+                    }, "Story.jpg");
                 }
 
                 // Клипы
