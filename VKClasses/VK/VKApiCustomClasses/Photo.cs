@@ -80,19 +80,26 @@ namespace VKClasses.VK.VKApiCustomClasses
             }
         }
 
-        public ReadOnlyCollection<VkNet.Model.Photo> AddOnVKServer(HttpClient httpClient, Image<Rgb24> image, string fileName = "Post.jpg")
+        public ReadOnlyCollection<VkNet.Model.Photo>? AddOnVKServer(HttpClient httpClient, Image<Rgb24> image, string fileName = "Post.jpg")
         {
             image.SaveAsJpeg(fileName);
 
             return AddOnVKServer(httpClient, fileName);
         }
 
-        public ReadOnlyCollection<VkNet.Model.Photo> AddOnVKServer(HttpClient httpClient, string fileName)
+        public ReadOnlyCollection<VkNet.Model.Photo>? AddOnVKServer(HttpClient httpClient, string fileName)
         {
             var uploadServer = GetWallUploadServer();
             var responseFile = ImageTransfer.UploadImageAsync(httpClient, new Uri(uploadServer.UploadUrl), fileName).Result;
 
-            return SaveWallPhoto(responseFile, null);
+            if (!string.IsNullOrEmpty(responseFile))
+            {
+                return SaveWallPhoto(responseFile, null);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

@@ -77,7 +77,7 @@ namespace RepetitionOfPostsBot.BotTask
             {
                 Task.Run(() =>
                 {
-                    ClearPeople();
+                   ClearPeople();
                 });
                 time = 0;
             }
@@ -420,7 +420,7 @@ namespace RepetitionOfPostsBot.BotTask
                     }
                     catch (Exception ex)
                     {
-                        Logs.WriteException(ex);
+                        Logs.WriteException(ex, "СБОЙ В ТАСКАХ");
                     }
                 });
                 _taskList.Add(task);
@@ -466,6 +466,11 @@ namespace RepetitionOfPostsBot.BotTask
             }
             var image = SixLabors.ImageSharp.Image.Load<Rgb24>(path_image);
 
+            if(image == null)
+            {
+                return;
+            }
+
             var resultTags = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
 
             foreach (var nodeTag in nodeTags)
@@ -507,7 +512,12 @@ namespace RepetitionOfPostsBot.BotTask
                         {
                             _imageToPostQueue.Dequeue();
                         }
-                        _imageToPostQueue.Enqueue(new PhotoWithTag(resultTag, _vkApi.Photo.AddOnVKServer(httpClient, path_image)[0]));
+                        var photo = _vkApi.Photo.AddOnVKServer(httpClient, path_image)?[0];
+
+                        if(photo != null)
+                        {
+                            _imageToPostQueue.Enqueue(new PhotoWithTag(resultTag, photo));
+                        }
 
                         return;
                     }
