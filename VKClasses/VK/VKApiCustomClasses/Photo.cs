@@ -1,5 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -34,13 +37,41 @@ namespace VKClasses.VK.VKApiCustomClasses
             }
         }
 
-        public ReadOnlyCollection<VkNet.Model.Photo> SaveWallPhoto(string response, ulong? userId, ulong? groupId = null, string? caption = null)
+        private class ResponseClass
+        {
+            public ReadOnlyCollection<VkNet.Model.Photo> Response { get; set; } = null;
+        }
+
+        public ReadOnlyCollection<VkNet.Model.Photo> SaveWallPhoto(string responseParam, ulong? userId, ulong? groupId = null, string? caption = null)
         {
             while (true)
             {
                 try
                 {
-                    return ApiOriginal.Photo.SaveWallPhoto(response, userId, groupId, caption);
+                    //return ApiOriginal.Photo.SaveWallPhoto(response, userId, groupId, caption);
+
+                    var obj = JObject.Parse(responseParam);
+
+                    // Получаем значения
+                    var photo = (obj["photo"] ?? new object()).ToString();
+                    var hash = (obj["hash"] ?? new object()).ToString();
+                    var server = (obj["server"] ?? -1).ToString();
+
+                    var response = ApiOriginal.Invoke("photos.saveWallPhoto",
+                    new Dictionary<string, string>
+                    {
+                        { "v", "5.199" },
+                        { "access_token", ApiOriginal.Token },
+                        {"user_id", userId.ToString() ?? ""},
+                        {"groupId", groupId.ToString() ?? "" },
+                        {"photo", photo ?? "" },
+                        {"server", server ?? "" },
+                        {"hash", hash ?? "" },
+                        {"caption", caption ?? "" },
+                    });
+                    response = response.Replace("base", "z");
+                    var responseClass = JsonConvert.DeserializeObject<ResponseClass>(response);
+                    return responseClass.Response;
                 }
                 catch (VkNet.Exception.TooManyRequestsException)
                 {

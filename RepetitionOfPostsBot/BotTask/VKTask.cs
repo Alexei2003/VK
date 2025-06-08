@@ -58,7 +58,7 @@ namespace RepetitionOfPostsBot.BotTask
         private int time = 0;
         public void RunAll()
         {
-#if DEBUG
+#if !DEBUG
             Task.Run(() =>
             {
                 RepeatVKPosts();
@@ -110,7 +110,7 @@ namespace RepetitionOfPostsBot.BotTask
                     Filter = WallFilter.Postponed
                 });
 
-                if (wall.WallPosts.Count < 1 || ((wall.WallPosts[0].Date.Value.Hour) > (DateTime.UtcNow.AddHours(1).Hour)))
+                if (wall.WallPosts.Count < 1 || ((wall.WallPosts[0].Date.Value.Hour) > (DateTime.Now.AddHours(1).Hour)))
                 {
                     // Получение самого свежего поста
                     wall = _vkApi.Wall.Get(new WallGetParams
@@ -120,7 +120,7 @@ namespace RepetitionOfPostsBot.BotTask
                         Filter = WallFilter.All
                     });
 
-                    var lastPost = wall.WallPosts[0].IsPinned.Value ? wall.WallPosts[1] : wall.WallPosts[0];
+                    var lastPost = wall.WallPosts[0].IsPinned != null ? wall.WallPosts[1] : wall.WallPosts[0];
 
                     var firstPostData = lastPost.Date;
 
@@ -257,7 +257,7 @@ namespace RepetitionOfPostsBot.BotTask
                 });
 
                 Post post;
-                if (wall.WallPosts[0].IsPinned.Value)
+                if (wall.WallPosts[0].IsPinned != null)
                 {
                     post = wall.WallPosts[1];
                 }
@@ -539,8 +539,8 @@ namespace RepetitionOfPostsBot.BotTask
                         Filter = WallFilter.All
                     });
 
-                    if (wall.WallPosts[0].IsPinned.Value)
-                    {
+                    if (wall.WallPosts[0].IsPinned != null)
+                    {   
                         lastPost = wall.WallPosts[1];
                     }
                     else

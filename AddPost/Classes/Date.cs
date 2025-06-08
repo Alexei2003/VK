@@ -43,7 +43,7 @@ namespace AddPost.Classes
                     Filter = WallFilter.All,
                 });
 
-                if (wall.WallPosts[0].IsPinned.Value)
+                if (wall.WallPosts[0].IsPinned != null)
                 {
                     post = wall.WallPosts[1];
                 }
