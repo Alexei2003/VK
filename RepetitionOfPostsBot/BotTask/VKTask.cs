@@ -61,19 +61,18 @@ namespace RepetitionOfPostsBot.BotTask
 #if !DEBUG
             Task.Run(() =>
             {
-                RepeatVKPosts();
-            });
-            Task.Run(() =>
-            {
                 SendVkPostToOther();
             });
 
             Task.Run(() =>
             {
-                CreateVkPostFromGelbooru();
+                if (!CreateVkPostFromGelbooru())
+                {
+                    RepeatVKPosts();
+                }
             });
 #endif
-            if(time > 24)
+            if (time > 24)
             {
                 Task.Run(() =>
                 {
@@ -334,7 +333,7 @@ namespace RepetitionOfPostsBot.BotTask
 
         private string _lastViewedUrl = "";
         private List<Task> _taskList = [];
-        public void CreateVkPostFromGelbooru()
+        public bool CreateVkPostFromGelbooru()
         {
             const string url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
 
@@ -375,11 +374,12 @@ namespace RepetitionOfPostsBot.BotTask
 
             try
             {
-                CreatePost();
+                return CreatePost();
             }
             catch (Exception e)
             {
                 Logs.WriteException(e);
+                return false;
             }
         }
 
@@ -412,15 +412,16 @@ namespace RepetitionOfPostsBot.BotTask
                     continue;
                 }
 
+                var taskIndex = _taskList.Count;
                 var task = Task.Run(() =>
                 {
                     try
                     {
-                        SaveImage(nodesImageArr[0], nodeTagsArr, _taskList.Count);
+                        SaveImage(nodesImageArr[0], nodeTagsArr, taskIndex);
                     }
                     catch (Exception ex)
                     {
-                        Logs.WriteException(ex, "СБОЙ В ТАСКАХ");
+                        Logs.WriteException(ex, "ERROR IN TASK");
                     }
                 });
                 _taskList.Add(task);
@@ -525,7 +526,7 @@ namespace RepetitionOfPostsBot.BotTask
             }
         }
 
-        private void CreatePost()
+        private bool CreatePost()
         {
             var countImagesPerPostLimit = int.Min(_imageToPostQueue.Count / 2, 9);
             if (countImagesPerPostLimit > 0)
@@ -598,6 +599,11 @@ namespace RepetitionOfPostsBot.BotTask
                     Attachments = imageList,
                     PublishDate = publishDate,
                 });
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
