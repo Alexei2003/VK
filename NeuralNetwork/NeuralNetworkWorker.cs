@@ -41,6 +41,17 @@ namespace NeuralNetwork
         // Статический конструктор для инициализации
         static NeuralNetworkWorker()
         {
+            // Загружаем метки классов
+            string labelFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "labels.txt");
+            if (File.Exists(labelFilePath))
+            {
+                Labels = File.ReadAllLines(labelFilePath);
+            }
+            else
+            {
+                Labels = ["#unknown"]; // На случай, если файл отсутствует
+            }
+
             var sessionList = new List<Session>();
 
             // Загружаем модель
@@ -71,20 +82,8 @@ namespace NeuralNetwork
                 id++;
             }
 
-
             _sessionArr = [.. sessionList];
             _inputName = _sessionArr[0].Inference.InputMetadata.Keys.First();
-
-            // Загружаем метки классов
-            string labelFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "labels.txt");
-            if (File.Exists(labelFilePath))
-            {
-                Labels = File.ReadAllLines(labelFilePath);
-            }
-            else
-            {
-                Labels = ["#unknown"]; // На случай, если файл отсутствует
-            }
         }
 
 

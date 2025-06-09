@@ -21,7 +21,7 @@
 
 	<!-- Условия для Linux/macOS -->
 	<ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
-		<PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.21.0" />
+		<PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.22.0" />
 	</ItemGroup>
 	
   <ItemGroup>
