@@ -55,7 +55,7 @@ namespace RepetitionOfPostsBot.BotTask
             _offsetPost = GetRandomID(wall.TotalCount);
         }
 
-        private int time = 0;
+        private int _time = 0;
         public void RunAll()
         {
 #if !DEBUG
@@ -63,7 +63,9 @@ namespace RepetitionOfPostsBot.BotTask
             {
                 SendVkPostToOther();
             });
+#endif
 
+#if !DEBUG
             Task.Run(() =>
             {
                 if (!CreateVkPostFromGelbooru())
@@ -72,18 +74,21 @@ namespace RepetitionOfPostsBot.BotTask
                 }
             });
 #endif
-            if (time > 24)
+
+#if !DEBUG
+            if (_time > 24)
             {
                 Task.Run(() =>
                 {
                    ClearPeople();
                 });
-                time = 0;
+                _time = 0;
             }
             else
             {
-                time++;
+                _time++;
             }
+#endif
         }
 
         public static ulong GetRandomID(ulong max)
@@ -335,41 +340,44 @@ namespace RepetitionOfPostsBot.BotTask
         private List<Task> _taskList = [];
         public bool CreateVkPostFromGelbooru()
         {
-            const string url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
-
-            var tmpLastViewedUrl = "";
-
-            try
+            if (RandomStatic.Rand.Next(12) == 0)
             {
-                for (var i = 0; i < 10; i++)
+                const string url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
+
+                var tmpLastViewedUrl = "";
+
+                try
                 {
-                    var htmlDocument = Gelbooru.GetPageHTML(_httpClient, url, i, useProxy: true);
-
-                    var nodesArr = htmlDocument.DocumentNode
-                        .SelectNodes("//a[@id and contains(@href, 'https') and contains(@href, 'gelbooru.com')]")
-                        .ToArray();
-
-                    if (i == 0)
+                    for (var i = 0; i < 10; i++)
                     {
-                        tmpLastViewedUrl = nodesArr[0].GetAttributeValue("href", string.Empty);
+                        var htmlDocument = Gelbooru.GetPageHTML(_httpClient, url, i, useProxy: true);
+
+                        var nodesArr = htmlDocument.DocumentNode
+                            .SelectNodes("//a[@id and contains(@href, 'https') and contains(@href, 'gelbooru.com')]")
+                            .ToArray();
+
+                        if (i == 0)
+                        {
+                            tmpLastViewedUrl = nodesArr[0].GetAttributeValue("href", string.Empty);
+                        }
+
+                        if (!OpenArtsPage(nodesArr, _lastViewedUrl))
+                        {
+                            break;
+                        }
                     }
 
-                    if (!OpenArtsPage(nodesArr, _lastViewedUrl))
-                    {
-                        break;
-                    }
+                    _lastViewedUrl = tmpLastViewedUrl;
+                    Task.WaitAll(_taskList);
                 }
-
-                _lastViewedUrl = tmpLastViewedUrl;
-                Task.WaitAll(_taskList);
-            }
-            catch (Exception e)
-            {
-                Logs.WriteException(e);
-            }
-            finally
-            {
-                _taskList.Clear();
+                catch (Exception e)
+                {
+                    Logs.WriteException(e);
+                }
+                finally
+                {
+                    _taskList.Clear();
+                }
             }
 
             try
@@ -445,8 +453,8 @@ namespace RepetitionOfPostsBot.BotTask
             }
         }
 
-        private const int CountCheckedImage = 10;
-        private const int CountImageToPost = 30;
+        private const int CountCheckedImage = 20;
+        private const int CountImageToPost = 120;
         private void SaveImage(HtmlNode nodeImage, HtmlNode[] nodeTags, int taskIndex)
         {
 
@@ -528,9 +536,13 @@ namespace RepetitionOfPostsBot.BotTask
 
         private bool CreatePost()
         {
-            var countImagesPerPostLimit = int.Min(_imageToPostQueue.Count / 2, 9);
+            var countImagesPerPostLimit = _imageToPostQueue.Count / 2;
+
             if (countImagesPerPostLimit > 0)
             {
+                var correctCount = new int[] { 9, 6, 4, 2, 1 };
+                countImagesPerPostLimit = correctCount.First(i => i < countImagesPerPostLimit);
+
                 // Получение первого отложеного поста
                 var wall = _vkApi.Wall.Get(new WallGetParams
                 {
