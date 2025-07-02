@@ -1,6 +1,6 @@
 ﻿namespace LikesRepostsBots.Classes
 {
-    internal sealed class BotsWorksParams
+    public sealed class BotsWorksParams
     {
         public bool MakeRepost { get; set; } = false;
         public int AddFriendsCount { get; set; } = 0;

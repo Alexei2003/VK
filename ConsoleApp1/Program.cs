@@ -3,7 +3,7 @@
 using VKClasses;
 using VKClasses.VK;
 
-internal class Program
+public class Program
 {
     private static void Main(string[] args)
     {

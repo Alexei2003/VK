@@ -2,7 +2,7 @@
 
 namespace LikesRepostsBots.Classes
 {
-    internal static class PeoplesList
+    public static class PeoplesList
     {
         private const int CHUNK_SIZE = 1_000_000;
         private const string FILE_PREFIX = "PeopleDictionary_";

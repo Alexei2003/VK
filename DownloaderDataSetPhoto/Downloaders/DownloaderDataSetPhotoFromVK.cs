@@ -7,7 +7,7 @@ using VkNet.Model;
 
 namespace DownloaderDataSetPhoto.Downloaders
 {
-    internal sealed class DownloaderDataSetPhotoFromVK
+    public sealed class DownloaderDataSetPhotoFromVK
     {
         private readonly VkApiCustom api;
         private readonly TagsList tagList;

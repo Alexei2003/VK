@@ -2,7 +2,7 @@
 
 namespace AddDataInDataSet
 {
-    internal class TagsList
+    public class TagsList
     {
         private HashSet<string>? tagsList = null;
 

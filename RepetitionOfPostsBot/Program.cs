@@ -1,21 +1,43 @@
-﻿using RepetitionOfPostsBot.BotTask;
-
-using VKClasses;
+﻿using RepetitionOfPostsBot.UI;
 
 namespace RepetitionOfPostsBot
 {
-    internal static class Program
+    public static class Program
     {
-
-        private static void Main()
+        private static void Main(string[] args)
         {
-            var accessTokens = GosUslugi.GetAccessTokens();
-            var task = new VKTask("@anime_art_for_every_day", 220199532, -1002066495859, ["Угадайка"], accessTokens);
-            while (true)
-            {
-                task.RunAll();
 
-                Thread.Sleep(TimeSpan.FromHours(1));
+            if (args.Length == 0)
+            {
+                Console.WriteLine(
+                    "Тип \n" +
+                    "1.Клиент\n" +
+                    "2.Сервер");
+                switch (Convert.ToInt32(Console.ReadLine()))
+                {
+                    case 1:
+                        Client.Start();
+                        break;
+                    case 2:
+                        Server.Start();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                switch (args[0])
+                {
+                    case "-client":
+                        Client.Start();
+                        break;
+                    case "-server":
+                        Server.Start();
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }

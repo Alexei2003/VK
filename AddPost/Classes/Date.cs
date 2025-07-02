@@ -5,7 +5,7 @@ using VkNet.Model;
 
 namespace AddPost.Classes
 {
-    internal sealed class Date
+    public sealed class Date
     {
         private readonly VkApiCustom api;
 

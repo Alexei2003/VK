@@ -13,7 +13,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace AddDataInDataSet
 {
-    internal static class WorkWithDirectory
+    public static class WorkWithDirectory
     {
 #if DEBUG
         private const string MAIN_DIRECTORY = "E:\\WPS\\VK\\AddDataInDataSet\\bin\\Debug\\net9.0-windows10.0.22621.0\\DATA_SET";

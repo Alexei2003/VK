@@ -9,7 +9,7 @@ using VkNet.Enums.StringEnums;
 
 namespace Statistics
 {
-    internal static class Program
+    public static class Program
     {
         private const long GROUP_ID = 220199532;
         private const int SHIFT_POSTS = 100;

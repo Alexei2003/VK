@@ -4,12 +4,14 @@ using Other;
 
 using static LikesRepostsBots.Classes.BotsWorksParams;
 
-namespace LikesRepostsBots
+namespace LikesRepostsBots.UI
 {
-    internal static class Client
+    public class Client : BaseUI
     {
         public static void Start()
         {
+            Initialize();
+
             BotsWorksParams botParams = new();
 
             bool BanPeopleFromGroup = false;
@@ -58,18 +60,15 @@ namespace LikesRepostsBots
                 botParams.GroupIdForBad = Convert.ToInt64(Console.ReadLine());
             }
 
-            var accessTokensAndNames = File.ReadAllLines(Path.Combine("AccessTokens.txt"));
-
-            var bots = new BotsList(accessTokensAndNames);
-
             botParams.GroupIdForGood = 220199532;
-            for (int i = 0; i < bots.Count; i++)
+
+            for (int i = 0; i < _botList.Count; i++)
             {
                 if (BanPeopleFromGroup && RandomStatic.Rand.Next(3) == 0)
                 {
                     botParams.BanPeopleFromGroup = true;
                 }
-                bots[i].Start(botParams);
+                _botList[i].Start(botParams);
                 if (botParams.BanPeopleFromGroup)
                 {
                     BanPeopleFromGroup = false;

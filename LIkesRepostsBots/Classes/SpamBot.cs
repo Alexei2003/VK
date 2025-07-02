@@ -10,7 +10,7 @@ using static LikesRepostsBots.Classes.BotsWorksParams;
 
 namespace LikesRepostsBots.Classes
 {
-    internal sealed class SpamBot
+    public sealed class SpamBot
     {
         private readonly VkApiCustom _api;
         private const int CHANCE_LIKE_COMMENTS = 5;

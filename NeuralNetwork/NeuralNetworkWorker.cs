@@ -63,7 +63,7 @@ namespace NeuralNetwork
                     var (inferenceSession, isCPU) = CreateInferenceSession(id);
                     if (isCPU)
                     {
-                        if(sessionList.Count == 0)
+                        if (sessionList.Count == 0)
                         {
                             sessionList.Add(new Session(inferenceSession));
                         }
@@ -75,7 +75,7 @@ namespace NeuralNetwork
                         sessionList.Add(new Session(inferenceSession));
                     }
                 }
-                if(id == -1)
+                if (id == -1)
                 {
                     break;
                 }

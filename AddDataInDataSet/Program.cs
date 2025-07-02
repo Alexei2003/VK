@@ -1,6 +1,6 @@
 ﻿namespace AddDataInDataSet
 {
-    internal static class Program
+    public static class Program
     {
         private static int[] count = [1];
 

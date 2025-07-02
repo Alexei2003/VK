@@ -68,7 +68,7 @@ namespace DataSet
         {
             using var resizedSrcImgMin = ChangeResolution(srcImage, SizeMin);
             using var resizedDestImgMin = ChangeResolution(destImage, SizeMin);
-            if(Corral(resizedSrcImgMin, resizedDestImgMin) > 0.85f)
+            if (Corral(resizedSrcImgMin, resizedDestImgMin) > 0.85f)
             {
                 using var resizedSrcImgMax = ChangeResolution(srcImage, SizeMax);
                 using var resizedDestImgMax = ChangeResolution(destImage, SizeMax);

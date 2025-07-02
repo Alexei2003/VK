@@ -6,7 +6,7 @@ using VKClasses;
 
 namespace DownloaderDataSetPhoto.Downloaders
 {
-    internal static class Downloader
+    public static class Downloader
     {
         public static void DownloadPhoto(HttpClient httpClient, Uri url, string currentTag, string fileName)
         {

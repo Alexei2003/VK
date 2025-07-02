@@ -2,7 +2,7 @@
 
 namespace LikesRepostsBots.Classes
 {
-    internal sealed class BotsList
+    public sealed class BotsList
     {
         private readonly List<SpamBot> bots = [];
         public int Count { get; private set; }

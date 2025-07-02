@@ -4,7 +4,7 @@ using VKClasses;
 
 namespace DownloaderDataSetPhoto.Downloaders
 {
-    internal static class DownloaderDataSetPhotoFromGelbooru
+    public static class DownloaderDataSetPhotoFromGelbooru
     {
 
         public static void SavePhotos(string url, string currentTag, string fileName)

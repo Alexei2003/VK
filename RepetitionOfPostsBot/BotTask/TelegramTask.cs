@@ -3,7 +3,7 @@ using Telegram.Bot.Types;
 
 namespace RepetitionOfPostsBot.BotTask
 {
-    internal static class TelegramTask
+    public static class TelegramTask
     {
         public static async Task PushPost(long chatId, string accessToken, string caption, Uri[] imagesUrls)
         {

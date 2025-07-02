@@ -4,23 +4,14 @@ using Other;
 
 using static LikesRepostsBots.Classes.BotsWorksParams;
 
-namespace LikesRepostsBots
+namespace LikesRepostsBots.UI
 {
-    internal static class Server
+    public class Server : BaseUI
     {
         public static void Start()
         {
-            var thread = new Thread(new ParameterizedThreadStart(StartBot));
-            thread.Start();
+            Initialize();
 
-            while (true)
-            {
-                Thread.Sleep(TimeSpan.FromHours(1));
-            }
-        }
-
-        public static void StartBot(object data)
-        {
             BotsWorksParams botParams = new()
             {
                 MakeRepost = true,
@@ -28,27 +19,23 @@ namespace LikesRepostsBots
                 GroupIdForGood = 220199532
             };
 
-            var accessTokensAndNames = File.ReadAllLines(Path.Combine("AccessTokens.txt"));
-
-            var bots = new BotsList(accessTokensAndNames);
-
             const int TIME_WORK = 3 * RandomStatic._1HOUR;
             const int TIME_WORK_RANDOM = 3 * RandomStatic._1HOUR;
             int count = 0;
-            int stepBetweenBots = TIME_WORK / bots.Count;
-            int stepBetweenBotsRandom = TIME_WORK_RANDOM / bots.Count;
-            var indexRip = new Stack<int>(bots.Count);
+            int stepBetweenBots = TIME_WORK / _botList.Count;
+            int stepBetweenBotsRandom = TIME_WORK_RANDOM / _botList.Count;
+            var indexRip = new Stack<int>(_botList.Count);
             int addFriend = 1;
             while (true)
             {
                 try
                 {
-                    if (bots.Count == 0)
+                    if (_botList.Count == 0)
                     {
-                        bots = new BotsList(accessTokensAndNames);
+                        Initialize();
                     }
 
-                    bots.Mix();
+                    _botList.Mix();
 
                     switch (count)
                     {
@@ -74,9 +61,9 @@ namespace LikesRepostsBots
                         botParams.AddFriendsCount = 0;
                     }
 
-                    for (int i = 0; i < bots.Count; i++)
+                    for (int i = 0; i < _botList.Count; i++)
                     {
-                        if (!bots[i].Start(botParams))
+                        if (!_botList[i].Start(botParams))
                         {
                             indexRip.Push(i);
                         }
@@ -87,10 +74,10 @@ namespace LikesRepostsBots
                     {
                         for (var i = 0; i < indexRip.Count; i++)
                         {
-                            bots.Remove(indexRip.Pop());
+                            _botList.Remove(indexRip.Pop());
                         }
-                        stepBetweenBots = TIME_WORK / bots.Count;
-                        stepBetweenBotsRandom = TIME_WORK_RANDOM / bots.Count;
+                        stepBetweenBots = TIME_WORK / _botList.Count;
+                        stepBetweenBotsRandom = TIME_WORK_RANDOM / _botList.Count;
                         indexRip.Clear();
                     }
 
