@@ -1,8 +1,8 @@
 ﻿using DataSet;
 
-using SixLabors.ImageSharp.PixelFormats;
+using Other;
 
-using VKClasses;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace DownloaderDataSetPhoto.Downloaders
 {

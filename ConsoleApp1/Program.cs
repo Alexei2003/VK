@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 
-using VKClasses;
+using Other;
+
 using VKClasses.VK;
 
 public class Program

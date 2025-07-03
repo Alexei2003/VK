@@ -1,7 +1,8 @@
-﻿using SixLabors.ImageSharp;
+﻿using Other.Tags.Editors;
+
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-using VKClasses.Tags.Editors;
 using VKClasses.VK;
 
 using VkNet.Model;

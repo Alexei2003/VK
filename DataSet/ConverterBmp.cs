@@ -7,7 +7,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace DataSet
 {
-    public static class Converter
+    public static class ConverterBmp
     {
         public static Bitmap ConvertToBitmap(Image<Rgb24> image)
         {

@@ -1,8 +1,9 @@
 ﻿using ClosedXML.Excel;
 
+using Other.Tags;
+using Other.Tags.Editors;
+
 using VKClasses;
-using VKClasses.Tags;
-using VKClasses.Tags.Editors;
 using VKClasses.VK;
 
 using VkNet.Enums.StringEnums;

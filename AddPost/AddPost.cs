@@ -5,13 +5,16 @@ using AddPost.Classes;
 using DataSet;
 
 using Other;
+using Other.Tags;
+using Other.Tags.Editors;
 
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
 using VKClasses;
-using VKClasses.Tags;
 using VKClasses.VK;
+
+using WinForms;
 
 namespace AddPost
 {
@@ -39,7 +42,7 @@ namespace AddPost
             groupId = Convert.ToInt64(tbGroupId.Text);
             cbTimeBetweenPost.SelectedIndex = 1;
 
-            WriteFindTag();
+            ListTagUI.WriteFindTag(dgvDictionary, tagList, tbTag.Text);
         }
 
         private void ClearInfAboutPost()
@@ -56,69 +59,6 @@ namespace AddPost
             pbImage.Image = null;
             imageList = [];
             tbNeuralNetworkResult.Text = "";
-        }
-
-        private void WriteFindTag()
-        {
-            dgvDictionary.Rows.Clear();
-            var stack = tagList.FindLast(tbTag.Text);
-
-            dgvDictionary.Rows.AddRange(stack.Select(elem => new DataGridViewRow { Cells = { new DataGridViewTextBoxCell { Value = 0 }, new DataGridViewTextBoxCell { Value = elem } } }).ToArray());
-
-            dgvDictionary.Sort(dgvDictionary.Columns["tags"], ListSortDirection.Ascending);
-
-            int red = ChangeRGB(0);
-            int green = ChangeRGB(0);
-            int blue = ChangeRGB(0);
-
-            int groupIndex = 0;
-            string groupName = "";
-            string tmpGroupName = "";
-
-            for (int i = 0; i < dgvDictionary.Rows.Count; i++)
-            {
-                if (dgvDictionary.Rows[i].Cells["tags"].Value == null)
-                {
-                    break;
-                }
-
-                dgvDictionary.Rows[i].Cells["index"] = new DataGridViewTextBoxCell { Value = i + 1 };
-                tmpGroupName = dgvDictionary.Rows[i].Cells["tags"].Value.ToString().Split('#', StringSplitOptions.RemoveEmptyEntries).First();
-
-                if (tmpGroupName != groupName)
-                {
-                    groupName = tmpGroupName;
-                    switch (groupIndex % 3)
-                    {
-                        case 0:
-                            red = ChangeRGB(red);
-                            break;
-                        case 1:
-                            green = ChangeRGB(green);
-                            break;
-                        case 2:
-                            blue = ChangeRGB(blue);
-                            break;
-                    }
-                    groupIndex++;
-                }
-
-                dgvDictionary.Rows[i].DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(red, green, blue);
-            }
-        }
-
-        private static int ChangeRGB(int value)
-        {
-            const int MIN_RGB = 150;
-
-            if (value > MIN_RGB)
-            {
-                return value - (RandomStatic.Rand.Next(30) + 20);
-            }
-            else
-            {
-                return MIN_RGB + RandomStatic.Rand.Next(50);
-            }
         }
 
         private void AddInDataSet(List<ImageWithTag> imageList, string tags)
@@ -178,14 +118,14 @@ namespace AddPost
                     {
                         pbImage.Invoke((MethodInvoker)delegate
                         {
-                            pbImage.Image = Converter.ConvertToBitmap(imageList[index].image);
+                            pbImage.Image = ConverterBmp.ConvertToBitmap(imageList[index].image);
                             tbNeuralNetworkResult.Text = imageList[index].NeuralNetworkResultTag;
                             tbImageIndex.Text = (index + 1).ToString();
                         });
                     }
                     else
                     {
-                        pbImage.Image = Converter.ConvertToBitmap(imageList[index].image);
+                        pbImage.Image = ConverterBmp.ConvertToBitmap(imageList[index].image);
                         tbNeuralNetworkResult.Text = imageList[index].NeuralNetworkResultTag;
                         tbImageIndex.Text = (index + 1).ToString();
                     }
@@ -216,34 +156,12 @@ namespace AddPost
             }
         }
 
-        private static string FixTagString(string tagsStr)
-        {
-            // Удаление пробелов по краям
-            tagsStr = tagsStr.Trim(' ');
-
-            // Замена пробелов на _
-            var tagsArr = tagsStr.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            for (var i = 0; i < tagsArr.Length; i++)
-            {
-                tagsArr[i] = new string([.. tagsArr[i].Where(c => char.IsLetterOrDigit(c) || c == '#' || c == '_')]).ToLower();
-            }
-            tagsStr = string.Join("_", tagsArr);
-
-            // Проверка первого # 
-            if (tagsStr[0] != '#')
-            {
-                tagsStr = "#" + tagsStr;
-            }
-
-            return tagsStr;
-        }
-
         private async void bBuff_Click(object sender, EventArgs e)
         {
             if (Clipboard.ContainsImage())
             {
                 using var imageBmp = (Bitmap)Clipboard.GetImage();
-                var image = Converter.ConvertToImageSharp(imageBmp);
+                var image = ConverterBmp.ConvertToImageSharp(imageBmp);
                 await Task.Run(() =>
                 {
                     var tag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(image);
@@ -257,7 +175,7 @@ namespace AddPost
         {
             if (imageList.Count > 0)
             {
-                var tags = FixTagString(tbTag.Text);
+                var tags = BaseTagsEditor.FixTagString(tbTag.Text);
 
                 var index = cbTimeBetweenPost.SelectedIndex + 1;
 
@@ -291,7 +209,7 @@ namespace AddPost
         {
             if (tbTag.Text.Length > 1)
             {
-                WriteFindTag();
+                ListTagUI.WriteFindTag(dgvDictionary, tagList, tbTag.Text);
             }
         }
 
@@ -311,31 +229,6 @@ namespace AddPost
             WritePostTime();
         }
 
-        private void dgvDictionary_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            //Удаление тега для замены
-            var tagStr = tbTag.Text;
-            int removeCount = -1;
-            int indexStartDel = -1;
-            for (int i = tagStr.Length - 1; i > -1; i--)
-            {
-                if (tagStr[i] == '#')
-                {
-                    indexStartDel = i;
-                    removeCount = tagStr.Length - i;
-                    break;
-                }
-            }
-            if (removeCount > -1 && indexStartDel > -1)
-            {
-                tagStr = tagStr.Remove(indexStartDel, removeCount);
-            }
-
-            var findTagStr = dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-
-            tbTag.Text = tagStr + findTagStr;
-        }
-
         private void bDataSet_Click(object sender, EventArgs e)
         {
             if (imageList.Count > 0)
@@ -349,16 +242,7 @@ namespace AddPost
 
         private void dgvDictionary_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
-            {
-                DialogResult result = MessageBox.Show($"Удаление тега {dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value}", "Подтвердите действие для ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
-                {
-                    tagList.Remove(dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
-                }
-
-                WriteFindTag();
-            }
+            ListTagUI.CellMouseClick(e, tbTag, dgvDictionary, tagList, tbTag.Text);
         }
 
         private void bImageLeft_Click(object sender, EventArgs e)
@@ -378,7 +262,7 @@ namespace AddPost
 
         private void bTbTagFix_Click(object sender, EventArgs e)
         {
-            tbTag.Text = FixTagString(tbTag.Text);
+            tbTag.Text = BaseTagsEditor.FixTagString(tbTag.Text);
         }
     }
 }

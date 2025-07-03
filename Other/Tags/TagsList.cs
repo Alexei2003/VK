@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Text.Json;
 
-namespace VKClasses.Tags
+namespace Other.Tags
 {
     public sealed class TagsList
     {

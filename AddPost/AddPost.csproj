@@ -19,6 +19,7 @@
     <ProjectReference Include="..\DataSet\DataSet.csproj" />
     <ProjectReference Include="..\NeuralNetwork\NeuralNetwork.csproj" />
     <ProjectReference Include="..\VKClasses\VKClasses.csproj" />
+    <ProjectReference Include="..\WinForms\WinForms.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

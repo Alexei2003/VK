@@ -36,8 +36,6 @@ namespace NeuralNetwork
             }
         }
 
-
-
         // Статический конструктор для инициализации
         static NeuralNetworkWorker()
         {
@@ -86,7 +84,6 @@ namespace NeuralNetwork
             _inputName = _sessionArr[0].Inference.InputMetadata.Keys.First();
         }
 
-
         private static (InferenceSession, bool) CreateInferenceSession(int id = -1)
         {
             var options = new SessionOptions();
@@ -106,7 +103,7 @@ namespace NeuralNetwork
             return (new InferenceSession("model.onnx", options), isCPU);
         }
 
-        private struct Label
+        public struct Label
         {
             public string Name;
             public float Value;
@@ -133,7 +130,53 @@ namespace NeuralNetwork
             return arr;
         }
 
-        private static string[] NeuralNetworkResultKTopCount(Image<Rgb24> imageOriginal, int kTop = 15)
+        public static string[] NeuralNetworkResultKTopCount(Image<Rgb24> imageOriginal, int kTop = 15)
+        {
+            var labels = NeuralNetworkBaseResult(imageOriginal);
+            if (labels == null)
+            {
+                return ["#error"];
+            }
+
+            var resultTagsArr = labels.OrderByDescending(l => l.Value).Take(kTop).Select(l => l.Name);
+            if (resultTagsArr.Contains("#nsfw"))
+            {
+                resultTagsArr = ["#nsfw"];
+            }
+            if (resultTagsArr.Contains("#bad_drawing"))
+            {
+                resultTagsArr = ["#bad_drawing"];
+            }
+            return [.. resultTagsArr];
+        }
+
+        public static Label[] NeuralNetworkResultKTopCountAndPercent(Image<Rgb24> imageOriginal, int kTop = 15)
+        {
+            var labels = NeuralNetworkBaseResult(imageOriginal);
+            if (labels == null)
+            {
+                return [new Label("#error", 1)];
+            }
+
+            // 1. Считаем экспоненты логитов
+            var exps = labels.Select(l => Math.Exp(l.Value)).ToArray();
+
+            // 2. Суммируем экспоненты
+            var sumExp = exps.Sum();
+
+            // 3. Применяем softmax к каждому значению
+            for (int i = 0; i < labels.Length; i++)
+            {
+                labels[i].Value = (float)(exps[i] / sumExp) * 100;
+            }
+
+            // 4. Берём топ k по убыванию вероятности
+            var resultTagsArr = labels.OrderByDescending(l => l.Value).Take(kTop);
+
+            return [.. resultTagsArr];
+        }
+
+        private static Label[]? NeuralNetworkBaseResult(Image<Rgb24> imageOriginal)
         {
             using var image = DataSetImage.ChangeResolution224x224(imageOriginal);
 
@@ -160,7 +203,6 @@ namespace NeuralNetwork
                     Thread.Sleep(100);
                 }
             }
-
 
             float[] outputArr;
             lock (session)
@@ -198,7 +240,7 @@ namespace NeuralNetwork
                     session.Inference = inferenceSession;
                     session.IsBusy = false;
 
-                    return ["#error"];
+                    return null;
                 }
             }
             session.IsBusy = false;
@@ -210,19 +252,7 @@ namespace NeuralNetwork
                 labels[i] = new Label(Labels[i], outputArr[i]);
             }
 
-            var resulTagsArr = labels.OrderByDescending(l => l.Value).Take(kTop).Select(l => l.Name);
-
-            if (resulTagsArr.Contains("#nsfw"))
-            {
-                resulTagsArr = ["#nsfw"];
-            }
-
-            if (resulTagsArr.Contains("#bad_drawing"))
-            {
-                resulTagsArr = ["#bad_drawing"];
-            }
-
-            return [.. resulTagsArr];
+            return labels;
         }
 
         public static DenseTensor<float> ImageToTensor(Image<Rgb24> bitmap)

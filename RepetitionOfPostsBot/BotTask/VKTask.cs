@@ -5,13 +5,13 @@ using DataSet;
 using HtmlAgilityPack;
 
 using Other;
+using Other.Tags;
+using Other.Tags.Editors;
 
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
 using VKClasses;
-using VKClasses.Tags;
-using VKClasses.Tags.Editors;
 using VKClasses.VK;
 
 using VkNet.Enums.Filters;
@@ -117,7 +117,7 @@ namespace RepetitionOfPostsBot.BotTask
                     Filter = WallFilter.Postponed,
                 });
 
-                if (0 < wall.WallPosts.Count && wall.WallPosts.Count < 100) 
+                if (0 < wall.WallPosts.Count && wall.WallPosts.Count < 100)
                 {
                     wall = _vkApi.Wall.Get(new WallGetParams
                     {
@@ -367,7 +367,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                 try
                 {
-                    for (var i = 0; i < 10; i++)
+                    for (var i = 0; i < 100; i++)
                     {
                         var htmlDocument = Gelbooru.GetPageHTML(_httpClient, url, i, useProxy: _client);
 
@@ -473,7 +473,7 @@ namespace RepetitionOfPostsBot.BotTask
         }
 
         private const int CountCheckedImage = 20;
-        private const int CountImageToPost = 120;
+        private const int CountImageToPost = 3000;
         private void SaveImage(HtmlNode nodeImage, HtmlNode[] nodeTags, int taskIndex)
         {
 

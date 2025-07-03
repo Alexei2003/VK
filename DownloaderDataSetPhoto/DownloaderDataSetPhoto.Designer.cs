@@ -31,17 +31,6 @@
             components = new System.ComponentModel.Container();
             tbTag = new TextBox();
             textBox3 = new TextBox();
-            bDownloadPhotosVK = new Button();
-            textBox11 = new TextBox();
-            textBox10 = new TextBox();
-            tbCountDownload = new TextBox();
-            tbShiftDownload = new TextBox();
-            textBox6 = new TextBox();
-            bBackgroundImageCopyOff = new Button();
-            bBackgroundImageCopyOn = new Button();
-            textBox1 = new TextBox();
-            pVK = new Panel();
-            pBackgroundImageCopy = new Panel();
             pGelbooru = new Panel();
             tbGelbooruUrl = new TextBox();
             textBox4 = new TextBox();
@@ -49,11 +38,19 @@
             textBox2 = new TextBox();
             tBackgroundImageCopy = new System.Windows.Forms.Timer(components);
             bBackgroundImageCopy = new Button();
-            bVK = new Button();
             bGelbooru = new Button();
-            pVK.SuspendLayout();
-            pBackgroundImageCopy.SuspendLayout();
+            dgvDictionary = new DataGridView();
+            bBackgroundImageCopyOff = new Button();
+            bBackgroundImageCopyOn = new Button();
+            textBox1 = new TextBox();
+            pBackgroundImageCopy = new Panel();
+            bSaveTag = new Button();
+            textBox5 = new TextBox();
+            index = new DataGridViewTextBoxColumn();
+            tag = new DataGridViewTextBoxColumn();
             pGelbooru.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
+            pBackgroundImageCopy.SuspendLayout();
             SuspendLayout();
             // 
             // tbTag
@@ -63,123 +60,16 @@
             tbTag.Name = "tbTag";
             tbTag.Size = new Size(332, 46);
             tbTag.TabIndex = 5;
+            tbTag.KeyUp += tbTag_KeyUp;
             // 
             // textBox3
             // 
             textBox3.Location = new Point(12, 11);
             textBox3.Name = "textBox3";
             textBox3.ReadOnly = true;
-            textBox3.Size = new Size(55, 23);
+            textBox3.Size = new Size(28, 23);
             textBox3.TabIndex = 6;
-            textBox3.Text = "Теги";
-            // 
-            // bDownloadPhotosVK
-            // 
-            bDownloadPhotosVK.Location = new Point(3, 139);
-            bDownloadPhotosVK.Name = "bDownloadPhotosVK";
-            bDownloadPhotosVK.Size = new Size(150, 22);
-            bDownloadPhotosVK.TabIndex = 35;
-            bDownloadPhotosVK.Text = "Скачать";
-            bDownloadPhotosVK.UseVisualStyleBackColor = true;
-            bDownloadPhotosVK.Click += bDownloadPhotosVK_Click;
-            // 
-            // textBox11
-            // 
-            textBox11.Location = new Point(3, 85);
-            textBox11.Name = "textBox11";
-            textBox11.ReadOnly = true;
-            textBox11.Size = new Size(150, 23);
-            textBox11.TabIndex = 34;
-            textBox11.Text = "Количество скачиваний";
-            // 
-            // textBox10
-            // 
-            textBox10.Location = new Point(3, 30);
-            textBox10.Name = "textBox10";
-            textBox10.ReadOnly = true;
-            textBox10.Size = new Size(150, 23);
-            textBox10.TabIndex = 33;
-            textBox10.Text = "Отступ до скачки";
-            // 
-            // tbCountDownload
-            // 
-            tbCountDownload.Location = new Point(3, 112);
-            tbCountDownload.Name = "tbCountDownload";
-            tbCountDownload.Size = new Size(150, 23);
-            tbCountDownload.TabIndex = 32;
-            tbCountDownload.Text = "0";
-            // 
-            // tbShiftDownload
-            // 
-            tbShiftDownload.Location = new Point(3, 57);
-            tbShiftDownload.Name = "tbShiftDownload";
-            tbShiftDownload.Size = new Size(150, 23);
-            tbShiftDownload.TabIndex = 31;
-            tbShiftDownload.Text = "0";
-            // 
-            // textBox6
-            // 
-            textBox6.Location = new Point(3, 3);
-            textBox6.Name = "textBox6";
-            textBox6.ReadOnly = true;
-            textBox6.Size = new Size(150, 23);
-            textBox6.TabIndex = 30;
-            textBox6.Text = "VK";
-            // 
-            // bBackgroundImageCopyOff
-            // 
-            bBackgroundImageCopyOff.Enabled = false;
-            bBackgroundImageCopyOff.Location = new Point(3, 76);
-            bBackgroundImageCopyOff.Name = "bBackgroundImageCopyOff";
-            bBackgroundImageCopyOff.Size = new Size(150, 38);
-            bBackgroundImageCopyOff.TabIndex = 37;
-            bBackgroundImageCopyOff.Text = "Выключить";
-            bBackgroundImageCopyOff.UseVisualStyleBackColor = true;
-            bBackgroundImageCopyOff.Click += bBackgroundImageCopyOff_Click;
-            // 
-            // bBackgroundImageCopyOn
-            // 
-            bBackgroundImageCopyOn.Location = new Point(3, 30);
-            bBackgroundImageCopyOn.Name = "bBackgroundImageCopyOn";
-            bBackgroundImageCopyOn.Size = new Size(150, 38);
-            bBackgroundImageCopyOn.TabIndex = 36;
-            bBackgroundImageCopyOn.Text = "Включить ";
-            bBackgroundImageCopyOn.UseVisualStyleBackColor = true;
-            bBackgroundImageCopyOn.Click += bBackgroundImageCopyOn_Click;
-            // 
-            // textBox1
-            // 
-            textBox1.Location = new Point(3, 3);
-            textBox1.Name = "textBox1";
-            textBox1.ReadOnly = true;
-            textBox1.Size = new Size(150, 23);
-            textBox1.TabIndex = 38;
-            textBox1.Text = "Фоновое копирование";
-            // 
-            // pVK
-            // 
-            pVK.BorderStyle = BorderStyle.FixedSingle;
-            pVK.Controls.Add(textBox6);
-            pVK.Controls.Add(tbShiftDownload);
-            pVK.Controls.Add(tbCountDownload);
-            pVK.Controls.Add(textBox10);
-            pVK.Controls.Add(textBox11);
-            pVK.Controls.Add(bDownloadPhotosVK);
-            pVK.Location = new Point(188, 89);
-            pVK.Name = "pVK";
-            pVK.Size = new Size(158, 177);
-            pVK.TabIndex = 39;
-            // 
-            // pBackgroundImageCopy
-            // 
-            pBackgroundImageCopy.BorderStyle = BorderStyle.FixedSingle;
-            pBackgroundImageCopy.Controls.Add(textBox1);
-            pBackgroundImageCopy.Controls.Add(bBackgroundImageCopyOn);
-            pBackgroundImageCopy.Controls.Add(bBackgroundImageCopyOff);
-            pBackgroundImageCopy.Location = new Point(188, 89);
-            pBackgroundImageCopy.Name = "pBackgroundImageCopy";
-            pBackgroundImageCopy.Size = new Size(158, 177);
-            pBackgroundImageCopy.TabIndex = 40;
+            textBox3.Text = "Тег";
             // 
             // pGelbooru
             // 
@@ -188,9 +78,9 @@
             pGelbooru.Controls.Add(textBox4);
             pGelbooru.Controls.Add(bDownloadPhotosGelbooru);
             pGelbooru.Controls.Add(textBox2);
-            pGelbooru.Location = new Point(188, 89);
+            pGelbooru.Location = new Point(186, 90);
             pGelbooru.Name = "pGelbooru";
-            pGelbooru.Size = new Size(158, 177);
+            pGelbooru.Size = new Size(158, 166);
             pGelbooru.TabIndex = 41;
             // 
             // tbGelbooruUrl
@@ -211,9 +101,9 @@
             // 
             // bDownloadPhotosGelbooru
             // 
-            bDownloadPhotosGelbooru.Location = new Point(3, 139);
+            bDownloadPhotosGelbooru.Location = new Point(3, 123);
             bDownloadPhotosGelbooru.Name = "bDownloadPhotosGelbooru";
-            bDownloadPhotosGelbooru.Size = new Size(150, 22);
+            bDownloadPhotosGelbooru.Size = new Size(150, 38);
             bDownloadPhotosGelbooru.TabIndex = 44;
             bDownloadPhotosGelbooru.Text = "Скачать";
             bDownloadPhotosGelbooru.UseVisualStyleBackColor = true;
@@ -235,7 +125,7 @@
             // 
             // bBackgroundImageCopy
             // 
-            bBackgroundImageCopy.Location = new Point(12, 89);
+            bBackgroundImageCopy.Location = new Point(12, 167);
             bBackgroundImageCopy.Name = "bBackgroundImageCopy";
             bBackgroundImageCopy.Size = new Size(150, 38);
             bBackgroundImageCopy.TabIndex = 39;
@@ -243,19 +133,9 @@
             bBackgroundImageCopy.UseVisualStyleBackColor = true;
             bBackgroundImageCopy.Click += bBackgroundImageCopy_Click;
             // 
-            // bVK
-            // 
-            bVK.Location = new Point(12, 132);
-            bVK.Name = "bVK";
-            bVK.Size = new Size(150, 38);
-            bVK.TabIndex = 42;
-            bVK.Text = "VK";
-            bVK.UseVisualStyleBackColor = true;
-            bVK.Click += bVK_Click;
-            // 
             // bGelbooru
             // 
-            bGelbooru.Location = new Point(12, 176);
+            bGelbooru.Location = new Point(12, 211);
             bGelbooru.Name = "bGelbooru";
             bGelbooru.Size = new Size(150, 38);
             bGelbooru.TabIndex = 43;
@@ -263,28 +143,115 @@
             bGelbooru.UseVisualStyleBackColor = true;
             bGelbooru.Click += bGelbooru_Click;
             // 
+            // dgvDictionary
+            // 
+            dgvDictionary.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvDictionary.Columns.AddRange(new DataGridViewColumn[] { index, tag });
+            dgvDictionary.Location = new Point(366, 12);
+            dgvDictionary.Name = "dgvDictionary";
+            dgvDictionary.RowHeadersWidth = 45;
+            dgvDictionary.Size = new Size(719, 467);
+            dgvDictionary.TabIndex = 44;
+            dgvDictionary.CellMouseClick += dgvDictionary_CellMouseClick;
+            // 
+            // bBackgroundImageCopyOff
+            // 
+            bBackgroundImageCopyOff.Enabled = false;
+            bBackgroundImageCopyOff.Location = new Point(3, 120);
+            bBackgroundImageCopyOff.Name = "bBackgroundImageCopyOff";
+            bBackgroundImageCopyOff.Size = new Size(150, 38);
+            bBackgroundImageCopyOff.TabIndex = 37;
+            bBackgroundImageCopyOff.Text = "Выключить";
+            bBackgroundImageCopyOff.UseVisualStyleBackColor = true;
+            bBackgroundImageCopyOff.Click += bBackgroundImageCopyOff_Click;
+            // 
+            // bBackgroundImageCopyOn
+            // 
+            bBackgroundImageCopyOn.Location = new Point(3, 76);
+            bBackgroundImageCopyOn.Name = "bBackgroundImageCopyOn";
+            bBackgroundImageCopyOn.Size = new Size(150, 38);
+            bBackgroundImageCopyOn.TabIndex = 36;
+            bBackgroundImageCopyOn.Text = "Включить ";
+            bBackgroundImageCopyOn.UseVisualStyleBackColor = true;
+            bBackgroundImageCopyOn.Click += bBackgroundImageCopyOn_Click;
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(3, 3);
+            textBox1.Name = "textBox1";
+            textBox1.ReadOnly = true;
+            textBox1.Size = new Size(150, 23);
+            textBox1.TabIndex = 38;
+            textBox1.Text = "Фоновое копирование";
+            // 
+            // pBackgroundImageCopy
+            // 
+            pBackgroundImageCopy.BorderStyle = BorderStyle.FixedSingle;
+            pBackgroundImageCopy.Controls.Add(textBox1);
+            pBackgroundImageCopy.Controls.Add(bBackgroundImageCopyOn);
+            pBackgroundImageCopy.Controls.Add(bBackgroundImageCopyOff);
+            pBackgroundImageCopy.Location = new Point(186, 90);
+            pBackgroundImageCopy.Name = "pBackgroundImageCopy";
+            pBackgroundImageCopy.Size = new Size(158, 166);
+            pBackgroundImageCopy.TabIndex = 40;
+            // 
+            // bSaveTag
+            // 
+            bSaveTag.Location = new Point(12, 94);
+            bSaveTag.Name = "bSaveTag";
+            bSaveTag.Size = new Size(150, 38);
+            bSaveTag.TabIndex = 45;
+            bSaveTag.Text = "Сохранить тег";
+            bSaveTag.UseVisualStyleBackColor = true;
+            bSaveTag.Click += bSaveTag_Click;
+            // 
+            // textBox5
+            // 
+            textBox5.Location = new Point(12, 138);
+            textBox5.Name = "textBox5";
+            textBox5.ReadOnly = true;
+            textBox5.Size = new Size(150, 23);
+            textBox5.TabIndex = 46;
+            textBox5.Text = "Способ";
+            // 
+            // index
+            // 
+            index.HeaderText = "Номер";
+            index.MinimumWidth = 6;
+            index.Name = "index";
+            index.ReadOnly = true;
+            index.Width = 60;
+            // 
+            // tag
+            // 
+            tag.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            tag.HeaderText = "Теги";
+            tag.MinimumWidth = 6;
+            tag.Name = "tag";
+            tag.ReadOnly = true;
+            // 
             // DownloaderDataSetPhoto
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlLightLight;
-            ClientSize = new Size(360, 277);
+            ClientSize = new Size(1097, 493);
+            Controls.Add(textBox5);
+            Controls.Add(bSaveTag);
+            Controls.Add(dgvDictionary);
             Controls.Add(bGelbooru);
-            Controls.Add(bVK);
             Controls.Add(bBackgroundImageCopy);
+            Controls.Add(pGelbooru);
             Controls.Add(textBox3);
             Controls.Add(tbTag);
-            Controls.Add(pGelbooru);
             Controls.Add(pBackgroundImageCopy);
-            Controls.Add(pVK);
             Name = "DownloaderDataSetPhoto";
             Text = "DownloaderDataSetPhoto";
-            pVK.ResumeLayout(false);
-            pVK.PerformLayout();
-            pBackgroundImageCopy.ResumeLayout(false);
-            pBackgroundImageCopy.PerformLayout();
             pGelbooru.ResumeLayout(false);
             pGelbooru.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvDictionary).EndInit();
+            pBackgroundImageCopy.ResumeLayout(false);
+            pBackgroundImageCopy.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -293,25 +260,22 @@
 
         private TextBox tbTag;
         private TextBox textBox3;
-        private Button bDownloadPhotosVK;
-        private TextBox textBox11;
-        private TextBox textBox10;
-        private TextBox tbCountDownload;
-        private TextBox tbShiftDownload;
-        private TextBox textBox6;
-        private Button bBackgroundImageCopyOff;
-        private Button bBackgroundImageCopyOn;
-        private TextBox textBox1;
-        private Panel pVK;
-        private Panel pBackgroundImageCopy;
         private Panel pGelbooru;
         private TextBox textBox2;
         private System.Windows.Forms.Timer tBackgroundImageCopy;
         private Button bBackgroundImageCopy;
-        private Button bVK;
         private Button bGelbooru;
         private Button bDownloadPhotosGelbooru;
         private TextBox textBox4;
         private TextBox tbGelbooruUrl;
+        private DataGridView dgvDictionary;
+        private Button bBackgroundImageCopyOff;
+        private Button bBackgroundImageCopyOn;
+        private TextBox textBox1;
+        private Panel pBackgroundImageCopy;
+        private Button bSaveTag;
+        private TextBox textBox5;
+        private DataGridViewTextBoxColumn index;
+        private DataGridViewTextBoxColumn tag;
     }
 }

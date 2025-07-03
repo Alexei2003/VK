@@ -1,7 +1,7 @@
 ﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace VKClasses
+namespace Other
 {
     public class ImageTransfer
     {

@@ -1,8 +1,6 @@
 ﻿using HtmlAgilityPack;
 
-using Other;
-
-namespace VKClasses
+namespace Other
 {
     public static class Gelbooru
     {

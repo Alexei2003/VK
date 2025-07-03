@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Text;
 
-namespace VKClasses.Tags.Editors
+namespace Other.Tags.Editors
 {
     public static class BaseTagsEditor
     {
@@ -71,5 +71,28 @@ namespace VKClasses.Tags.Editors
 
             return bld.ToString();
         }
+
+        public static string FixTagString(string tagsStr)
+        {
+            // Удаление пробелов по краям
+            tagsStr = tagsStr.Trim(' ');
+
+            // Замена пробелов на _
+            var tagsArr = tagsStr.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            for (var i = 0; i < tagsArr.Length; i++)
+            {
+                tagsArr[i] = new string([.. tagsArr[i].Where(c => char.IsLetterOrDigit(c) || c == '#' || c == '_')]).ToLower();
+            }
+            tagsStr = string.Join("_", tagsArr);
+
+            // Проверка первого # 
+            if (tagsStr[0] != '#')
+            {
+                tagsStr = "#" + tagsStr;
+            }
+
+            return tagsStr;
+        }
+
     }
 }

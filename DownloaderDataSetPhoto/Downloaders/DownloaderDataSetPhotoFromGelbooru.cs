@@ -1,7 +1,5 @@
 ﻿using Other;
 
-using VKClasses;
-
 namespace DownloaderDataSetPhoto.Downloaders
 {
     public static class DownloaderDataSetPhotoFromGelbooru
