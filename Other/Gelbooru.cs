@@ -4,7 +4,9 @@ namespace Other
 {
     public static class Gelbooru
     {
-        private const string NO_SEARCH =
+        public static bool UseProxy { get; set; } = false;
+
+        private const string NoSearch =
             // Сексуальный контент и анатомия
             "+-nipples+-completely_nude+-gangbang+-imminent_sex+-sex+-penis+-condom+-cum+-futa+-rape" +
             "+-filled_condom+-anal+-pussy+-multiple_penises+-anal_insertion+-dildo+-object_insertion" +
@@ -34,16 +36,14 @@ namespace Other
             // Существа
             "+-bestiality+-tentacles";
 
-        //private const string NO_SEARCH = "";
-
-        public static HtmlDocument GetPageHTML(HttpClient httpClient, string url, int indexPage = -1, bool useProxy = false)
+        public static HtmlDocument GetPageHTML(HttpClient httpClient, string url, int indexPage = -1)
         {
             if (indexPage > -1)
             {
-                url += url[^1] == '+' ? NO_SEARCH : '+' + NO_SEARCH;
+                url += url[^1] == '+' ? NoSearch : '+' + NoSearch;
                 url += "&pid=" + indexPage * 42;
 
-                if (useProxy)
+                if (UseProxy)
                 {
                     url += $"&temp={DateTimeOffset.UtcNow.ToUnixTimeSeconds()}_{RandomStatic.Rand.Next(0, 9999)}";
                     url = GetUrlUseMirror(url);
@@ -75,9 +75,13 @@ namespace Other
 
         public static string GetUrlAddMirrorServer(string url)
         {
-            const string MIRROR_URL = "https://siteget.net";
+            if (UseProxy)
+            {
+                const string MIRROR_URL = "https://siteget.net";
 
-            return MIRROR_URL + url;
+                return MIRROR_URL + url;
+            }
+            return url;
         }
     }
 }

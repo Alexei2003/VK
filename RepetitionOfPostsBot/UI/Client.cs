@@ -1,10 +1,13 @@
-﻿namespace RepetitionOfPostsBot.UI
+﻿using Other;
+
+namespace RepetitionOfPostsBot.UI
 {
     public class Client : BaseUI
     {
         public static void Start()
         {
             Initialize();
+            Gelbooru.UseProxy = false;
 
             Console.WriteLine("Количество постов");
             string countStr = Console.ReadLine();

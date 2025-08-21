@@ -2,6 +2,7 @@ using DataSet;
 
 using DownloaderDataSetPhoto.Downloaders;
 
+using Other;
 using Other.Tags;
 using Other.Tags.Editors;
 
@@ -19,6 +20,7 @@ namespace DownloaderDataSetPhoto
         public DownloaderDataSetPhoto()
         {
             InitializeComponent();
+            Gelbooru.UseProxy = false;
             HidePanels(pGelbooru);
             ListTagUI.WriteFindTag(dgvDictionary, tagList, tbTag.Text);
         }
