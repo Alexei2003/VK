@@ -18,7 +18,7 @@ namespace WinForms
 
             dgvDictionary.Rows.AddRange(stack.Select(elem => new DataGridViewRow { Cells = { new DataGridViewTextBoxCell { Value = 0 }, new DataGridViewTextBoxCell { Value = elem } } }).ToArray());
 
-            dgvDictionary.Sort(dgvDictionary.Columns["tags"], ListSortDirection.Ascending);
+            dgvDictionary.Sort(dgvDictionary.Columns["tag"], ListSortDirection.Ascending);
 
             int red = ChangeRGB(0);
             int green = ChangeRGB(0);
@@ -36,7 +36,7 @@ namespace WinForms
                 }
 
                 dgvDictionary.Rows[i].Cells["index"] = new DataGridViewTextBoxCell { Value = i + 1 };
-                tmpGroupName = dgvDictionary.Rows[i].Cells["tags"].Value.ToString().Split('#', StringSplitOptions.RemoveEmptyEntries).First();
+                tmpGroupName = dgvDictionary.Rows[i].Cells["tag"].Value.ToString().Split('#', StringSplitOptions.RemoveEmptyEntries).First();
 
                 if (tmpGroupName != groupName)
                 {
@@ -74,7 +74,7 @@ namespace WinForms
             }
         }
 
-        public static void CellMouseClick(DataGridViewCellMouseEventArgs e, TextBox textBox , DataGridView dgvDictionary, TagsList tagList, string text)
+        public static void CellMouseClick(DataGridViewCellMouseEventArgs e, TextBox textBox, DataGridView dgvDictionary, TagsList tagList, string text)
         {
             if (e.Button == MouseButtons.Left)
             {

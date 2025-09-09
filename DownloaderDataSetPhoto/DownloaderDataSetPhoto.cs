@@ -139,10 +139,7 @@ namespace DownloaderDataSetPhoto
 
         private void tbTag_KeyUp(object sender, KeyEventArgs e)
         {
-            if (tbTag.Text.Length > 1)
-            {
-                ListTagUI.WriteFindTag(dgvDictionary, tagList, tbTag.Text);
-            }
+            ListTagUI.WriteFindTag(dgvDictionary, tagList, tbTag.Text);
         }
 
         private void dgvDictionary_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)

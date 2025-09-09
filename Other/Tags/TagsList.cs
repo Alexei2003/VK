@@ -5,7 +5,7 @@ namespace Other.Tags
 {
     public sealed class TagsList
     {
-        private List<string>? tagsList = null;
+        private List<string> tagsList = [];
 
         public TagsList()
         {
@@ -26,10 +26,6 @@ namespace Other.Tags
                 if (json?.Length != 0)
                 {
                     tagsList = JsonSerializer.Deserialize<List<string>>(json);
-                }
-                else
-                {
-                    tagsList = [];
                 }
             }
             catch
@@ -53,14 +49,14 @@ namespace Other.Tags
             return stack;
         }
 
-        public ConcurrentStack<string> Find(string LastTag)
+        public ConcurrentStack<string> Find(string lastTag)
         {
             ConcurrentStack<string> stack = new();
-            LastTag = LastTag.ToLower();
+            lastTag = lastTag.ToLower();
             Parallel.ForEach(tagsList, tag =>
             {
                 var lowerTag = tag.ToLower();
-                if (lowerTag.Contains(LastTag))
+                if (lowerTag.Contains(lastTag))
                 {
                     stack.Push(tag);
                 }
@@ -68,19 +64,19 @@ namespace Other.Tags
             return stack;
         }
 
-        public bool Add(string tags)
+        public bool Add(string tag)
         {
-            if (!tagsList.Contains(tags))
+            if (!tagsList.Contains(tag))
             {
-                tagsList.Add(tags);
+                tagsList.Add(tag);
                 return true;
             }
             return false;
         }
 
-        public bool Remove(string tags)
+        public bool Remove(string tag)
         {
-            return tagsList.Remove(tags);
+            return tagsList.Remove(tag);
         }
     }
 }

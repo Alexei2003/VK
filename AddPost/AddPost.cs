@@ -1,10 +1,7 @@
-using System.ComponentModel;
-
 using AddPost.Classes;
 
 using DataSet;
 
-using Other;
 using Other.Tags;
 using Other.Tags.Editors;
 
@@ -207,10 +204,7 @@ namespace AddPost
 
         private void tbTag_KeyUp(object sender, KeyEventArgs e)
         {
-            if (tbTag.Text.Length > 1)
-            {
-                ListTagUI.WriteFindTag(dgvDictionary, tagList, tbTag.Text);
-            }
+            ListTagUI.WriteFindTag(dgvDictionary, tagList, tbTag.Text);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)

@@ -1,5 +1,3 @@
-using Other;
-
 namespace DownloaderDataSetPhoto
 {
     public static class Program
