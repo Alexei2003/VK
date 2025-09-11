@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ql4eyoz2.azh~" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DataSet\DataSet.csproj" />
     <ProjectReference Include="..\NeuralNetwork\NeuralNetwork.csproj" />
     <ProjectReference Include="..\WinForms\WinForms.csproj" />

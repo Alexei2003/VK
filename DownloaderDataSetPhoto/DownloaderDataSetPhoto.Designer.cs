@@ -40,14 +40,18 @@
             bBackgroundImageCopy = new Button();
             bGelbooru = new Button();
             dgvDictionary = new DataGridView();
+            index = new DataGridViewTextBoxColumn();
+            tag = new DataGridViewTextBoxColumn();
+            gelbooru = new DataGridViewTextBoxColumn();
             bBackgroundImageCopyOff = new Button();
             bBackgroundImageCopyOn = new Button();
             textBox1 = new TextBox();
             pBackgroundImageCopy = new Panel();
             bSaveTag = new Button();
             textBox5 = new TextBox();
-            index = new DataGridViewTextBoxColumn();
-            tag = new DataGridViewTextBoxColumn();
+            textBox6 = new TextBox();
+            tbGelbooru = new TextBox();
+            bDownloadAll = new Button();
             pGelbooru.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             pBackgroundImageCopy.SuspendLayout();
@@ -78,7 +82,7 @@
             pGelbooru.Controls.Add(textBox4);
             pGelbooru.Controls.Add(bDownloadPhotosGelbooru);
             pGelbooru.Controls.Add(textBox2);
-            pGelbooru.Location = new Point(186, 90);
+            pGelbooru.Location = new Point(186, 174);
             pGelbooru.Name = "pGelbooru";
             pGelbooru.Size = new Size(158, 166);
             pGelbooru.TabIndex = 41;
@@ -125,7 +129,7 @@
             // 
             // bBackgroundImageCopy
             // 
-            bBackgroundImageCopy.Location = new Point(12, 167);
+            bBackgroundImageCopy.Location = new Point(12, 251);
             bBackgroundImageCopy.Name = "bBackgroundImageCopy";
             bBackgroundImageCopy.Size = new Size(150, 38);
             bBackgroundImageCopy.TabIndex = 39;
@@ -135,7 +139,7 @@
             // 
             // bGelbooru
             // 
-            bGelbooru.Location = new Point(12, 211);
+            bGelbooru.Location = new Point(12, 295);
             bGelbooru.Name = "bGelbooru";
             bGelbooru.Size = new Size(150, 38);
             bGelbooru.TabIndex = 43;
@@ -146,13 +150,35 @@
             // dgvDictionary
             // 
             dgvDictionary.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvDictionary.Columns.AddRange(new DataGridViewColumn[] { index, tag });
+            dgvDictionary.Columns.AddRange(new DataGridViewColumn[] { index, tag, gelbooru });
             dgvDictionary.Location = new Point(366, 12);
             dgvDictionary.Name = "dgvDictionary";
             dgvDictionary.RowHeadersWidth = 45;
             dgvDictionary.Size = new Size(719, 467);
             dgvDictionary.TabIndex = 44;
             dgvDictionary.CellMouseClick += dgvDictionary_CellMouseClick;
+            // 
+            // index
+            // 
+            index.HeaderText = "Номер";
+            index.MinimumWidth = 6;
+            index.Name = "index";
+            index.ReadOnly = true;
+            index.Width = 60;
+            // 
+            // tag
+            // 
+            tag.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            tag.HeaderText = "Теги";
+            tag.MinimumWidth = 6;
+            tag.Name = "tag";
+            tag.ReadOnly = true;
+            // 
+            // gelbooru
+            // 
+            gelbooru.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            gelbooru.HeaderText = "Gelbooru";
+            gelbooru.Name = "gelbooru";
             // 
             // bBackgroundImageCopyOff
             // 
@@ -190,14 +216,14 @@
             pBackgroundImageCopy.Controls.Add(textBox1);
             pBackgroundImageCopy.Controls.Add(bBackgroundImageCopyOn);
             pBackgroundImageCopy.Controls.Add(bBackgroundImageCopyOff);
-            pBackgroundImageCopy.Location = new Point(186, 90);
+            pBackgroundImageCopy.Location = new Point(186, 174);
             pBackgroundImageCopy.Name = "pBackgroundImageCopy";
             pBackgroundImageCopy.Size = new Size(158, 166);
             pBackgroundImageCopy.TabIndex = 40;
             // 
             // bSaveTag
             // 
-            bSaveTag.Location = new Point(12, 94);
+            bSaveTag.Location = new Point(12, 178);
             bSaveTag.Name = "bSaveTag";
             bSaveTag.Size = new Size(150, 38);
             bSaveTag.TabIndex = 45;
@@ -207,28 +233,39 @@
             // 
             // textBox5
             // 
-            textBox5.Location = new Point(12, 138);
+            textBox5.Location = new Point(12, 222);
             textBox5.Name = "textBox5";
             textBox5.ReadOnly = true;
             textBox5.Size = new Size(150, 23);
             textBox5.TabIndex = 46;
             textBox5.Text = "Способ";
             // 
-            // index
+            // textBox6
             // 
-            index.HeaderText = "Номер";
-            index.MinimumWidth = 6;
-            index.Name = "index";
-            index.ReadOnly = true;
-            index.Width = 60;
+            textBox6.Location = new Point(12, 85);
+            textBox6.Name = "textBox6";
+            textBox6.ReadOnly = true;
+            textBox6.Size = new Size(58, 23);
+            textBox6.TabIndex = 48;
+            textBox6.Text = "Gelbooru";
             // 
-            // tag
+            // tbGelbooru
             // 
-            tag.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            tag.HeaderText = "Теги";
-            tag.MinimumWidth = 6;
-            tag.Name = "tag";
-            tag.ReadOnly = true;
+            tbGelbooru.Location = new Point(12, 112);
+            tbGelbooru.Multiline = true;
+            tbGelbooru.Name = "tbGelbooru";
+            tbGelbooru.Size = new Size(332, 46);
+            tbGelbooru.TabIndex = 47;
+            // 
+            // bDownloadAll
+            // 
+            bDownloadAll.Location = new Point(12, 339);
+            bDownloadAll.Name = "bDownloadAll";
+            bDownloadAll.Size = new Size(150, 38);
+            bDownloadAll.TabIndex = 49;
+            bDownloadAll.Text = "Скачать всё";
+            bDownloadAll.UseVisualStyleBackColor = true;
+            bDownloadAll.Click += bDownloadAll_Click;
             // 
             // DownloaderDataSetPhoto
             // 
@@ -236,6 +273,9 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlLightLight;
             ClientSize = new Size(1097, 493);
+            Controls.Add(bDownloadAll);
+            Controls.Add(textBox6);
+            Controls.Add(tbGelbooru);
             Controls.Add(textBox5);
             Controls.Add(bSaveTag);
             Controls.Add(dgvDictionary);
@@ -247,6 +287,7 @@
             Controls.Add(pBackgroundImageCopy);
             Name = "DownloaderDataSetPhoto";
             Text = "DownloaderDataSetPhoto";
+            FormClosing += Form1_FormClosing;
             pGelbooru.ResumeLayout(false);
             pGelbooru.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).EndInit();
@@ -277,5 +318,9 @@
         private TextBox textBox5;
         private DataGridViewTextBoxColumn index;
         private DataGridViewTextBoxColumn tag;
+        private DataGridViewTextBoxColumn gelbooru;
+        private TextBox textBox6;
+        private TextBox tbGelbooru;
+        private Button bDownloadAll;
     }
 }

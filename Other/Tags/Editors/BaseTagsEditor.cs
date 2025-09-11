@@ -75,7 +75,7 @@ namespace Other.Tags.Editors
         public static string FixTagString(string tagsStr)
         {
             // Удаление пробелов по краям
-            tagsStr = tagsStr.Trim(' ');
+            tagsStr = tagsStr.Trim();
 
             // Замена пробелов на _
             var tagsArr = tagsStr.Split(' ', StringSplitOptions.RemoveEmptyEntries);

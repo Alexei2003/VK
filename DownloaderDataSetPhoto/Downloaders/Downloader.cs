@@ -15,7 +15,6 @@ namespace DownloaderDataSetPhoto.Downloaders
             {
                 return;
             }
-            ;
             using var image = SixLabors.ImageSharp.Image.Load<Rgb24>($"DATA_SET\\{fileName}.jpg");
 
             var pathDir = "DATA_SET\\" + currentTag;
@@ -29,7 +28,6 @@ namespace DownloaderDataSetPhoto.Downloaders
             {
                 return;
             }
-
 
             DataSetImage.Save(image, currentTag);
         }

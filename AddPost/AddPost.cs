@@ -60,7 +60,7 @@ namespace AddPost
 
         private void AddInDataSet(List<ImageWithTag> imageList, string tags)
         {
-            if (!tagList.Add(tags) && tags.Split('#', StringSplitOptions.RemoveEmptyEntries).Length < 3)
+            if (tags.Split('#', StringSplitOptions.RemoveEmptyEntries).Length < 3)
             {
                 foreach (var image in imageList)
                 {
@@ -236,7 +236,7 @@ namespace AddPost
 
         private void dgvDictionary_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            ListTagUI.CellMouseClick(e, tbTag, dgvDictionary, tagList, tbTag.Text);
+            ListTagUI.CellMouseClick(e, tbTag, null, dgvDictionary, tagList, tbTag.Text);
         }
 
         private void bImageLeft_Click(object sender, EventArgs e)

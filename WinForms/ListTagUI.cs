@@ -16,7 +16,7 @@ namespace WinForms
             }
             var stack = tagList.FindLast(text);
 
-            dgvDictionary.Rows.AddRange(stack.Select(elem => new DataGridViewRow { Cells = { new DataGridViewTextBoxCell { Value = 0 }, new DataGridViewTextBoxCell { Value = elem } } }).ToArray());
+            dgvDictionary.Rows.AddRange(stack.Select(elem => new DataGridViewRow { Cells = { new DataGridViewTextBoxCell { Value = 0 }, new DataGridViewTextBoxCell { Value = elem.Name }, new DataGridViewTextBoxCell { Value = elem.Gelbooru } } }).ToArray());
 
             dgvDictionary.Sort(dgvDictionary.Columns["tag"], ListSortDirection.Ascending);
 
@@ -74,37 +74,41 @@ namespace WinForms
             }
         }
 
-        public static void CellMouseClick(DataGridViewCellMouseEventArgs e, TextBox textBox, DataGridView dgvDictionary, TagsList tagList, string text)
+        public static void CellMouseClick(DataGridViewCellMouseEventArgs e, TextBox tbTag, TextBox? tbGelbooru, DataGridView dgvDictionary, TagsList tagList, string text)
         {
-            if (e.Button == MouseButtons.Left)
+            if (e.RowIndex != -1 && e.ColumnIndex != -1)
             {
-                int removeCount = -1;
-                int indexStartDel = -1;
-                for (int i = text.Length - 1; i > -1; i--)
+                if (e.Button == MouseButtons.Left)
                 {
-                    if (text[i] == '#')
+                    int removeCount = -1;
+                    int indexStartDel = -1;
+                    for (int i = text.Length - 1; i > -1; i--)
                     {
-                        indexStartDel = i;
-                        removeCount = text.Length - i;
-                        break;
+                        if (text[i] == '#')
+                        {
+                            indexStartDel = i;
+                            removeCount = text.Length - i;
+                            break;
+                        }
                     }
-                }
-                if (removeCount > -1 && indexStartDel > -1)
-                {
-                    text = text.Remove(indexStartDel, removeCount);
-                }
+                    if (removeCount > -1 && indexStartDel > -1)
+                    {
+                        text = text.Remove(indexStartDel, removeCount);
+                    }
 
-                textBox.Text = dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-            }
-            else if (e.Button == MouseButtons.Right)
-            {
-                DialogResult result = MessageBox.Show($"Удаление тега {dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value}", "Подтвердите действие для ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
-                {
-                    tagList.Remove(dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+                    tbTag.Text = dgvDictionary.Rows[e.RowIndex].Cells["tag"].Value.ToString();
+                    if (tbGelbooru != null) tbGelbooru.Text = dgvDictionary.Rows[e.RowIndex].Cells["gelbooru"].Value.ToString();
                 }
+                else if (e.Button == MouseButtons.Right)
+                {
+                    DialogResult result = MessageBox.Show($"Удаление тега {dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value}", "Подтвердите действие для ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {
+                        tagList.Remove(dgvDictionary.Rows[e.RowIndex].Cells["tag"].Value.ToString());
+                    }
 
-                WriteFindTag(dgvDictionary, tagList, text);
+                    WriteFindTag(dgvDictionary, tagList, text);
+                }
             }
         }
     }

@@ -10,7 +10,7 @@ namespace DownloaderDataSetPhoto.Downloaders
             try
             {
 
-                Parallel.For(0, 10, i =>
+                for (var i = 0; i < 10; i++)
                 {
                     using var httpClient = new HttpClient();
 
@@ -22,7 +22,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                         var src = node.GetAttributeValue("src", string.Empty);
                         Downloader.DownloadPhoto(httpClient, new Uri(src), currentTag, fileName + i.ToString());
                     }
-                });
+                }
             }
             catch (Exception e)
             {

@@ -5,7 +5,7 @@ namespace Other.Tags
 {
     public sealed class TagsList
     {
-        private List<string> tagsList = [];
+        public List<Tag> List { get; set; } = [];
 
         public TagsList()
         {
@@ -14,7 +14,7 @@ namespace Other.Tags
 
         public void Save()
         {
-            string json = JsonSerializer.Serialize(tagsList);
+            string json = JsonSerializer.Serialize(List);
             File.WriteAllText("TagsDictionary.txt", json);
         }
 
@@ -25,18 +25,18 @@ namespace Other.Tags
                 string json = File.ReadAllText("TagsDictionary.txt");
                 if (json?.Length != 0)
                 {
-                    tagsList = JsonSerializer.Deserialize<List<string>>(json);
+                    List = JsonSerializer.Deserialize<List<Tag>>(json);
                 }
             }
             catch
             {
-                tagsList = [];
+                List = [];
             }
         }
 
-        public ConcurrentStack<string> FindLast(string tagsGet)
+        public ConcurrentStack<Tag> FindLast(string tagsGet)
         {
-            ConcurrentStack<string> stack;
+            ConcurrentStack<Tag> stack;
             var tags = tagsGet.Split('#');
             if (tags.Length > 0)
             {
@@ -49,13 +49,13 @@ namespace Other.Tags
             return stack;
         }
 
-        public ConcurrentStack<string> Find(string lastTag)
+        public ConcurrentStack<Tag> Find(string lastTag)
         {
-            ConcurrentStack<string> stack = new();
+            ConcurrentStack<Tag> stack = new();
             lastTag = lastTag.ToLower();
-            Parallel.ForEach(tagsList, tag =>
+            Parallel.ForEach(List, tag =>
             {
-                var lowerTag = tag.ToLower();
+                var lowerTag = tag.Name.ToLower();
                 if (lowerTag.Contains(lastTag))
                 {
                     stack.Push(tag);
@@ -64,19 +64,27 @@ namespace Other.Tags
             return stack;
         }
 
-        public bool Add(string tag)
+        public void AddTagChangeGelbooru(Tag tag)
         {
-            if (!tagsList.Contains(tag))
+            var findTag = List.FirstOrDefault(t => t.Name == tag.Name);
+            if (findTag == null)
             {
-                tagsList.Add(tag);
-                return true;
+                List.Add(tag);
             }
-            return false;
+            else
+            {
+                findTag.Gelbooru = tag.Gelbooru;
+            }
         }
 
         public bool Remove(string tag)
         {
-            return tagsList.Remove(tag);
+            var tagClass = List.FirstOrDefault(t => t.Name == tag);
+            if (tagClass != null)
+            {
+                return List.Remove(tagClass);
+            }
+            return true;
         }
     }
 }

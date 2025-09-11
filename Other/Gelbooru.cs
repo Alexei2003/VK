@@ -8,7 +8,7 @@ namespace Other
 
         private const string NoSearch =
             // Сексуальный контент и анатомия
-            "+-nipples+-completely_nude+-gangbang+-imminent_sex+-sex+-penis+-condom+-cum+-futa+-rape" +
+            "-nipples+-completely_nude+-gangbang+-imminent_sex+-sex+-penis+-condom+-cum+-futa+-rape" +
             "+-filled_condom+-anal+-pussy+-multiple_penises+-anal_insertion+-dildo+-object_insertion" +
             "+-sex_toys+-licking_penis+-areolae+-backboob+-masturbation+-peeing+-nude+-group_sex+-vaginal" +
             "+-handjob+-fellatio+-oral+-erection+-bdsm+-hypnosis+-slave+-nose_hook+-penis_over_eyes+-foot_worship" +

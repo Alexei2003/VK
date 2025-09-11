@@ -55,6 +55,7 @@
             bTbTagFix = new Button();
             index = new DataGridViewTextBoxColumn();
             tag = new DataGridViewTextBoxColumn();
+            gelbooru = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)pbImage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             SuspendLayout();
@@ -214,7 +215,7 @@
             // dgvDictionary
             // 
             dgvDictionary.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvDictionary.Columns.AddRange(new DataGridViewColumn[] { index, tag });
+            dgvDictionary.Columns.AddRange(new DataGridViewColumn[] { index, tag, gelbooru });
             dgvDictionary.Location = new Point(748, 145);
             dgvDictionary.Name = "dgvDictionary";
             dgvDictionary.RowHeadersWidth = 45;
@@ -317,6 +318,12 @@
             tag.Name = "tag";
             tag.ReadOnly = true;
             // 
+            // gelbooru
+            // 
+            gelbooru.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            gelbooru.HeaderText = "Gelbooru";
+            gelbooru.Name = "gelbooru";
+            // 
             // AddPost
             // 
             AllowDrop = true;
@@ -388,5 +395,6 @@
         private Button bTbTagFix;
         private DataGridViewTextBoxColumn index;
         private DataGridViewTextBoxColumn tag;
+        private DataGridViewTextBoxColumn gelbooru;
     }
 }

@@ -117,17 +117,17 @@ namespace AddDataInDataSet
             {
                 var name = GetDirectoryName(tag);
 
-                if (!tagList.ContainTag(name))
-                {
-                    Console.WriteLine(tag);
-                }
-                else
+                if (tagList.ContainTag(name))
                 {
                     var sourceInfo = new DirectoryInfo(tag);
                     if (sourceInfo.GetFiles().Length < 100)
                     {
                         DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, SMALL_PATH, name), deleteOriginal: true);
                     }
+                }
+                else
+                {
+                    Console.WriteLine(tag);
                 }
 
                 count[0]++;
