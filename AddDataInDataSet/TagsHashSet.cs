@@ -1,12 +1,14 @@
 ﻿using System.Text.Json;
 
+using Other.Tags;
+
 namespace AddDataInDataSet
 {
-    public class TagsList
+    public class TagsHashSet
     {
-        private HashSet<string>? tagsList = null;
+        private HashSet<string> tagsHashSet = [];
 
-        public TagsList()
+        public TagsHashSet()
         {
             Load();
         }
@@ -18,22 +20,23 @@ namespace AddDataInDataSet
                 string json = File.ReadAllText("TagsDictionary.txt");
                 if (json?.Length != 0)
                 {
-                    tagsList = JsonSerializer.Deserialize<HashSet<string>>(json);
+                    var list = JsonSerializer.Deserialize<List<Tag>>(json);
+                    tagsHashSet = [.. list.Select(t => t.Name)];
                 }
                 else
                 {
-                    tagsList = new HashSet<string>();
+                    tagsHashSet = [];
                 }
             }
             catch
             {
-                tagsList = new HashSet<string>();
+                tagsHashSet = [];
             }
         }
 
         public bool ContainTag(string tag)
         {
-            if (tagsList.Contains(tag))
+            if (tagsHashSet.Contains(tag))
             {
                 return true;
             }

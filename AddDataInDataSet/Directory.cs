@@ -111,7 +111,7 @@ namespace AddDataInDataSet
         {
             var tagDirectories = Directory.GetDirectories(Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH));
 
-            var tagList = new TagsList();
+            var tagList = new TagsHashSet();
 
             Parallel.ForEach(tagDirectories, tag =>
             {
