@@ -91,7 +91,6 @@ namespace DataSet
                 {
                     var pixel1 = srcImage[x, y];
                     var pixel2 = destImage[x, y];
-
                     var o = new Vector3(pixel1.R, pixel1.G, pixel1.B);
                     var p = new Vector3(pixel2.R, pixel2.G, pixel2.B);
 
