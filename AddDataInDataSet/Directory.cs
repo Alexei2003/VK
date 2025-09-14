@@ -15,7 +15,7 @@ namespace AddDataInDataSet
 {
     public static class WorkWithDirectory
     {
-#if !DEBUG
+#if DEBUG
         private const string MAIN_DIRECTORY = "E:\\WPS\\VK\\AddDataInDataSet\\bin\\Debug\\net9.0-windows10.0.22621.0\\DATA_SET";
 #else
         private const string MAIN_DIRECTORY = "D:\\NEURAL_NETWORKS\\NeuralNetwork-ImageClassifier\\DataSet\\ARTS";
