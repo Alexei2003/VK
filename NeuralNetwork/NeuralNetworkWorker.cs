@@ -25,13 +25,14 @@ namespace NeuralNetwork
 
         private sealed class Session
         {
-            public bool IsBusy { get; set; } = false;
             public bool IsFirst { get; set; } = true;
+            public int GPUID { get; set; } = -1;
 
             public InferenceSession Inference { get; set; }
 
-            public Session(InferenceSession inference)
+            public Session(InferenceSession inference, int gpuid)
             {
+                GPUID = gpuid;
                 Inference = inference;
             }
         }
@@ -63,14 +64,14 @@ namespace NeuralNetwork
                     {
                         if (sessionList.Count == 0)
                         {
-                            sessionList.Add(new Session(inferenceSession));
+                            sessionList.Add(new Session(inferenceSession, -1));
                         }
                         id = -1;
                         break;
                     }
                     else
                     {
-                        sessionList.Add(new Session(inferenceSession));
+                        sessionList.Add(new Session(inferenceSession, id));
                     }
                 }
                 if (id == -1)
@@ -115,24 +116,24 @@ namespace NeuralNetwork
             }
         }
 
-        public static string NeuralNetworkResult(Image<Rgb24> imageOriginal)
+        public static string NeuralNetworkResult(Image<Rgb24> imageOriginal, int threadIndex)
         {
-            var arr = NeuralNetworkResultKTopCount(imageOriginal, 1);
+            var arr = NeuralNetworkResultKTopCount(imageOriginal, threadIndex, 1);
 
             return arr[0];
         }
 
-        public static string[] NeuralNetworkResultKTopPercent(Image<Rgb24> imageOriginal, double percent = 0.10)
+        public static string[] NeuralNetworkResultKTopPercent(Image<Rgb24> imageOriginal, int threadIndex, double percent = 0.10)
         {
             var kTop = int.Max((int)(Labels.Length * percent), 1);
 
-            var arr = NeuralNetworkResultKTopCount(imageOriginal, kTop);
+            var arr = NeuralNetworkResultKTopCount(imageOriginal, threadIndex, kTop);
             return arr;
         }
 
-        public static string[] NeuralNetworkResultKTopCount(Image<Rgb24> imageOriginal, int kTop = 15)
+        public static string[] NeuralNetworkResultKTopCount(Image<Rgb24> imageOriginal, int threadIndex, int kTop = 15)
         {
-            var labels = NeuralNetworkBaseResult(imageOriginal);
+            var labels = NeuralNetworkBaseResult(imageOriginal, threadIndex);
             if (labels == null)
             {
                 return ["#error"];
@@ -150,9 +151,9 @@ namespace NeuralNetwork
             return [.. resultTagsArr];
         }
 
-        public static Label[] NeuralNetworkResultKTopCountAndPercent(Image<Rgb24> imageOriginal, int kTop = 15)
+        public static Label[] NeuralNetworkResultKTopCountAndPercent(Image<Rgb24> imageOriginal, int threadIndex, int kTop = 15)
         {
-            var labels = NeuralNetworkBaseResult(imageOriginal);
+            var labels = NeuralNetworkBaseResult(imageOriginal, threadIndex);
             if (labels == null)
             {
                 return [new Label("#error", 1)];
@@ -176,7 +177,7 @@ namespace NeuralNetwork
             return [.. resultTagsArr];
         }
 
-        private static Label[]? NeuralNetworkBaseResult(Image<Rgb24> imageOriginal)
+        private static Label[]? NeuralNetworkBaseResult(Image<Rgb24> imageOriginal, int threadIndex)
         {
             using var image = DataSetImage.ChangeResolution224x224(imageOriginal);
 
@@ -187,22 +188,7 @@ namespace NeuralNetwork
                 NamedOnnxValue.CreateFromTensor(_inputName, inputTensor)
             };
 
-            Session? session;
-
-            while (true)
-            {
-                session = _sessionArr.FirstOrDefault(s => s.IsBusy == false);
-
-                if (session != null)
-                {
-                    session.IsBusy = true;
-                    break;
-                }
-                else
-                {
-                    Thread.Sleep(100);
-                }
-            }
+            var session = _sessionArr[threadIndex % _sessionArr.Length];
 
             float[] outputArr;
             lock (session)
@@ -228,22 +214,14 @@ namespace NeuralNetwork
                 {
                     Logs.WriteException(ex);
 
-                    var id = -1;
-                    if (_sessionArr.Length > 1)
-                    {
-                        int index = Array.IndexOf(_sessionArr, session);
-                        id = index / MAX_SESSIONS_GPU;
-                    }
                     session.Inference.Dispose();
                     session.IsFirst = true;
-                    var (inferenceSession, isCPU) = CreateInferenceSession(id);
+                    var (inferenceSession, isCPU) = CreateInferenceSession(session.GPUID);
                     session.Inference = inferenceSession;
-                    session.IsBusy = false;
 
                     return null;
                 }
             }
-            session.IsBusy = false;
 
             var labels = new Label[outputArr.Length];
 

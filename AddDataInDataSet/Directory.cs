@@ -150,6 +150,9 @@ namespace AddDataInDataSet
             dataTable.Columns.Add($"Точность 5% k={countP5}", typeof(float));
             dataTable.Columns.Add($"Точность 10% k={countP10}", typeof(float));
 
+            int counter = 0;
+            var threadIndex = new ThreadLocal<int>(() => Interlocked.Increment(ref counter) - 1);
+
             Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
             {
                 var tagOriginal = NeuralNetworkWorker.Labels[i];
@@ -167,7 +170,7 @@ namespace AddDataInDataSet
                     foreach (var fileImage in tagDirectoryInfo.GetFiles())
                     {
                         using var image = Image.Load<Rgb24>(fileImage.FullName);
-                        var tagPredictArr = NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
+                        var tagPredictArr = NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image, threadIndex.Value);
 
                         for (var k = 0; k < tagPredictArr.Length; k++)
                         {
@@ -240,8 +243,11 @@ namespace AddDataInDataSet
                 dataTable.Rows.Add(row);
             }
 
-
             var tagsDirectory = Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH);
+
+            int counter = 0;
+            ThreadLocal<int> threadIndex = new ThreadLocal<int>(() => Interlocked.Increment(ref counter) - 1);
+
             Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
             {
                 var tagOriginal = NeuralNetworkWorker.Labels[i];
@@ -253,7 +259,7 @@ namespace AddDataInDataSet
                 foreach (var fileImage in tagDirectoryInfo.GetFiles())
                 {
                     using var image = Image.Load<Rgb24>(fileImage.FullName);
-                    var tagPredict = NeuralNetworkWorker.NeuralNetworkResult(image);
+                    var tagPredict = NeuralNetworkWorker.NeuralNetworkResult(image, threadIndex.Value);
 
                     predictInfoDict[tagPredict].ResultArr[predictInfoDict[tagOriginal].Id]++;
                 }

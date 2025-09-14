@@ -23,7 +23,7 @@ namespace NeuralNetworkAnalyzer
 
                 Task.Run(() =>
                 {
-                    var labels = NeuralNetworkWorker.NeuralNetworkResultKTopCountAndPercent(image, 20);
+                    var labels = NeuralNetworkWorker.NeuralNetworkResultKTopCountAndPercent(image, 0, 20);
 
                     this.Invoke((MethodInvoker)(() =>
                     {

@@ -497,7 +497,7 @@ namespace RepetitionOfPostsBot.BotTask
                 return;
             }
 
-            var resultTags = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
+            var resultTags = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image, 0);
 
             foreach (var nodeTag in nodeTags)
             {

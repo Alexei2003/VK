@@ -161,7 +161,7 @@ namespace AddPost
                 var image = ConverterBmp.ConvertToImageSharp(imageBmp);
                 await Task.Run(() =>
                 {
-                    var tag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(image);
+                    var tag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(image, 0);
 
                     AddImage(image, tag);
                 });
