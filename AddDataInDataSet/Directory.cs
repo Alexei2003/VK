@@ -15,7 +15,7 @@ namespace AddDataInDataSet
 {
     public static class WorkWithDirectory
     {
-#if DEBUG
+#if !DEBUG
         private const string MAIN_DIRECTORY = "E:\\WPS\\VK\\AddDataInDataSet\\bin\\Debug\\net9.0-windows10.0.22621.0\\DATA_SET";
 #else
         private const string MAIN_DIRECTORY = "D:\\NEURAL_NETWORKS\\NeuralNetwork-ImageClassifier\\DataSet\\ARTS";
@@ -153,7 +153,7 @@ namespace AddDataInDataSet
             int counter = 0;
             var threadIndex = new ThreadLocal<int>(() => Interlocked.Increment(ref counter) - 1);
 
-            Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
+            Parallel.For(0, NeuralNetworkWorker.Labels.Length, new ParallelOptions() {MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
             {
                 var tagOriginal = NeuralNetworkWorker.Labels[i];
 
@@ -248,7 +248,7 @@ namespace AddDataInDataSet
             int counter = 0;
             ThreadLocal<int> threadIndex = new ThreadLocal<int>(() => Interlocked.Increment(ref counter) - 1);
 
-            Parallel.For(0, NeuralNetworkWorker.Labels.Length, i =>
+            Parallel.For(0, NeuralNetworkWorker.Labels.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
             {
                 var tagOriginal = NeuralNetworkWorker.Labels[i];
 
