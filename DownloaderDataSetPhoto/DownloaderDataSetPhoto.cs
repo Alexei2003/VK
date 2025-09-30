@@ -97,7 +97,7 @@ namespace DownloaderDataSetPhoto
             {
                 await Task.Run(() =>
                 {
-                    DownloadGelbooru(tbTag.Text,tbGelbooruUrl.Text, bDownloadPhotosGelbooru);
+                    DownloadGelbooru(tbTag.Text,tbGelbooruUrl.Text, bDownloadPhotosGelbooru, 10);
                 });
             }
         }
@@ -110,13 +110,13 @@ namespace DownloaderDataSetPhoto
                 {
                     if (tag.Gelbooru.Length > 0)
                     {
-                        DownloadGelbooru(tag.Name, $"https://gelbooru.com/index.php?page=post&s=list&tags={tag.Gelbooru}", bDownloadAll);
+                        DownloadGelbooru(tag.Name, $"https://gelbooru.com/index.php?page=post&s=list&tags={tag.Gelbooru}", bDownloadAll, 1);
                     }
                 }
             });
         }
 
-        private void DownloadGelbooru(string tag, string url, Button button)
+        private void DownloadGelbooru(string tag, string url, Button button, int countPages)
         {
             if (button.InvokeRequired)
             {
@@ -132,7 +132,7 @@ namespace DownloaderDataSetPhoto
 
             try
             {
-                DownloaderDataSetPhotoFromGelbooru.SavePhotos(url, tag, "DataSet_");
+                DownloaderDataSetPhotoFromGelbooru.SavePhotos(url, tag, "DataSet_", countPages);
             }
             catch (Exception e)
             {

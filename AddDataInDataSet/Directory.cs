@@ -120,9 +120,23 @@ namespace AddDataInDataSet
                 if (tagList.ContainTag(name))
                 {
                     var sourceInfo = new DirectoryInfo(tag);
-                    if (sourceInfo.GetFiles().Length < 100)
+                    var filesArr = sourceInfo.GetFiles();
+                    if (filesArr.Length < 100)
                     {
                         DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, SMALL_PATH, name), deleteOriginal: true);
+                    }
+                    else
+                    {
+                        var arrSkip = new[] { "#nsfw", "#original", "#bad_drawing" };
+                        var countSkip = 1000;
+                        if (arrSkip.Contains(name))
+                        {
+                            countSkip *= tagDirectories.Length;
+                        }
+                        for (var i = 0; i < filesArr.Length - countSkip; i++)
+                        {
+                            filesArr[i].Delete();
+                        }
                     }
                 }
                 else
@@ -153,7 +167,7 @@ namespace AddDataInDataSet
             int counter = 0;
             var threadIndex = new ThreadLocal<int>(() => Interlocked.Increment(ref counter) - 1);
 
-            Parallel.For(0, NeuralNetworkWorker.Labels.Length, new ParallelOptions() {MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
+            Parallel.For(0, NeuralNetworkWorker.Labels.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
             {
                 var tagOriginal = NeuralNetworkWorker.Labels[i];
 

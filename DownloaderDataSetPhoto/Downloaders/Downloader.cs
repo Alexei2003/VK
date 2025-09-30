@@ -11,25 +11,22 @@ namespace DownloaderDataSetPhoto.Downloaders
         public static void DownloadPhoto(HttpClient httpClient, Uri url, string currentTag, string fileName)
         {
             Directory.CreateDirectory("DATA_SET");
-            if (!ImageTransfer.DownloadImageAsync(httpClient, url, $"DATA_SET\\{fileName}.jpg").Result)
+            if (ImageTransfer.DownloadImageAsync(httpClient, url, $"DATA_SET\\{fileName}.jpg").Result)
             {
-                return;
-            }
-            using var image = SixLabors.ImageSharp.Image.Load<Rgb24>($"DATA_SET\\{fileName}.jpg");
+                using var image = SixLabors.ImageSharp.Image.Load<Rgb24>($"DATA_SET\\{fileName}.jpg");
 
-            var pathDir = "DATA_SET\\" + currentTag;
-            if (!Directory.Exists(pathDir))
-            {
-                Directory.CreateDirectory(pathDir);
-            }
+                var pathDir = "DATA_SET\\" + currentTag;
+                if (!Directory.Exists(pathDir))
+                {
+                    Directory.CreateDirectory(pathDir);
+                }
 
-            var getTag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(image, 0);
-            if (getTag == currentTag)
-            {
-                return;
+                var getTag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(image, 0);
+                if (getTag != currentTag)
+                {
+                    DataSetImage.Save(image, currentTag);
+                }
             }
-
-            DataSetImage.Save(image, currentTag);
         }
     }
 }

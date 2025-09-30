@@ -1,16 +1,16 @@
 ﻿using Other;
+using Other.Tags;
 
 namespace DownloaderDataSetPhoto.Downloaders
 {
     public static class DownloaderDataSetPhotoFromGelbooru
     {
 
-        public static void SavePhotos(string url, string currentTag, string fileName)
+        public static void SavePhotos(string url, string currentTag, string fileName, int countPages)
         {
             try
             {
-
-                for (var i = 0; i < 1; i++)
+                for (var i = 0; i < countPages; i++)
                 {
                     using var httpClient = new HttpClient();
 
