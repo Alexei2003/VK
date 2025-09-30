@@ -21,7 +21,6 @@ namespace DownloaderDataSetPhoto
         {
             InitializeComponent();
             Gelbooru.UseProxy = false;
-            HidePanels(pGelbooru);
             ListTagUI.WriteFindTag(dgvDictionary, tagList, tbTag.Text);
         }
 
@@ -48,14 +47,6 @@ namespace DownloaderDataSetPhoto
             }
         }
 
-        private void HidePanels(Panel panel)
-        {
-            pBackgroundImageCopy.Visible = false;
-            pGelbooru.Visible = false;
-
-            panel.Visible = true;
-        }
-
         private void bBackgroundImageCopyOn_Click(object sender, EventArgs e)
         {
             bBackgroundImageCopyOn.Enabled = false;
@@ -77,27 +68,22 @@ namespace DownloaderDataSetPhoto
             BackgroundImageCopy();
         }
 
-        private void bBackgroundImageCopy_Click(object sender, EventArgs e)
-        {
-            HidePanels(pBackgroundImageCopy);
-        }
-
-
-
-        private void bGelbooru_Click(object sender, EventArgs e)
-        {
-            HidePanels(pGelbooru);
-        }
-
         private static readonly char[] separator = ['\r', '\n'];
 
         private async void bDownloadPhotosGelbooru_Click(object sender, EventArgs e)
         {
-            if (tbTag.Text.Length > 0)
+            if (tbTag.Text.Length > 0 && tbGelbooru.Text.Length > 0)
             {
                 await Task.Run(() =>
                 {
-                    DownloadGelbooru(tbTag.Text,tbGelbooruUrl.Text, bDownloadPhotosGelbooru, 10);
+                    var tag = BaseTagsEditor.FixTagString(tbTag.Text);
+                    var gelbooru = tbGelbooru.Text.Trim();
+                    if (tagList.Find(tag).IsEmpty)
+                    {
+                        tagList.AddTagChangeGelbooru(new Tag(tag, gelbooru));
+                    }
+                    ListTagUI.WriteFindTag(dgvDictionary, tagList, tbTag.Text);
+                    DownloadGelbooru(tag, $"https://gelbooru.com/index.php?page=post&s=list&tags={gelbooru}", bDownloadPhotosGelbooru, 10);
                 });
             }
         }
@@ -145,7 +131,6 @@ namespace DownloaderDataSetPhoto
                 {
                     button.Enabled = true;
                     tbTag.Text = "";
-                    tbGelbooruUrl.Text = "";
                     tbGelbooru.Text = "";
                 });
             }
@@ -153,7 +138,6 @@ namespace DownloaderDataSetPhoto
             {
                 button.Enabled = true;
                 tbTag.Text = "";
-                tbGelbooruUrl.Text = "";
                 tbGelbooru.Text = "";
             }
         }
@@ -166,14 +150,6 @@ namespace DownloaderDataSetPhoto
         private void dgvDictionary_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             ListTagUI.CellMouseClick(e, tbTag, tbGelbooru, dgvDictionary, tagList, tbTag.Text);
-        }
-
-        private void bSaveTag_Click(object sender, EventArgs e)
-        {
-            var tag = BaseTagsEditor.FixTagString(tbTag.Text);
-            var gelbooru = tbGelbooru.Text.Trim();
-            tagList.AddTagChangeGelbooru(new Tag(tag, gelbooru));
-            ListTagUI.WriteFindTag(dgvDictionary, tagList, tbTag.Text);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
