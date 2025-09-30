@@ -365,7 +365,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                 try
                 {
-                    for (var i = 0; i < 10; i++)
+                    for (var i = 0; i < 5; i++)
                     {
                         var htmlDocument = Gelbooru.GetPageHTML(_httpClient, url, i);
 
