@@ -1,4 +1,6 @@
-﻿using Other;
+﻿using System.Xml.Linq;
+
+using Other;
 using Other.Tags;
 
 namespace DownloaderDataSetPhoto.Downloaders
@@ -17,11 +19,11 @@ namespace DownloaderDataSetPhoto.Downloaders
                     var htmlDocument = Gelbooru.GetPageHTML(httpClient, url, i);
 
                     var nodesArr = htmlDocument.DocumentNode.SelectNodes("//img[contains(@src,'https://gelbooru.com')]").ToArray();
-                    foreach (var node in nodesArr)
+                    Parallel.For(0, nodesArr.Length, j =>
                     {
-                        var src = node.GetAttributeValue("src", string.Empty);
-                        Downloader.DownloadPhoto(httpClient, new Uri(src), currentTag, fileName + i.ToString());
-                    }
+                        var src = nodesArr[j].GetAttributeValue("src", string.Empty);
+                        Downloader.DownloadPhoto(httpClient, new Uri(src), currentTag, fileName + j.ToString());
+                    });
                 }
             }
             catch (Exception e)
