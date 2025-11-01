@@ -5,6 +5,8 @@ namespace Other.Tags
 {
     public sealed class TagsList
     {
+        private const string PathFile = "E:\\WPS\\CommonData\\Tags\\TagsDictionary.txt";
+        private bool _changed = false;
         public List<Tag> List { get; set; } = [];
 
         public TagsList()
@@ -14,15 +16,18 @@ namespace Other.Tags
 
         public void Save()
         {
-            string json = JsonSerializer.Serialize(List);
-            File.WriteAllText("TagsDictionary.txt", json);
+            if (_changed)
+            {
+                string json = JsonSerializer.Serialize(List);
+                File.WriteAllText(PathFile, json);
+            }
         }
 
         public void Load()
         {
             try
             {
-                string json = File.ReadAllText("TagsDictionary.txt");
+                string json = File.ReadAllText(PathFile);
                 if (json?.Length != 0)
                 {
                     List = JsonSerializer.Deserialize<List<Tag>>(json);
@@ -66,6 +71,7 @@ namespace Other.Tags
 
         public void AddTagChangeGelbooru(Tag tag)
         {
+            _changed = true;
             var findTag = List.FirstOrDefault(t => t.Name == tag.Name);
             if (findTag == null)
             {
@@ -79,6 +85,7 @@ namespace Other.Tags
 
         public bool Remove(string tag)
         {
+            _changed = true;
             var tagClass = List.FirstOrDefault(t => t.Name == tag);
             if (tagClass != null)
             {

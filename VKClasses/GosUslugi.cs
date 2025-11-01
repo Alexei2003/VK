@@ -10,9 +10,10 @@ namespace VKClasses
         public const string TIKTOK = "TIKTOK";
         public const string DISCORD = "DISCORD";
 
+        private const string _path = "E:\\WPS\\CommonData\\VK\\MyAccessTokens.txt";
         public static Dictionary<string, string> GetAccessTokens()
         {
-            var json = File.ReadAllText("MyAccessTokens.txt");
+            var json = File.ReadAllText(_path);
             return JsonSerializer.Deserialize<Dictionary<string, string>>(json);
         }
     }

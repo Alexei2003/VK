@@ -354,18 +354,22 @@ namespace RepetitionOfPostsBot.BotTask
         }
 
         private string _lastViewedUrl = "";
-        private List<Task> _taskList = [];
+        private readonly List<Task> _taskList = [];
+        private const string _fileName= "E:\\WPS\\CommonData\\Gelbooru\\LastViewedUrl.txt";
         public bool CreateVkPostFromGelbooru(bool client = false)
         {
             if (client || RandomStatic.Rand.Next(4) == 0)
             {
                 const string url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
 
-                var tmpLastViewedUrl = "";
+                if (File.Exists(_fileName))
+                {
+                    _lastViewedUrl = File.ReadAllText(_fileName);
+                }
 
                 try
                 {
-                    for (var i = 0; i < 5; i++)
+                    for (var i = 0; i < 10; i++)
                     {
                         var htmlDocument = Gelbooru.GetPageHTML(_httpClient, url, i);
 
@@ -375,17 +379,18 @@ namespace RepetitionOfPostsBot.BotTask
 
                         if (i == 0)
                         {
-                            tmpLastViewedUrl = nodesArr[0].GetAttributeValue("href", string.Empty);
+                            var tmpLastViewedUrl = nodesArr[0].GetAttributeValue("href", string.Empty);
+                            File.WriteAllText(_fileName, tmpLastViewedUrl);
                         }
 
                         if (!OpenArtsPage(nodesArr))
                         {
                             break;
                         }
-                    }
 
-                    _lastViewedUrl = tmpLastViewedUrl;
-                    Task.WaitAll(_taskList);
+                        Task.WaitAll(_taskList);
+                        _taskList.Clear();
+                    }
                 }
                 catch (Exception e)
                 {
@@ -407,6 +412,7 @@ namespace RepetitionOfPostsBot.BotTask
                 return false;
             }
         }
+
 
         private bool OpenArtsPage(HtmlNode[] nodesArr)
         {

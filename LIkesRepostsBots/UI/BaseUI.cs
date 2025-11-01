@@ -7,7 +7,7 @@ namespace LikesRepostsBots.UI
         protected static BotsList? _botList = null;
         public static void Initialize()
         {
-            var accessTokensAndNames = File.ReadAllLines(Path.Combine("AccessTokens.txt"));
+            var accessTokensAndNames = File.ReadAllLines(Path.Combine("E:\\WPS\\CommonData\\VK\\AccessTokens.txt"));
             _botList = new BotsList(accessTokensAndNames);
         }
     }

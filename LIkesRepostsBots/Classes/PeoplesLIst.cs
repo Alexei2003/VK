@@ -5,7 +5,7 @@ namespace LikesRepostsBots.Classes
     public static class PeoplesList
     {
         private const int CHUNK_SIZE = 1_000_000;
-        private const string FILE_PREFIX = "PeopleDictionary_";
+        private const string FILE_PREFIX = "E:\\\\WPS\\\\CommonData\\\\VK\\\\PeopleDictionary_";
         private const string FILE_EXTENSION = ".txt";
 
         private static HashSet<long> _currentChunk = new();
@@ -78,43 +78,5 @@ namespace LikesRepostsBots.Classes
                 fileIndex++;
             }
         }
-    }
-}
-
-class ConvertOldFile
-{
-    private const int CHUNK_SIZE = 1_000_000;
-    private const string OLD_FILE = "PeopleDictionary.txt";
-    private const string FILE_PREFIX = "PeopleDictionary_";
-    private const string FILE_EXTENSION = ".txt";
-
-    public static void Convert()
-    {
-        if (!File.Exists(OLD_FILE))
-        {
-            Console.WriteLine("Старый файл не найден.");
-            return;
-        }
-
-        string json = File.ReadAllText(OLD_FILE);
-        HashSet<long>? people = JsonSerializer.Deserialize<HashSet<long>>(json);
-        if (people == null || people.Count == 0)
-        {
-            Console.WriteLine("Файл пуст или некорректен.");
-            return;
-        }
-
-        var peopleArray = people.ToArray();
-        int fileIndex = 0;
-
-        for (int i = 0; i < peopleArray.Length; i += CHUNK_SIZE)
-        {
-            var chunk = peopleArray.Skip(i).Take(CHUNK_SIZE).ToHashSet();
-            string newJson = JsonSerializer.Serialize(chunk);
-            File.WriteAllText(FILE_PREFIX + fileIndex + FILE_EXTENSION, newJson);
-            fileIndex++;
-        }
-
-        Console.WriteLine($"Файл успешно разбит на {fileIndex} частей.");
     }
 }

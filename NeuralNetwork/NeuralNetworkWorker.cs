@@ -14,6 +14,8 @@ namespace NeuralNetwork
 {
     public static class NeuralNetworkWorker
     {
+        private const string _path = "";
+
         public const int MAX_SESSIONS_GPU = 4;
 
         private static readonly Session[] _sessionArr;
@@ -41,7 +43,7 @@ namespace NeuralNetwork
         static NeuralNetworkWorker()
         {
             // Загружаем метки классов
-            string labelFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "labels.txt");
+            string labelFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "E:\\WPS\\CommonData\\Model\\labels.txt");
             if (File.Exists(labelFilePath))
             {
                 Labels = File.ReadAllLines(labelFilePath);
@@ -101,7 +103,7 @@ namespace NeuralNetwork
                 catch { }
             }
 #endif
-            return (new InferenceSession("model.onnx", options), isCPU);
+            return (new InferenceSession(Path.Combine(_path, "E:\\WPS\\CommonData\\Model\\model.onnx"), options), isCPU);
         }
 
         public struct Label

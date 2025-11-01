@@ -35,7 +35,7 @@ namespace LikesRepostsBots.Classes
 
         private static void SleepAfterAction()
         {
-            Thread.Sleep(10 * RandomStatic._1SECOND + RandomStatic.Rand.Next(20 * RandomStatic._1SECOND));
+            Thread.Sleep(5 * RandomStatic._1SECOND + RandomStatic.Rand.Next(10 * RandomStatic._1SECOND));
         }
 
         private void WorkWithPosts(long groupId)
@@ -355,6 +355,10 @@ namespace LikesRepostsBots.Classes
             VkCollection<User> friends;
             int offset = 0;
             const int COUNT_USER = 5000;
+#if DEBUG
+            var count = 0;
+            var countBan = 0;
+#endif
             do
             {
                 friends = _api.Friends.Get(new FriendsGetParams
@@ -376,6 +380,9 @@ namespace LikesRepostsBots.Classes
                     if (user.Deactivated != Deactivated.Activated)
                     {
                         _api.Account.Ban(user.Id);
+#if DEBUG
+                        countBan++;
+#endif
                         SleepAfterAction();
                     }
                     else
@@ -383,10 +390,18 @@ namespace LikesRepostsBots.Classes
                         if (clearFriends == ClearFriendsType.BanAndMathAccount && IsMassAccount(user.Id))
                         {
                             _api.Account.Ban(user.Id);
+#if DEBUG
+                            countBan++;
+#endif
                             SleepAfterAction();
                         }
                     }
+#if DEBUG
+                    count++;
+                    Console.WriteLine($"{countBan}/{count}");
+#endif
                 }
+
             }
             while (friends.Count == COUNT_USER);
         }
@@ -434,10 +449,13 @@ namespace LikesRepostsBots.Classes
                             }
                             break;
                         case 1:
-                            WorkWithFriends(botParams);
+                            if (botParams.AddFriendsCount > 0)
+                            {
+                                WorkWithFriends(botParams);
+                            }
                             break;
                         case 2:
-                            if (botParams.ClearFriends > 0)
+                            if (botParams.ClearFriends != BotsWorksParams.ClearFriendsType.None)
                             {
                                 BanDiedAndMassFriends(botParams.ClearFriends);
                             }
