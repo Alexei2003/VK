@@ -11,6 +11,7 @@ namespace LikesRepostsBots.UI
         public static void Start()
         {
             Initialize();
+            PeoplesList.Load();
 
             BotsWorksParams botParams = new()
             {
@@ -34,8 +35,6 @@ namespace LikesRepostsBots.UI
                     {
                         Initialize();
                     }
-
-                    _botList.Mix();
 
                     switch (count)
                     {
@@ -82,6 +81,8 @@ namespace LikesRepostsBots.UI
                     }
 
                     botParams.ClearFriends = ClearFriendsType.None;
+
+                    PeoplesList.Save();
 
                     count++;
                 }

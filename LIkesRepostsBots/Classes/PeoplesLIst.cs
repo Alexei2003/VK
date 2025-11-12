@@ -4,79 +4,32 @@ namespace LikesRepostsBots.Classes
 {
     public static class PeoplesList
     {
-        private const int CHUNK_SIZE = 1_000_000;
-        private const string FILE_PREFIX = "E:\\\\WPS\\\\CommonData\\\\VK\\\\PeopleDictionary_";
-        private const string FILE_EXTENSION = ".txt";
+        private const string PathFile = "E:\\WPS\\CommonData\\VK\\PeopleDictionary.txt";
 
-        private static HashSet<long> _currentChunk = new();
-        private static int _currentFileIndex = 0;
+        private static HashSet<long> _peopleSet = new();
 
-        private static void LoadChunk(int fileIndex)
+        public static void Load()
         {
-            _currentChunk.Clear();
-            string filePath = FILE_PREFIX + fileIndex + FILE_EXTENSION;
-            if (File.Exists(filePath))
+            if (File.Exists(PathFile))
             {
-                string json = File.ReadAllText(filePath);
+                string json = File.ReadAllText(PathFile);
                 if (!string.IsNullOrWhiteSpace(json))
                 {
-                    _currentChunk = JsonSerializer.Deserialize<HashSet<long>>(json) ?? new HashSet<long>();
+                    _peopleSet = JsonSerializer.Deserialize<HashSet<long>>(json) ?? new HashSet<long>();
                 }
             }
-            _currentFileIndex = fileIndex;
         }
 
-        private static void SaveChunk()
+        public static void Save()
         {
-            string json = JsonSerializer.Serialize(_currentChunk);
-            File.WriteAllText(FILE_PREFIX + _currentFileIndex + FILE_EXTENSION, json);
-        }
-
-        public static bool Contains(long id)
-        {
-            int fileIndex = 0;
-            while (true)
-            {
-                string filePath = FILE_PREFIX + fileIndex + FILE_EXTENSION;
-                if (!File.Exists(filePath))
-                    return false;
-
-                LoadChunk(fileIndex);
-                if (_currentChunk.Contains(id))
-                    return true;
-
-                fileIndex++;
-            }
+            File.Move(PathFile, PathFile + ".old");
+            string json = JsonSerializer.Serialize(_peopleSet);
+            File.WriteAllText(PathFile, json);
         }
 
         public static bool Add(long id)
         {
-            int fileIndex = 0;
-            while (true)
-            {
-                string filePath = FILE_PREFIX + fileIndex + FILE_EXTENSION;
-                if (!File.Exists(filePath))
-                {
-                    _currentChunk.Clear();
-                    _currentChunk.Add(id);
-                    _currentFileIndex = fileIndex;
-                    SaveChunk();
-                    return true;
-                }
-
-                LoadChunk(fileIndex);
-                if (_currentChunk.Contains(id))
-                    return false;
-
-                if (_currentChunk.Count < CHUNK_SIZE)
-                {
-                    _currentChunk.Add(id);
-                    SaveChunk();
-                    return true;
-                }
-
-                fileIndex++;
-            }
+            return _peopleSet.Add(id);
         }
     }
 }

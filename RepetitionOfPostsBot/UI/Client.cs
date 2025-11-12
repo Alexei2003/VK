@@ -4,13 +4,22 @@ namespace RepetitionOfPostsBot.UI
 {
     public class Client : BaseUI
     {
-        public static void Start()
+        public static void Start(bool auto = false)
         {
             Initialize();
             Gelbooru.UseProxy = false;
+            string countStr;
 
-            Console.WriteLine("Количество постов");
-            string countStr = Console.ReadLine();
+            if (auto)
+            {
+                countStr = "24";
+            }
+            else
+            {
+                Console.WriteLine("Количество постов");
+                countStr = Console.ReadLine();
+            }
+
             if (int.TryParse(countStr, out var count))
             {
                 while (count > 0)
@@ -20,6 +29,10 @@ namespace RepetitionOfPostsBot.UI
                     count--;
                 }
             }
+
+            Console.WriteLine("\n------------------------------------------Финал------------------------------------------\n");
+
+            Console.ReadLine();
         }
     }
 }

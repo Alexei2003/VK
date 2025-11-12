@@ -398,12 +398,14 @@ namespace LikesRepostsBots.Classes
                     }
 #if DEBUG
                     count++;
-                    Console.WriteLine($"{countBan}/{count}");
 #endif
                 }
 
             }
             while (friends.Count == COUNT_USER);
+#if DEBUG
+            Console.WriteLine($"{countBan}/{count}");
+#endif
         }
 
         private void BanPeopleFromGroup(long groupId)

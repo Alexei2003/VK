@@ -9,6 +9,7 @@ namespace LikesRepostsBots.UI
         {
             var accessTokensAndNames = File.ReadAllLines(Path.Combine("E:\\WPS\\CommonData\\VK\\AccessTokens.txt"));
             _botList = new BotsList(accessTokensAndNames);
+            _botList.Mix();
         }
     }
 }

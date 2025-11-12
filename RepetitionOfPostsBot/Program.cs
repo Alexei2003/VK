@@ -29,6 +29,9 @@ namespace RepetitionOfPostsBot
             {
                 switch (args[0])
                 {
+                    case "-auto":
+                        Client.Start(true);
+                        break;
                     case "-client":
                         Client.Start();
                         break;

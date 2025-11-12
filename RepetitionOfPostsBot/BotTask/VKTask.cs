@@ -58,14 +58,13 @@ namespace RepetitionOfPostsBot.BotTask
         public async Task RunAll(bool client = false)
         {
             var tasks = new List<Task>();
-#if !DEBUG
-            tasks.Add(Task.Run(() =>
+
+            /*tasks.Add(Task.Run(() =>
             {
                 SendVkPostToOther();
-            }));
-#endif
+            }));*/
 
-#if DEBUG
+
             tasks.Add(Task.Run(() =>
             {
                 if (!CreateVkPostFromGelbooru(client))
@@ -73,14 +72,12 @@ namespace RepetitionOfPostsBot.BotTask
                     RepeatVKPosts(client);
                 }
             }));
-#endif
 
-#if !DEBUG
             if (_time < 1)
             {
                 tasks.Add(Task.Run(() =>
                 {
-                   ClearPeople();
+                    ClearPeople();
                 }));
                 _time = 24;
             }
@@ -88,7 +85,7 @@ namespace RepetitionOfPostsBot.BotTask
             {
                 _time--;
             }
-#endif
+
             await Task.WhenAll(tasks);
         }
 
@@ -355,16 +352,16 @@ namespace RepetitionOfPostsBot.BotTask
 
         private string _lastViewedUrl = "";
         private readonly List<Task> _taskList = [];
-        private const string _fileName= "E:\\WPS\\CommonData\\Gelbooru\\LastViewedUrl.txt";
+        private const string PathFile = "E:\\WPS\\CommonData\\Gelbooru\\LastViewedUrl.txt";
         public bool CreateVkPostFromGelbooru(bool client = false)
         {
             if (client || RandomStatic.Rand.Next(4) == 0)
             {
                 const string url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
 
-                if (File.Exists(_fileName))
+                if (File.Exists(PathFile))
                 {
-                    _lastViewedUrl = File.ReadAllText(_fileName);
+                    _lastViewedUrl = File.ReadAllText(PathFile);
                 }
 
                 try
@@ -380,7 +377,8 @@ namespace RepetitionOfPostsBot.BotTask
                         if (i == 0)
                         {
                             var tmpLastViewedUrl = nodesArr[0].GetAttributeValue("href", string.Empty);
-                            File.WriteAllText(_fileName, tmpLastViewedUrl);
+                            File.Move(PathFile, PathFile + ".old");
+                            File.WriteAllText(PathFile, tmpLastViewedUrl);
                         }
 
                         if (!OpenArtsPage(nodesArr))

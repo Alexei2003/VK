@@ -18,6 +18,7 @@ namespace Other.Tags
         {
             if (_changed)
             {
+                File.Move(PathFile, PathFile + ".old");
                 string json = JsonSerializer.Serialize(List);
                 File.WriteAllText(PathFile, json);
             }
