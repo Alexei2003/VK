@@ -22,7 +22,9 @@ namespace LikesRepostsBots.Classes
 
         public static void Save()
         {
-            File.Move(PathFile, PathFile + ".old");
+            const string PathFileOld = PathFile + ".old";
+            File.Delete(PathFileOld);
+            File.Move(PathFile, PathFileOld);
             string json = JsonSerializer.Serialize(_peopleSet);
             File.WriteAllText(PathFile, json);
         }

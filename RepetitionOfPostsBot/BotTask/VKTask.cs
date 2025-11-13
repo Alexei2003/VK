@@ -377,7 +377,9 @@ namespace RepetitionOfPostsBot.BotTask
                         if (i == 0)
                         {
                             var tmpLastViewedUrl = nodesArr[0].GetAttributeValue("href", string.Empty);
-                            File.Move(PathFile, PathFile + ".old");
+                            const string PathFileOld = PathFile + ".old";
+                            File.Delete(PathFileOld);
+                            File.Move(PathFile, PathFileOld);
                             File.WriteAllText(PathFile, tmpLastViewedUrl);
                         }
 
