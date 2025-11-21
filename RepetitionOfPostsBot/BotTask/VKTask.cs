@@ -55,7 +55,7 @@ namespace RepetitionOfPostsBot.BotTask
         }
 
         private int _time = 0;
-        public async Task RunAll(bool client = false)
+        public async Task RunAll(bool client = false, int countPost = 1)
         {
             var tasks = new List<Task>();
 
@@ -67,7 +67,7 @@ namespace RepetitionOfPostsBot.BotTask
 
             tasks.Add(Task.Run(() =>
             {
-                if (!CreateVkPostFromGelbooru(client))
+                if (!CreateVkPostFromGelbooru(client, countPost))
                 {
                     RepeatVKPosts(client);
                 }
@@ -353,7 +353,7 @@ namespace RepetitionOfPostsBot.BotTask
         private string _lastViewedUrl = "";
         private readonly List<Task> _taskList = [];
         private const string PathFile = "E:\\WPS\\CommonData\\Gelbooru\\LastViewedUrl.txt";
-        public bool CreateVkPostFromGelbooru(bool client = false)
+        public bool CreateVkPostFromGelbooru(bool client = false, int countPost = 1)
         {
             if (client || RandomStatic.Rand.Next(4) == 0)
             {
@@ -383,7 +383,7 @@ namespace RepetitionOfPostsBot.BotTask
                             File.WriteAllText(PathFile, tmpLastViewedUrl);
                         }
 
-                        if (!OpenArtsPage(nodesArr))
+                        if (!OpenArtsPage(nodesArr, i))
                         {
                             break;
                         }
@@ -399,12 +399,13 @@ namespace RepetitionOfPostsBot.BotTask
                 finally
                 {
                     _taskList.Clear();
+                    Directory.Delete(DownloadPath, true);
                 }
             }
 
             try
             {
-                return CreatePost();
+                return CreatePost(countPost);
             }
             catch (Exception e)
             {
@@ -414,7 +415,7 @@ namespace RepetitionOfPostsBot.BotTask
         }
 
 
-        private bool OpenArtsPage(HtmlNode[] nodesArr)
+        private bool OpenArtsPage(HtmlNode[] nodesArr, int pageIndex)
         {
             foreach (var node in nodesArr)
             {
@@ -448,7 +449,7 @@ namespace RepetitionOfPostsBot.BotTask
                 {
                     try
                     {
-                        SaveImage(nodesImageArr[0], nodeTagsArr, taskIndex);
+                        SaveImage(nodesImageArr[0], nodeTagsArr, taskIndex + 42 * pageIndex);
                     }
                     catch (Exception ex)
                     {
@@ -478,14 +479,15 @@ namespace RepetitionOfPostsBot.BotTask
 
         private const int CountCheckedImage = 20;
         private const int CountImageToPost = 3000;
+        private const string DownloadPath = "Download";
         private void SaveImage(HtmlNode nodeImage, HtmlNode[] nodeTags, int taskIndex)
         {
 
-            if (!Directory.Exists("Download"))
+            if (!Directory.Exists(DownloadPath))
             {
-                Directory.CreateDirectory("Download");
+                Directory.CreateDirectory(DownloadPath);
             }
-            string path_image = Path.Combine("Download", $"Gelbooru-{taskIndex}.jpg");
+            string path_image = Path.Combine(DownloadPath, $"Gelbooru-{taskIndex}.jpg");
 
             var href = nodeImage.GetAttributeValue("href", string.Empty);
             href = href.Replace("amp;", newValue: "");
@@ -557,9 +559,9 @@ namespace RepetitionOfPostsBot.BotTask
             }
         }
 
-        private bool CreatePost()
+        private bool CreatePost(int countPost = 1)
         {
-            var countImagesPerPostLimit = _imageToPostQueue.Count / 2;
+            var countImagesPerPostLimit = _imageToPostQueue.Count / countPost;
 
             if (countImagesPerPostLimit > 0)
             {

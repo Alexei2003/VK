@@ -12,7 +12,7 @@ namespace RepetitionOfPostsBot.UI
 
             if (auto)
             {
-                countStr = "24";
+                countStr = "20";
             }
             else
             {
@@ -25,7 +25,7 @@ namespace RepetitionOfPostsBot.UI
                 while (count > 0)
                 {
                     Console.WriteLine($"Осталось: {count}");
-                    _task?.RunAll(true).Wait();
+                    _task?.RunAll(true, count).Wait();
                     count--;
                 }
             }
