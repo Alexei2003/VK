@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.5.33516.290
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11217.181 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddPost", "AddPost\AddPost.csproj", "{6FBB59D9-14D1-4218-9E2C-47A0F0C35C87}"
 EndProject
@@ -29,8 +29,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DownloaderDataSetPhoto", "DownloaderDataSetPhoto\DownloaderDataSetPhoto.csproj", "{42802816-62B6-4328-B12A-32A3E740D460}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Statistics", "Statistics\Statistics.csproj", "{FC2923D4-6C41-461C-BC98-2796951EE9F7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{428286E0-ED2F-4444-8583-B09D6BE51D4F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VKClasses", "VKClasses\VKClasses.csproj", "{1847C2D9-8889-4382-A8BD-9833B87673A4}"
 EndProject
@@ -214,26 +212,6 @@ Global
 		{FC2923D4-6C41-461C-BC98-2796951EE9F7}.Release|x64.Build.0 = Release|Any CPU
 		{FC2923D4-6C41-461C-BC98-2796951EE9F7}.Release|x86.ActiveCfg = Release|Any CPU
 		{FC2923D4-6C41-461C-BC98-2796951EE9F7}.Release|x86.Build.0 = Release|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Debug|ARM.Build.0 = Debug|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Debug|x64.Build.0 = Debug|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Debug|x86.Build.0 = Debug|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Release|ARM.ActiveCfg = Release|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Release|ARM.Build.0 = Release|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Release|ARM64.Build.0 = Release|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Release|x64.ActiveCfg = Release|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Release|x64.Build.0 = Release|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Release|x86.ActiveCfg = Release|Any CPU
-		{428286E0-ED2F-4444-8583-B09D6BE51D4F}.Release|x86.Build.0 = Release|Any CPU
 		{1847C2D9-8889-4382-A8BD-9833B87673A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1847C2D9-8889-4382-A8BD-9833B87673A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1847C2D9-8889-4382-A8BD-9833B87673A4}.Debug|ARM.ActiveCfg = Debug|Any CPU

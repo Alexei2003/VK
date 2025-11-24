@@ -6,6 +6,7 @@ namespace AddDataInDataSet
 {
     public class TagsHashSet
     {
+        private const string PathFile = "E:\\WPS\\CommonData\\Tags\\TagsDictionary.txt";
         private HashSet<string> tagsHashSet = [];
 
         public TagsHashSet()
@@ -17,7 +18,7 @@ namespace AddDataInDataSet
         {
             try
             {
-                string json = File.ReadAllText("TagsDictionary.txt");
+                string json = File.ReadAllText(PathFile);
                 if (json?.Length != 0)
                 {
                     var list = JsonSerializer.Deserialize<List<Tag>>(json);
