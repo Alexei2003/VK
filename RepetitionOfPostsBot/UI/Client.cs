@@ -12,7 +12,7 @@ namespace RepetitionOfPostsBot.UI
 
             if (auto)
             {
-                countStr = "20";
+                countStr = "25";
             }
             else
             {

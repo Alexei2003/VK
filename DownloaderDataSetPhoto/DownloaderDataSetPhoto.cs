@@ -77,7 +77,7 @@ namespace DownloaderDataSetPhoto
                 await Task.Run(() =>
                 {
                     var tag = BaseTagsEditor.FixTagString(tbTag.Text);
-                    var gelbooru = tbGelbooru.Text.Trim();
+                    var gelbooru = tbGelbooru.Text.Trim().Replace(' ', '_' );
                     if (tagList.Find(tag).IsEmpty)
                     {
                         tagList.AddTagChangeGelbooru(new Tag(tag, gelbooru));
