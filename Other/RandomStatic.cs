@@ -3,10 +3,10 @@
     public static class RandomStatic
     {
         public static Random Rand { get; set; } = new Random();
-        public const int _1DAY = 24 * _1HOUR;
-        public const int _1HOUR = 60 * _1MINUTE;
-        public const int _1MINUTE = 60 * _1SECOND;
-        public const int _1SECOND = 1000;
+        public const int Day = 24 * Hour;
+        public const int Hour = 60 * Minute;
+        public const int Minute = 60 * Second;
+        public const int Second = 1000;
 
     }
 }

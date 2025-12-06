@@ -15,6 +15,8 @@ namespace Other
             int? timeoutSeconds = null,
             CancellationToken cancellationToken = default)
         {
+            await Task.Delay(RandomStatic.Second);
+
             for (int attempt = 0; attempt < maxRetries; attempt++)
             {
                 try

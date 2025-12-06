@@ -86,7 +86,7 @@ namespace LikesRepostsBots.UI
                 }*/
                 count++;
                 Console.WriteLine($"{count} / {_botList.Count}");
-                Thread.Sleep(10 * RandomStatic._1SECOND + RandomStatic.Rand.Next(20 * RandomStatic._1SECOND));
+                Thread.Sleep(10 * RandomStatic.Second + RandomStatic.Rand.Next(20 * RandomStatic.Second));
             });
 
             PeoplesList.Save();

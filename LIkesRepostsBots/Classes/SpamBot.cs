@@ -35,7 +35,7 @@ namespace LikesRepostsBots.Classes
 
         private static void SleepAfterAction()
         {
-            Thread.Sleep(5 * RandomStatic._1SECOND + RandomStatic.Rand.Next(10 * RandomStatic._1SECOND));
+            Thread.Sleep(5 * RandomStatic.Second + RandomStatic.Rand.Next(10 * RandomStatic.Second));
         }
 
         private void WorkWithPosts(long groupId)

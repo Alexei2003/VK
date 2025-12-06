@@ -20,8 +20,8 @@ namespace LikesRepostsBots.UI
                 GroupIdForGood = 220199532
             };
 
-            const int TIME_WORK = 3 * RandomStatic._1HOUR;
-            const int TIME_WORK_RANDOM = 3 * RandomStatic._1HOUR;
+            const int TIME_WORK = 3 * RandomStatic.Hour;
+            const int TIME_WORK_RANDOM = 3 * RandomStatic.Hour;
             int count = 0;
             int stepBetweenBots = TIME_WORK / _botList.Count;
             int stepBetweenBotsRandom = TIME_WORK_RANDOM / _botList.Count;
