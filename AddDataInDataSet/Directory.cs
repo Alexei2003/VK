@@ -8,6 +8,8 @@ using DataSet;
 
 using NeuralNetwork;
 
+using Other.Tags.Collections;
+
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -111,7 +113,7 @@ namespace AddDataInDataSet
         {
             var tagDirectories = Directory.GetDirectories(Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH));
 
-            var tagList = new TagsHashSet();
+            var tagList = new TagHashSet();
 
             Parallel.ForEach(tagDirectories, tag =>
             {

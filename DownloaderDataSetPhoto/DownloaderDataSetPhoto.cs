@@ -4,6 +4,7 @@ using DownloaderDataSetPhoto.Downloaders;
 
 using Other;
 using Other.Tags;
+using Other.Tags.Collections;
 using Other.Tags.Editors;
 
 using SixLabors.ImageSharp;
@@ -15,13 +16,13 @@ namespace DownloaderDataSetPhoto
 {
     public partial class DownloaderDataSetPhoto : Form
     {
-        private readonly TagsList tagList = new();
+        private readonly TagList _tagList = new();
 
         public DownloaderDataSetPhoto()
         {
             InitializeComponent();
             Gelbooru.UseProxy = false;
-            ListTagUI.WriteFindTag(dgvDictionary, tagList, tbTag.Text);
+            ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text);
         }
 
         private void AddInDataSet(Image<Rgb24> image, string tags, string resulTag)
@@ -78,11 +79,11 @@ namespace DownloaderDataSetPhoto
                 {
                     var tag = BaseTagsEditor.FixTagString(tbTag.Text);
                     var gelbooru = tbGelbooru.Text.Trim().Replace(' ', '_' );
-                    if (tagList.Find(tag).IsEmpty)
+                    if (_tagList.Find(tag).IsEmpty)
                     {
-                        tagList.AddTagChangeGelbooru(new Tag(tag, gelbooru));
+                        _tagList.AddTagChangeGelbooru(new Tag(tag, gelbooru));
                     }
-                    ListTagUI.WriteFindTag(dgvDictionary, tagList, tbTag.Text);
+                    ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text);
                     DownloadGelbooru(tag, $"https://gelbooru.com/index.php?page=post&s=list&tags={gelbooru}", bDownloadPhotosGelbooru, 10);
                 });
             }
@@ -92,7 +93,7 @@ namespace DownloaderDataSetPhoto
         {
             await Task.Run(() =>
             {
-                foreach (var tag in tagList.List)
+                foreach (var tag in _tagList.Collection)
                 {
                     if (tag.Gelbooru.Length > 0)
                     {
@@ -144,17 +145,17 @@ namespace DownloaderDataSetPhoto
 
         private void tbTag_KeyUp(object sender, KeyEventArgs e)
         {
-            ListTagUI.WriteFindTag(dgvDictionary, tagList, tbTag.Text);
+            ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text);
         }
 
         private void dgvDictionary_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            ListTagUI.CellMouseClick(e, tbTag, tbGelbooru, dgvDictionary, tagList, tbTag.Text);
+            ListTagUI.CellMouseClick(e, tbTag, tbGelbooru, dgvDictionary, _tagList, tbTag.Text);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            tagList.Save();
+            _tagList.Save();
         }
     }
 }

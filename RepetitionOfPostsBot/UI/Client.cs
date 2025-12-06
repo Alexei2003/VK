@@ -1,5 +1,8 @@
 ﻿using Other;
 
+using VkNet.Enums.StringEnums;
+using VkNet.Model;
+
 namespace RepetitionOfPostsBot.UI
 {
     public class Client : BaseUI
@@ -9,25 +12,31 @@ namespace RepetitionOfPostsBot.UI
             Initialize();
             Gelbooru.UseProxy = false;
             string countStr;
+            var countPost = 0;
 
             if (auto)
             {
-                countStr = "25";
+                var wall = _task?.VkApi.Wall.Get(new WallGetParams
+                {
+                    OwnerId = -1 * _task?.VkGroupId,
+                    Count = 1,
+                    Filter = WallFilter.Postponed,
+                });
+
+                countPost = 24 + (int)((24 * 7.0) / wall.TotalCount);
             }
             else
             {
                 Console.WriteLine("Количество постов");
                 countStr = Console.ReadLine();
+                int.TryParse(countStr, out countPost);
             }
 
-            if (int.TryParse(countStr, out var count))
+            while (countPost > 0)
             {
-                while (count > 0)
-                {
-                    Console.WriteLine($"Осталось: {count}");
-                    _task?.RunAll(true, count).Wait();
-                    count--;
-                }
+                Console.WriteLine($"Осталось: {countPost}");
+                _task?.RunAll(true, countPost).Wait();
+                countPost--;
             }
 
             Console.WriteLine("\n------------------------------------------Финал------------------------------------------\n");

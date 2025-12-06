@@ -1,51 +1,34 @@
 ﻿using System.Collections.Concurrent;
 using System.Text.Json;
 
-namespace Other.Tags
+namespace Other.Tags.Collections
 {
-    public sealed class TagsList
+    public class TagList
     {
-        private const string PathFile = "E:\\WPS\\CommonData\\Tags\\TagsDictionary.txt";
+        public List<Tag> Collection = [];
         private bool _changed = false;
-        public List<Tag> List { get; set; } = [];
 
-        public TagsList()
+        public TagList()
         {
-            Load();
+            Collection = [.. TagLoader.Load()];
         }
 
         public void Save()
         {
             if (_changed)
             {
-                const string PathFileOld = PathFile + ".old";
+                const string PathFileOld = TagLoader.PathFile + ".old";
                 File.Delete(PathFileOld);
-                File.Move(PathFile, PathFileOld);
-                string json = JsonSerializer.Serialize(List);
-                File.WriteAllText(PathFile, json);
+                File.Move(TagLoader.PathFile, PathFileOld);
+                string json = JsonSerializer.Serialize(Collection);
+                File.WriteAllText(TagLoader.PathFile, json);
             }
         }
 
-        public void Load()
-        {
-            try
-            {
-                string json = File.ReadAllText(PathFile);
-                if (json?.Length != 0)
-                {
-                    List = JsonSerializer.Deserialize<List<Tag>>(json);
-                }
-            }
-            catch
-            {
-                List = [];
-            }
-        }
-
-        public ConcurrentStack<Tag> FindLast(string tagsGet)
+        public ConcurrentStack<Tag> FindLast(string tagGet)
         {
             ConcurrentStack<Tag> stack;
-            var tags = tagsGet.Split('#');
+            var tags = tagGet.Split('#');
             if (tags.Length > 0)
             {
                 stack = Find(tags[^1]);
@@ -61,7 +44,7 @@ namespace Other.Tags
         {
             ConcurrentStack<Tag> stack = new();
             lastTag = lastTag.ToLower();
-            Parallel.ForEach(List, tag =>
+            Parallel.ForEach(Collection, tag =>
             {
                 var lowerTag = tag.Name.ToLower();
                 if (lowerTag.Contains(lastTag))
@@ -75,10 +58,10 @@ namespace Other.Tags
         public void AddTagChangeGelbooru(Tag tag)
         {
             _changed = true;
-            var findTag = List.FirstOrDefault(t => t.Name == tag.Name);
+            var findTag = Collection.FirstOrDefault(t => t.Name == tag.Name);
             if (findTag == null)
             {
-                List.Add(tag);
+                Collection.Add(tag);
             }
             else
             {
@@ -89,10 +72,10 @@ namespace Other.Tags
         public bool Remove(string tag)
         {
             _changed = true;
-            var tagClass = List.FirstOrDefault(t => t.Name == tag);
+            var tagClass = Collection.FirstOrDefault(t => t.Name == tag);
             if (tagClass != null)
             {
-                return List.Remove(tagClass);
+                return Collection.Remove(tagClass);
             }
             return true;
         }

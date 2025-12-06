@@ -6,6 +6,7 @@ using HtmlAgilityPack;
 
 using Other;
 using Other.Tags;
+using Other.Tags.Collections;
 using Other.Tags.Editors;
 
 using SixLabors.ImageSharp;
@@ -26,27 +27,28 @@ namespace RepetitionOfPostsBot.BotTask
     public class VKTask
     {
         private string _vkGroupShortUr;
-        private long _vkGroupId;
+        public long VkGroupId { get; private set; }
         private readonly string[] _tagsNotRepost;
         private readonly Dictionary<string, string> _accessTokens;
-        private readonly VkApiCustom _vkApi;
+        public VkApiCustom VkApi { get; private set; }
         private readonly long _tgChatId;
         private readonly HttpClient _httpClient = new HttpClient();
+        private readonly TagDictionaryGT _tagDictionaryGT = new();
 
         public VKTask(string vkGroupShortUr, long vkGroupId, long tgChatId, string[] tagsNotRepost, Dictionary<string, string> accessTokens)
         {
             _vkGroupShortUr = vkGroupShortUr;
-            _vkGroupId = vkGroupId;
+            VkGroupId = vkGroupId;
             _tagsNotRepost = tagsNotRepost;
             _accessTokens = accessTokens;
             _tgChatId = tgChatId;
 
-            _vkApi = new VkApiCustom(_accessTokens[GosUslugi.VK]);
+            VkApi = new VkApiCustom(_accessTokens[GosUslugi.VK]);
 
             // Получение первого отложеного поста
-            var wall = _vkApi.Wall.Get(new WallGetParams
+            var wall = VkApi.Wall.Get(new WallGetParams
             {
-                OwnerId = -1 * _vkGroupId,
+                OwnerId = -1 * VkGroupId,
                 Count = 1,
                 Filter = WallFilter.All
             });
@@ -105,18 +107,18 @@ namespace RepetitionOfPostsBot.BotTask
 
             try
             {
-                var wall = _vkApi.Wall.Get(new WallGetParams
+                var wall = VkApi.Wall.Get(new WallGetParams
                 {
-                    OwnerId = -1 * _vkGroupId,
+                    OwnerId = -1 * VkGroupId,
                     Count = 1,
                     Filter = WallFilter.Postponed,
                 });
 
                 if (0 < wall.WallPosts.Count && wall.WallPosts.Count < 100)
                 {
-                    wall = _vkApi.Wall.Get(new WallGetParams
+                    wall = VkApi.Wall.Get(new WallGetParams
                     {
-                        OwnerId = -1 * _vkGroupId,
+                        OwnerId = -1 * VkGroupId,
                         Count = 1,
                         Offset = wall.TotalCount - 1,
                         Filter = WallFilter.Postponed,
@@ -126,9 +128,9 @@ namespace RepetitionOfPostsBot.BotTask
                 if (client || wall.WallPosts.Count < 1 || ((wall.WallPosts[0].Date.Value.Hour) > (DateTime.Now.AddHours(1).Hour)))
                 {
                     // Получение самого свежего поста
-                    var wallAll = _vkApi.Wall.Get(new WallGetParams
+                    var wallAll = VkApi.Wall.Get(new WallGetParams
                     {
-                        OwnerId = -1 * _vkGroupId,
+                        OwnerId = -1 * VkGroupId,
                         Count = 2,
                         Filter = WallFilter.All
                     });
@@ -168,9 +170,9 @@ namespace RepetitionOfPostsBot.BotTask
                         }
 
                         // Получение поста c offset 
-                        wall = _vkApi.Wall.Get(new WallGetParams
+                        wall = VkApi.Wall.Get(new WallGetParams
                         {
-                            OwnerId = -1 * _vkGroupId,
+                            OwnerId = -1 * VkGroupId,
                             Offset = _offsetPost,
                             Count = COUNT_GET_POSTS,
                             Filter = WallFilter.All
@@ -241,9 +243,9 @@ namespace RepetitionOfPostsBot.BotTask
                             _sendPostIdQueue.Enqueue(post.Id.Value);
 
                             // Повторый пост
-                            _vkApi.Wall.Post(new WallPostParams()
+                            VkApi.Wall.Post(new WallPostParams()
                             {
-                                OwnerId = -1 * _vkGroupId,
+                                OwnerId = -1 * VkGroupId,
                                 FromGroup = true,
                                 Message = '.' + postText,
                                 Attachments = mediaAttachmentList,
@@ -267,9 +269,9 @@ namespace RepetitionOfPostsBot.BotTask
             try
             {
                 // Получение самого свежего поста
-                var wall = _vkApi.Wall.Get(new WallGetParams
+                var wall = VkApi.Wall.Get(new WallGetParams
                 {
-                    OwnerId = -1 * _vkGroupId,
+                    OwnerId = -1 * VkGroupId,
                     Count = 2,
                     Filter = WallFilter.All
                 });
@@ -329,10 +331,10 @@ namespace RepetitionOfPostsBot.BotTask
                 {
                     _ = ImageTransfer.DownloadImageAsync(new HttpClient(), imagesUrl[0], "Story.jpg").Result;
 
-                    _vkApi.Stories.Post(new GetPhotoUploadServerParams()
+                    VkApi.Stories.Post(new GetPhotoUploadServerParams()
                     {
                         AddToNews = true,
-                        GroupId = (ulong)_vkGroupId,
+                        GroupId = (ulong)VkGroupId,
                         LinkText = StoryLinkText.Open,
                         LinkUrl = "https://vk.com/" + post.ToString().Replace("post", "wall")
                     }, "Story.jpg");
@@ -396,11 +398,8 @@ namespace RepetitionOfPostsBot.BotTask
                 {
                     Logs.WriteException(e);
                 }
-                finally
-                {
-                    _taskList.Clear();
-                    Directory.Delete(DownloadPath, true);
-                }
+
+                _taskList.Clear();
             }
 
             try
@@ -505,24 +504,16 @@ namespace RepetitionOfPostsBot.BotTask
                 return;
             }
 
-            var resultTags = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image, 0);
+            var tagsN = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image, 0);
 
             foreach (var nodeTag in nodeTags)
             {
-                var tag = nodeTag.InnerText.Trim();
-                var indexChar = tag.IndexOf('(');
-                if (indexChar != -1)
+                var tagG = nodeTag.InnerText.Trim().ToLower().Replace(' ', '_');
+                tagG = _tagDictionaryGT.GetValue(tagG);
+                for(var i = 0; i < tagsN.Length; i++) 
                 {
-                    tag = tag.Remove(indexChar);
-                }
-                var tmpTag = new string([.. tag.Where(c => char.IsLetterOrDigit(c))]).ToLower();
-
-                foreach (var resultTag in resultTags)
-                {
-                    var tmpResultTag = resultTag.Split('#', StringSplitOptions.RemoveEmptyEntries)[^1];
-                    tmpResultTag = new string([.. tmpResultTag.Where(c => char.IsLetterOrDigit(c))]).ToLower();
-
-                    if (tmpTag.Contains(tmpResultTag) || tmpResultTag.Contains(tmpTag))
+                    var tagN = tagsN[i].ToLower();
+                    if(tagG == tagN)
                     {
                         lock (_checkedImageQueue)
                         {
@@ -546,11 +537,11 @@ namespace RepetitionOfPostsBot.BotTask
                         {
                             _imageToPostQueue.Dequeue();
                         }
-                        var photo = _vkApi.Photo.AddOnVKServer(httpClient, path_image)?[0];
+                        var photo = VkApi.Photo.AddOnVKServer(httpClient, path_image)?[0];
 
                         if (photo != null)
                         {
-                            _imageToPostQueue.Enqueue(new PhotoWithTag(resultTag, photo));
+                            _imageToPostQueue.Enqueue(new PhotoWithTag(tagN, photo));
                         }
 
                         return;
@@ -569,18 +560,18 @@ namespace RepetitionOfPostsBot.BotTask
                 countImagesPerPostLimit = correctCount.First(i => i <= countImagesPerPostLimit);
 
                 // Получение первого отложеного поста
-                var wall = _vkApi.Wall.Get(new WallGetParams
+                var wall = VkApi.Wall.Get(new WallGetParams
                 {
-                    OwnerId = -1 * _vkGroupId,
+                    OwnerId = -1 * VkGroupId,
                     Count = 1,
                     Filter = WallFilter.Postponed,
                 });
 
                 if (wall.WallPosts.Count < 100)
                 {
-                    wall = _vkApi.Wall.Get(new WallGetParams
+                    wall = VkApi.Wall.Get(new WallGetParams
                     {
-                        OwnerId = -1 * _vkGroupId,
+                        OwnerId = -1 * VkGroupId,
                         Count = 1,
                         Offset = wall.TotalCount - 1,
                         Filter = WallFilter.Postponed,
@@ -590,9 +581,9 @@ namespace RepetitionOfPostsBot.BotTask
                 if (wall.WallPosts.Count == 0)
                 {
                     // Получение самого свежего поста
-                    wall = _vkApi.Wall.Get(new WallGetParams
+                    wall = VkApi.Wall.Get(new WallGetParams
                     {
-                        OwnerId = -1 * _vkGroupId,
+                        OwnerId = -1 * VkGroupId,
                         Count = 2,
                         Filter = WallFilter.All
                     });
@@ -630,9 +621,9 @@ namespace RepetitionOfPostsBot.BotTask
                 var resultTag = BaseTagsEditor.GetBaseTagsWithNextLine() + "\n" + string.Join("\n", tags);
 
                 var imageList = imagesForSend.Select(s => s.Photo);
-                _vkApi.Wall.Post(new WallPostParams()
+                VkApi.Wall.Post(new WallPostParams()
                 {
-                    OwnerId = -1 * _vkGroupId,
+                    OwnerId = -1 * VkGroupId,
                     FromGroup = true,
                     Message = resultTag,
                     Attachments = imageList,
@@ -656,9 +647,9 @@ namespace RepetitionOfPostsBot.BotTask
 #endif
             do
             {
-                members = _vkApi.Groups.GetMembers(new GroupsGetMembersParams
+                members = VkApi.Groups.GetMembers(new GroupsGetMembersParams
                 {
-                    GroupId = _vkGroupId.ToString(),
+                    GroupId = VkGroupId.ToString(),
                     Offset = offset,
                     Count = COUNT_USER,
                     Fields = UsersFields.All
@@ -669,7 +660,7 @@ namespace RepetitionOfPostsBot.BotTask
                 {
                     if (member.Deactivated != Deactivated.Activated || (member.LastSeen != null && member.LastSeen.Time < DateTime.Now.AddMonths(-1)))
                     {
-                        _vkApi.Groups.RemoveUser(_vkGroupId, member.Id);
+                        VkApi.Groups.RemoveUser(VkGroupId, member.Id);
 #if DEBUG
                         count++;
 #endif

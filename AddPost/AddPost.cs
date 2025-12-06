@@ -3,6 +3,7 @@ using AddPost.Classes;
 using DataSet;
 
 using Other.Tags;
+using Other.Tags.Collections;
 using Other.Tags.Editors;
 
 using SixLabors.ImageSharp;
@@ -20,7 +21,7 @@ namespace AddPost
         private string groupShortUrl = "@anime_art_for_every_day";
 
         private Int64 groupId;
-        private readonly TagsList tagList = new();
+        private readonly TagList tagList = new();
         private List<ImageWithTag> imageList = [];
         private int imageIndex = -1;
         private readonly VkApiCustom api;

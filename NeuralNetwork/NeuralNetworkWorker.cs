@@ -125,7 +125,7 @@ namespace NeuralNetwork
             return arr[0];
         }
 
-        public static string[] NeuralNetworkResultKTopPercent(Image<Rgb24> imageOriginal, int threadIndex, double percent = 0.10)
+        public static string[] NeuralNetworkResultKTopPercent(Image<Rgb24> imageOriginal, int threadIndex, double percent = 0.05)
         {
             var kTop = int.Max((int)(Labels.Length * percent), 1);
 

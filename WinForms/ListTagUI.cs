@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel;
 
 using Other;
-using Other.Tags;
+using Other.Tags.Collections;
 
 namespace WinForms
 {
     public static class ListTagUI
     {
-        public static void WriteFindTag(DataGridView dgvDictionary, TagsList tagList, string text)
+        public static void WriteFindTag(DataGridView dgvDictionary, TagList tagList, string text)
         {
             dgvDictionary.Rows.Clear();
             if (!text.Contains("#"))
@@ -74,7 +74,7 @@ namespace WinForms
             }
         }
 
-        public static void CellMouseClick(DataGridViewCellMouseEventArgs e, TextBox tbTag, TextBox? tbGelbooru, DataGridView dgvDictionary, TagsList tagList, string text)
+        public static void CellMouseClick(DataGridViewCellMouseEventArgs e, TextBox tbTag, TextBox? tbGelbooru, DataGridView dgvDictionary, TagList tagList, string text)
         {
             if (e.RowIndex != -1 && e.ColumnIndex != -1)
             {
