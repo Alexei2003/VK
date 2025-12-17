@@ -13,7 +13,7 @@ namespace Other
             "+-sex_toys+-licking_penis+-areolae+-backboob+-masturbation+-peeing+-nude+-group_sex+-vaginal" +
             "+-handjob+-fellatio+-oral+-erection+-bdsm+-hypnosis+-slave+-nose_hook+-penis_over_eyes+-foot_worship" +
             "+-vibrator+-vibrator_cord+-vibrator_in_thigh_strap+-mind_control+-object_insertion+-pussy_juice" +
-            "+-squatting+-baby+-breasts_out" +
+            "+-squatting+-baby+-breasts_out+-inverted_nipples" +
 
             // Гипертрофированные/преувеличенные части тела
             "+-gigantic_breasts+-hyper_breasts+-hyper_thighs+-hyper_ass+-chubby+-big_belly+-overeating+-pregnant+-fat" +

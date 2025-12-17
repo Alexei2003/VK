@@ -1,7 +1,4 @@
-﻿using System.Xml.Linq;
-
-using Other;
-using Other.Tags;
+﻿using Other;
 
 namespace DownloaderDataSetPhoto.Downloaders
 {

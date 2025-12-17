@@ -69,21 +69,19 @@ namespace DownloaderDataSetPhoto
             BackgroundImageCopy();
         }
 
-        private static readonly char[] separator = ['\r', '\n'];
-
         private async void bDownloadPhotosGelbooru_Click(object sender, EventArgs e)
         {
             if (tbTag.Text.Length > 0 && tbGelbooru.Text.Length > 0)
             {
+                var tag = BaseTagsEditor.FixTagString(tbTag.Text);
+                var gelbooru = tbGelbooru.Text.Trim().Replace(' ', '_');
+                if (_tagList.Find(tag).IsEmpty)
+                {
+                    _tagList.AddTagChangeGelbooru(new Tag(tag, gelbooru));
+                }
+                ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text);
                 await Task.Run(() =>
                 {
-                    var tag = BaseTagsEditor.FixTagString(tbTag.Text);
-                    var gelbooru = tbGelbooru.Text.Trim().Replace(' ', '_' );
-                    if (_tagList.Find(tag).IsEmpty)
-                    {
-                        _tagList.AddTagChangeGelbooru(new Tag(tag, gelbooru));
-                    }
-                    ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text);
                     DownloadGelbooru(tag, $"https://gelbooru.com/index.php?page=post&s=list&tags={gelbooru}", bDownloadPhotosGelbooru, 10);
                 });
             }
