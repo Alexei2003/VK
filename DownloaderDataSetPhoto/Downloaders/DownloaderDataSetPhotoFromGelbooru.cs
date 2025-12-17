@@ -19,7 +19,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                     Parallel.For(0, nodesArr.Length, j =>
                     {
                         var src = nodesArr[j].GetAttributeValue("src", string.Empty);
-                        Downloader.DownloadPhoto(httpClient, new Uri(src), currentTag, fileName + j.ToString());
+                        Downloader.DownloadPhoto(httpClient, new Uri(src), currentTag, fileName, j);
                     });
                 }
             }
