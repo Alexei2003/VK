@@ -18,13 +18,13 @@ namespace AddDataInDataSet
     public static class WorkWithDirectory
     {
 #if DEBUG
-        private const string MAIN_DIRECTORY = "E:\\WPS\\VK\\AddDataInDataSet\\bin\\Debug\\net9.0-windows10.0.22621.0\\DATA_SET";
+        public const string MainDirectory = "E:\\WPS\\VK\\AddDataInDataSet\\bin\\Debug\\net9.0-windows10.0.22621.0\\DATA_SET\\";
 #else
-        private const string MAIN_DIRECTORY = "E:\\WPS\\NeuralNetwork-ImageClassifier\\DataSet\\ARTS";
+        public const string MainDirectory = "E:\\WPS\\NeuralNetwork-ImageClassifier\\DataSet\\ARTS\\";
 #endif
-        private const string NEW_PATH = $"New";
-        private const string ORIGINAL_PATH = $"Original";
-        private const string SMALL_PATH = $"Small";
+        public const string NewPath = MainDirectory + $"New";
+        public const string OriginalPath = MainDirectory + $"Original";
+        public const string SmallPath = MainDirectory + $"Small";
 
         private static void DirectoryMove(string source, string destination, bool checkSimilar = false, bool deleteOriginal = false, bool changeResolution = false)
         {
@@ -99,11 +99,11 @@ namespace AddDataInDataSet
 
         public static void MoveDataFromNewToOriginal(int[] count)
         {
-            var tagDirectories = Directory.GetDirectories(Path.Combine(MAIN_DIRECTORY, NEW_PATH));
+            var tagDirectories = Directory.GetDirectories(NewPath);
 
             Parallel.ForEach(tagDirectories, tag =>
             {
-                DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH, GetDirectoryName(tag)), checkSimilar: true, deleteOriginal: true, changeResolution: false);
+                DirectoryMove(tag, Path.Combine(OriginalPath, GetDirectoryName(tag)), checkSimilar: true, deleteOriginal: true, changeResolution: false);
 
                 count[0]++;
             });
@@ -111,7 +111,7 @@ namespace AddDataInDataSet
 
         public static void FixDataInOriginal(int[] count)
         {
-            var tagDirectories = Directory.GetDirectories(Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH));
+            var tagDirectories = Directory.GetDirectories(OriginalPath);
 
             var tagList = new TagHashSet();
 
@@ -125,7 +125,7 @@ namespace AddDataInDataSet
                     var filesArr = sourceInfo.GetFiles();
                     if (filesArr.Length < 100)
                     {
-                        DirectoryMove(tag, Path.Combine(MAIN_DIRECTORY, SMALL_PATH, name), deleteOriginal: true);
+                        DirectoryMove(tag, Path.Combine(SmallPath, name), deleteOriginal: true);
                     }
                     else
                     {
@@ -158,7 +158,6 @@ namespace AddDataInDataSet
 
             var countP5 = int.Max((int)(NeuralNetworkWorker.Labels.Length * 0.05), 1);
             var countP10 = int.Max((int)(NeuralNetworkWorker.Labels.Length * 0.10), 1);
-            var tagsDirectory = Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH);
 
             dataTable.Columns.Add("Тег", typeof(string));
             dataTable.Columns.Add("Количество объектов", typeof(int));
@@ -173,7 +172,7 @@ namespace AddDataInDataSet
             {
                 var tagOriginal = NeuralNetworkWorker.Labels[i];
 
-                var tagDirectory = Path.Combine(tagsDirectory, tagOriginal);
+                var tagDirectory = Path.Combine(OriginalPath, tagOriginal);
 
                 if (Directory.Exists(tagDirectory))
                 {
@@ -259,8 +258,6 @@ namespace AddDataInDataSet
                 dataTable.Rows.Add(row);
             }
 
-            var tagsDirectory = Path.Combine(MAIN_DIRECTORY, ORIGINAL_PATH);
-
             int counter = 0;
             ThreadLocal<int> threadIndex = new ThreadLocal<int>(() => Interlocked.Increment(ref counter) - 1);
 
@@ -268,7 +265,7 @@ namespace AddDataInDataSet
             {
                 var tagOriginal = NeuralNetworkWorker.Labels[i];
 
-                var tagDirectory = Path.Combine(tagsDirectory, tagOriginal);
+                var tagDirectory = Path.Combine(OriginalPath, tagOriginal);
 
                 var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
 

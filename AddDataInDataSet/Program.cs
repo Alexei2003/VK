@@ -6,55 +6,62 @@
 
         private static void Main()
         {
-            while (true)
+            if(Directory.GetDirectories(WorkWithDirectory.SmallPath).Length > 0)
             {
-                Console.WriteLine("" +
-                    "Выбор действия\n" +
-                    "1.Переместить из New\n" +
-                    "2.Исправление Original\n" +
-                    "3.Получить точность kTop классов\n" +
-                    "4.Получить точность предсказаных классов\n" +
-                    "Выход (напишите exit)\n");
-
-                var action = Console.ReadLine();
-
-                var thWrite = new Thread(WriteCountMake);
-
-                count[0] = 0;
-                thWrite.Start();
-
-                switch (action)
+                Console.WriteLine("Small имеет директории");
+            }
+            else
+            {
+                while (true)
                 {
-                    case "1":
-                        WorkWithDirectory.MoveDataFromNewToOriginal(count);
-                        Thread.Sleep(100);
-                        count[0] = -1;
-                        thWrite.Join();
-                        break;
-                    case "2":
-                        WorkWithDirectory.FixDataInOriginal(count);
-                        Thread.Sleep(100);
-                        count[0] = -1;
-                        thWrite.Join();
-                        break;
-                    case "3":
-                        WorkWithDirectory.GetAccuracyKTopClassesOriginal(count);
-                        Thread.Sleep(100);
-                        count[0] = -1;
-                        thWrite.Join();
-                        break;
-                    case "4":
-                        WorkWithDirectory.GetAccuracyPredictClassesOriginal(count);
-                        Thread.Sleep(100);
-                        count[0] = -1;
-                        thWrite.Join();
-                        break;
-                    case "exit":
-                        return;
-                    default:
-                        break;
+                    Console.WriteLine("" +
+                        "Выбор действия\n" +
+                        "1.Переместить из New\n" +
+                        "2.Исправление Original\n" +
+                        "3.Получить точность kTop классов\n" +
+                        "4.Получить точность предсказаных классов\n" +
+                        "Выход (напишите exit)\n");
+
+                    var action = Console.ReadLine();
+
+                    var thWrite = new Thread(WriteCountMake);
+
+                    count[0] = 0;
+                    thWrite.Start();
+
+                    switch (action)
+                    {
+                        case "1":
+                            WorkWithDirectory.MoveDataFromNewToOriginal(count);
+                            Thread.Sleep(100);
+                            count[0] = -1;
+                            thWrite.Join();
+                            break;
+                        case "2":
+                            WorkWithDirectory.FixDataInOriginal(count);
+                            Thread.Sleep(100);
+                            count[0] = -1;
+                            thWrite.Join();
+                            break;
+                        case "3":
+                            WorkWithDirectory.GetAccuracyKTopClassesOriginal(count);
+                            Thread.Sleep(100);
+                            count[0] = -1;
+                            thWrite.Join();
+                            break;
+                        case "4":
+                            WorkWithDirectory.GetAccuracyPredictClassesOriginal(count);
+                            Thread.Sleep(100);
+                            count[0] = -1;
+                            thWrite.Join();
+                            break;
+                        case "exit":
+                            return;
+                        default:
+                            break;
+                    }
+                    Console.WriteLine();
                 }
-                Console.WriteLine();
             }
         }
 
