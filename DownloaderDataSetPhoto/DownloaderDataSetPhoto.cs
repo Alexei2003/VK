@@ -146,12 +146,12 @@ namespace DownloaderDataSetPhoto
 
         private void tbTag_KeyUp(object sender, KeyEventArgs e)
         {
-            ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text, tbGelbooru.Text);
+            ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text, "");
         }
 
         private void tbGelbooru_KeyUp(object sender, KeyEventArgs e)
         {
-            ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text, tbGelbooru.Text);
+            ListTagUI.WriteFindTag(dgvDictionary, _tagList, "", tbGelbooru.Text);
         }
 
         private void dgvDictionary_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
