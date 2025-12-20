@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+
 using DataSet;
 
 using NeuralNetwork;
@@ -23,7 +25,7 @@ namespace NeuralNetworkAnalyzer
 
                 Task.Run(() =>
                 {
-                    var labels = NeuralNetworkWorker.NeuralNetworkResultKTopCountAndPercent(image, 0, 20);
+                    var labels = NeuralNetworkWorker.NeuralNetworkResultKTopCountAndPercent(image, 0, 100);
 
                     this.Invoke((MethodInvoker)(() =>
                     {
@@ -31,6 +33,19 @@ namespace NeuralNetworkAnalyzer
                         for (var i = 0; i < labels.Length; i++)
                         {
                             dvgPercent.Rows.Add(new DataGridViewRow { Cells = { new DataGridViewTextBoxCell() { Value = labels[i].Name }, new DataGridViewTextBoxCell() { Value = labels[i].Value.ToString("F2") + "%" } } });
+                            switch (labels[i].Name) 
+                            {
+                                case "#nsfw":
+                                    dvgPercent.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                                    break;
+                                case "#original":
+                                    dvgPercent.Rows[i].DefaultCellStyle.BackColor = Color.Green;
+                                    break;
+                                case "#bad_drawing":
+                                    dvgPercent.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                    break;
+                            }
+                            
                         }
                     }));
                 });

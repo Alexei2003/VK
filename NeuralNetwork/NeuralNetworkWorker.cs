@@ -125,7 +125,7 @@ namespace NeuralNetwork
             return arr[0];
         }
 
-        public static string[] NeuralNetworkResultKTopPercent(Image<Rgb24> imageOriginal, int threadIndex, double percent = 0.05)
+        public static string[] NeuralNetworkResultKTopPercent(Image<Rgb24> imageOriginal, int threadIndex, double percent = 0.1)
         {
             var kTop = int.Max((int)(Labels.Length * percent), 1);
 
@@ -133,7 +133,7 @@ namespace NeuralNetwork
             return arr;
         }
 
-        public static string[] NeuralNetworkResultKTopCount(Image<Rgb24> imageOriginal, int threadIndex, int kTop = 15)
+        public static string[] NeuralNetworkResultKTopCount(Image<Rgb24> imageOriginal, int threadIndex, int kTop = 10)
         {
             var labels = NeuralNetworkBaseResult(imageOriginal, threadIndex);
             if (labels == null)
@@ -153,7 +153,7 @@ namespace NeuralNetwork
             return [.. resultTagsArr];
         }
 
-        public static Label[] NeuralNetworkResultKTopCountAndPercent(Image<Rgb24> imageOriginal, int threadIndex, int kTop = 15)
+        public static Label[] NeuralNetworkResultKTopCountAndPercent(Image<Rgb24> imageOriginal, int threadIndex, int kTop = 10)
         {
             var labels = NeuralNetworkBaseResult(imageOriginal, threadIndex);
             if (labels == null)

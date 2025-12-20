@@ -14,10 +14,10 @@ namespace WinForms
 
             dgvDictionary.Rows.AddRange(stack.Select(elem => new DataGridViewRow { Cells = { new DataGridViewTextBoxCell { Value = 0 }, new DataGridViewTextBoxCell { Value = elem.Name }, new DataGridViewTextBoxCell { Value = elem.Gelbooru } } }).ToArray());
 
-            colorizeGroup(dgvDictionary);
+            ColorizeGroup(dgvDictionary);
         }
 
-        private static void colorizeGroup(DataGridView dgvDictionary)
+        private static void ColorizeGroup(DataGridView dgvDictionary)
         {
             dgvDictionary.Sort(dgvDictionary.Columns["tag"], ListSortDirection.Ascending);
 
