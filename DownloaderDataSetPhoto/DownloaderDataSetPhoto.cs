@@ -1,3 +1,5 @@
+using System.Text;
+
 using DataSet;
 
 using DownloaderDataSetPhoto.Downloaders;
@@ -17,12 +19,13 @@ namespace DownloaderDataSetPhoto
     public partial class DownloaderDataSetPhoto : Form
     {
         private readonly TagList _tagList = new();
+        private const string BaseUrl = "https://gelbooru.com/index.php?page=post&s=list&tags=";
 
         public DownloaderDataSetPhoto()
         {
             InitializeComponent();
             Gelbooru.UseProxy = false;
-            ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text);
+            ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text, tbGelbooru.Text);
         }
 
         private void AddInDataSet(Image<Rgb24> image, string tags, string resulTag)
@@ -40,7 +43,7 @@ namespace DownloaderDataSetPhoto
                 using var imageBmp = (Bitmap)Clipboard.GetImage();
                 using var clipboardImage = ConverterBmp.ConvertToImageSharp(imageBmp);
 
-                var resulTag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(clipboardImage,0);
+                var resulTag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(clipboardImage, 0);
 
                 AddInDataSet(clipboardImage, tbTag.Text.Replace(" ", ""), resulTag);
 
@@ -79,10 +82,10 @@ namespace DownloaderDataSetPhoto
                 {
                     _tagList.AddTagChangeGelbooru(new Tag(tag, gelbooru));
                 }
-                ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text);
+                ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text, tbGelbooru.Text);
                 await Task.Run(() =>
                 {
-                    DownloadGelbooru(tag, $"https://gelbooru.com/index.php?page=post&s=list&tags={gelbooru}", bDownloadPhotosGelbooru, 10);
+                    DownloadGelbooru(tag, BaseUrl + gelbooru, bDownloadPhotosGelbooru, 10);
                 });
             }
         }
@@ -95,7 +98,7 @@ namespace DownloaderDataSetPhoto
                 {
                     if (tag.Gelbooru.Length > 0)
                     {
-                        DownloadGelbooru(tag.Name, $"https://gelbooru.com/index.php?page=post&s=list&tags={tag.Gelbooru}", bDownloadAll, 1);
+                        DownloadGelbooru(tag.Name, BaseUrl + gelbooru, bDownloadAll, 1);
                     }
                 }
             });
@@ -143,17 +146,43 @@ namespace DownloaderDataSetPhoto
 
         private void tbTag_KeyUp(object sender, KeyEventArgs e)
         {
-            ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text);
+            ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text, tbGelbooru.Text);
+        }
+
+        private void tbGelbooru_KeyUp(object sender, KeyEventArgs e)
+        {
+            ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text, tbGelbooru.Text);
         }
 
         private void dgvDictionary_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            ListTagUI.CellMouseClick(e, tbTag, tbGelbooru, dgvDictionary, _tagList, tbTag.Text);
+            ListTagUI.CellMouseClick(e, tbTag, tbGelbooru, dgvDictionary, _tagList, tbTag.Text, tbGelbooru.Text);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             _tagList.Save();
+        }
+
+        private void bAllTags_Click(object sender, EventArgs e)
+        {
+            var tbUrlBuilder = new StringBuilder();
+            tbUrlBuilder.Append(BaseUrl);
+
+            foreach (var tag in _tagList.Collection)
+            {
+                if (tag.Gelbooru.Length > 0)
+                {
+                    tbUrlBuilder.Append("+-").Append(tag.Gelbooru);
+                }
+            }
+
+            tbUrl.Text = tbUrlBuilder.ToString() + "+" + Gelbooru.NoSearch;
+        }
+
+        private void bWithoutNSFW_Click(object sender, EventArgs e)
+        {
+            tbUrl.Text = BaseUrl + Gelbooru.NoSearch;
         }
     }
 }

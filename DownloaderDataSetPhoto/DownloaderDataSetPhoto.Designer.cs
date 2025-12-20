@@ -47,6 +47,10 @@
             bDownloadAll = new Button();
             panel1 = new Panel();
             textBox2 = new TextBox();
+            textBox4 = new TextBox();
+            tbUrl = new TextBox();
+            bAllTags = new Button();
+            bWithoutNSFW = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             pBackgroundImageCopy.SuspendLayout();
             panel1.SuspendLayout();
@@ -184,6 +188,7 @@
             tbGelbooru.Name = "tbGelbooru";
             tbGelbooru.Size = new Size(332, 46);
             tbGelbooru.TabIndex = 47;
+            tbGelbooru.KeyUp += tbGelbooru_KeyUp;
             // 
             // bDownloadAll
             // 
@@ -215,12 +220,53 @@
             textBox2.TabIndex = 38;
             textBox2.Text = "Gelbooru";
             // 
+            // textBox4
+            // 
+            textBox4.Location = new Point(12, 325);
+            textBox4.Name = "textBox4";
+            textBox4.ReadOnly = true;
+            textBox4.Size = new Size(58, 23);
+            textBox4.TabIndex = 52;
+            textBox4.Text = "URL";
+            // 
+            // tbUrl
+            // 
+            tbUrl.Location = new Point(12, 352);
+            tbUrl.Multiline = true;
+            tbUrl.Name = "tbUrl";
+            tbUrl.Size = new Size(332, 46);
+            tbUrl.TabIndex = 51;
+            // 
+            // bAllTags
+            // 
+            bAllTags.Location = new Point(12, 404);
+            bAllTags.Name = "bAllTags";
+            bAllTags.Size = new Size(150, 38);
+            bAllTags.TabIndex = 53;
+            bAllTags.Text = "URL со всеми";
+            bAllTags.UseVisualStyleBackColor = true;
+            bAllTags.Click += bAllTags_Click;
+            // 
+            // bWithoutNSFW
+            // 
+            bWithoutNSFW.Location = new Point(194, 404);
+            bWithoutNSFW.Name = "bWithoutNSFW";
+            bWithoutNSFW.Size = new Size(150, 38);
+            bWithoutNSFW.TabIndex = 54;
+            bWithoutNSFW.Text = "Url без NSFW";
+            bWithoutNSFW.UseVisualStyleBackColor = true;
+            bWithoutNSFW.Click += bWithoutNSFW_Click;
+            // 
             // DownloaderDataSetPhoto
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlLightLight;
             ClientSize = new Size(1097, 493);
+            Controls.Add(bWithoutNSFW);
+            Controls.Add(bAllTags);
+            Controls.Add(textBox4);
+            Controls.Add(tbUrl);
             Controls.Add(panel1);
             Controls.Add(textBox6);
             Controls.Add(tbGelbooru);
@@ -261,5 +307,9 @@
         private Button bDownloadAll;
         private Panel panel1;
         private TextBox textBox2;
+        private TextBox textBox4;
+        private TextBox tbUrl;
+        private Button bAllTags;
+        private Button bWithoutNSFW;
     }
 }

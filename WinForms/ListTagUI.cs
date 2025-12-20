@@ -7,17 +7,18 @@ namespace WinForms
 {
     public static class ListTagUI
     {
-        public static void WriteFindTag(DataGridView dgvDictionary, TagList tagList, string text)
+        public static void WriteFindTag(DataGridView dgvDictionary, TagList tagList, string tag, string tagGelbooru = "")
         {
             dgvDictionary.Rows.Clear();
-            if (!text.Contains("#"))
-            {
-                text = "#";
-            }
-            var stack = tagList.FindLast(text);
+            var stack = tagList.FindLast(tag, tagGelbooru);
 
             dgvDictionary.Rows.AddRange(stack.Select(elem => new DataGridViewRow { Cells = { new DataGridViewTextBoxCell { Value = 0 }, new DataGridViewTextBoxCell { Value = elem.Name }, new DataGridViewTextBoxCell { Value = elem.Gelbooru } } }).ToArray());
 
+            colorizeGroup(dgvDictionary);
+        }
+
+        private static void colorizeGroup(DataGridView dgvDictionary)
+        {
             dgvDictionary.Sort(dgvDictionary.Columns["tag"], ListSortDirection.Ascending);
 
             int red = ChangeRGB(0);
@@ -74,7 +75,7 @@ namespace WinForms
             }
         }
 
-        public static void CellMouseClick(DataGridViewCellMouseEventArgs e, TextBox tbTag, TextBox? tbGelbooru, DataGridView dgvDictionary, TagList tagList, string text)
+        public static void CellMouseClick(DataGridViewCellMouseEventArgs e, TextBox tbTag, TextBox? tbGelbooru, DataGridView dgvDictionary, TagList tagList, string tag, string tagGelbooru = "")
         {
             if (e.RowIndex != -1 && e.ColumnIndex != -1)
             {
@@ -82,18 +83,18 @@ namespace WinForms
                 {
                     int removeCount = -1;
                     int indexStartDel = -1;
-                    for (int i = text.Length - 1; i > -1; i--)
+                    for (int i = tag.Length - 1; i > -1; i--)
                     {
-                        if (text[i] == '#')
+                        if (tag[i] == '#')
                         {
                             indexStartDel = i;
-                            removeCount = text.Length - i;
+                            removeCount = tag.Length - i;
                             break;
                         }
                     }
                     if (removeCount > -1 && indexStartDel > -1)
                     {
-                        text = text.Remove(indexStartDel, removeCount);
+                        tag = tag.Remove(indexStartDel, removeCount);
                     }
 
                     tbTag.Text = dgvDictionary.Rows[e.RowIndex].Cells["tag"].Value.ToString();
@@ -107,7 +108,7 @@ namespace WinForms
                         tagList.Remove(dgvDictionary.Rows[e.RowIndex].Cells["tag"].Value.ToString());
                     }
 
-                    WriteFindTag(dgvDictionary, tagList, text);
+                    WriteFindTag(dgvDictionary, tagList, tag, tagGelbooru);
                 }
             }
         }

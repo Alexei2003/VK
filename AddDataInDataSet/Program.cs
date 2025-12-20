@@ -9,6 +9,7 @@
             if(Directory.GetDirectories(WorkWithDirectory.SmallPath).Length > 0)
             {
                 Console.WriteLine("Small имеет директории");
+                Console.ReadLine();
             }
             else
             {

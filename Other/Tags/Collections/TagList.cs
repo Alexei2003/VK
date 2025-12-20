@@ -25,13 +25,13 @@ namespace Other.Tags.Collections
             }
         }
 
-        public ConcurrentStack<Tag> FindLast(string tagGet)
+        public ConcurrentStack<Tag> FindLast(string tagGet, string gelbooruTag = "")
         {
             ConcurrentStack<Tag> stack;
             var tags = tagGet.Split('#');
-            if (tags.Length > 0)
+            if (tags.Length > 0 || gelbooruTag.Length > 0)
             {
-                stack = Find(tags[^1]);
+                stack = Find(tags[^1], gelbooruTag);
             }
             else
             {
@@ -40,14 +40,14 @@ namespace Other.Tags.Collections
             return stack;
         }
 
-        public ConcurrentStack<Tag> Find(string lastTag)
+        public ConcurrentStack<Tag> Find(string lastTag, string gelbooruTag = "")
         {
             ConcurrentStack<Tag> stack = new();
             lastTag = lastTag.ToLower();
             Parallel.ForEach(Collection, tag =>
             {
                 var lowerTag = tag.Name.ToLower();
-                if (lowerTag.Contains(lastTag))
+                if ((gelbooruTag.Length == 0 && lowerTag.Contains(lastTag)) || (gelbooruTag.Length > 0 && lowerTag.Contains(gelbooruTag)))
                 {
                     stack.Push(tag);
                 }

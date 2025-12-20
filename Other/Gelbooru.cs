@@ -6,7 +6,7 @@ namespace Other
     {
         public static bool UseProxy { get; set; } = false;
 
-        private const string NoSearch =
+        public const string NoSearch =
             // Сексуальный контент и анатомия
             "-nipples+-completely_nude+-gangbang+-imminent_sex+-sex+-penis+-condom+-cum+-futa+-rape" +
             "+-filled_condom+-anal+-pussy+-multiple_penises+-anal_insertion+-dildo+-object_insertion" +
