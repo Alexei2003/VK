@@ -146,16 +146,25 @@ namespace DownloaderDataSetPhoto
 
         private void tbTag_KeyUp(object sender, KeyEventArgs e)
         {
+            if (tbTag.Text[^1] != ' ')
+            {
+                tbTag.Text = BaseTagsEditor.FixTagString(tbTag.Text);
+            }
             ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text, "");
         }
 
         private void tbGelbooru_KeyUp(object sender, KeyEventArgs e)
         {
+            if (tbGelbooru.Text[^1] != ' ')
+            {
+                tbGelbooru.Text = tbGelbooru.Text.Trim().Replace(' ', '_');
+            }
             ListTagUI.WriteFindTag(dgvDictionary, _tagList, "", tbGelbooru.Text);
         }
 
         private void dgvDictionary_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+
             ListTagUI.CellMouseClick(e, tbTag, tbGelbooru, dgvDictionary, _tagList, tbTag.Text, tbGelbooru.Text);
         }
 
