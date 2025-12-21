@@ -98,7 +98,7 @@ namespace DownloaderDataSetPhoto
                 {
                     if (tag.Gelbooru.Length > 0)
                     {
-                        DownloadGelbooru(tag.Name, BaseUrl + gelbooru, bDownloadAll, 1);
+                        DownloadGelbooru(tag.Name, BaseUrl + tag.Gelbooru, bDownloadAll, 1);
                     }
                 }
             });
