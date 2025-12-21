@@ -105,7 +105,7 @@ namespace WinForms
                     DialogResult result = MessageBox.Show($"Удаление тега {dgvDictionary.Rows[e.RowIndex].Cells[e.ColumnIndex].Value}", "Подтвердите действие для ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result == DialogResult.Yes)
                     {
-                        tagList.Remove(dgvDictionary.Rows[e.RowIndex].Cells["tag"].Value.ToString());
+                        tagList.TryRemove(dgvDictionary.Rows[e.RowIndex].Cells["tag"].Value.ToString());
                     }
 
                     WriteFindTag(dgvDictionary, tagList, tag, tagGelbooru);

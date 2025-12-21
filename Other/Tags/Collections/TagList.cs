@@ -47,7 +47,8 @@ namespace Other.Tags.Collections
             Parallel.ForEach(Collection, tag =>
             {
                 var lowerTag = tag.Name.ToLower();
-                if ((gelbooruTag.Length == 0 && lowerTag.Contains(lastTag)) || (gelbooruTag.Length > 0 && lowerTag.Contains(gelbooruTag)))
+                var lowerGelbooru = tag.Gelbooru.ToLower();
+                if ((gelbooruTag.Length == 0 && lowerTag.Contains(lastTag)) || (gelbooruTag.Length > 0 && lowerGelbooru.Contains(gelbooruTag)))
                 {
                     stack.Push(tag);
                 }
@@ -55,21 +56,36 @@ namespace Other.Tags.Collections
             return stack;
         }
 
-        public void AddTagChangeGelbooru(Tag tag)
+        public enum Simillar
+        {
+            None = 0,
+            Name = 1,
+            Gelbooru = 2,
+        } 
+
+        public Simillar TryAdd(Tag tag)
         {
             _changed = true;
-            var findTag = Collection.FirstOrDefault(t => t.Name == tag.Name);
+            var findTag = Collection.FirstOrDefault(t => (t.Name == tag.Name || t.Gelbooru == tag.Gelbooru));
             if (findTag == null)
             {
                 Collection.Add(tag);
+                return Simillar.None;
             }
             else
             {
-                findTag.Gelbooru = tag.Gelbooru;
+                if (findTag.Name == tag.Name)
+                {
+                    return Simillar.Name;
+                }
+                else
+                {
+                    return Simillar.Gelbooru;
+                }   
             }
         }
 
-        public bool Remove(string tag)
+        public bool TryRemove(string tag)
         {
             _changed = true;
             var tagClass = Collection.FirstOrDefault(t => t.Name == tag);

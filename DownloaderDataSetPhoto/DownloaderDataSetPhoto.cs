@@ -14,6 +14,8 @@ using SixLabors.ImageSharp.PixelFormats;
 
 using WinForms;
 
+using static Other.Tags.Collections.TagList;
+
 namespace DownloaderDataSetPhoto
 {
     public partial class DownloaderDataSetPhoto : Form
@@ -78,15 +80,26 @@ namespace DownloaderDataSetPhoto
             {
                 var tag = BaseTagsEditor.FixTagString(tbTag.Text);
                 var gelbooru = tbGelbooru.Text.Trim().Replace(' ', '_');
-                if (_tagList.Find(tag).IsEmpty)
+
+                var simillar = _tagList.TryAdd(new Tag(tag, gelbooru));
+
+                switch (simillar)
                 {
-                    _tagList.AddTagChangeGelbooru(new Tag(tag, gelbooru));
+                    case TagList.Simillar.None:
+                        ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text, tbGelbooru.Text);
+                        await Task.Run(() =>
+                        {
+                            DownloadGelbooru(tag, BaseUrl + gelbooru, bDownloadPhotosGelbooru, 10);
+                        });
+                        break;
+
+                    case TagList.Simillar.Name:
+                        goto case TagList.Simillar.None;
+
+                    case TagList.Simillar.Gelbooru:
+                        tbTag.Text = "Gelbooru занят";
+                        break;
                 }
-                ListTagUI.WriteFindTag(dgvDictionary, _tagList, tbTag.Text, tbGelbooru.Text);
-                await Task.Run(() =>
-                {
-                    DownloadGelbooru(tag, BaseUrl + gelbooru, bDownloadPhotosGelbooru, 10);
-                });
             }
         }
 
@@ -94,12 +107,9 @@ namespace DownloaderDataSetPhoto
         {
             await Task.Run(() =>
             {
-                foreach (var tag in _tagList.Collection)
+                foreach (var tag in _tagList.Collection.Where(t => t.Gelbooru.Length > 0))
                 {
-                    if (tag.Gelbooru.Length > 0)
-                    {
-                        DownloadGelbooru(tag.Name, BaseUrl + tag.Gelbooru, bDownloadAll, 1);
-                    }
+                    DownloadGelbooru(tag.Name, BaseUrl + tag.Gelbooru, bDownloadAll, 1);
                 }
             });
         }
