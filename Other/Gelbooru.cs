@@ -14,7 +14,7 @@ namespace Other
             "+-handjob+-fellatio+-oral+-erection+-bdsm+-hypnosis+-slave+-nose_hook+-penis_over_eyes+-foot_worship" +
             "+-vibrator+-vibrator_cord+-vibrator_in_thigh_strap+-mind_control+-object_insertion+-pussy_juice" +
             "+-squatting+-baby+-breasts_out+-inverted_nipples+-topless_female+-spread_pussy+-spreading_own_pussy" +
-            "+-footjob+-female_pubic_hair+-pubic_hair" +
+            "+-footjob+-female_pubic_hair+-pubic_hair+-pee+-pee_stain" +
 
             // Гипертрофированные/преувеличенные части тела
             "+-gigantic_breasts+-hyper_breasts+-hyper_thighs+-hyper_ass+-chubby+-big_belly+-overeating+-pregnant+-fat" +
@@ -27,7 +27,7 @@ namespace Other
 
             // Одежда и нижнее белье
             "+-torn_clothing+-topless+-no_bra+-no_panties+-censored+-cosplay_photo+-clothes_lift+-lifting_own_clothes+-shirt_lift" +
-            "+-naked_coat" +
+            "+-naked_coat+-bottomless+-diaper+-diaper_changing+-wet_diaper+-anal_tail" +
 
             // Количество девушек
             "+1girl+-2girls+-3girls+-4girls+-5girls+-multiple_girls" +

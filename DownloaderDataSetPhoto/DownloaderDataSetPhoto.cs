@@ -156,7 +156,7 @@ namespace DownloaderDataSetPhoto
 
         private void tbTag_KeyUp(object sender, KeyEventArgs e)
         {
-            if (tbTag.Text[^1] != ' ')
+            if (tbTag.Text.Length > 0 && tbTag.Text[^1] != ' ')
             {
                 tbTag.Text = BaseTagsEditor.FixTagString(tbTag.Text);
             }
@@ -165,7 +165,7 @@ namespace DownloaderDataSetPhoto
 
         private void tbGelbooru_KeyUp(object sender, KeyEventArgs e)
         {
-            if (tbGelbooru.Text[^1] != ' ')
+            if (tbGelbooru.Text.Length > 0 && tbGelbooru.Text[^1] != ' ')
             {
                 tbGelbooru.Text = tbGelbooru.Text.Trim().Replace(' ', '_');
             }

@@ -376,6 +376,14 @@ namespace RepetitionOfPostsBot.BotTask
                             .SelectNodes("//a[@id and contains(@href, 'https') and contains(@href, 'gelbooru.com')]")
                             .ToArray();
 
+                        if (!OpenArtsPage(nodesArr, i))
+                        {
+                            break;
+                        }
+
+                        Task.WaitAll(_taskList);
+                        _taskList.Clear();
+
                         if (i == 0)
                         {
                             var tmpLastViewedUrl = nodesArr[0].GetAttributeValue("href", string.Empty);
@@ -384,14 +392,6 @@ namespace RepetitionOfPostsBot.BotTask
                             File.Move(PathFile, PathFileOld);
                             File.WriteAllText(PathFile, tmpLastViewedUrl);
                         }
-
-                        if (!OpenArtsPage(nodesArr, i))
-                        {
-                            break;
-                        }
-
-                        Task.WaitAll(_taskList);
-                        _taskList.Clear();
                     }
                 }
                 catch (Exception e)
