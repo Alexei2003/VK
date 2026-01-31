@@ -73,13 +73,21 @@ namespace RepetitionOfPostsBot.BotTask
                 {
                     RepeatVKPosts(client);
                 }
+
             }));
 
             if (_time < 1)
             {
                 tasks.Add(Task.Run(() =>
                 {
-                    ClearPeople();
+                    try
+                    {
+                        ClearPeople();
+                    }
+                    catch (Exception e)
+                    {
+                        Logs.WriteException(e, "ERROR IN TASK");
+                    }
                 }));
                 _time = 24;
             }
@@ -353,7 +361,6 @@ namespace RepetitionOfPostsBot.BotTask
         }
 
         private string _lastViewedUrl = "";
-        private readonly List<Task> _taskList = [];
         private const string PathFile = "E:\\WPS\\CommonData\\Gelbooru\\LastViewedUrl.txt";
         public bool CreateVkPostFromGelbooru(bool client = false, int countPost = 1)
         {
@@ -376,13 +383,11 @@ namespace RepetitionOfPostsBot.BotTask
                             .SelectNodes("//a[@id and contains(@href, 'https') and contains(@href, 'gelbooru.com')]")
                             .ToArray();
 
-                        if (!OpenArtsPage(nodesArr, i))
+                        if (OpenArtsPage(nodesArr))
                         {
                             break;
                         }
 
-                        Task.WaitAll(_taskList);
-                        _taskList.Clear();
 
                         if (i == 0)
                         {
@@ -398,8 +403,6 @@ namespace RepetitionOfPostsBot.BotTask
                 {
                     Logs.WriteException(e);
                 }
-
-                _taskList.Clear();
             }
 
             try
@@ -414,15 +417,29 @@ namespace RepetitionOfPostsBot.BotTask
         }
 
 
-        private bool OpenArtsPage(HtmlNode[] nodesArr, int pageIndex)
+        private sealed class DownloadImage
         {
+            public HtmlNode NodeImage { get; set; }
+            public HtmlNode[] NodeTags { get; set; }
+            public DownloadImage(HtmlNode nodeImage, HtmlNode[] nodeTags) 
+            {
+                NodeImage = nodeImage;
+                NodeTags = nodeTags;
+            }
+        }
+        private bool OpenArtsPage(HtmlNode[] nodesArr)
+        {
+            var listDownload =new List<DownloadImage>();
+            var stop = false;
+
             foreach (var node in nodesArr)
             {
                 var href = node.GetAttributeValue("href", string.Empty);
 
                 if (href == _lastViewedUrl)
                 {
-                    return false;
+                    stop = true;
+                    break;
                 }
 
                 href = href.Replace("amp;", "");
@@ -438,26 +455,27 @@ namespace RepetitionOfPostsBot.BotTask
                     .SelectNodes("//li[contains(@class, 'tag-type-character')]/a[@href]")
                     ?.ToArray();
 
-                if (nodeTagsArr == null)
+                if(nodeTagsArr == null)
                 {
                     continue;
                 }
 
-                var taskIndex = _taskList.Count;
-                var task = Task.Run(() =>
-                {
-                    try
-                    {
-                        SaveImage(nodesImageArr[0], nodeTagsArr, taskIndex + 42 * pageIndex);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logs.WriteException(ex, "ERROR IN TASK");
-                    }
-                });
-                _taskList.Add(task);
+                listDownload.Add(new(nodesImageArr[0], nodeTagsArr));
             }
-            return true;
+
+            Parallel.For(0, listDownload.Count, i =>
+            {
+                try
+                {
+                    SaveImage(listDownload[i].NodeImage, listDownload[i].NodeTags, i);
+                }
+                catch (Exception e)
+                {
+                    Logs.WriteException(e, "ERROR IN TASK");
+                }
+            });
+
+            return stop;
         }
 
         private readonly Queue<Image<Rgb24>> _checkedImageQueue = [];
@@ -504,16 +522,16 @@ namespace RepetitionOfPostsBot.BotTask
                 return;
             }
 
-            var tagsN = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image, taskIndex);
+            var tagsN = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
 
             foreach (var nodeTag in nodeTags)
             {
                 var tagG = nodeTag.InnerText.Trim().ToLower().Replace(' ', '_');
                 tagG = _tagDictionaryGT.GetValue(tagG);
-                for(var i = 0; i < tagsN.Length; i++) 
+                for (var i = 0; i < tagsN.Length; i++)
                 {
                     var tagN = tagsN[i].ToLower();
-                    if(tagG == tagN)
+                    if (tagG == tagN)
                     {
                         lock (_checkedImageQueue)
                         {
@@ -658,13 +676,17 @@ namespace RepetitionOfPostsBot.BotTask
 
                 foreach (var member in members)
                 {
-                    if (member.Deactivated != Deactivated.Activated || (member.LastSeen != null && member.LastSeen.Time < DateTime.Now.AddMonths(-1)))
+                    try
                     {
-                        VkApi.Groups.RemoveUser(VkGroupId, member.Id);
+                        if (member.Deactivated != Deactivated.Activated || (member.LastSeen != null && member.LastSeen.Time < DateTime.Now.AddMonths(-1)))
+                        {
+                            VkApi.Groups.RemoveUser(VkGroupId, member.Id);
 #if DEBUG
-                        count++;
+                            count++;
 #endif
+                        }
                     }
+                    catch { }
                 }
             }
             while (members.Count == COUNT_USER);

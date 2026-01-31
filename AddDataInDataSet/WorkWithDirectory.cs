@@ -165,13 +165,21 @@ namespace AddDataInDataSet
             dataTable.Columns.Add($"Точность 5% k={countP5}", typeof(float));
             dataTable.Columns.Add($"Точность 10% k={countP10}", typeof(float));
 
-            int counter = 0;
-            var threadIndex = new ThreadLocal<int>(() => Interlocked.Increment(ref counter) - 1);
+            // Создаем список пар "метка - количество файлов" и сортируем
+            var sortedLabels = NeuralNetworkWorker.Labels
+                .Select(label => new
+                {
+                    Label = label,
+                    FileCount = Directory.Exists(Path.Combine(OriginalPath, label))
+                        ? Directory.GetFiles(Path.Combine(OriginalPath, label), "*", SearchOption.TopDirectoryOnly).Length
+                        : 0
+                })
+                .OrderByDescending(x => x.FileCount) // По убыванию (от большего к меньшему)
+                .Select(x => x.Label)
+                .ToList();
 
-            Parallel.For(0, NeuralNetworkWorker.Labels.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
+            Parallel.ForEach(sortedLabels, NeuralNetworkWorker.ParallelOptions, tagOriginal =>
             {
-                var tagOriginal = NeuralNetworkWorker.Labels[i];
-
                 var tagDirectory = Path.Combine(OriginalPath, tagOriginal);
 
                 if (Directory.Exists(tagDirectory))
@@ -185,7 +193,7 @@ namespace AddDataInDataSet
                     foreach (var fileImage in tagDirectoryInfo.GetFiles())
                     {
                         using var image = Image.Load<Rgb24>(fileImage.FullName);
-                        var tagPredictArr = NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image, threadIndex.Value);
+                        var tagPredictArr = NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
 
                         for (var k = 0; k < tagPredictArr.Length; k++)
                         {
@@ -258,13 +266,21 @@ namespace AddDataInDataSet
                 dataTable.Rows.Add(row);
             }
 
-            int counter = 0;
-            ThreadLocal<int> threadIndex = new ThreadLocal<int>(() => Interlocked.Increment(ref counter) - 1);
+            // Создаем список пар "метка - количество файлов" и сортируем
+            var sortedLabels = NeuralNetworkWorker.Labels
+                .Select(label => new
+                {
+                    Label = label,
+                    FileCount = Directory.Exists(Path.Combine(OriginalPath, label))
+                        ? Directory.GetFiles(Path.Combine(OriginalPath, label), "*", SearchOption.TopDirectoryOnly).Length
+                        : 0
+                })
+                .OrderByDescending(x => x.FileCount) // По убыванию (от большего к меньшему)
+                .Select(x => x.Label)
+                .ToList();
 
-            Parallel.For(0, NeuralNetworkWorker.Labels.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
+            Parallel.ForEach(sortedLabels, NeuralNetworkWorker.ParallelOptions, tagOriginal =>
             {
-                var tagOriginal = NeuralNetworkWorker.Labels[i];
-
                 var tagDirectory = Path.Combine(OriginalPath, tagOriginal);
 
                 var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
@@ -272,7 +288,7 @@ namespace AddDataInDataSet
                 foreach (var fileImage in tagDirectoryInfo.GetFiles())
                 {
                     using var image = Image.Load<Rgb24>(fileImage.FullName);
-                    var tagPredict = NeuralNetworkWorker.NeuralNetworkResult(image, threadIndex.Value);
+                    var tagPredict = NeuralNetworkWorker.NeuralNetworkResult(image);
 
                     predictInfoDict[tagPredict].ResultArr[predictInfoDict[tagOriginal].Id]++;
                 }

@@ -1,4 +1,8 @@
-﻿using Other;
+﻿using System.Diagnostics.Metrics;
+
+using NeuralNetwork;
+
+using Other;
 
 namespace DownloaderDataSetPhoto.Downloaders
 {
@@ -16,10 +20,10 @@ namespace DownloaderDataSetPhoto.Downloaders
                     var htmlDocument = Gelbooru.GetPageHTML(httpClient, url, i);
 
                     var nodesArr = htmlDocument.DocumentNode.SelectNodes("//img[contains(@src,'https://gelbooru.com')]").ToArray();
-                    Parallel.For(0, nodesArr.Length, j =>
+                    Parallel.For(0, nodesArr.Length, NeuralNetworkWorker.ParallelOptions, j =>
                     {
                         var src = nodesArr[j].GetAttributeValue("src", string.Empty);
-                        Downloader.DownloadPhoto(httpClient, new Uri(src), currentTag, fileName, j);
+                        Downloader.DownloadPhoto(httpClient, new Uri(src), currentTag, fileName + j.ToString());
                     });
                 }
             }

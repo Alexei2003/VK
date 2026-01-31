@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
 using DataSet;
 
@@ -14,30 +15,11 @@ namespace NeuralNetwork
 {
     public static class NeuralNetworkWorker
     {
-        private const string _path = "";
-
-        public const int MAX_SESSIONS_GPU = 4;
-
-        private static readonly Session[] _sessionArr;
-
-        private static readonly string _inputName;
-
-        // Статическая модель и метки классов
+        public static ParallelOptions ParallelOptions { get; private set; }
         public static string[] Labels { get; private set; }
 
-        private sealed class Session
-        {
-            public bool IsFirst { get; set; } = true;
-            public int GPUID { get; set; } = -1;
-
-            public InferenceSession Inference { get; set; }
-
-            public Session(InferenceSession inference, int gpuid)
-            {
-                GPUID = gpuid;
-                Inference = inference;
-            }
-        }
+        private static readonly Session[] _sessionArr;
+        private static readonly string _inputName;
 
         // Статический конструктор для инициализации
         static NeuralNetworkWorker()
@@ -56,54 +38,23 @@ namespace NeuralNetwork
             var sessionList = new List<Session>();
 
             // Загружаем модель
-            var id = 0;
-            while (true)
+            for(var id = 0; id < 2; id++)
             {
-                for (var i = 0; i < MAX_SESSIONS_GPU; i++)
+                for (var i = 0; i < 4; i++)
                 {
-                    var (inferenceSession, isCPU) = CreateInferenceSession(id);
-                    if (isCPU)
+                    var session = new Session(id);
+                    sessionList.Add(session);
+                    if(session.GPUID == -1)
                     {
-                        if (sessionList.Count == 0)
-                        {
-                            sessionList.Add(new Session(inferenceSession, -1));
-                        }
                         id = -1;
                         break;
                     }
-                    else
-                    {
-                        sessionList.Add(new Session(inferenceSession, id));
-                    }
                 }
-                if (id == -1)
-                {
-                    break;
-                }
-                id++;
             }
 
             _sessionArr = [.. sessionList];
-            _inputName = _sessionArr[0].Inference.InputMetadata.Keys.First();
-        }
-
-        private static (InferenceSession, bool) CreateInferenceSession(int id = -1)
-        {
-            var options = new SessionOptions();
-            var isCPU = true;
-#if WINDOWS
-            if (id != -1)
-            {
-                // Пытаемся использовать DirectML (работает через DirectX 12)
-                try
-                {
-                    options.AppendExecutionProvider_DML(id);
-                    isCPU = false;
-                }
-                catch { }
-            }
-#endif
-            return (new InferenceSession(Path.Combine(_path, "E:\\WPS\\CommonData\\Model\\model.onnx"), options), isCPU);
+            _inputName = _sessionArr[0].GetInputName();
+            ParallelOptions = new() { MaxDegreeOfParallelism = _sessionArr.Length * 2 }; 
         }
 
         public struct Label
@@ -118,24 +69,24 @@ namespace NeuralNetwork
             }
         }
 
-        public static string NeuralNetworkResult(Image<Rgb24> imageOriginal, int threadIndex)
+        public static string NeuralNetworkResult(Image<Rgb24> imageOriginal)
         {
-            var arr = NeuralNetworkResultKTopCount(imageOriginal, threadIndex, 1);
+            var arr = NeuralNetworkResultKTopCount(imageOriginal, 1);
 
             return arr[0];
         }
 
-        public static string[] NeuralNetworkResultKTopPercent(Image<Rgb24> imageOriginal, int threadIndex, double percent = 0.1)
+        public static string[] NeuralNetworkResultKTopPercent(Image<Rgb24> imageOriginal, double percent = 0.1)
         {
             var kTop = int.Max((int)(Labels.Length * percent), 1);
 
-            var arr = NeuralNetworkResultKTopCount(imageOriginal, threadIndex, kTop);
+            var arr = NeuralNetworkResultKTopCount(imageOriginal, kTop);
             return arr;
         }
 
-        public static string[] NeuralNetworkResultKTopCount(Image<Rgb24> imageOriginal, int threadIndex, int kTop = 10)
+        public static string[] NeuralNetworkResultKTopCount(Image<Rgb24> imageOriginal, int kTop = 10)
         {
-            var labels = NeuralNetworkBaseResult(imageOriginal, threadIndex);
+            var labels = NeuralNetworkBaseResult(imageOriginal);
             if (labels == null)
             {
                 return ["#error"];
@@ -153,9 +104,9 @@ namespace NeuralNetwork
             return [.. resultTagsArr];
         }
 
-        public static Label[] NeuralNetworkResultKTopCountAndPercent(Image<Rgb24> imageOriginal, int threadIndex, int kTop = 10)
+        public static Label[] NeuralNetworkResultKTopCountAndPercent(Image<Rgb24> imageOriginal, int kTop = 10)
         {
-            var labels = NeuralNetworkBaseResult(imageOriginal, threadIndex);
+            var labels = NeuralNetworkBaseResult(imageOriginal);
             if (labels == null)
             {
                 return [new Label("#error", 1)];
@@ -179,7 +130,7 @@ namespace NeuralNetwork
             return [.. resultTagsArr];
         }
 
-        private static Label[]? NeuralNetworkBaseResult(Image<Rgb24> imageOriginal, int threadIndex)
+        private static Label[]? NeuralNetworkBaseResult(Image<Rgb24> imageOriginal)
         {
             using var image = DataSetImage.ChangeResolution224x224(imageOriginal);
 
@@ -190,7 +141,7 @@ namespace NeuralNetwork
                 NamedOnnxValue.CreateFromTensor(_inputName, inputTensor)
             };
 
-            var session = _sessionArr[threadIndex % _sessionArr.Length];
+            var session = _sessionArr[ThreadIndexManager.ThreadIndex % _sessionArr.Length];
 
             float[] outputArr;
             lock (session)
@@ -201,26 +152,19 @@ namespace NeuralNetwork
                     {
                         lock (_sessionArr)
                         {
-                            using var results = session.Inference.Run(input);
-                            outputArr = [.. results[0].AsEnumerable<float>()];
+                            outputArr = session.Run(input);
                         }
                         session.IsFirst = false;
                     }
                     else
                     {
-                        using var results = session.Inference.Run(input);
-                        outputArr = [.. results[0].AsEnumerable<float>()];
+                        outputArr = session.Run(input);
                     }
                 }
                 catch (Exception ex)
                 {
                     Logs.WriteException(ex);
-
-                    session.Inference.Dispose();
-                    session.IsFirst = true;
-                    var (inferenceSession, isCPU) = CreateInferenceSession(session.GPUID);
-                    session.Inference = inferenceSession;
-
+                    session.Reset();
                     return null;
                 }
             }

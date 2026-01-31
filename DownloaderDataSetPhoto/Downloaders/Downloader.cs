@@ -8,9 +8,8 @@ namespace DownloaderDataSetPhoto.Downloaders
 {
     public static class Downloader
     {
-        public static void DownloadPhoto(HttpClient httpClient, Uri url, string currentTag, string fileName, int taskIndex)
+        public static void DownloadPhoto(HttpClient httpClient, Uri url, string currentTag, string fileName)
         {
-            fileName += taskIndex.ToString();
             Directory.CreateDirectory("DATA_SET");
             if (ImageTransfer.DownloadImageAsync(httpClient, url, $"DATA_SET\\{fileName}.jpg").Result)
             {
@@ -22,7 +21,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                     Directory.CreateDirectory(pathDir);
                 }
 
-                var getTag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(image, taskIndex);
+                var getTag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(image);
                 if (getTag != currentTag)
                 {
                     DataSetImage.Save(image, currentTag);
