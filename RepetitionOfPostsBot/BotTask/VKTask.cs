@@ -497,11 +497,14 @@ namespace RepetitionOfPostsBot.BotTask
             }
             string path_image = Path.Combine(DownloadPath, $"Gelbooru-{taskIndex}.jpg");
 
-            var href = nodeImage.GetAttributeValue("href", string.Empty);
+            var href = nodeImage.GetAttributeValue("src", string.Empty);
             href = href.Replace("amp;", newValue: "");
             //href = Gelbooru.GetUrlAddMirrorServer(href);
 
             var httpClient = new HttpClient();
+            // При создании HttpClient
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+            httpClient.DefaultRequestHeaders.Referrer = new Uri("https://gelbooru.com/");
             if (!ImageTransfer.DownloadImageAsync(httpClient, new Uri(href), path_image).Result)
             {
                 return;

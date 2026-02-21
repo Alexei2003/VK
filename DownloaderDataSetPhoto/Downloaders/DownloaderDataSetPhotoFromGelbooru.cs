@@ -16,6 +16,8 @@ namespace DownloaderDataSetPhoto.Downloaders
                 for (var i = 0; i < countPages; i++)
                 {
                     using var httpClient = new HttpClient();
+                    httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+                    httpClient.DefaultRequestHeaders.Referrer = new Uri("https://gelbooru.com/");
 
                     var htmlDocument = Gelbooru.GetPageHTML(httpClient, url, i);
 
