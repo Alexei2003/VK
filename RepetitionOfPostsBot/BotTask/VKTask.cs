@@ -66,7 +66,6 @@ namespace RepetitionOfPostsBot.BotTask
                 SendVkPostToOther();
             }));*/
 
-
             tasks.Add(Task.Run(() =>
             {
                 if (!CreateVkPostFromGelbooru(client, countPost))
@@ -80,16 +79,9 @@ namespace RepetitionOfPostsBot.BotTask
             {
                 tasks.Add(Task.Run(() =>
                 {
-                    try
-                    {
-                        ClearPeople();
-                    }
-                    catch (Exception e)
-                    {
-                        Logs.WriteException(e, "ERROR IN TASK");
-                    }
+                    ClearPeople();
                 }));
-                _time = 24;
+                _time = 100;
             }
             else
             {
@@ -383,7 +375,7 @@ namespace RepetitionOfPostsBot.BotTask
                             .SelectNodes("//a[@id and contains(@href, 'https') and contains(@href, 'gelbooru.com')]")
                             .ToArray();
 
-                        if (OpenArtsPage(nodesArr))
+                        if (_imageToPostQueue.Count > CountImageToPost || OpenArtsPage(nodesArr))
                         {
                             break;
                         }
@@ -416,12 +408,11 @@ namespace RepetitionOfPostsBot.BotTask
             }
         }
 
-
         private sealed class DownloadImage
         {
             public HtmlNode NodeImage { get; set; }
             public HtmlNode[] NodeTags { get; set; }
-            public DownloadImage(HtmlNode nodeImage, HtmlNode[] nodeTags) 
+            public DownloadImage(HtmlNode nodeImage, HtmlNode[] nodeTags)
             {
                 NodeImage = nodeImage;
                 NodeTags = nodeTags;
@@ -429,7 +420,7 @@ namespace RepetitionOfPostsBot.BotTask
         }
         private bool OpenArtsPage(HtmlNode[] nodesArr)
         {
-            var listDownload =new List<DownloadImage>();
+            var listDownload = new List<DownloadImage>();
             var stop = false;
 
             foreach (var node in nodesArr)
@@ -447,7 +438,7 @@ namespace RepetitionOfPostsBot.BotTask
                 var htmlDocument = Gelbooru.GetPageHTML(_httpClient, href);
 
                 var nodesImageArr = htmlDocument.DocumentNode
-                    .SelectNodes("//a[contains(text(), 'Original image')]")
+                    .SelectNodes("//img[contains(@id, 'image') and contains(@class, 'fit-width')]")
                     .ToArray();
 
                 // % знаки
@@ -455,7 +446,7 @@ namespace RepetitionOfPostsBot.BotTask
                     .SelectNodes("//li[contains(@class, 'tag-type-character')]/a[@href]")
                     ?.ToArray();
 
-                if(nodeTagsArr == null)
+                if (nodeTagsArr == null)
                 {
                     continue;
                 }
@@ -495,7 +486,7 @@ namespace RepetitionOfPostsBot.BotTask
         }
 
         private const int CountCheckedImage = 20;
-        private const int CountImageToPost = 3000;
+        private const int CountImageToPost = 100;
         private const string DownloadPath = "Download";
         private void SaveImage(HtmlNode nodeImage, HtmlNode[] nodeTags, int taskIndex)
         {
@@ -551,15 +542,12 @@ namespace RepetitionOfPostsBot.BotTask
                             _checkedImageQueue.Enqueue(image);
                         }
 
-                        while (_imageToPostQueue.Count > CountImageToPost)
-                        {
-                            _imageToPostQueue.Dequeue();
-                        }
                         var photo = VkApi.Photo.AddOnVKServer(httpClient, path_image)?[0];
 
                         if (photo != null)
                         {
                             _imageToPostQueue.Enqueue(new PhotoWithTag(tagN, photo));
+                            Console.WriteLine(_imageToPostQueue.Count);
                         }
 
                         return;
@@ -657,42 +645,43 @@ namespace RepetitionOfPostsBot.BotTask
 
         public void ClearPeople()
         {
-            VkCollection<User> members;
-            int offset = 0;
-            const int COUNT_USER = 1000;
-#if DEBUG
-            var count = 0;
-#endif
-            do
+            try
             {
-                members = VkApi.Groups.GetMembers(new GroupsGetMembersParams
+                VkCollection<User> members;
+                int offset = 0;
+                const int COUNT_USER = 1000;
+                var count = 0;
+                do
                 {
-                    GroupId = VkGroupId.ToString(),
-                    Offset = offset,
-                    Count = COUNT_USER,
-                    Fields = UsersFields.All
-                });
-                offset += members.Count;
-
-                foreach (var member in members)
-                {
-                    try
+                    members = VkApi.Groups.GetMembers(new GroupsGetMembersParams
                     {
-                        if (member.Deactivated != Deactivated.Activated || (member.LastSeen != null && member.LastSeen.Time < DateTime.Now.AddMonths(-1)))
+                        GroupId = VkGroupId.ToString(),
+                        Offset = offset,
+                        Count = COUNT_USER,
+                        Fields = UsersFields.All
+                    });
+                    offset += members.Count;
+
+                    foreach (var member in members)
+                    {
+                        try
                         {
-                            VkApi.Groups.RemoveUser(VkGroupId, member.Id);
-#if DEBUG
-                            count++;
-#endif
+                            if (member.Deactivated != Deactivated.Activated || (member.LastSeen != null && member.LastSeen.Time < DateTime.Now.AddMonths(-1)))
+                            {
+                                VkApi.Groups.RemoveUser(VkGroupId, member.Id);
+                                count++;
+                            }
                         }
+                        catch { }
                     }
-                    catch { }
                 }
+                while (members.Count == COUNT_USER);
+                Console.WriteLine($"Количество удалёных участников {count}");
             }
-            while (members.Count == COUNT_USER);
-#if DEBUG
-            Console.WriteLine(count.ToString());
-#endif
+            catch (Exception e)
+            {
+                Logs.WriteException(e, "ERROR IN TASK");
+            }
         }
     }
 }

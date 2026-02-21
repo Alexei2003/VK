@@ -33,12 +33,9 @@ namespace Other
                             timeoutCts.Token);
                     }
                 }
-                catch when (attempt < maxRetries - 1)
+                catch (Exception e) when (attempt < maxRetries - 1)
                 {
-                    if (File.Exists(savePath))
-                    {
-                        File.Delete(savePath);
-                    }
+                    Logs.WriteException(e);
                     await Task.Delay(1000 * (attempt + 1), cancellationToken);
                 }
             }

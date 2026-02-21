@@ -68,7 +68,7 @@ namespace VKClasses.VK
                 AccessToken = accessToken
             });
             Stats.TrackVisitor();
-            Account.SetOnline(false);
+            //Account.SetOnline(false);
         }
     }
 }
