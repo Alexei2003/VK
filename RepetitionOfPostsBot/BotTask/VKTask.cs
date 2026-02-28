@@ -52,8 +52,6 @@ namespace RepetitionOfPostsBot.BotTask
                 Count = 1,
                 Filter = WallFilter.All
             });
-
-            _offsetPost = GetRandomID(wall.TotalCount);
         }
 
         private int _time = 0;
@@ -97,14 +95,9 @@ namespace RepetitionOfPostsBot.BotTask
         }
 
         private readonly Queue<long> _sendPostIdQueue = [];
-        private ulong _offsetPost = 0;
 
         public void RepeatVKPosts(bool client = false)
         {
-            const ulong COUNT_NOT_RESENDED_POST = 15;
-            const ulong MAX_OFFSET_RESENDED_POST = 100;
-            const ulong COUNT_GET_POSTS = 100;
-
             try
             {
                 var wall = VkApi.Wall.Get(new WallGetParams
@@ -135,10 +128,6 @@ namespace RepetitionOfPostsBot.BotTask
                         Filter = WallFilter.All
                     });
 
-                    var totalCountPosts = wallAll.TotalCount;
-                    var notResendedPostCount = totalCountPosts / COUNT_NOT_RESENDED_POST;
-                    var maxOffsetRessendedPost = totalCountPosts / MAX_OFFSET_RESENDED_POST;
-
                     Post lastPost;
                     if (wall.WallPosts.Count == 0)
                     {
@@ -160,21 +149,14 @@ namespace RepetitionOfPostsBot.BotTask
                     string postText = "";
                     while (true)
                     {
-                        var offsetNextPost = GetRandomID(maxOffsetRessendedPost) + COUNT_GET_POSTS;
-                        _offsetPost += offsetNextPost;
-                        _offsetPost %= totalCountPosts;
-
-                        if (_offsetPost < notResendedPostCount)
-                        {
-                            _offsetPost += notResendedPostCount;
-                        }
+                        var offsetNextPost = GetRandomID(wallAll.TotalCount - 1000);
 
                         // Получение поста c offset 
                         wall = VkApi.Wall.Get(new WallGetParams
                         {
                             OwnerId = -1 * VkGroupId,
-                            Offset = _offsetPost,
-                            Count = COUNT_GET_POSTS,
+                            Offset = offsetNextPost,
+                            Count = 100,
                             Filter = WallFilter.All
                         });
 
@@ -367,7 +349,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                 try
                 {
-                    for (var i = 0; i < 10; i++)
+                    for (var i = 0; i < 20; i++)
                     {
                         var htmlDocument = Gelbooru.GetPageHTML(_httpClient, url, i);
 
@@ -385,8 +367,15 @@ namespace RepetitionOfPostsBot.BotTask
                         {
                             var tmpLastViewedUrl = nodesArr[0].GetAttributeValue("href", string.Empty);
                             const string PathFileOld = PathFile + ".old";
-                            File.Delete(PathFileOld);
-                            File.Move(PathFile, PathFileOld);
+                            if (File.Exists(PathFileOld))
+                            {
+                                File.Delete(PathFileOld);
+                            }
+                            if (File.Exists(PathFile))
+                            {
+                                File.Move(PathFile, PathFileOld);
+                            }
+
                             File.WriteAllText(PathFile, tmpLastViewedUrl);
                         }
                     }
@@ -456,14 +445,7 @@ namespace RepetitionOfPostsBot.BotTask
 
             Parallel.For(0, listDownload.Count, i =>
             {
-                try
-                {
-                    SaveImage(listDownload[i].NodeImage, listDownload[i].NodeTags, i);
-                }
-                catch (Exception e)
-                {
-                    Logs.WriteException(e, "ERROR IN TASK");
-                }
+                SaveImage(listDownload[i].NodeImage, listDownload[i].NodeTags, i);
             });
 
             return stop;
@@ -486,76 +468,83 @@ namespace RepetitionOfPostsBot.BotTask
         }
 
         private const int CountCheckedImage = 20;
-        private const int CountImageToPost = 100;
+        private const int CountImageToPost = 1000;
         private const string DownloadPath = "Download";
         private void SaveImage(HtmlNode nodeImage, HtmlNode[] nodeTags, int taskIndex)
         {
-
-            if (!Directory.Exists(DownloadPath))
+            try
             {
-                Directory.CreateDirectory(DownloadPath);
-            }
-            string path_image = Path.Combine(DownloadPath, $"Gelbooru-{taskIndex}.jpg");
 
-            var href = nodeImage.GetAttributeValue("src", string.Empty);
-            href = href.Replace("amp;", newValue: "");
-            //href = Gelbooru.GetUrlAddMirrorServer(href);
-
-            var httpClient = new HttpClient();
-            // При создании HttpClient
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
-            httpClient.DefaultRequestHeaders.Referrer = new Uri("https://gelbooru.com/");
-            if (!ImageTransfer.DownloadImageAsync(httpClient, new Uri(href), path_image).Result)
-            {
-                return;
-            }
-            var image = SixLabors.ImageSharp.Image.Load<Rgb24>(path_image);
-
-            if (image == null)
-            {
-                return;
-            }
-
-            var tagsN = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
-
-            foreach (var nodeTag in nodeTags)
-            {
-                var tagG = nodeTag.InnerText.Trim().ToLower().Replace(' ', '_');
-                tagG = _tagDictionaryGT.GetValue(tagG);
-                for (var i = 0; i < tagsN.Length; i++)
+                if (!Directory.Exists(DownloadPath))
                 {
-                    var tagN = tagsN[i].ToLower();
-                    if (tagG == tagN)
+                    Directory.CreateDirectory(DownloadPath);
+                }
+                string path_image = Path.Combine(DownloadPath, $"Gelbooru-{taskIndex}.jpg");
+
+                var href = nodeImage.GetAttributeValue("src", string.Empty);
+                href = href.Replace("amp;", newValue: "");
+                //href = Gelbooru.GetUrlAddMirrorServer(href);
+
+                var httpClient = new HttpClient();
+                // При создании HttpClient
+                httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+                httpClient.DefaultRequestHeaders.Referrer = new Uri("https://gelbooru.com/");
+                if (!ImageTransfer.DownloadImageAsync(httpClient, new Uri(href), path_image).Result)
+                {
+                    return;
+                }
+                var image = SixLabors.ImageSharp.Image.Load<Rgb24>(path_image);
+
+                if (image == null)
+                {
+                    return;
+                }
+
+                var tagsN = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
+
+                foreach (var nodeTag in nodeTags)
+                {
+                    var tagG = nodeTag.InnerText.Trim().ToLower().Replace(' ', '_');
+                    tagG = _tagDictionaryGT.GetValue(tagG);
+                    for (var i = 0; i < tagsN.Length; i++)
                     {
-                        lock (_checkedImageQueue)
+                        var tagN = tagsN[i].ToLower();
+                        if (tagG == tagN)
                         {
-                            foreach (var checkedImage in _checkedImageQueue)
+                            lock (_checkedImageQueue)
                             {
-                                if (DataSetImage.IsSimilarImage(checkedImage, image))
+                                foreach (var checkedImage in _checkedImageQueue)
                                 {
-                                    image.Dispose();
-                                    return;
+                                    if (DataSetImage.IsSimilarImage(checkedImage, image))
+                                    {
+                                        image.Dispose();
+                                        return;
+                                    }
                                 }
+
+                                while (_checkedImageQueue.Count > CountCheckedImage)
+                                {
+                                    using var imageDel = _checkedImageQueue.Dequeue();
+                                }
+                                _checkedImageQueue.Enqueue(image);
                             }
 
-                            while (_checkedImageQueue.Count > CountCheckedImage)
+                            var photo = VkApi.Photo.AddOnVKServer(httpClient, path_image)?[0];
+
+                            if (photo != null)
                             {
-                                using var imageDel = _checkedImageQueue.Dequeue();
+                                _imageToPostQueue.Enqueue(new PhotoWithTag(tagN, photo));
+                                Console.WriteLine(_imageToPostQueue.Count);
                             }
-                            _checkedImageQueue.Enqueue(image);
+
+                            return;
                         }
-
-                        var photo = VkApi.Photo.AddOnVKServer(httpClient, path_image)?[0];
-
-                        if (photo != null)
-                        {
-                            _imageToPostQueue.Enqueue(new PhotoWithTag(tagN, photo));
-                            Console.WriteLine(_imageToPostQueue.Count);
-                        }
-
-                        return;
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                Logs.WriteException(e, "ERROR IN TASK");
             }
         }
 
