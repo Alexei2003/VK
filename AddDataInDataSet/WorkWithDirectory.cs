@@ -8,6 +8,7 @@ using DataSet;
 
 using NeuralNetwork;
 
+using Other.Tags;
 using Other.Tags.Collections;
 
 using SixLabors.ImageSharp;
@@ -184,16 +185,21 @@ namespace AddDataInDataSet
 
                 if (Directory.Exists(tagDirectory))
                 {
+                    var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
+
+                    var filesArr = tagDirectoryInfo.GetFiles();
                     var countTrueK1 = 0;
                     var countTrueP5 = 0;
                     var countTrueP10 = 0;
-                    var countAll = 0;
-                    var tagDirectoryInfo = new DirectoryInfo(tagDirectory);
-
-                    foreach (var fileImage in tagDirectoryInfo.GetFiles())
+                    var countAll = filesArr.Length;
+                    foreach (var fileImage in filesArr)
                     {
                         using var image = Image.Load<Rgb24>(fileImage.FullName);
                         var tagPredictArr = NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
+                        if (TagValidator.CheckBadTag(tagPredictArr))
+                        {
+                            continue;
+                        }
 
                         for (var k = 0; k < tagPredictArr.Length; k++)
                         {
@@ -214,11 +220,8 @@ namespace AddDataInDataSet
                                 break;
                             }
                         }
-
-                        countAll++;
                     }
 
-                    //
                     var vectAll = new Vector3(countAll / 100f);
                     var vectK = new Vector3(countTrueK1, countTrueP5, countTrueP10);
                     vectK = vectK / vectAll;

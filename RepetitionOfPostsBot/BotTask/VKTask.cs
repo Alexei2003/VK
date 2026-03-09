@@ -501,6 +501,10 @@ namespace RepetitionOfPostsBot.BotTask
                 }
 
                 var tagsN = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
+                if (TagValidator.CheckBadTag(tagsN))
+                {
+                    return;
+                }
 
                 foreach (var nodeTag in nodeTags)
                 {

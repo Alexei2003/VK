@@ -1,6 +1,7 @@
 ﻿using DataSet;
 
 using Other;
+using Other.Tags;
 
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -22,6 +23,10 @@ namespace DownloaderDataSetPhoto.Downloaders
                 }
 
                 var getTag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(image);
+                if (TagValidator.CheckBadTag([getTag]))
+                {
+                    return;
+                }
                 if (getTag != currentTag)
                 {
                     DataSetImage.Save(image, currentTag);

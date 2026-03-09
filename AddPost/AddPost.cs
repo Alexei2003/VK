@@ -163,6 +163,10 @@ namespace AddPost
                 await Task.Run(() =>
                 {
                     var tag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(image);
+                    if (TagValidator.CheckBadTag([tag]))
+                    {
+                        return;
+                    }
 
                     AddImage(image, tag);
                 });

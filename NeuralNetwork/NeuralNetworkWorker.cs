@@ -87,30 +87,14 @@ namespace NeuralNetwork
         public static string[] NeuralNetworkResultKTopCount(Image<Rgb24> imageOriginal, int kTop = 10)
         {
             var labels = NeuralNetworkBaseResult(imageOriginal);
-            if (labels == null)
-            {
-                return ["#error"];
-            }
 
             var resultTagsArr = labels.OrderByDescending(l => l.Value).Take(kTop).Select(l => l.Name);
-            if (resultTagsArr.Contains("#nsfw"))
-            {
-                resultTagsArr = ["#nsfw"];
-            }
-            if (resultTagsArr.Contains("#bad_drawing"))
-            {
-                resultTagsArr = ["#bad_drawing"];
-            }
             return [.. resultTagsArr];
         }
 
         public static Label[] NeuralNetworkResultKTopCountAndPercent(Image<Rgb24> imageOriginal, int kTop = 10)
         {
             var labels = NeuralNetworkBaseResult(imageOriginal);
-            if (labels == null)
-            {
-                return [new Label("#error", 1)];
-            }
 
             // 1. Считаем экспоненты логитов
             var exps = labels.Select(l => Math.Exp(l.Value)).ToArray();
@@ -130,7 +114,7 @@ namespace NeuralNetwork
             return [.. resultTagsArr];
         }
 
-        private static Label[]? NeuralNetworkBaseResult(Image<Rgb24> imageOriginal)
+        private static Label[] NeuralNetworkBaseResult(Image<Rgb24> imageOriginal)
         {
             using var image = DataSetImage.ChangeResolution224x224(imageOriginal);
 
@@ -165,7 +149,7 @@ namespace NeuralNetwork
                 {
                     Logs.WriteException(ex);
                     session.Reset();
-                    return null;
+                    return [new Label("#error", 1)];
                 }
             }
 

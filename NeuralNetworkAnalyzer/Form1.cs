@@ -32,7 +32,7 @@ namespace NeuralNetworkAnalyzer
                         dvgPercent.Rows.Clear();
                         for (var i = 0; i < labels.Length; i++)
                         {
-                            dvgPercent.Rows.Add(new DataGridViewRow { Cells = { new DataGridViewTextBoxCell() { Value = labels[i].Name }, new DataGridViewTextBoxCell() { Value = labels[i].Value.ToString("F2") + "%" } } });
+                            dvgPercent.Rows.Add(new DataGridViewRow { Cells = { new DataGridViewTextBoxCell() { Value = (i+1).ToString() },  new DataGridViewTextBoxCell() { Value = labels[i].Name }, new DataGridViewTextBoxCell() { Value = labels[i].Value.ToString("F2") + "%" } } });
                             switch (labels[i].Name) 
                             {
                                 case "#nsfw":
@@ -45,7 +45,6 @@ namespace NeuralNetworkAnalyzer
                                     dvgPercent.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
                                     break;
                             }
-                            
                         }
                     }));
                 });

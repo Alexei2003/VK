@@ -14,8 +14,6 @@ using SixLabors.ImageSharp.PixelFormats;
 
 using WinForms;
 
-using static Other.Tags.Collections.TagList;
-
 namespace DownloaderDataSetPhoto
 {
     public partial class DownloaderDataSetPhoto : Form
@@ -46,6 +44,10 @@ namespace DownloaderDataSetPhoto
                 using var clipboardImage = ConverterBmp.ConvertToImageSharp(imageBmp);
 
                 var resulTag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(clipboardImage);
+                if (TagValidator.CheckBadTag([resulTag]))
+                {
+                    return;
+                }
 
                 AddInDataSet(clipboardImage, tbTag.Text.Replace(" ", ""), resulTag);
 

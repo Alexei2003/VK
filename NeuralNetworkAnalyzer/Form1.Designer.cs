@@ -30,6 +30,7 @@
         {
             pbImage = new PictureBox();
             dvgPercent = new DataGridView();
+            index = new DataGridViewTextBoxColumn();
             tag = new DataGridViewTextBoxColumn();
             percent = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)pbImage).BeginInit();
@@ -50,18 +51,24 @@
             // dvgPercent
             // 
             dvgPercent.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dvgPercent.Columns.AddRange(new DataGridViewColumn[] { tag, percent });
+            dvgPercent.Columns.AddRange(new DataGridViewColumn[] { index, tag, percent });
             dvgPercent.Location = new Point(618, 12);
             dvgPercent.Name = "dvgPercent";
             dvgPercent.Size = new Size(600, 600);
             dvgPercent.TabIndex = 1;
+            // 
+            // index
+            // 
+            index.HeaderText = "Номер";
+            index.Name = "index";
+            index.Width = 50;
             // 
             // tag
             // 
             tag.HeaderText = "Тег";
             tag.Name = "tag";
             tag.ReadOnly = true;
-            tag.Width = 490;
+            tag.Width = 440;
             // 
             // percent
             // 
@@ -88,6 +95,7 @@
 
         private PictureBox pbImage;
         private DataGridView dvgPercent;
+        private DataGridViewTextBoxColumn index;
         private DataGridViewTextBoxColumn tag;
         private DataGridViewTextBoxColumn percent;
     }
