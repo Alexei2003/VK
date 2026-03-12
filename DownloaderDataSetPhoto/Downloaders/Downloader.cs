@@ -22,12 +22,12 @@ namespace DownloaderDataSetPhoto.Downloaders
                     Directory.CreateDirectory(pathDir);
                 }
 
-                var getTag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(image);
-                if (TagValidator.CheckBadTag([getTag]))
+                var tagArr = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResultKTopPercent(image);
+                if (TagValidator.CheckBadTag(tagArr))
                 {
                     return;
                 }
-                if (getTag != currentTag)
+                if (tagArr[0] != currentTag)
                 {
                     DataSetImage.Save(image, currentTag);
                 }

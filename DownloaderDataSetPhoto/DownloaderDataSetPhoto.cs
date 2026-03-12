@@ -42,16 +42,15 @@ namespace DownloaderDataSetPhoto
             {
                 using var imageBmp = (Bitmap)Clipboard.GetImage();
                 using var clipboardImage = ConverterBmp.ConvertToImageSharp(imageBmp);
+                Clipboard.Clear();
 
-                var resulTag = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResult(clipboardImage);
-                if (TagValidator.CheckBadTag([resulTag]))
+                var tagArr = NeuralNetwork.NeuralNetworkWorker.NeuralNetworkResultKTopPercent(clipboardImage);
+                if (TagValidator.CheckBadTag(tagArr))
                 {
                     return;
                 }
 
-                AddInDataSet(clipboardImage, tbTag.Text.Replace(" ", ""), resulTag);
-
-                Clipboard.Clear();
+                AddInDataSet(clipboardImage, tbTag.Text.Replace(" ", ""), tagArr[0]);
             }
         }
 
