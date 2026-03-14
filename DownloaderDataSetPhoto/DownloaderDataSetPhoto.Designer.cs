@@ -49,7 +49,6 @@
             textBox2 = new TextBox();
             textBox4 = new TextBox();
             tbUrl = new TextBox();
-            bAllTags = new Button();
             bWithoutNSFW = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             pBackgroundImageCopy.SuspendLayout();
@@ -234,22 +233,13 @@
             tbUrl.Location = new Point(12, 352);
             tbUrl.Multiline = true;
             tbUrl.Name = "tbUrl";
+            tbUrl.ReadOnly = true;
             tbUrl.Size = new Size(332, 46);
             tbUrl.TabIndex = 51;
             // 
-            // bAllTags
-            // 
-            bAllTags.Location = new Point(12, 404);
-            bAllTags.Name = "bAllTags";
-            bAllTags.Size = new Size(150, 38);
-            bAllTags.TabIndex = 53;
-            bAllTags.Text = "URL со всеми";
-            bAllTags.UseVisualStyleBackColor = true;
-            bAllTags.Click += bAllTags_Click;
-            // 
             // bWithoutNSFW
             // 
-            bWithoutNSFW.Location = new Point(194, 404);
+            bWithoutNSFW.Location = new Point(12, 404);
             bWithoutNSFW.Name = "bWithoutNSFW";
             bWithoutNSFW.Size = new Size(150, 38);
             bWithoutNSFW.TabIndex = 54;
@@ -264,7 +254,6 @@
             BackColor = SystemColors.ControlLightLight;
             ClientSize = new Size(1097, 493);
             Controls.Add(bWithoutNSFW);
-            Controls.Add(bAllTags);
             Controls.Add(textBox4);
             Controls.Add(tbUrl);
             Controls.Add(panel1);
@@ -309,7 +298,6 @@
         private TextBox textBox2;
         private TextBox textBox4;
         private TextBox tbUrl;
-        private Button bAllTags;
         private Button bWithoutNSFW;
     }
 }

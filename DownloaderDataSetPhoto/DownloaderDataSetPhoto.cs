@@ -108,9 +108,12 @@ namespace DownloaderDataSetPhoto
         {
             await Task.Run(() =>
             {
-                foreach (var tag in _tagList.Collection.Where(t => t.Gelbooru.Length > 0))
+                foreach (var tag in _tagList.Collection)
                 {
-                    DownloadGelbooru(tag.Name, BaseUrl + tag.Gelbooru, bDownloadAll, 1);
+                    if (!TagValidator.CheckBadTag([tag.Name]))
+                    {
+                        DownloadGelbooru(tag.Name, BaseUrl + tag.Gelbooru, bDownloadAll, 1);
+                    }
                 }
             });
         }
@@ -182,22 +185,6 @@ namespace DownloaderDataSetPhoto
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             _tagList.Save();
-        }
-
-        private void bAllTags_Click(object sender, EventArgs e)
-        {
-            var tbUrlBuilder = new StringBuilder();
-            tbUrlBuilder.Append(BaseUrl);
-
-            foreach (var tag in _tagList.Collection)
-            {
-                if (tag.Gelbooru.Length > 0)
-                {
-                    tbUrlBuilder.Append("+-").Append(tag.Gelbooru);
-                }
-            }
-
-            tbUrl.Text = tbUrlBuilder.ToString() + "+" + Gelbooru.NoSearch;
         }
 
         private void bWithoutNSFW_Click(object sender, EventArgs e)
