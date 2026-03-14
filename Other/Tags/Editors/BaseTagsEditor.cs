@@ -85,6 +85,11 @@ namespace Other.Tags.Editors
             }
             tagsStr = string.Join("_", tagsArr);
 
+            if (tagsStr.Length == 0)
+            {
+                return tagsStr;
+            }
+
             // Проверка первого # 
             if (tagsStr[0] != '#')
             {
