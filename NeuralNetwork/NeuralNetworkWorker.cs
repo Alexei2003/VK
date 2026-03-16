@@ -76,7 +76,7 @@ namespace NeuralNetwork
             return arr[0];
         }
 
-        public static string[] NeuralNetworkResultKTopPercent(Image<Rgb24> imageOriginal, double percent = 0.1)
+        public static string[] NeuralNetworkResultKTopPercent(Image<Rgb24> imageOriginal, float percent = 0.05f)
         {
             var kTop = int.Max((int)(Labels.Length * percent), 1);
 
@@ -92,8 +92,11 @@ namespace NeuralNetwork
             return [.. resultTagsArr];
         }
 
-        public static Label[] NeuralNetworkResultKTopCountAndPercent(Image<Rgb24> imageOriginal, int kTop = 10)
+        public static Label[] NeuralNetworkResultKTopPercentAndPercent(Image<Rgb24> imageOriginal, float percent = 0.05f)
         {
+            var kTop = int.Max((int)(Labels.Length * percent), 1);
+
+
             var labels = NeuralNetworkBaseResult(imageOriginal);
 
             // 1. Считаем экспоненты логитов
