@@ -50,6 +50,7 @@
             textBox4 = new TextBox();
             tbUrl = new TextBox();
             bWithoutNSFW = new Button();
+            bDump = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvDictionary).BeginInit();
             pBackgroundImageCopy.SuspendLayout();
             panel1.SuspendLayout();
@@ -247,12 +248,23 @@
             bWithoutNSFW.UseVisualStyleBackColor = true;
             bWithoutNSFW.Click += bWithoutNSFW_Click;
             // 
+            // bDump
+            // 
+            bDump.Location = new Point(186, 404);
+            bDump.Name = "bDump";
+            bDump.Size = new Size(150, 38);
+            bDump.TabIndex = 55;
+            bDump.Text = "Поиск тегов";
+            bDump.UseVisualStyleBackColor = true;
+            bDump.Click += bDump_Click;
+            // 
             // DownloaderDataSetPhoto
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlLightLight;
             ClientSize = new Size(1097, 493);
+            Controls.Add(bDump);
             Controls.Add(bWithoutNSFW);
             Controls.Add(textBox4);
             Controls.Add(tbUrl);
@@ -299,5 +311,6 @@
         private TextBox textBox4;
         private TextBox tbUrl;
         private Button bWithoutNSFW;
+        private Button bDump;
     }
 }

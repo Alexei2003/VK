@@ -191,5 +191,25 @@ namespace DownloaderDataSetPhoto
         {
             tbUrl.Text = BaseUrl + Gelbooru.NoSearch;
         }
+
+        private void bDump_Click(object sender, EventArgs e)
+        {
+            bDump.Enabled = false;
+            Task.Run(() =>
+            {
+                FinderNewTags.CreateDumpFromGelbooru(_tagList);
+                if (bDump.InvokeRequired)
+                {
+                    bDump.Invoke((MethodInvoker)delegate
+                    {
+                        bDump.Enabled = true;
+                    });
+                }
+                else
+                {
+                    bDump.Enabled = true;
+                }
+            });
+        }
     }
 }
