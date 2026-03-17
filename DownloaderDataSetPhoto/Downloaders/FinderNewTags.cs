@@ -47,7 +47,7 @@ namespace DownloaderDataSetPhoto.Downloaders
 
                 // % знаки
                 var nodeCharactersTagsArr = htmlDocument.DocumentNode
-                    .SelectNodes("//li[contains(@class, 'tag-type-character')]/a[@href]")
+                    .SelectNodes("//li[contains(@class, 'tag-type-character')]")
                     ?.ToArray();
 
                 if (nodeCharactersTagsArr == null)
@@ -58,10 +58,13 @@ namespace DownloaderDataSetPhoto.Downloaders
                 var next = false;
                 foreach (var tag in nodeCharactersTagsArr)
                 {
-                    var tagStr = tag.InnerText.Trim().Replace(' ', '_');
-                    if (tagList.Find("", tagStr).Count > 0)
+                    if (int.TryParse(tag.SelectSingleNode(".//span[2]").InnerText, out var count) && count > 500)
                     {
-                        next = true;
+                        var tagStr = tag.SelectSingleNode(".//a[@href]").InnerText.Trim().Replace(' ', '_');
+                        if (tagList.Find("", tagStr).Count > 0)
+                        {
+                            next = true;
+                        }
                     }
                 }
 
@@ -84,7 +87,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                 stringBuilder.AppendLine("\ncharacter");
                 foreach (var tag in nodeCharactersTagsArr)
                 {
-                    stringBuilder.AppendLine(tag.InnerText.Trim().Replace(' ', '_'));
+                    stringBuilder.AppendLine(tag.SelectSingleNode(".//a[@href]").InnerText.Trim().Replace(' ', '_'));
                 }
                 stringBuilder.AppendLine("\ncopyright");
                 foreach (var tag in nodeCopyrightTagsArr)
