@@ -60,7 +60,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                 {
                     if (int.TryParse(tag.SelectSingleNode(".//span[2]").InnerText, out var count) && count > 500)
                     {
-                        var tagStr = tag.SelectSingleNode(".//a[@href]").InnerText.Trim().Replace(' ', '_');
+                        var tagStr = tag.SelectSingleNode("(.//a)[2]").InnerText.Trim().Replace(' ', '_');
                         if (tagList.Find("", tagStr).Count > 0)
                         {
                             next = true;
@@ -83,11 +83,11 @@ namespace DownloaderDataSetPhoto.Downloaders
                 }
 
                 var stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("\n---------------------------------------------------------------------------------\n");
+                stringBuilder.AppendLine("\n---------------------------------------------------------------------------------");
                 stringBuilder.AppendLine("\ncharacter");
                 foreach (var tag in nodeCharactersTagsArr)
                 {
-                    stringBuilder.AppendLine(tag.SelectSingleNode(".//a[@href]").InnerText.Trim().Replace(' ', '_'));
+                    stringBuilder.AppendLine(tag.SelectSingleNode("(.//a)[2]").InnerText.Trim().Replace(' ', '_'));
                 }
                 stringBuilder.AppendLine("\ncopyright");
                 foreach (var tag in nodeCopyrightTagsArr)
