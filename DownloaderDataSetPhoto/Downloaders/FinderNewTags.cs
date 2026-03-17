@@ -18,7 +18,7 @@ namespace DownloaderDataSetPhoto.Downloaders
 
             try
             {
-                for (var i = 0; i < 100; i++)
+                for (var i = 0; i < 10; i++)
                 {
                     var htmlDocument = Gelbooru.GetPageHTML(_httpClient, url, i);
 
@@ -58,8 +58,7 @@ namespace DownloaderDataSetPhoto.Downloaders
                 var next = false;
                 foreach (var tag in nodeCharactersTagsArr)
                 {
-                    var tagStr = tag.InnerText;
-                    tagStr = tagStr.Trim().Replace(' ', '_');
+                    var tagStr = tag.InnerText.Trim().Replace(' ', '_');
                     if (tagList.Find("", tagStr).Count > 0)
                     {
                         next = true;
@@ -85,12 +84,12 @@ namespace DownloaderDataSetPhoto.Downloaders
                 stringBuilder.AppendLine("\ncharacter");
                 foreach (var tag in nodeCharactersTagsArr)
                 {
-                    stringBuilder.AppendLine(tag.InnerText);
+                    stringBuilder.AppendLine(tag.InnerText.Trim().Replace(' ', '_'));
                 }
                 stringBuilder.AppendLine("\ncopyright");
                 foreach (var tag in nodeCopyrightTagsArr)
                 {
-                    stringBuilder.AppendLine(tag.InnerText);
+                    stringBuilder.AppendLine(tag.InnerText.Trim().Replace(' ', '_'));
                 }
                 sw.Write(stringBuilder.ToString());
             }
