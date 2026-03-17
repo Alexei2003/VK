@@ -66,6 +66,10 @@ namespace DownloaderDataSetPhoto.Downloaders
                             next = true;
                         }
                     }
+                    else
+                    {
+                        next = true;
+                    }
                 }
 
                 if (next)
