@@ -79,7 +79,7 @@ namespace RepetitionOfPostsBot.BotTask
                 {
                     ClearPeople();
                 }));
-                _time = 100;
+                _time = 1000;
             }
             else
             {
@@ -349,7 +349,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                 try
                 {
-                    for (var i = 0; i < 20; i++)
+                    for (var i = 0; i < 50; i++)
                     {
                         var htmlDocument = Gelbooru.GetPageHTML(_httpClient, url, i);
 

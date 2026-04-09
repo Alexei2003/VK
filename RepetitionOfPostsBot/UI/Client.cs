@@ -23,7 +23,7 @@ namespace RepetitionOfPostsBot.UI
                     Filter = WallFilter.Postponed,
                 });
 
-                countPost = 24 + ((24 * 14) / (int)wall.TotalCount);
+                countPost = 400;//24 + (1000 / (int)wall.TotalCount);
             }
             else
             {
