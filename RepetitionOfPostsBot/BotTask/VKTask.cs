@@ -66,7 +66,7 @@ namespace RepetitionOfPostsBot.BotTask
 
             tasks.Add(Task.Run(() =>
             {
-                if (!CreateVkPostFromGelbooru(client, countPost))
+                if (!CreateVkPostFromGelbooru(countPost))
                 {
                     RepeatVKPosts(client);
                 }
@@ -336,10 +336,13 @@ namespace RepetitionOfPostsBot.BotTask
 
         private string _lastViewedUrl = "";
         private const string PathFile = "E:\\WPS\\CommonData\\Gelbooru\\LastViewedUrl.txt";
-        public bool CreateVkPostFromGelbooru(bool client = false, int countPost = 1)
+        private int _countCheck = 0;
+        public bool CreateVkPostFromGelbooru(int countPost = 1)
         {
-            if (client || RandomStatic.Rand.Next(4) == 0)
+            if (_countCheck == 0)
             {
+                _countCheck = 100;
+
                 const string url = "https://gelbooru.com/index.php?page=post&s=list&tags=";
 
                 if (File.Exists(PathFile))
@@ -385,6 +388,8 @@ namespace RepetitionOfPostsBot.BotTask
                     Logs.WriteException(e);
                 }
             }
+
+            _countCheck--;
 
             try
             {
@@ -552,6 +557,7 @@ namespace RepetitionOfPostsBot.BotTask
             }
         }
 
+        private DateTime? _publishDate = null;
         private bool CreatePost(int countPost = 1)
         {
             var countImagesPerPostLimit = _imageToPostQueue.Count / countPost;
@@ -561,47 +567,52 @@ namespace RepetitionOfPostsBot.BotTask
                 var correctCount = new int[] { 9, 6, 4, 2, 1 };
                 countImagesPerPostLimit = correctCount.First(i => i <= countImagesPerPostLimit);
 
-                // Получение первого отложеного поста
-                var wall = VkApi.Wall.Get(new WallGetParams
+                if (_publishDate == null)
                 {
-                    OwnerId = -1 * VkGroupId,
-                    Count = 1,
-                    Filter = WallFilter.Postponed,
-                });
-
-                if (wall.WallPosts.Count < 100)
-                {
-                    wall = VkApi.Wall.Get(new WallGetParams
+                    // Получение первого отложеного поста
+                    var wall = VkApi.Wall.Get(new WallGetParams
                     {
                         OwnerId = -1 * VkGroupId,
                         Count = 1,
-                        Offset = wall.TotalCount - 1,
                         Filter = WallFilter.Postponed,
                     });
-                }
-                Post lastPost;
-                if (wall.WallPosts.Count == 0)
-                {
-                    // Получение самого свежего поста
-                    wall = VkApi.Wall.Get(new WallGetParams
+
+                    if (wall.WallPosts.Count < 100)
                     {
-                        OwnerId = -1 * VkGroupId,
-                        Count = 2,
-                        Filter = WallFilter.All
-                    });
+                        wall = VkApi.Wall.Get(new WallGetParams
+                        {
+                            OwnerId = -1 * VkGroupId,
+                            Count = 1,
+                            Offset = wall.TotalCount - 1,
+                            Filter = WallFilter.Postponed,
+                        });
+                    }
+                    Post lastPost;
+                    if (wall.WallPosts.Count == 0)
+                    {
+                        // Получение самого свежего поста
+                        wall = VkApi.Wall.Get(new WallGetParams
+                        {
+                            OwnerId = -1 * VkGroupId,
+                            Count = 2,
+                            Filter = WallFilter.All
+                        });
 
-                    lastPost = wall.WallPosts[0].IsPinned == true ? wall.WallPosts[1] : wall.WallPosts[0];
+                        lastPost = wall.WallPosts[0].IsPinned == true ? wall.WallPosts[1] : wall.WallPosts[0];
+                    }
+                    else
+                    {
+                        lastPost = wall.WallPosts[0];
+                    }
+
+                    _publishDate = lastPost.Date.Value;
                 }
-                else
-                {
-                    lastPost = wall.WallPosts[0];
-                }
 
-                var publishDate = lastPost.Date.Value.AddHours(1);
+                _publishDate = _publishDate.Value.AddHours(1);
 
-                while (publishDate < DateTime.UtcNow)
+                while (_publishDate < DateTime.UtcNow)
                 {
-                    publishDate = publishDate.AddHours(1);
+                    _publishDate = _publishDate.Value.AddHours(1);
                 }
 
                 var imagesForSend = new List<PhotoWithTag>();
@@ -629,7 +640,7 @@ namespace RepetitionOfPostsBot.BotTask
                     FromGroup = true,
                     Message = resultTag,
                     Attachments = imageList,
-                    PublishDate = publishDate,
+                    PublishDate = _publishDate.Value,
                 });
                 return true;
             }
