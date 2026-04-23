@@ -1,5 +1,3 @@
-using System.Windows.Forms;
-
 using DataSet;
 
 using NeuralNetwork;
@@ -32,8 +30,8 @@ namespace NeuralNetworkAnalyzer
                         dvgPercent.Rows.Clear();
                         for (var i = 0; i < labels.Length; i++)
                         {
-                            dvgPercent.Rows.Add(new DataGridViewRow { Cells = { new DataGridViewTextBoxCell() { Value = (i+1).ToString() },  new DataGridViewTextBoxCell() { Value = labels[i].Name }, new DataGridViewTextBoxCell() { Value = labels[i].Value.ToString("F2") + "%" } } });
-                            switch (labels[i].Name) 
+                            dvgPercent.Rows.Add(new DataGridViewRow { Cells = { new DataGridViewTextBoxCell() { Value = (i + 1).ToString() }, new DataGridViewTextBoxCell() { Value = labels[i].Name }, new DataGridViewTextBoxCell() { Value = labels[i].Value.ToString("F2") + "%" } } });
+                            switch (labels[i].Name)
                             {
                                 case "#nsfw":
                                     dvgPercent.Rows[i].DefaultCellStyle.BackColor = Color.Red;

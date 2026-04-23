@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NeuralNetwork
+﻿namespace NeuralNetwork
 {
     public static class ThreadIndexManager
     {

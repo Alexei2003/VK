@@ -1,5 +1,4 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 
 using DataSet;
 
@@ -38,13 +37,13 @@ namespace NeuralNetwork
             var sessionList = new List<Session>();
 
             // Загружаем модель
-            for(var id = 0; id < 2; id++)
+            for (var id = 0; id < 2; id++)
             {
                 for (var i = 0; i < 4; i++)
                 {
                     var session = new Session(id);
                     sessionList.Add(session);
-                    if(session.GPUID == -1)
+                    if (session.GPUID == -1)
                     {
                         id = -1;
                         break;
@@ -54,7 +53,7 @@ namespace NeuralNetwork
 
             _sessionArr = [.. sessionList];
             _inputName = _sessionArr[0].GetInputName();
-            ParallelOptions = new() { MaxDegreeOfParallelism = _sessionArr.Length * 2 }; 
+            ParallelOptions = new() { MaxDegreeOfParallelism = _sessionArr.Length * 2 };
         }
 
         public struct Label

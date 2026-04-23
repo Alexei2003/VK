@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Other.Tags.Collections
+﻿namespace Other.Tags.Collections
 {
     public class TagHashSet
     {
         private HashSet<string> _collection = [];
 
-        public TagHashSet() 
+        public TagHashSet()
         {
             _collection = [.. TagLoader.Load().Select(t => t.Name)];
         }

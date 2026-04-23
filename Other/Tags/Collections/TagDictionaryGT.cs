@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Other.Tags.Collections
+﻿namespace Other.Tags.Collections
 {
     public class TagDictionaryGT
     {

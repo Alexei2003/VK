@@ -1,5 +1,3 @@
-using System.Text;
-
 using DataSet;
 
 using DownloaderDataSetPhoto.Downloaders;
@@ -19,6 +17,7 @@ namespace DownloaderDataSetPhoto
     public partial class DownloaderDataSetPhoto : Form
     {
         private readonly TagList _tagList = new();
+        private readonly LastViewedDictionary _lastViewedDictionary = new LastViewedDictionary();
         private const string BaseUrl = "https://gelbooru.com/index.php?page=post&s=list&tags=";
 
         public DownloaderDataSetPhoto()
@@ -134,7 +133,7 @@ namespace DownloaderDataSetPhoto
 
             try
             {
-                DownloaderDataSetPhotoFromGelbooru.SavePhotos(url, tag, "DataSet_", countPages);
+                DownloaderDataSetPhotoFromGelbooru.SavePhotos(_lastViewedDictionary, url, tag, "DataSet_", countPages);
             }
             catch (Exception e)
             {
@@ -185,6 +184,7 @@ namespace DownloaderDataSetPhoto
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             _tagList.Save();
+            _lastViewedDictionary.Save();
         }
 
         private void bWithoutNSFW_Click(object sender, EventArgs e)

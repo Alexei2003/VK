@@ -61,7 +61,7 @@ namespace Other.Tags.Collections
             None = 0,
             Name = 1,
             Gelbooru = 2,
-        } 
+        }
 
         public Simillar TryAdd(Tag tag)
         {
@@ -81,7 +81,7 @@ namespace Other.Tags.Collections
                 else
                 {
                     return Simillar.Gelbooru;
-                }   
+                }
             }
         }
 

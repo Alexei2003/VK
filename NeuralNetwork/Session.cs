@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
-using Microsoft.ML.OnnxRuntime;
+﻿using Microsoft.ML.OnnxRuntime;
 
 namespace NeuralNetwork
 {
@@ -61,7 +56,7 @@ namespace NeuralNetwork
                 {
                     try
                     {
-                        return new InferenceSession( "E:\\WPS\\CommonData\\Model\\model.onnx", options);
+                        return new InferenceSession("E:\\WPS\\CommonData\\Model\\model.onnx", options);
                     }
                     catch
                     {

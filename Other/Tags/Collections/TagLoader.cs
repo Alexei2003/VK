@@ -9,7 +9,7 @@ namespace Other.Tags.Collections
 
         public static Collection<Tag> Load()
         {
-            var collection  = new Collection<Tag>();
+            var collection = new Collection<Tag>();
             try
             {
                 string json = File.ReadAllText(PathFile);

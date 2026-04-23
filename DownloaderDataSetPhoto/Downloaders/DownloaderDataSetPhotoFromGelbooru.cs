@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-
-using NeuralNetwork;
+﻿using NeuralNetwork;
 
 using Other;
 
@@ -8,26 +6,49 @@ namespace DownloaderDataSetPhoto.Downloaders
 {
     public static class DownloaderDataSetPhotoFromGelbooru
     {
+        private static HttpClient _httpClient = new HttpClient();
 
-        public static void SavePhotos(string url, string currentTag, string fileName, int countPages)
+        static DownloaderDataSetPhotoFromGelbooru()
+        {
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+            _httpClient.DefaultRequestHeaders.Referrer = new Uri("https://gelbooru.com/");
+        }
+
+        public static void SavePhotos(LastViewedDictionary lastViewedDictionary, string url, string currentTag, string fileName, int countPages)
         {
             try
             {
+                var oldUrl = "";
+                var srcList = new List<string>();
                 for (var i = 0; i < countPages; i++)
                 {
-                    using var httpClient = new HttpClient();
-                    httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
-                    httpClient.DefaultRequestHeaders.Referrer = new Uri("https://gelbooru.com/");
-
-                    var htmlDocument = Gelbooru.GetPageHTML(httpClient, url, i);
-
+                    var htmlDocument = Gelbooru.GetPageHTML(_httpClient, url, i);
                     var nodesArr = htmlDocument.DocumentNode.SelectNodes("//img[contains(@src,'https://gelbooru.com')]").ToArray();
-                    Parallel.For(0, nodesArr.Length, NeuralNetworkWorker.ParallelOptions, j =>
+
+                    if(i == 0)
                     {
-                        var src = nodesArr[j].GetAttributeValue("src", string.Empty);
-                        Downloader.DownloadPhoto(httpClient, new Uri(src), currentTag, fileName + j.ToString());
-                    });
+                        var newUrl = nodesArr[1].GetAttributeValue("src", string.Empty);
+                        lastViewedDictionary.SwapUrl(currentTag, newUrl);
+                    }
+
+                    foreach (var node in nodesArr)
+                    {
+                        var src = node.GetAttributeValue("src", string.Empty);
+                        if(oldUrl != src)
+                        {
+                            srcList.Add(src);
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
                 }
+
+                Parallel.For(0, srcList.Count, j=>
+                {
+                    Downloader.DownloadPhoto(_httpClient, new Uri(srcList[j]), currentTag, fileName + j.ToString());
+                });
             }
             catch (Exception e)
             {
