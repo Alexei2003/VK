@@ -1,6 +1,4 @@
-﻿using NeuralNetwork;
-
-using Other;
+﻿using Other;
 
 namespace DownloaderDataSetPhoto.Downloaders
 {
@@ -14,38 +12,45 @@ namespace DownloaderDataSetPhoto.Downloaders
             _httpClient.DefaultRequestHeaders.Referrer = new Uri("https://gelbooru.com/");
         }
 
+        public static List<string> CreateDownloadList(LastViewedDictionary lastViewedDictionary, string url, string currentTag, string fileName, int countPages)
+        {
+            var oldUrl = "";
+            var srcList = new List<string>();
+            for (var i = 0; i < countPages; i++)
+            {
+                var htmlDocument = Gelbooru.GetPageHTML(_httpClient, url, i);
+                var nodesArr = htmlDocument.DocumentNode.SelectNodes("//img[contains(@src,'https://gelbooru.com')]").ToArray();
+
+                if (i == 0)
+                {
+                    var newUrl = nodesArr[1].GetAttributeValue("src", string.Empty);
+                    oldUrl = lastViewedDictionary.SwapUrl(currentTag, newUrl);
+                }
+
+                foreach (var node in nodesArr)
+                {
+                    var src = node.GetAttributeValue("src", string.Empty);
+                    if (oldUrl != src)
+                    {
+                        srcList.Add(src);
+                    }
+                    else
+                    {
+                        return srcList;
+                    }
+                }
+            }
+
+            return srcList;
+        }
+
         public static void SavePhotos(LastViewedDictionary lastViewedDictionary, string url, string currentTag, string fileName, int countPages)
         {
             try
             {
-                var oldUrl = "";
-                var srcList = new List<string>();
-                for (var i = 0; i < countPages; i++)
-                {
-                    var htmlDocument = Gelbooru.GetPageHTML(_httpClient, url, i);
-                    var nodesArr = htmlDocument.DocumentNode.SelectNodes("//img[contains(@src,'https://gelbooru.com')]").ToArray();
+                var srcList = CreateDownloadList(lastViewedDictionary, url, currentTag, fileName, countPages);
 
-                    if(i == 0)
-                    {
-                        var newUrl = nodesArr[1].GetAttributeValue("src", string.Empty);
-                        lastViewedDictionary.SwapUrl(currentTag, newUrl);
-                    }
-
-                    foreach (var node in nodesArr)
-                    {
-                        var src = node.GetAttributeValue("src", string.Empty);
-                        if(oldUrl != src)
-                        {
-                            srcList.Add(src);
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                }
-
-                Parallel.For(0, srcList.Count, j=>
+                Parallel.For(0, srcList.Count, j =>
                 {
                     Downloader.DownloadPhoto(_httpClient, new Uri(srcList[j]), currentTag, fileName + j.ToString());
                 });

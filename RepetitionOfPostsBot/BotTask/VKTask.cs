@@ -352,8 +352,7 @@ namespace RepetitionOfPostsBot.BotTask
 
                 try
                 {
-                    //50
-                    for (var i = 0; i < 10; i++)
+                    for (var i = 0; i < 50; i++)
                     {
                         var htmlDocument = Gelbooru.GetPageHTML(_httpClient, url, i);
 
@@ -609,8 +608,7 @@ namespace RepetitionOfPostsBot.BotTask
                     _publishDate = lastPost.Date.Value;
                 }
 
-                //AddHours
-                _publishDate = _publishDate.Value.AddDays(1);
+                _publishDate = _publishDate.Value.AddHours(1);
 
                 while (_publishDate < DateTime.UtcNow)
                 {
